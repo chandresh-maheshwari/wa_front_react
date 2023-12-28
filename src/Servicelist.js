@@ -5,10 +5,8 @@
 // eslint-disable-next-line no-unused-vars
 import parse from 'html-react-parser';
 import React, { useState, useEffect } from 'react'
-import Sidebar from "./Sidebar";
 import './Service.css';
 import './App.css';
-import Servicenave from './Servicenave';
 import { BsTrash3 } from 'react-icons/bs';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
 import { BiEditAlt } from "react-icons/bi";
@@ -29,7 +27,7 @@ function Servicelist() {
 
 
 
-    //=============================== one delete api call=====================================
+    //=============================== one delete api call=====================================//
     const handleDelete = async (id) => {
         try {
             const result = await Swal.fire({
@@ -113,7 +111,8 @@ function Servicelist() {
         },
     ]
 
-    // =============================services list api call=================================== 
+    
+    // =============================services list api call===================================//
 
     const myFunction = async () => {
         try {
@@ -126,14 +125,13 @@ function Servicelist() {
         catch (error) {
             // setError(e.message);
             // setLoading(false);
-            console.error("error fetch data",error);
+            console.error("error fetch data", error);
         }
     };
     useEffect(() => {
         myFunction();
     }, [])
     console.warn("result", data)
-
 
     useEffect(() => {
         const result = data.filter((item) => {
@@ -144,7 +142,7 @@ function Servicelist() {
     }, [data, search]);
 
 
-    //===============================maltipal data delete api call==============================
+    //===============================maltipal data delete api call==============================//
 
     const handleBulkDelete = async () => {
         const selectedIds = selectedRows.map((row) => row.id);
@@ -194,12 +192,9 @@ function Servicelist() {
         }
     };
 
-
+ 
     return (
         <>
-            <Servicenave />
-            <Sidebar />
-
             <div class="container-fluid panel-header panel-header-sm">
             </div>
             <div className='hhkk'>
@@ -227,37 +222,37 @@ function Servicelist() {
                         {/* {loading && <div className='text-secondary text-center mt-5'>loading.....</div>}
                         {error && <div>Error: {error}</div>}
                         {!loading && !error && filter.length > 0 && ( */}
-                            <div className="card table  table-hover">
-                                <DataTable
-                                    title="Service data"
-                                    columns={columns}
-                                    data={filter}
-                                    selectableRows
-                                    onSelectedRowsChange={({ selectedRows }) =>
-                                        setSelectedRows(selectedRows)
-                                    }
-                                    fixedHeader
-                                    selectableRowsHighlight
-                                    highlightOnHover
-                                    subHeader
-                                    pagination
-                                    paginationPerPage={5}
-                                    paginationRowsPerPageOptions={[5, 15, 25, 50]}
-                                    paginationComponentOptions={{
-                                        rowsPerPageText: 'Records per page:',
-                                        rangeSeparatorText: 'out of',
-                                        noRowsPerPage: false,
-                                    }}
-                                    subHeaderComponent={
-                                        <input type='text'
-                                            className='w-100 form-control'
-                                            placeholder='Search'
-                                            value={search}
-                                            onChange={(e) => setsearch(e.target.value)}
-                                        />
-                                    }
-                                />
-                            </div>
+                        <div className="card table  table-hover">
+                            <DataTable
+                                title="Service data"
+                                columns={columns}
+                                data={filter}
+                                selectableRows
+                                onSelectedRowsChange={({ selectedRows }) =>
+                                    setSelectedRows(selectedRows)
+                                }
+                                fixedHeader
+                                selectableRowsHighlight
+                                highlightOnHover
+                                subHeader
+                                pagination
+                                paginationPerPage={5}
+                                paginationRowsPerPageOptions={[5, 15, 25, 50]}
+                                paginationComponentOptions={{
+                                    rowsPerPageText: 'Records per page:',
+                                    rangeSeparatorText: 'out of',
+                                    noRowsPerPage: false,
+                                }}
+                                subHeaderComponent={
+                                    <input type='text'
+                                        className='w-100 form-control'
+                                        placeholder='Search'
+                                        value={search}
+                                        onChange={(e) => setsearch(e.target.value)}
+                                    />
+                                }
+                            />
+                        </div>
                         {/* )} */}
                     </div>
                 </div>

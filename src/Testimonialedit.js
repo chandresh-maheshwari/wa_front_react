@@ -1,14 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
-import Servicenave from './Servicenave';
 import './Addrvices.css';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import axios from 'axios'
-import Sidebar from "./Sidebar";
+import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from 'sweetalert2';
-
 
 const Testimonialedit = () => {
     const [testimonial, settestimonial] = useState('');
@@ -98,8 +95,6 @@ const Testimonialedit = () => {
 
     return (
         <>
-            <Servicenave />
-            <Sidebar />
             <div class="container-fluid panel-header panel-header-sm">
             </div>
             <div className='hhkk'>

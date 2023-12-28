@@ -10,20 +10,27 @@ import Login from "./Login";
 import Testimonial from "./Testimonial";
 import Testimonial_List from "./Testimonial_List";
 import Testimonialedit from "./Testimonialedit";
+import Sidebar from "./Sidebar";
+import MaybeshowNavbar from "./MaybeshowNavbar";
+import Servicenave from './Servicenave';
 
 const App = () => {
   return (
     <BrowserRouter>
-        <Routes>
-          <Route index element={<Login />} />
-          <Route path="/Dashboard" element={<Dashboard />} />
-          <Route path="/Addrvices" element={<Addrvices />} />
-          <Route path="/Servicelist" element={<Servicelist />} />
-          <Route path="/EditServiceForm/:id" element={<EditServiceForm />} />
-          <Route path="/Testimonial" element={<Testimonial />} />
-          <Route path="/Testimonial_List" element={<Testimonial_List />} />
-          <Route path="/Testimonialedit/:id" element={<Testimonialedit />} />
-        </Routes>
+      <MaybeshowNavbar>
+        <Servicenave />
+        <Sidebar />
+      </MaybeshowNavbar>
+      <Routes>
+        <Route exact path="/" element={<Login />} />
+        <Route exact path="/Dashboard" element={<Dashboard />} />
+        <Route exact path="/Addrvices" element={<Addrvices />} />
+        <Route exact path="/Servicelist" element={<Servicelist />} />
+        <Route exact path="/EditServiceForm/:id" element={<EditServiceForm />} />
+        <Route exact path="/Testimonial" element={<Testimonial />} />
+        <Route exact path="/Testimonial_List" element={<Testimonial_List />} />
+        <Route exact path="/Testimonialedit/:id" element={<Testimonialedit />} />
+      </Routes>
     </BrowserRouter>
   );
 };

@@ -7,18 +7,20 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { MdDensityMedium } from 'react-icons/md';
 import { FaLocationCrosshairs } from 'react-icons/fa6';
 import axios from 'axios';
+// import parse from 'html-react-parser';
 
 const Servicenave = () => {
     const [query, setQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+    // const parse = require('html-react-parser').default;
 
     useEffect(() => {
         if (query.trim() !== '') {
-
             const fetchData = async () => {
                 try {
                     const response = await axios.get(`http://wafront.localhost.com/api/search/${query}`);
                     console.log(response.data);
+           
                     setSearchResults(response.data);
                 } catch (error) {
                     console.error('Error fetching data:', error);
@@ -26,12 +28,10 @@ const Servicenave = () => {
             };
             fetchData();
         } else {
-
             setSearchResults([]);
         }
- }, [query])
-
-
+    }, [query])
+    
     return (
         <div className="hadik" style={{ marginLeft: "19%" }}>
             <nav className="navbar navbar-expand-lg navacolor navbar-absolute" style={{ width: "81%" }}>
@@ -76,7 +76,8 @@ const Servicenave = () => {
                                     </div>
                                 </li>
                             </ul>
-                        </ul></div>
+                        </ul>
+                    </div>
                     <form>
                         <div className="input-group no-border">
                             <input type="text"
@@ -93,13 +94,12 @@ const Servicenave = () => {
                             </div>
                         </div>
                         <ul className='ulseachlist' >
-                          
+
                             {searchResults.map((hardik) => (
-                                <div   key={hardik.id}>
+                                <div key={hardik.id}>
                                     <p style={{ whiteSpace: 'pre-line' }}>{hardik.id} {hardik.service_title} {hardik.description && hardik.description.replace(/<\/?[^>]+(>|$)/g, "")}</p>
                                 </div>
                             ))}
-                          
                         </ul>
                     </form>
                 </div>

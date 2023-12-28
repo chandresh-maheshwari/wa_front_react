@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import Servicenave from './Servicenave';
 import './Addrvices.css';
 import './App.css';
-import Sidebar from "./Sidebar";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios'
@@ -81,8 +79,6 @@ const Addrvices = () => {
 
     return (
         <>
-            <Servicenave />
-            <Sidebar />
             <div class="container-fluid panel-header panel-header-sm">
             </div>
             <div className='hhkk'>

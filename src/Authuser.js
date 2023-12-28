@@ -1,19 +1,19 @@
-import './App.css';
-import axios from 'axios';
+// import './App.css';
+// import axios from 'axios';
 
-function Authuser() {
+// function Authuser() {
 
-    const http = axios.create({
-        baseURL: "http://wafront.localhost.com/api/users",
-        headers: {
-            "content-type": "application/json"
-        }
-    });
+//     const http = axios.create({
+//         baseURL: "http://wafront.localhost.com/api/users",
+//         headers: {
+//             "content-type": "application/json"
+//         }
+//     });
 
-    return (
-        http
-    );
-}
+//     return (
+//         http
+//     );
+// }
 
-export default Authuser;
+// export default Authuser;
 

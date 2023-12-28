@@ -5,14 +5,12 @@
 import parse from 'html-react-parser';
 import React, { useState, useEffect } from 'react'
 import './Service.css';
-import Servicenave from './Servicenave';
 import { BsTrash3 } from 'react-icons/bs';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
 import { BiEditAlt } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import DataTable from 'react-data-table-component';
-import Sidebar from "./Sidebar";
 import Swal from 'sweetalert2';
 
 // import { error } from 'jquery';
@@ -131,7 +129,6 @@ function Testimonial_List() {
     }, [])
     console.warn("result", data)
 
-    
     useEffect(() => {
         const result = data.filter((item) => {
             return item.testimonial.toLowerCase().match(search.toLocaleLowerCase());
@@ -148,7 +145,7 @@ function Testimonial_List() {
             Swal.fire("No Rows Selected", "Please select rows to delete", "warning");
             return;
         }
-
+        
         try {
             const BulkDelete = await Swal.fire({
                 title: "Are you sure?",
@@ -171,7 +168,7 @@ function Testimonial_List() {
                         },
                     }
                 );
-
+                    
                 if (res.ok) {
                     setfilter((prevData) =>
                         prevData.filter((item) => !selectedIds.includes(item.id))
@@ -187,11 +184,9 @@ function Testimonial_List() {
             console.error("Error in deleting data", error);
         }
     };
-
+    
     return (
         <>
-            <Servicenave />
-            <Sidebar />
             <div class="container-fluid panel-header panel-header-sm">
             </div>
             <div className='hhkk '>

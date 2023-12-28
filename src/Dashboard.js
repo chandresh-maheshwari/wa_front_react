@@ -1,14 +1,9 @@
 import React from 'react'
-import Servicenave from './Servicenave';
-import Sidebar from "./Sidebar";
 import './App.css';
 
 function Dashboard() {
     return (
         <>
-
-            <Servicenave />
-            <Sidebar />
             <div class="container-fluid panel-header panel-header-sm">
             </div>
             <div className='hhkk'>

@@ -7,25 +7,25 @@ import './App.css';
 const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
 $(document).ready(function () {
 
-    $(document).delegate('#product', 'click', function () { 
+  $(document).delegate('#product', 'click', function () {
     $(".nav-dropdown-items").toggle();
   });
 
-  $(document).delegate('#promotion', 'click', function () { 
+  $(document).delegate('#promotion', 'click', function () {
     $(".nav-dropdown-items-promotion").toggle();
   });
 
-    $(document).delegate('#testimonial', 'click', function () { 
+  $(document).delegate('#testimonial', 'click', function () {
     $(".nav-dropdown-items-testimonial").toggle();
   });
 
-    $(document).delegate('#client', 'click', function () { 
+  $(document).delegate('#client', 'click', function () {
     $(".nav-dropdown-items-client").toggle();
   });
 });
 
 const Sidebar = () => {
-  
+
   return (
     <>
 
@@ -33,7 +33,7 @@ const Sidebar = () => {
         <div className="logo">
           <img src={img} style={{ width: "100%" }} alt="img" />
         </div>
-        <div className="sidebar-wrapper" id="sidebar-wrapper">
+        <div className="sidebar-wrapper" id="navigation">
           <ul className="nav">
 
             <li className="nav-item nav-dropdown">
@@ -43,9 +43,9 @@ const Sidebar = () => {
             </li>
 
             <li className="nav-item nav-dropdown">
-              <a id="product" className="nav-link nav-dropdown-toggle" href="#">
+              <Link id="product" className="nav-link nav-dropdown-toggle" to="#">
                 Package
-              </a>
+              </Link>
 
               <ul className="nav-dropdown-items">
                 <li className="nav-item">
@@ -62,13 +62,13 @@ const Sidebar = () => {
             </li>
 
             <li className="nav-item nav-dropdown">
-              <a
+              <Link
                 id="promotion"
                 className="nav-link nav-dropdown-toggle"
-                href="#"
+                to="#"
               >
                 Services
-              </a>
+              </Link>
               <ul className="nav-dropdown-items-promotion">
                 <li className="nav-item">
                   <Link className="nav-link" to="/Addrvices">
@@ -84,9 +84,9 @@ const Sidebar = () => {
             </li>
 
             <li>
-              <a id="client" className="nav-link nav-dropdown-toggle" href="#">
+              <Link id="client" className="nav-link nav-dropdown-toggle" to="#">
                 Client
-              </a>
+              </Link>
               <ul className="nav-dropdown-items-client">
                 <li className="nav-item">
                   <Link className="nav-link" to="/add_client">
@@ -102,13 +102,13 @@ const Sidebar = () => {
             </li>
 
             <li className="nav-item nav-dropdown">
-              <a
+              <Link
                 id="testimonial"
                 className="nav-link nav-dropdown-toggle"
-                href="#"
+                to="#"
               >
                 Testimonials
-              </a>
+              </Link>
               <ul className="nav-dropdown-items-testimonial">
                 <li className="nav-item">
                   <Link className="nav-link" to="/Testimonial">
@@ -124,15 +124,15 @@ const Sidebar = () => {
             </li>
 
             <li>
-              <a href="#">
+              <Link to="#">
                 <p>Products</p>
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a href="#">
+              <Link to="#">
                 <p>Users</p>
-              </a>
+              </Link>
             </li>
 
           </ul>

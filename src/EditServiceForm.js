@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import './Service.css';
 import { useNavigate, useParams } from "react-router-dom";
-import Servicenave from './Servicenave';
-import Sidebar from "./Sidebar";
 import './Addrvices.css';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -63,7 +61,6 @@ const EditServiceForm = (props) => {
             return;
         }
         setErrors({});
-
         console.log(service_title, description);
 
         try {
@@ -95,9 +92,6 @@ const EditServiceForm = (props) => {
 
     return (
         <>
-            <Servicenave />
-            <Sidebar />
-
             <div class="container-fluid panel-header panel-header-sm">
             </div>
             <div className='hhkk'>
