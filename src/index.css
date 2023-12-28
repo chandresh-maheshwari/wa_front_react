@@ -1,0 +1,933 @@
+/* .hardik {
+  background-image: url('https://www.techdee.com/wp-content/uploads/2020/09/word-image-7.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+ */
+.sidebar {
+  /* ... existing styles ... */
+  transition: all 0.3s ease;
+}
+.sidebar.toggled {
+  width: 80px; /* Set your desired width when toggled */
+}
+.toggle-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  text-align: left;
+  background-color: #fff;
+}
+
+.perfect-scrollbar-on .sidebar,
+.perfect-scrollbar-on .main-panel {
+  height: 100%;
+  max-height: 100%;
+}
+
+@media (min-width: 991px) {
+  .sidebar {
+    display: block;
+    box-shadow: 0px 2px 22px 0 rgba(0, 0, 0, 0.2),
+      0px 2px 30px 0 rgba(0, 0, 0, 0.35);
+  }
+}
+
+::marker {
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  text-indent: 0px !important;
+  text-align: start !important;
+  text-align-last: start !important;
+}
+
+.sidebar,
+.off-canvas-sidebar {
+  position: fixed;
+  top: 0;
+  height: 100%;
+  bottom: 0;
+  width: 260px;
+  left: 0;
+  z-index: 1030;
+}
+
+.sidebar:before,
+.sidebar:after,
+.off-canvas-sidebar:before,
+.off-canvas-sidebar:after {
+  display: block;
+  content: "";
+  opacity: 1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.sidebar .logo,
+.off-canvas-sidebar .logo {
+  position: relative;
+  padding: 0.5rem 0.7rem;
+  z-index: 4;
+  background-color: white;
+}
+
+.sidebar .sidebar-wrapper,
+.off-canvas-sidebar .sidebar-wrapper {
+  background-color: #113b4f !important;
+  position: relative;
+  height: calc(100vh - 75px);
+  overflow: auto;
+  width: 260px;
+  z-index: 4;
+  padding-bottom: 100px;
+}
+
+.sidebar .nav,
+.off-canvas-sidebar .nav {
+  margin-top: 20px;
+  display: block;
+}
+
+.nav {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.sidebar .nav li:first-child > a,
+.off-canvas-sidebar .nav li:first-child > a {
+  margin: 0 15px;
+}
+
+.sidebar .nav li > a,
+.off-canvas-sidebar .nav li > a {
+  margin: 10px 15px 0;
+  border-radius: 30px;
+  color: #ffffff;
+  display: block;
+  text-decoration: none;
+  position: relative;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-size: 0.7142em;
+  padding: 10px 8px;
+  line-height: 1.625rem;
+}
+
+.ps {
+  overflow: hidden !important;
+  overflow-anchor: none;
+  -ms-overflow-style: none;
+  touch-action: auto;
+  -ms-touch-action: auto;
+}
+
+.ps__rail-x {
+  display: none;
+  opacity: 0;
+  transition: background-color 0.2s linear, opacity 0.2s linear;
+  -webkit-transition: background-color 0.2s linear, opacity 0.2s linear;
+  height: 15px;
+  bottom: 0px;
+  position: absolute;
+}
+
+.ps__thumb-x {
+  background-color: #aaa;
+  border-radius: 6px;
+  transition: background-color 0.2s linear, height 0.2s ease-in-out;
+  -webkit-transition: background-color 0.2s linear, height 0.2s ease-in-out;
+  height: 6px;
+  bottom: 2px;
+  position: absolute;
+}
+
+.sidebar .nav i,
+.off-canvas-sidebar .nav i {
+  font-size: 20px;
+  float: left;
+  margin-right: 12px;
+  line-height: 30px;
+  width: 34px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  position: relative;
+}
+
+.nav > li {
+  position: relative;
+  display: block;
+}
+
+.nav-pills .nav-link,
+.navbar,
+.nav-tabs .nav-link,
+.sidebar .nav a,
+.sidebar .nav a i,
+.navbar-collapse .navbar-nav .nav-link,
+.animation-transition-general,
+.sidebar .navbar-minimize,
+.off-canvas-sidebar .navbar-minimize,
+.sidebar .nav p,
+.off-canvas-sidebar .nav p,
+.sidebar .logo a.logo-mini,
+.sidebar .logo a.logo-normal,
+.off-canvas-sidebar .logo a.logo-mini,
+.off-canvas-sidebar .logo a.logo-normal,
+.tag,
+.tag [data-role="remove"],
+.animation-transition-general,
+.sidebar .navbar-minimize,
+.off-canvas-sidebar .navbar-minimize,
+.sidebar .nav p,
+.off-canvas-sidebar .nav p,
+.sidebar .logo a.logo-mini,
+.sidebar .logo a.logo-normal,
+.off-canvas-sidebar .logo a.logo-mini,
+.off-canvas-sidebar .logo a.logo-normal {
+  -webkit-transition: all 300ms ease 0s;
+  -moz-transition: all 300ms ease 0s;
+  -o-transition: all 300ms ease 0s;
+  -ms-transition: all 300ms ease 0s;
+  transition: all 300ms ease 0s;
+}
+
+.nav-dropdown-items {
+  display: block;
+}
+
+.nav-dropdown-items {
+  display: none;
+}
+
+.nav-dropdown-items {
+  list-style: none;
+}
+
+.nav-dropdown-items-promotion {
+  display: none;
+  list-style: none;
+}
+
+.nav-dropdown-items-client {
+  display: none;
+  list-style: none;
+}
+
+.nav-dropdown-items-testimonial {
+  display: none;
+  list-style: none;
+}
+
+.nav-item:active .nav-dropdown-items {
+  display: block;
+}
+
+.ps--active-x > .ps__rail-x,
+.ps--active-y > .ps__rail-y {
+  display: block;
+  background-color: transparent;
+}
+
+.ps__rail-y {
+  display: none;
+  opacity: 0;
+  transition: background-color 0.2s linear, opacity 0.2s linear;
+  -webkit-transition: background-color 0.2s linear, opacity 0.2s linear;
+  width: 15px;
+  right: 0;
+  position: absolute;
+}
+
+.main-panel > .navbar {
+  margin-bottom: 0;
+}
+
+.navbar.navbar-absolute {
+  position: fixed;
+  width: 100%;
+  padding-top: 10px;
+  z-index: 1029;
+}
+
+.bg-primary {
+  background-color: #113b4f !important;
+}
+
+.navbar {
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  min-height: 53px;
+  margin-bottom: 20px;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
+}
+
+.nav-pills .nav-link,
+.navbar,
+.nav-tabs .nav-link,
+.sidebar .nav a,
+.sidebar .nav a i,
+.navbar-collapse .navbar-nav .nav-link,
+.animation-transition-general,
+.sidebar .navbar-minimize,
+.off-canvas-sidebar .navbar-minimize,
+.sidebar .nav p,
+.off-canvas-sidebar .nav p,
+.sidebar .logo a.logo-mini,
+.sidebar .logo a.logo-normal,
+.off-canvas-sidebar .logo a.logo-mini,
+.off-canvas-sidebar .logo a.logo-normal,
+.tag,
+.tag [data-role="remove"],
+.animation-transition-general,
+.sidebar .navbar-minimize,
+.off-canvas-sidebar .navbar-minimize,
+.sidebar .nav p,
+.off-canvas-sidebar .nav p,
+.sidebar .logo a.logo-mini,
+.sidebar .logo a.logo-normal,
+.off-canvas-sidebar .logo a.logo-mini,
+.off-canvas-sidebar .logo a.logo-normal {
+  -webkit-transition: all 300ms ease 0s;
+  -moz-transition: all 300ms ease 0s;
+  -o-transition: all 300ms ease 0s;
+  -ms-transition: all 300ms ease 0s;
+  transition: all 300ms ease 0s;
+}
+
+@media (min-width: 992px) {
+  .navbar-expand-lg {
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+  }
+}
+
+.navbar {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+}
+
+.container-fluid,
+.container-lg,
+.container-md,
+.container-sm,
+.container-xl {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.navbar .container,
+.navbar .container-fluid,
+.navbar .container-lg,
+.navbar .container-md,
+.navbar .container-sm,
+.navbar .container-xl {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+@media (min-width: 992px) {
+  .navbar-expand-lg > .container,
+  .navbar-expand-lg > .container-fluid,
+  .navbar-expand-lg > .container-lg,
+  .navbar-expand-lg > .container-md,
+  .navbar-expand-lg > .container-sm,
+  .navbar-expand-lg > .container-xl {
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+  }
+}
+
+.navbar .container,
+.navbar .container-fluid,
+.navbar .container-lg,
+.navbar .container-md,
+.navbar .container-sm,
+.navbar .container-xl {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.container-fluid,
+.container-lg,
+.container-md,
+.container-sm,
+.container-xl {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 992px) {
+  .navbar-expand-lg .navbar-collapse {
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+  }
+}
+
+.collapse:not(.show) {
+  display: none;
+}
+
+@media screen and (min-width: 992px) {
+  .navbar-collapse {
+    background: none !important;
+  }
+
+  .justify-content-end {
+    -ms-flex-pack: end !important;
+    justify-content: flex-end !important;
+  }
+}
+
+.navbar-collapse {
+  -ms-flex-preferred-size: 100%;
+  flex-basis: 100%;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+@media (min-width: 992px) {
+  .navbar-expand-lg .navbar-nav {
+    -ms-flex-direction: row;
+    flex-direction: row;
+  }
+}
+
+.navbar-nav {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+dl,
+ol,
+ul {
+  margin-top: 0;
+}
+
+.dropdown,
+.dropleft,
+.dropright,
+.dropup {
+  position: relative;
+}
+
+.dropdown.show .dropdown-menu:not(.inner),
+.dropdown-menu.bootstrap-datetimepicker-widget.bottom.open,
+.navbar .dropdown.show .dropdown-menu {
+  -webkit-transform: translate3d(0, 1px, 0) !important;
+  -moz-transform: translate3d(0, 1px, 0) !important;
+  -o-transform: translate3d(0, 1px, 0) !important;
+  -ms-transform: translate3d(0, 1px, 0) !important;
+  transform: translate3d(0, 1px, 0) !important;
+}
+
+.dropdown.show .dropdown-menu:not(.inner),
+.dropdown-menu.bootstrap-datetimepicker-widget.top.open,
+.dropdown-menu.bootstrap-datetimepicker-widget.bottom.open,
+.dropup.show:not(.bootstrap-select) .dropdown-menu,
+.navbar .dropdown.show .dropdown-menu {
+  opacity: 1;
+  filter: alpha(opacity=100);
+  visibility: visible;
+}
+
+.dropdown .dropdown-menu:not(.inner),
+.dropdown-menu.bootstrap-datetimepicker-widget.bottom {
+  -webkit-transform: translate3d(0, -20px, 0) !important;
+  -moz-transform: translate3d(0, -20px, 0) !important;
+  -o-transform: translate3d(0, -20px, 0) !important;
+  -ms-transform: translate3d(0, -20px, 0) !important;
+  transform: translate3d(0, -20px, 0) !important;
+}
+
+.dropdown .dropdown-menu:not(.inner),
+.dropup:not(.bootstrap-select) .dropdown-menu,
+.dropdown-menu.bootstrap-datetimepicker-widget.top,
+.dropdown-menu.bootstrap-datetimepicker-widget.bottom {
+  visibility: hidden;
+  display: block;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  top: 100% !important;
+}
+
+@media (min-width: 992px) {
+  .navbar-expand-lg .navbar-nav .dropdown-menu {
+    position: absolute;
+  }
+}
+
+.dropdown-menu.dropdown-menu-right {
+  right: 0 !important;
+  left: auto !important;
+}
+
+.navbar-nav .dropdown-menu {
+  position: static;
+  float: none;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-menu {
+  border: 0;
+  box-shadow: 0px 10px 50px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 0.125rem;
+  -webkit-transition: all 150ms linear;
+  -moz-transition: all 150ms linear;
+  -o-transition: all 150ms linear;
+  -ms-transition: all 150ms linear;
+  transition: all 150ms linear;
+  font-size: 14px;
+}
+
+.dropdown-menu-right {
+  right: 0;
+  left: auto;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 10rem;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  color: #212529;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+}
+
+.navbar a.dropdown-item {
+  color: #888;
+}
+
+@media screen and (min-width: 992px) {
+  .dropdown-menu .dropdown-item {
+    color: inherit;
+  }
+}
+
+.dropdown-menu .dropdown-item,
+.bootstrap-select .dropdown-menu.inner li a {
+  font-size: 0.8571em;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  margin-top: 5px;
+  -webkit-transition: all 150ms linear;
+  -moz-transition: all 150ms linear;
+  -o-transition: all 150ms linear;
+  -ms-transition: all 150ms linear;
+  transition: all 150ms linear;
+}
+
+.navbar a {
+  vertical-align: middle;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 1.5rem;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+}
+
+.dropdown .dropdown-menu:not(.inner),
+.dropdown-menu.bootstrap-datetimepicker-widget.bottom {
+  -webkit-transform: translate3d(0, -20px, 0) !important;
+  -moz-transform: translate3d(0, -20px, 0) !important;
+  -o-transform: translate3d(0, -20px, 0) !important;
+  -ms-transform: translate3d(0, -20px, 0) !important;
+  transform: translate3d(0, -20px, 0) !important;
+}
+
+.dropdown .dropdown-menu:not(.inner),
+.dropup:not(.bootstrap-select) .dropdown-menu,
+.dropdown-menu.bootstrap-datetimepicker-widget.top,
+.dropdown-menu.bootstrap-datetimepicker-widget.bottom {
+  visibility: hidden;
+  display: block;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  top: 100% !important;
+}
+
+@media (min-width: 992px) {
+  .navbar-expand-lg .navbar-nav .dropdown-menu {
+    position: absolute;
+  }
+}
+
+.navbar a:not(.btn):not(.dropdown-item) {
+  color: #ffffff;
+}
+
+.navbar .navbar-nav .nav-link {
+  text-transform: uppercase;
+  font-size: 0.7142em;
+  padding: 0.5rem 0.7rem;
+  line-height: 1.625rem;
+  margin-right: 3px;
+}
+
+.nav-pills .nav-link,
+.navbar,
+.nav-tabs .nav-link,
+.sidebar .nav a,
+.sidebar .nav a i,
+.navbar-collapse .navbar-nav .nav-link,
+.animation-transition-general,
+.sidebar .navbar-minimize,
+.off-canvas-sidebar .navbar-minimize,
+.sidebar .nav p,
+.off-canvas-sidebar .nav p,
+.sidebar .logo a.logo-mini,
+.sidebar .logo a.logo-normal,
+.off-canvas-sidebar .logo a.logo-mini,
+.off-canvas-sidebar .logo a.logo-normal,
+.tag,
+.tag [data-role="remove"],
+.animation-transition-general,
+.sidebar .navbar-minimize,
+.off-canvas-sidebar .navbar-minimize,
+.sidebar .nav p,
+.off-canvas-sidebar .nav p,
+.sidebar .logo a.logo-mini,
+.sidebar .logo a.logo-normal,
+.off-canvas-sidebar .logo a.logo-mini,
+.off-canvas-sidebar .logo a.logo-normal {
+  -webkit-transition: all 300ms ease 0s;
+  -moz-transition: all 300ms ease 0s;
+  -o-transition: all 300ms ease 0s;
+  -ms-transition: all 300ms ease 0s;
+  transition: all 300ms ease 0s;
+}
+
+.navbar a {
+  vertical-align: middle;
+}
+
+a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-link {
+  display: block;
+  /* padding: .5rem 1rem; */
+}
+
+.dropdown,
+.dropleft,
+.dropright,
+.dropup {
+  position: relative;
+}
+
+.navbar .form-group,
+.navbar .input-group {
+  margin: 0;
+  margin-left: -3px;
+  margin-right: 5px;
+}
+
+.input-group,
+.form-group {
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.input-group {
+  position: relative;
+  /* display: -ms-flexbox; */
+  display: flex;
+  /* -ms-flex-wrap: wrap; */
+  /* flex-wrap: wrap; */
+  /* -ms-flex-align: stretch; */
+  /* align-items: stretch; */
+  /* width: 300%; */
+}
+
+.navbar .form-group.no-border .form-control,
+.navbar .input-group.no-border .form-control {
+  color: #ffffff;
+}
+
+.input-group .form-control:first-child,
+.input-group-btn:first-child > .dropdown-toggle,
+.input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle) {
+  border-right: 0 none;
+}
+
+.form-group.no-border .form-control,
+.form-group.no-border .form-control + .input-group-prepend .input-group-text,
+.form-group.no-border .form-control + .input-group-append .input-group-text,
+.input-group.no-border .form-control,
+.input-group.no-border .form-control + .input-group-prepend .input-group-text,
+.input-group.no-border .form-control + .input-group-append .input-group-text {
+  background-color: rgba(222, 222, 222, 0.3);
+  border: medium none;
+}
+
+.form-group.no-border .form-control,
+.input-group.no-border .form-control {
+  padding: 11px 19px;
+}
+
+.input-group > .custom-select:not(:last-child),
+.input-group > .form-control:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.form-group .form-control,
+.input-group .form-control {
+  padding: 10px 18px 10px 18px;
+}
+
+.input-group > .custom-file,
+.input-group > .custom-select,
+.input-group > .form-control,
+.input-group > .form-control-plaintext {
+  position: relative;
+  -ms-flex: 1 1 0%;
+  flex: 1 1 0%;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.form-control {
+  background-color: transparent;
+  border: 1px solid #e3e3e3;
+  border-radius: 30px;
+  color: #2c2c2c;
+  line-height: normal;
+  height: auto;
+  font-size: 0.8571em;
+  -webkit-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
+  -moz-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
+  -o-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
+  -ms-transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
+  transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+/* .form-control {
+  display: block;
+  width: 100%;
+  height: calc(1.5em + .75rem + 2px);
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+} */
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+}
+
+button,
+input {
+  overflow: visible;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.navbar .navbar-toggler {
+  width: 37px;
+  height: 27px;
+  vertical-align: middle;
+  outline: 0;
+  cursor: pointer;
+}
+
+@media (min-width: 992px) {
+  .navbar-expand-lg .navbar-toggler {
+    display: none;
+  }
+}
+
+[type="button"]:not(:disabled),
+[type="reset"]:not(:disabled),
+[type="submit"]:not(:disabled),
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+.navbar-toggler {
+  padding: 0.25rem 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.navbar .navbar-wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+.navbar .navbar-nav .nav-link i.now-ui-icons {
+  top: 4px;
+  font-size: 16px;
+}
+
+.text-warning,
+a.text-warning:focus,
+a.text-warning:hover {
+  color: #113b4f !important;
+}
+
+.mt-5,
+.my-5 {
+  margin-top: 1rem !important;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex-direction: row;
+}
+
+/* Add this CSS to your styles */
+/* @media (max-width: 1364px) {
+   .sidebar {
+    visibility: none !important; /* Hide the sidebar by default on small screens */
+ /* }  */
+ /* .sidebar-open { 
+    display: block;
+  }   */
+ /* }   */ */
+
+ /* @media (max-width: 1134px) {
+  .sidebar {
+    display: none !important; /* Hide the sidebar by default on small screens */
+  /* } */
+/* }  */ */
+
+/* @media (max-width: 984px) {
+  .sidebar {
+    display: none !important;
+  }
+} */
+
+
+/* @media (max-width: 1080px) {
+.sidebar {
+    display: none;
+  }
+} */
+/* .wrapper .sidebar {
+  display: none;
+} */
+
+.wrapper .sidebar.visible {
+  display: block;
+}
+/* Adjust styles for larger screens or when the sidebar is toggled to be shown */
+/* @media (min-width: 1081px) {
+  .wrapper .sidebar {
+    display: block;
+  }
+} */

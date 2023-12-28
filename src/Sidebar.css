@@ -1,0 +1,48 @@
+/* Sidebar Component Styles */
+
+.sidebar {
+    /* Add your sidebar styles here */
+    width: 250px;
+    height: 100vh;
+    transition: all 0.3s;
+    /* Add any other necessary styles */
+  }
+  
+  .sidebar.toggled {
+    /* Add styles when toggled */
+    width: 80px;
+  }
+  
+  .logo {
+    /* Add your logo styles here */
+    padding: 20px;
+    /* Add any other necessary styles */
+  }
+  
+  .sidebar-wrapper {
+    /* Add your wrapper styles here */
+    padding: 20px;
+    /* Add any other necessary styles */
+  }
+  
+  .toggle-btn {
+    /* Add your button styles here */
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    outline: none;
+    /* Add any other necessary styles */
+  }
+  
+  /* Adjust the button icon position based on the toggle state */
+  .toggled .toggle-btn {
+    /* Add styles when toggled */
+    margin-left: -10px;
+  }
+  
+  /* Add transition effect for smoother animation */
+  .toggle-btn i {
+    transition: margin 0.3s;
+  }
