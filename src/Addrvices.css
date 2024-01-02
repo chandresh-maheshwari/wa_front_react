@@ -22,4 +22,16 @@
     font-size: 0.8571em;
     margin-bottom: 5px;
     color: #9A9A9A;
+    font-weight: 700;
+}
+
+.btn-success {
+    background-color: #18ce0f;
+    color: #ffffff;
+    border-color: #05ff00;
+}
+
+.btn-outline-success {
+    color: #06c401;
+    border-color: #05ff00;
 }
