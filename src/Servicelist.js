@@ -26,7 +26,6 @@ function Servicelist() {
     const parse = require('html-react-parser').default;
 
 
-
     //=============================== one delete api call=====================================//
     const handleDelete = async (id) => {
         try {
@@ -111,7 +110,7 @@ function Servicelist() {
         },
     ]
 
-    
+
     // =============================services list api call===================================//
 
     const myFunction = async () => {
@@ -192,7 +191,7 @@ function Servicelist() {
         }
     };
 
- 
+
     return (
         <>
             <div class="container-fluid panel-header panel-header-sm">

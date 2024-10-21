@@ -16,7 +16,17 @@ import Swal from 'sweetalert2';
 // import { error } from 'jquery';
 
 function Testimonial_List() {
+
+    // e.preventDefault();
+    const [data, setdata] = useState([]);
+    const [search, setsearch] = useState('');
+    const [filter, setfilter] = useState([]);
+    // const [loading, setLoading] = useState(true);
+    // const [error, setError] = useState(null);
+    const [selectedRows, setSelectedRows] = useState([]);
     const parse = require('html-react-parser').default;
+
+
     const handleDelete = async (id) => {
         try {
             const result = await Swal.fire({
@@ -102,14 +112,6 @@ function Testimonial_List() {
         },
     ]
 
-    // e.preventDefault();
-    const [data, setdata] = useState([]);
-    const [search, setsearch] = useState('');
-    const [filter, setfilter] = useState([]);
-    // const [loading, setLoading] = useState(true);
-    // const [error, setError] = useState(null);
-    const [selectedRows, setSelectedRows] = useState([]);
-
     const myFunction = async () => {
         try {
             let result = await fetch("http://wafront.localhost.com/api/Testimoniallist");
@@ -121,7 +123,7 @@ function Testimonial_List() {
         catch (error) {
             // setError(e.message);
             // setLoading(false);
-            console.error("error fetch data",error);
+            console.error("error fetch data", error);
         }
     };
     useEffect(() => {
@@ -145,7 +147,7 @@ function Testimonial_List() {
             Swal.fire("No Rows Selected", "Please select rows to delete", "warning");
             return;
         }
-        
+
         try {
             const BulkDelete = await Swal.fire({
                 title: "Are you sure?",
@@ -157,7 +159,7 @@ function Testimonial_List() {
                 confirmButtonText: "Yes",
                 cancelButtonText: "Cancel",
             });
-            
+
             if (BulkDelete.isConfirmed) {
                 const res = await fetch(
                     `http://wafront.localhost.com/api/delete-Testimonial/${selectedIds.join(",")}`,
@@ -168,7 +170,7 @@ function Testimonial_List() {
                         },
                     }
                 );
-                    
+
                 if (res.ok) {
                     setfilter((prevData) =>
                         prevData.filter((item) => !selectedIds.includes(item.id))
@@ -184,7 +186,7 @@ function Testimonial_List() {
             console.error("Error in deleting data", error);
         }
     };
-    
+
     return (
         <>
             <div class="container-fluid panel-header panel-header-sm">
@@ -205,43 +207,43 @@ function Testimonial_List() {
 
                                 <Link to="/Testimonial" class="dt-button buttons-html5btn btn btn-primary btnhardik btnkkk" >
                                     <i class="fa fa-plus"><AiOutlinePlusCircle /> </i>
-                    
+
                                 </Link>
                             </div>
                         </div>
                         {/* {loading && <div className='text-secondary text-center mt-5'>loading.....</div>}
                         {error && <div>Error: {error}</div>}
                         {!loading && !error && filter.length > 0 && ( */}
-                            <div className="card table  table-hover">
-                                <DataTable
-                                    title="Testimonial List"
-                                    columns={columns}
-                                    data={filter}
-                                    selectableRows
-                                    onSelectedRowsChange={({ selectedRows }) =>
-                                        setSelectedRows(selectedRows)
-                                    }
-                                    fixedHeader
-                                    selectableRowsHighlight
-                                    highlightOnHover
-                                    subHeader
-                                    pagination
-                                    paginationPerPage={5}
-                                    paginationRowsPerPageOptions={[5, 15, 25, 50]}
-                                    paginationComponentOptions={{
-                                        rowsPerPageText: 'Records per page:',
-                                        rangeSeparatorText: 'out of',
-                                    }}
-                                    subHeaderComponent={
-                                        <input type='text'
-                                            className='w-100 form-control'
-                                            placeholder='Search'
-                                            value={search}
-                                            onChange={(e) => setsearch(e.target.value)}
-                                        />
-                                    }
-                                />
-                            </div>
+                        <div className="card table  table-hover">
+                            <DataTable
+                                title="Testimonial List"
+                                columns={columns}
+                                data={filter}
+                                selectableRows
+                                onSelectedRowsChange={({ selectedRows }) =>
+                                    setSelectedRows(selectedRows)
+                                }
+                                fixedHeader
+                                selectableRowsHighlight
+                                highlightOnHover
+                                subHeader
+                                pagination
+                                paginationPerPage={5}
+                                paginationRowsPerPageOptions={[5, 15, 25, 50]}
+                                paginationComponentOptions={{
+                                    rowsPerPageText: 'Records per page:',
+                                    rangeSeparatorText: 'out of',
+                                }}
+                                subHeaderComponent={
+                                    <input type='text'
+                                        className='w-100 form-control'
+                                        placeholder='Search'
+                                        value={search}
+                                        onChange={(e) => setsearch(e.target.value)}
+                                    />
+                                }
+                            />
+                        </div>
                         {/* )} */}
                     </div>
                 </div>

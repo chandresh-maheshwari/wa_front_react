@@ -149,7 +149,6 @@ const EditServiceForm = (props) => {
                                             // onClick={handlesubmit} 
                                             className="btn btn-success"  >Submit</button>
                                         <button onClick={handleCancel} type="button" className="btn btn-outline-success m-2">Cancel</button>
-
                                     </div>
                                 </div>
                             </form>
@@ -162,5 +161,4 @@ const EditServiceForm = (props) => {
 };
 
 export default EditServiceForm;
-
 

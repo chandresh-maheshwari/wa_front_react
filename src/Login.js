@@ -130,6 +130,7 @@ function Login() {
                                                             type="checkbox"
                                                             name="remember"
                                                             id="remember"
+                                                            style={{marginLeft: "2%"}}
                                                         />
                                                         <span className="checkmark"></span>
                                                     </label>
