@@ -5,15 +5,16 @@ const MaybeshowNavbar = ({ children }) => {
 
     const Location = useLocation();
     const [shownavbar, setshownavbar] = useState(false)
-
     useEffect(() => {
-        // console.log('this is location: ', Location) 
         if (Location.pathname === '/') {
             setshownavbar(false)
-        } else {
+        } else if (Location.pathname === '/ForgetPassword') {
+            setshownavbar(false)
+        }
+        else {
             setshownavbar(true)
         }
-    },[Location]);
+    }, [Location]);
 
     return (
         <div>
@@ -22,5 +23,5 @@ const MaybeshowNavbar = ({ children }) => {
     )
 }
 
-export default MaybeshowNavbar
-            
+export default MaybeshowNavbar;
+

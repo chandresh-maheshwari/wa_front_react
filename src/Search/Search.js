@@ -11,7 +11,7 @@
 //   useEffect(() => {
 //     if (query.trim() !== '') {
 //       // Make an API request when the query changes
-//       axios.get(`http://wafront.localhost.com/api/search/${query}`)
+//       axios.get(`http://wa_front.localhost.com/api/search/${query}`)
 //         .then(response => {
 //           setResults(response.data);
 //         })

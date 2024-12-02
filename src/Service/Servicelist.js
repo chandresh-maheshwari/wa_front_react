@@ -1,12 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-script-url */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-// import { AiOutlineLoading3Quarters } from "react-icons/ai";
-// eslint-disable-next-line no-unused-vars
+
 import parse from 'html-react-parser';
 import React, { useState, useEffect } from 'react'
-import './Service.css';
-import './App.css';
+import "../Service/Service.css"
+import '../App.css';
 import { BsTrash3 } from 'react-icons/bs';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
 import { BiEditAlt } from "react-icons/bi";
@@ -14,6 +10,7 @@ import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import DataTable from 'react-data-table-component';
 import Swal from 'sweetalert2';
+import Authapi from '../Authapi';
 
 function Servicelist() {
 
@@ -24,7 +21,6 @@ function Servicelist() {
     // const [error, setError] = useState(null);
     const [selectedRows, setSelectedRows] = useState([]);
     const parse = require('html-react-parser').default;
-
 
     //=============================== one delete api call=====================================//
     const handleDelete = async (id) => {
@@ -42,7 +38,7 @@ function Servicelist() {
 
             if (result.isConfirmed) {
                 const response = await fetch(
-                    `http://wafront.localhost.com/api/Servicesdestroy/${id}`,
+                    `http://wa_front.localhost.com/api/Servicesdestroy/${id}`,
                     {
                         method: "DELETE",
                         headers: {
@@ -113,22 +109,36 @@ function Servicelist() {
 
     // =============================services list api call===================================//
 
-    const myFunction = async () => {
-        try {
-            let result = await fetch("http://wafront.localhost.com/api/serviceslist");
-            result = await result.json();
-            setdata(result)
-            setfilter(result)
-            // setLoading(false);
+    // const myFunction = async () => {
+        // try {
+        //     let result = await fetch("http://wa_front.localhost.com/api/serviceslist");
+        //     result = await result.json();
+        //     setdata(result)
+        //     setfilter(result)
+        //     // setLoading(false);
+        // }
+        // catch (error) {
+        //     // setError(e.message);
+        //     // setLoading(false);
+        //     console.error("error fetch data", error);
+        // }
+
+
+       const  eventData = async (e) => {
+            let events = await Authapi.durTime();
+             console.log(events)
+             
+            // if (events && events.status === true) {
+            //     this.setState({
+            //         upcoming: events.data,
+            //         filteredEvents: events.data,
+            //         count: events.data.length
+            //     })
+            // }
         }
-        catch (error) {
-            // setError(e.message);
-            // setLoading(false);
-            console.error("error fetch data", error);
-        }
-    };
+    // };
     useEffect(() => {
-        myFunction();
+        eventData();
     }, [])
     console.warn("result", data)
 
@@ -166,7 +176,7 @@ function Servicelist() {
 
             if (BulkDelete.isConfirmed) {
                 const res = await fetch(
-                    `http://wafront.localhost.com/api/delete-clients/${selectedIds.join(",")}`,
+                    `http://wa_front.localhost.com/api/delete-clients/${selectedIds.join(",")}`,
                     {
                         method: "POST",
                         headers: {
@@ -196,7 +206,7 @@ function Servicelist() {
         <>
             <div class="container-fluid panel-header panel-header-sm">
             </div>
-            <div className='hhkk'>
+            <div className='maincard'>
                 <div className="col-md-12 ">
                     <div className="row card" style={{
                         marginLeft: "22%",

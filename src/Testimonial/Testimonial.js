@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './Addrvices.css';
+// import './Service/Addrvices.css';
+import "../Service/Addrvices.css"
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios'
@@ -49,7 +50,7 @@ const Testimonial = () => {
 
         try {
             // Assuming formData is defined somewhere in your code
-            const response = await axios.post('http://wafront.localhost.com/api/Testimonial', formData, {
+            const response = await axios.post('http://wa_front.localhost.com/api/Testimonial', formData, {
                 headers: {
                     "Content-Type": "application/json",  // Fix typo in "Application/JSON"
                 },
@@ -91,7 +92,7 @@ const Testimonial = () => {
         <>
             <div class="container-fluid panel-header panel-header-sm">
             </div>
-            <div className='hhkk'>
+            <div className='maincard'>
                 <div className="col-md-12">
                     <div className="row card" style={{
                         marginLeft: "22%",

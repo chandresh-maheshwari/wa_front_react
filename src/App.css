@@ -271,9 +271,52 @@ body {
   list-style: none;
 }
 
+.nav-dropdown-items-navbar {
+  display: none;
+  list-style: none;
+}
+
+.nav-dropdown-items-home {
+  display: none;
+  list-style: none;
+}
+
+.nav-dropdown-items-producer {
+  display: none;
+  list-style: none;
+}
+
+.nav-dropdown-items-Quote {
+  display: none;
+  list-style: none;
+}
+
+.nav-dropdown-items-Waste {
+  display: none;
+  list-style: none;
+}
+
+.nav-dropdown-items-Improve {
+  display: none;
+  list-style: none;
+}
+
+.nav-dropdown-items-POST {
+  display: none;
+  list-style: none;
+}
+
+.nav-dropdown-items-Dynamic_POST {
+  display: none;
+  list-style: none;
+}
+#nav-dropdown-items-dynamic_page {
+  display: none;
+  list-style: none;
+}
+
 .nav-item:active .nav-dropdown-items {
   display: block;
-
 }
 
 .ps--active-x>.ps__rail-x,
@@ -891,15 +934,12 @@ a.text-warning:hover {
   justify-content: center;
 }
 
-/* Default styles for all screen sizes */
-/* You can add your global styles here */
 
-/* Media query for small screens (e.g., smartphones) */
 @media (max-width: 767px) {
 
-  /* Adjust the styles for small screens */
+
   .sidebar {
-    /* Example: Reduce sidebar width */
+
     width: 20px;
   }
 
@@ -908,41 +948,37 @@ a.text-warning:hover {
   }
 
   .navbar {
-    /* Example: Change navbar styles for small screens */
+
     background-color: #333;
   }
 
-  /* Add more styles as needed */
 }
 
 /* Media query for medium screens (e.g., tablets) */
 @media (min-width: 768px) and (max-width: 1023px) {
-
-  /* Adjust the styles for medium screens */
   .sidebar {
-    /* Example: Increase sidebar width */
     width: 250px;
   }
 
   .navbar {
-    /* Example: Change navbar styles for medium screens */
+
     background-color: #555;
   }
 
-  /* Add more styles as needed */
+
 }
 
-/* Media query for large screens (e.g., desktops) */
+
 @media (min-width: 1024px) {
 
-  /* Adjust the styles for large screens */
+
   .sidebar {
-    /* Example: Set sidebar width to the original size */
+
     width: 260px;
   }
 
   .navbar {
-    /* Example: Change navbar styles for large screens */
+
     background-color: #777;
   }
 

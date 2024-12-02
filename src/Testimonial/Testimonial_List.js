@@ -4,7 +4,7 @@
 // eslint-disable-next-line no-unused-vars
 import parse from 'html-react-parser';
 import React, { useState, useEffect } from 'react'
-import './Service.css';
+import '../Service/Service.css';
 import { BsTrash3 } from 'react-icons/bs';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
 import { BiEditAlt } from "react-icons/bi";
@@ -42,7 +42,7 @@ function Testimonial_List() {
 
             if (result.isConfirmed) {
                 const response = await fetch(
-                    `http://wafront.localhost.com/api/destroy/${id}`,
+                    `http://wa_front.localhost.com/api/destroy/${id}`,
                     {
                         method: "DELETE",
                         headers: {
@@ -114,18 +114,16 @@ function Testimonial_List() {
 
     const myFunction = async () => {
         try {
-            let result = await fetch("http://wafront.localhost.com/api/Testimoniallist");
+            let result = await fetch("http://wa_front.localhost.com/api/Testimoniallist");
             result = await result.json();
-            setdata(result)
-            setfilter(result)
-            // setLoading(false)
-        }
-        catch (error) {
-            // setError(e.message);
-            // setLoading(false);
+            console.log("API response:", result); // Log the response
+            setdata(result);
+            setfilter(result);
+        } catch (error) {
             console.error("error fetch data", error);
         }
     };
+    
     useEffect(() => {
         myFunction();
     }, [])
@@ -162,7 +160,7 @@ function Testimonial_List() {
 
             if (BulkDelete.isConfirmed) {
                 const res = await fetch(
-                    `http://wafront.localhost.com/api/delete-Testimonial/${selectedIds.join(",")}`,
+                    `http://wa_front.localhost.com/api/delete-Testimonial/${selectedIds.join(",")}`,
                     {
                         method: "POST",
                         headers: {
@@ -191,7 +189,7 @@ function Testimonial_List() {
         <>
             <div class="container-fluid panel-header panel-header-sm">
             </div>
-            <div className='hhkk '>
+            <div className='maincard '>
                 <div className="col-md-12">
                     <div className="row card" style={{
                         marginLeft: "22%",
@@ -253,4 +251,6 @@ function Testimonial_List() {
 }
 
 export default Testimonial_List
+
+
 

@@ -14,11 +14,6 @@
     border: 1px solid transparent;
     border-radius: 4px;
 }
-
-
-
-
-
 @media screen and (max-width: 991px){
 .navbar-toggler-bar.bar2 {
     width: 17px;
@@ -124,7 +119,7 @@
 
 
 
-.hhkk {
+.maincard {
     margin-top: 10px;
 }
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
-import './Addrvices.css';
+import '../Service/Addrvices';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
@@ -22,7 +22,7 @@ const Testimonialedit = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(
-                    `http://wafront.localhost.com/api/Testimonialedit/${id}`
+                    `http://wa_front.localhost.com/api/Testimonialedit/${id}`
                 );
 
                 if (response.data) {
@@ -66,7 +66,7 @@ const Testimonialedit = () => {
         console.log(testimonial, add_by, position);
 
         try {
-            const response = await axios.put(`http://wafront.localhost.com/api/testimonialupdate/${id}`, {
+            const response = await axios.put(`http://wa_front.localhost.com/api/testimonialupdate/${id}`, {
                 testimonial: testimonial,
                 add_by: add_by,
                 position: position,
@@ -97,7 +97,7 @@ const Testimonialedit = () => {
         <>
             <div class="container-fluid panel-header panel-header-sm">
             </div>
-            <div className='hhkk'>
+            <div className='maincard'>
                 <div className="col-md-12">
                     <div className="row card" style={{
                         marginLeft: "22%",

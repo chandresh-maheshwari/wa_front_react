@@ -1,26 +1,24 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable jsx-a11y/anchor-has-content */
-// import React from 'react'
+
 import React, { useState, useEffect } from 'react';
 import './Service.css';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { MdDensityMedium } from 'react-icons/md';
 import { FaLocationCrosshairs } from 'react-icons/fa6';
 import axios from 'axios';
-// import parse from 'html-react-parser';
+
 
 const Servicenave = () => {
     const [query, setQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
-    // const parse = require('html-react-parser').default;
+
 
     useEffect(() => {
         if (query.trim() !== '') {
             const fetchData = async () => {
                 try {
-                    const response = await axios.get(`http://wafront.localhost.com/api/search/${query}`);
+                    const response = await axios.get(`http://wa_front.localhost.com/api/search/${query}`);
                     console.log(response.data);
-           
+
                     setSearchResults(response.data);
                 } catch (error) {
                     console.error('Error fetching data:', error);
@@ -31,9 +29,10 @@ const Servicenave = () => {
             setSearchResults([]);
         }
     }, [query])
-    
+
     return (
         <div className="hadik" style={{ marginLeft: "19%" }}>
+
             <nav className="navbar navbar-expand-lg navacolor navbar-absolute" style={{ width: "81%" }}>
                 <div className="container-fluid">
                     <div className="navbar-wrapper">
@@ -79,7 +78,7 @@ const Servicenave = () => {
                         </ul>
                     </div>
                     <form>
-                        <div className="input-group no-border">
+                        <div className="input-group">
                             <input type="text"
                                 className="form-control"
                                 placeholder="Search..."
@@ -88,10 +87,11 @@ const Servicenave = () => {
                             />
 
                             <div className="input-group-append">
-                                <div className="input-group-text">
+                                <button className="input-group-text" style={{height: "90%"}}>
                                     <i className="now-ui-icons ui-1_zoom-bold"><AiOutlineSearch /></i>
-                                </div>
+                                </button>
                             </div>
+                       
                         </div>
                         <ul className='ulseachlist' >
 

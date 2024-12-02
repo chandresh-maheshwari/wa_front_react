@@ -1,48 +1,27 @@
-import React, { useEffect, useState } from "react";
-// import "./clientform.css";
-import axios from "axios";
-import './Service.css';
-import { useNavigate, useParams } from "react-router-dom";
-import './Addrvices.css';
+import React, { useState } from 'react';
+// import './Addrvices.css';
+// import '../App.css'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import axios from 'axios'
+import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 
 
-const EditServiceForm = (props) => {
+const Addrvices = () => {
+    const navigate = useNavigate();
     const [description, setdescription] = useState('');
     const [service_title, setservice_title] = useState('')
     const [errors, setErrors] = useState({});
 
-    const navigate = useNavigate();
-    const { id } = useParams();
+    const formData = new FormData();
+    formData.append("service_title", service_title);
+    formData.append("description", description);
 
-    // eslint-disable-next-line no-unused-vars
-    const data = {
-        textEditor: description,
-    };
+    const handleChange = (e, editor) => {
+        setdescription(editor.getData());
+    }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(
-                    `http://wafront.localhost.com/api/serviceedit/${id}`
-                );
-
-                if (response.data) {
-                    const { service_title, description } = response.data;
-                    setservice_title(service_title);
-                    setdescription(description);
-                    console.log(response.data);
-                }
-            }
-            catch (error) {
-                console.error("Error fetching client data:", error);
-            }
-        };
-
-        fetchData();
-    }, [id]);
 
     const handlesubmit = async (e) => {
         e.preventDefault();
@@ -53,63 +32,71 @@ const EditServiceForm = (props) => {
         }
 
         if (!description) {
-            newErrors.description = " description is required";
+            newErrors.description = " description Is required";
         }
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             return;
         }
+
         setErrors({});
-        console.log(service_title, description);
 
         try {
-            const response = await axios.put(`http://wafront.localhost.com/api/update/${id}`, {
-                service_title: service_title,
-                description: description,
-            }, {
+            // Assuming formData is defined somewhere in your code
+            const response = await axios.post('http://wa_front.localhost.com/api/Services', formData, {
                 headers: {
                     "Content-Type": "application/json",  // Fix typo in "Application/JSON"
                 },
+                data: {
+                    service_title: service_title,
+                    description: description,
+                },  
             });
-
             console.log(response);
             await Swal.fire({
                 icon: 'success',
                 title: 'Success',
-                text: 'Service edit Form Saved Successfully.',
+                text: 'Data stored successfully!',
             });
             navigate("/Servicelist");
         } catch (error) {
             console.error("Error In Storing Data", error);
-            Swal.fire("Error", "Error in storing data. Please try again.", "error");
+            // Show SweetAlert error message
+            await Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error in storing data. Please try again.',
+            });
         }
-    };
+    }
+
 
     const handleCancel = (e) => {
         navigate("/Servicelist");
     }
 
+
     return (
         <>
             <div class="container-fluid panel-header panel-header-sm">
             </div>
-            <div className='hhkk'>
+            <div className='maincard'>
                 <div className="col-md-12">
                     <div className="row card" style={{
                         marginLeft: "22%",
                         width: "75%"
                     }}>
-                        <div className="card-header" style={{ marginTop: "2%" }}>
-                            <h5 className="title">Edit Services form</h5>
+                        <div className="card-header" style={{ marginTop: "" }}>
+                            <h5 className="title">Add Services</h5>
                         </div>
                         <div className="card-body">
-
-                            <form onSubmit={handlesubmit}>
+                            {/* onSubmit={handlesubmit} */}
+                            <form action="#" encType="multipart/form-data" id="servicesForm">
                                 <div className="row">
                                     <div className="col-md-12 pr-1">
                                         <div className="form-group">
-                                            <label className="inputlabel" style={{ marginLeft: "-3%" }}>Service Title</label>
+                                            <label className='inputlabel' style={{ marginLeft: "-3%" }}>Service Title</label>
                                             <input
                                                 type="text"
                                                 onChange={(e) => setservice_title(e.target.value)}
@@ -117,7 +104,6 @@ const EditServiceForm = (props) => {
                                                 name="service_title"
                                                 id="service_title"
                                                 autoComplete="off"
-                                                value={service_title}
                                             />
                                             {errors.service_title && (
                                                 <p style={{ color: "red" }}>{errors.service_title}</p>
@@ -126,17 +112,10 @@ const EditServiceForm = (props) => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="inputlabel">Description</label>
+                                    <label className='inputlabel'>Description</label>
                                     <CKEditor
                                         editor={ClassicEditor}
-                                        data={description}
-                                        onReady={(editor) => {
-                                            // You can store the "editor" and use when it is needed.
-                                        }}
-                                        onChange={(event, editor) => {
-                                            const data = editor.getData();
-                                            setdescription((data));
-                                        }}
+                                        onChange={(e, editor) => { handleChange(e, editor) }}
                                     />
                                     {errors.description && (
                                         <p style={{ color: "red" }}>{errors.description}</p>
@@ -145,9 +124,7 @@ const EditServiceForm = (props) => {
                                 <div id="more_content"></div>
                                 <div className="row mt-4">
                                     <div className="col-11">
-                                        <button
-                                            // onClick={handlesubmit} 
-                                            className="btn btn-success"  >Submit</button>
+                                        <button onClick={handlesubmit} className="btn btn-success"  >Submit</button>
                                         <button onClick={handleCancel} type="button" className="btn btn-outline-success m-2">Cancel</button>
                                     </div>
                                 </div>
@@ -158,7 +135,9 @@ const EditServiceForm = (props) => {
             </div>
         </>
     );
-};
+}
 
-export default EditServiceForm;
+export default Addrvices;
+
+
 
