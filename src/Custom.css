@@ -100,3 +100,15 @@
  .color-code .MuiInputBase-root .MuiOutlinedInput-notchedOutline{
   border-style: none !important;
  }
+
+.MuiDataGrid-cell--withRenderer{
+    display: none;   
+      max-height: "168px !important"
+}
+
+.MuiDataGrid-cell{
+    /* display: none !important; */
+
+    line-height: normal;
+    white-space: normal;
+    }
