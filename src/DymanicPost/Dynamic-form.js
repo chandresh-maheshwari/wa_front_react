@@ -261,16 +261,18 @@ const DynamicForm = () => {
                                         </Button>
                                     </Grid>
                                     <Grid item>
-                                        <Button style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}>
-                                            Cancel
-                                        </Button>
-                                    </Grid>
+                                        <Button style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
+                                            onClick={() => (navigate('/dynamic-list-data'))}
+                                         >
+                                        Cancel
+                                    </Button>
                                 </Grid>
-                            </form>
-                        </Container>
-                    </div>
+                            </Grid>
+                        </form>
+                    </Container>
                 </div>
             </div>
+        </div >
         </>
     );
 };

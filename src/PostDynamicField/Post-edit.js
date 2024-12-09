@@ -109,6 +109,8 @@ const PostDynamicEdit = () => {
 
 
     const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
+        console.log(option)
+
         let value = event.target.value;
 
         if (fieldType === 'file') {
@@ -120,26 +122,21 @@ const PostDynamicEdit = () => {
         }
 
         if (fieldType === 'checkbox') {
-
             const currentValues = Array.isArray(formData[fieldLabel]) ? formData[fieldLabel] : [];
-            // const currentValues = formData[fieldLabel] || [];/
-            console.log("Current Values Before Change:", currentValues);
-
+            // const currentValues = formData[fieldLabel] || [];
             if (currentValues.includes(option)) {
 
-                const updatedValues = currentValues.filter(item => item !== option);
-                console.log("Updated Values After Removal:", updatedValues);
+                console.log(currentValues.includes(option))
+
                 setFormData({
                     ...formData,
-                    [fieldLabel]: updatedValues,
+                    [fieldLabel]: currentValues.filter(item => item !== option),
                 });
             } else {
 
-                const updatedValues = [...currentValues, option];
-                console.log("Updated Values After Addition:", updatedValues);
                 setFormData({
                     ...formData,
-                    [fieldLabel]: updatedValues,
+                    [fieldLabel]: [...currentValues, option],
                 });
             }
             return;

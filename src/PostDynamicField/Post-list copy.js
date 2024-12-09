@@ -10,8 +10,12 @@ import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
 import { useLocation } from 'react-router-dom';
 import ls from 'local-storage';
+import "../Custom.css";
 // import jQuery from 'jquery';s
+import './common.css'
 import $ from 'jquery';
+
+
 const PostDynamicList = () => {
     const [rows, setRows] = useState([]);
     const [filteredRows, setFilteredRows] = useState([]);
@@ -26,28 +30,31 @@ const PostDynamicList = () => {
     const [columns, setColumns] = useState([]);
     const [expandedEmails, setExpandedEmails] = useState({});
     const [abc, setAbc] = useState();
+
     useEffect(() => {
-        fetchData();
+        setTimeout(() => {
+            fetchData();
+        }, 100);
     }, [post_title]);
-    console.log(post_title)
+    // console.log(post_title)s
 
     const fetchData = async () => {
         try {
             const response = await Authapi.postdynamicListData(post_title);
             // console.log(post_title)
-            // console.log("sddf", response)
+            console.log("sddf", response)
 
             if (response.status === true) {
                 const formattedRows = response.results.map((item, index) => ({
                     id: item.id,
                     status: item.status,
-                    sr_no: index + 1,
+                    sr_No: index + 1,
                     ...item.data,
                 }));
                 const sortedData = formattedRows.sort((a, b) => b.id - a.id);
                 const dataWithSrNo = sortedData.map((item, index) => ({
                     ...item,
-                    sr_no: index + 1,
+                    sr_No: index + 1,
                 }));
 
 
@@ -55,29 +62,104 @@ const PostDynamicList = () => {
 
                 if (formattedRows.length > 0) {
                     const dynamicColumns = Object.keys(formattedRows[0]).map(key => {
-                        if (key === 'id') return null;
+                        if (key === 'id' || key === 'status') return null;
                         return {
                             field: key,
                             headerName: key.charAt(0).toUpperCase() + key.slice(1),
-                            width: 200,
+                            width: 100,
+                            cellClassName: 'wrap-text',
+                            // renderCell: (params) => {
+                            //     const value = params.row[key];
+                            //     const isExpanded = expandedEmails[params.row.id];
+                            //     const displayValue = typeof value === 'string' ? value : String(value);
+                            //     const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
+
+                            //     const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
+                            //     return (
+                            //         <div style={{}}>
+                            //             {isImage ? (
+                            //                 <img src={value} alt={displayValue} style={{ width: '50px', height: '50px' }} />
+                            //             ) : (
+                            //                 <span className={`email-display-${safeValue}`}>
+                            //                     {isExpanded ? displayValue : `${displayValue.substring(0, 10)}`}
+                            //                 </span>
+                            //             )}
+                            //             {!isImage && displayValue.length > 10 && (
+                            //                 // <Link
+                            //                 //     onClick={() => {
+                            //                 //         toggleEmailExpand(safeValue);
+                            //                 //         if (ls("readmore") === "karmur") {
+                            //                 //             ls(`readmore`, "hardik");
+                            //                 //             ls(`data`, safeValue);
+                            //                 //             $(`.email-display-${safeValue}`).text(`${displayValue.substring(0, 10)}`);
+                            //                 //         } else {
+                            //                 //             ls(`readmore`, "karmur");
+                            //                 //             ls(`data`, "");
+                            //                 //             $(`.email-display-${safeValue}`).text(displayValue);
+                            //                 //         }
+                            //                 //     }}
+                            //                 //     style={{ marginLeft: '5px' }}
+                            //                 // >
+                            //                 //     {ls("readmore") === "hardik" && ls("data") === safeValue ? 'Read More' : 'Read Less'}
+                            //                 // </Link>
+                            //                 <Link
+                            //                     onClick={(e) => {
+                            //                         e.preventDefault();  // Prevent the page reload
+                            //                         toggleEmailExpand(safeValue);
+                            //                         if (ls("readmore") === "karmur") {
+                            //                             ls(`readmore`, "hardik");
+                            //                             ls(`data`, safeValue);
+                            //                             $(`.email-display-${safeValue}`).text(`${displayValue.substring(0, 10)}`);
+                            //                         } else {
+                            //                             ls(`readmore`, "karmur");
+                            //                             ls(`data`, "");
+                            //                             $(`.email-display-${safeValue}`).text(displayValue);
+                            //                         }
+                            //                     }}
+                            //                     style={{ marginLeft: '5px' }}
+                            //                 >
+                            //                     {ls("readmore") === "hardik" && ls("data") === safeValue ? 'Read More' : 'Read Less'}
+                            //                 </Link>
+
+                            //             )}
+                            //             {/* {isValidColor(value) && (
+                            //                 <div style={{
+                            //                     display: 'inline-block',
+                            //                     width: '20px',
+                            //                     height: '20px',
+                            //                     backgroundColor: value,
+                            //                     border: '1px solid #000',
+                            //                     marginLeft: '5px'
+                            //                 }} />
+                            //             )} */}
+                            //         </div>
+                            //     );
+                            // }
                             renderCell: (params) => {
                                 const value = params.row[key];
                                 const isExpanded = expandedEmails[params.row.id];
-                                const displayValue = typeof value === 'string' ? value : String(value);
+                                const displayValue = typeof value === 'string' ? value : (value !== undefined && value !== null ? String(value) : "-");
                                 const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
+
+                                const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
                                 return (
-                                    <div style={{ whiteSpace: 'normal', wordWrap: 'break-word', maxWidth: "fit-content" }}>
-                                        <span className={`email-display-${safeValue}`}>
-                                            {isExpanded ? displayValue : `${displayValue.substring(0, 5)}`}
-                                        </span>
-                                        {displayValue.length > 5 && (
+                                    <div style={{ whiteSpace: 'normal', }}>
+                                        {isImage ? (
+                                            <img src={value} alt={displayValue} style={{ width: '50px', height: '50px' }} />
+                                        ) : (
+                                            <span className={`email-display-${safeValue}`}>
+                                                {isExpanded ? displayValue : `${displayValue.substring(0, 10)}`}
+                                            </span>
+                                        )}
+                                        {/* {!isImage && displayValue.length > 10 && (
                                             <Link
-                                                onClick={() => {
+                                                onClick={(e) => {
+                                                    e.preventDefault();
                                                     toggleEmailExpand(safeValue);
                                                     if (ls("readmore") === "karmur") {
                                                         ls(`readmore`, "hardik");
                                                         ls(`data`, safeValue);
-                                                        $(`.email-display-${safeValue}`).text(`${displayValue.substring(0, 5)}`);
+                                                        $(`.email-display-${safeValue}`).text(`${displayValue.substring(0, 10)}`);
                                                     } else {
                                                         ls(`readmore`, "karmur");
                                                         ls(`data`, "");
@@ -88,18 +170,24 @@ const PostDynamicList = () => {
                                             >
                                                 {ls("readmore") === "hardik" && ls("data") === safeValue ? 'Read More' : 'Read Less'}
                                             </Link>
-                                        )}
+                                        )} */}
+
                                     </div>
                                 );
                             }
+
                         };
+
+
+
                     }).filter(Boolean);
 
                     dynamicColumns.push({
                         field: 'actions',
                         headerName: 'Actions',
-                        width: 190,
-
+                        width: 100,
+                        cellClassName: 'wrap-text',
+                        flex: 1,
                         renderCell: (params) => (
                             <strong onClick={(e) => e.stopPropagation()}>
                                 <Link
@@ -204,9 +292,12 @@ const PostDynamicList = () => {
         setSearchQuery(query);
 
         if (query) {
-            const filtered = rows.filter((row) =>
-                row.post_title.toLowerCase().includes(query.toLowerCase())
-            );
+            const filtered = rows.filter((row) => {
+
+                return Object.values(row).some((value) =>
+                    String(value).toLowerCase().includes(query.toLowerCase())
+                );
+            });
             setFilteredRows(filtered);
         } else {
             setFilteredRows(rows);
@@ -220,6 +311,13 @@ const PostDynamicList = () => {
 
     const handleSelectionChange = (newSelection) => {
         setSelectedRows(newSelection);
+    };
+
+
+    const isValidColor = (color) => {
+        const s = new Option().style;
+        s.color = color;
+        return s.color !== '';
     };
 
     return (
@@ -257,13 +355,13 @@ const PostDynamicList = () => {
                                         checkboxSelection
                                         loading={loading}
                                         autoHeight={false}
-                                        onPageChange={(newPage) => setPage(newPage)}
-                                        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                                         sx={{
                                             height: '100%',
+                                            overflow: 'hidden',
                                             '& .MuiDataGrid-columnHeaders': {
                                                 backgroundColor: '#2c9dd4',
                                                 color: 'white',
+                                                // wordWrap: 'break-word'
                                             },
                                         }}
                                         selectionModel={selectedRows}
@@ -286,3 +384,4 @@ const PostDynamicList = () => {
 };
 
 export default PostDynamicList;
+

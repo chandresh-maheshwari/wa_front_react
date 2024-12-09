@@ -126,7 +126,7 @@ const DynamicList = () => {
 
     const paginationModel = { page: 0, pageSize: 5 };
     const columns = [
-        { field: 'sr_no', headerName: 'S.No', width: 90, flex: 1 },
+        { field: 'sr_no', headerName: 'Sr.No', width: 90, flex: 1 },
         { field: 'post_title', headerName: 'Title', width: 150, flex: 1 },
         { field: 'post_type', headerName: 'Post Type', width: 150, flex: 1 },
         { field: 'ordering', headerName: 'Ordering', width: 150, flex: 1 },

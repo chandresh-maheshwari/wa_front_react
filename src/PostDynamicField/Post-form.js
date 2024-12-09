@@ -196,7 +196,9 @@ const PostFormDynamic = () => {
                                                             label={option}
                                                         />
                                                     ))}
+                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                 </div>
+
                                             ) : field.type === 'radio' ? (
                                                 <div>
                                                     <Typography variant="body1">{field.label}</Typography>
@@ -212,6 +214,7 @@ const PostFormDynamic = () => {
                                                             />
                                                         ))}
                                                     </RadioGroup>
+                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                 </div>
                                             ) : (field.type === 'color') ? (
                                                 <div style={{ display: 'flex', alignItems: 'center' }}>

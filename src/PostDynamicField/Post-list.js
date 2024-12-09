@@ -68,73 +68,7 @@ const PostDynamicList = () => {
                             headerName: key.charAt(0).toUpperCase() + key.slice(1),
                             width: 100,
                             cellClassName: 'wrap-text',
-                            // renderCell: (params) => {
-                            //     const value = params.row[key];
-                            //     const isExpanded = expandedEmails[params.row.id];
-                            //     const displayValue = typeof value === 'string' ? value : String(value);
-                            //     const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
 
-                            //     const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
-                            //     return (
-                            //         <div style={{}}>
-                            //             {isImage ? (
-                            //                 <img src={value} alt={displayValue} style={{ width: '50px', height: '50px' }} />
-                            //             ) : (
-                            //                 <span className={`email-display-${safeValue}`}>
-                            //                     {isExpanded ? displayValue : `${displayValue.substring(0, 10)}`}
-                            //                 </span>
-                            //             )}
-                            //             {!isImage && displayValue.length > 10 && (
-                            //                 // <Link
-                            //                 //     onClick={() => {
-                            //                 //         toggleEmailExpand(safeValue);
-                            //                 //         if (ls("readmore") === "karmur") {
-                            //                 //             ls(`readmore`, "hardik");
-                            //                 //             ls(`data`, safeValue);
-                            //                 //             $(`.email-display-${safeValue}`).text(`${displayValue.substring(0, 10)}`);
-                            //                 //         } else {
-                            //                 //             ls(`readmore`, "karmur");
-                            //                 //             ls(`data`, "");
-                            //                 //             $(`.email-display-${safeValue}`).text(displayValue);
-                            //                 //         }
-                            //                 //     }}
-                            //                 //     style={{ marginLeft: '5px' }}
-                            //                 // >
-                            //                 //     {ls("readmore") === "hardik" && ls("data") === safeValue ? 'Read More' : 'Read Less'}
-                            //                 // </Link>
-                            //                 <Link
-                            //                     onClick={(e) => {
-                            //                         e.preventDefault();  // Prevent the page reload
-                            //                         toggleEmailExpand(safeValue);
-                            //                         if (ls("readmore") === "karmur") {
-                            //                             ls(`readmore`, "hardik");
-                            //                             ls(`data`, safeValue);
-                            //                             $(`.email-display-${safeValue}`).text(`${displayValue.substring(0, 10)}`);
-                            //                         } else {
-                            //                             ls(`readmore`, "karmur");
-                            //                             ls(`data`, "");
-                            //                             $(`.email-display-${safeValue}`).text(displayValue);
-                            //                         }
-                            //                     }}
-                            //                     style={{ marginLeft: '5px' }}
-                            //                 >
-                            //                     {ls("readmore") === "hardik" && ls("data") === safeValue ? 'Read More' : 'Read Less'}
-                            //                 </Link>
-
-                            //             )}
-                            //             {/* {isValidColor(value) && (
-                            //                 <div style={{
-                            //                     display: 'inline-block',
-                            //                     width: '20px',
-                            //                     height: '20px',
-                            //                     backgroundColor: value,
-                            //                     border: '1px solid #000',
-                            //                     marginLeft: '5px'
-                            //                 }} />
-                            //             )} */}
-                            //         </div>
-                            //     );
-                            // }
                             renderCell: (params) => {
                                 const value = params.row[key];
                                 const isExpanded = expandedEmails[params.row.id];
@@ -150,26 +84,6 @@ const PostDynamicList = () => {
                                             <span className={`email-display-${safeValue}`}>
                                                 {isExpanded ? displayValue : `${displayValue.substring(0, 10)}`}
                                             </span>
-                                        )}
-                                        {!isImage && displayValue.length > 10 && (
-                                            <Link
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    toggleEmailExpand(safeValue);
-                                                    if (ls("readmore") === "karmur") {
-                                                        ls(`readmore`, "hardik");
-                                                        ls(`data`, safeValue);
-                                                        $(`.email-display-${safeValue}`).text(`${displayValue.substring(0, 10)}`);
-                                                    } else {
-                                                        ls(`readmore`, "karmur");
-                                                        ls(`data`, "");
-                                                        $(`.email-display-${safeValue}`).text(displayValue);
-                                                    }
-                                                }}
-                                                style={{ marginLeft: '5px' }}
-                                            >
-                                                {ls("readmore") === "hardik" && ls("data") === safeValue ? 'Read More' : 'Read Less'}
-                                            </Link>
                                         )}
 
                                     </div>
