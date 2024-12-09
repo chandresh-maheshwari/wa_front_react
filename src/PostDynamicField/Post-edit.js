@@ -28,7 +28,7 @@ const PostDynamicEdit = () => {
     const fetchData = async () => {
         try {
             const response = await Authapi.dynamifieldfetchdata(post_title);
-            console.log("Fetched Fields:", response.data);
+            // console.log("Fetched Fields:", response.data);
             setFields(response.data?.post_description || []);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -45,14 +45,14 @@ const PostDynamicEdit = () => {
     //     }
     // }
     const fetchEditData = async (id) => {
-        console.log("Fetching edit data for ID:", id);
+        // console.log("Fetching edit data for ID:", id);
         try {
             const response = await Authapi.postdynamicEditData(id);
             setTimeout(() => {
                 setFormData(response.data || {});
             }, 500);
-            console.log("Fetched Edit Data:", response.data);
-            console.log("Fetched Edit Data:", formData);
+            // console.log("Fetched Edit Data:", response.data);
+            // console.log("Fetched Edit Data:", formData);
 
         } catch (error) {
             console.error('Error fetching edit data:', error);
@@ -81,6 +81,33 @@ const PostDynamicEdit = () => {
         }
     }, [fields]);
 
+    // const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
+    //     let value = event.target.value;
+
+    //     if (fieldType === 'file') {
+    //         value = event.target.files[0];
+    //     }
+
+    //     if (fieldType === 'dropdown') {
+    //         value = event.target.value.toLowerCase();
+    //     }
+
+    //     if (fieldType === 'checkbox') {
+    //         const currentValues = formData[fieldLabel] || [];
+    //         if (currentValues.includes(option)) {
+    //             value = currentValues.filter(item => item !== option);
+    //         } else {
+    //             value = [...currentValues, option];
+    //         }
+    //     }
+
+    //     setFormData(prevData => ({
+    //         ...prevData,
+    //         [fieldLabel]: value,
+    //     }));
+    // };
+
+
     const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
         let value = event.target.value;
 
@@ -89,34 +116,57 @@ const PostDynamicEdit = () => {
         }
 
         if (fieldType === 'dropdown') {
-            value = event.target.value.toLowerCase();
+            value = value.toLowerCase();
         }
 
         if (fieldType === 'checkbox') {
-            const currentValues = formData[fieldLabel] || [];
+
+            const currentValues = Array.isArray(formData[fieldLabel]) ? formData[fieldLabel] : [];
+            // const currentValues = formData[fieldLabel] || [];/
+            console.log("Current Values Before Change:", currentValues);
+
             if (currentValues.includes(option)) {
-                value = currentValues.filter(item => item !== option);
+
+                const updatedValues = currentValues.filter(item => item !== option);
+                console.log("Updated Values After Removal:", updatedValues);
+                setFormData({
+                    ...formData,
+                    [fieldLabel]: updatedValues,
+                });
             } else {
-                value = [...currentValues, option];
+
+                const updatedValues = [...currentValues, option];
+                console.log("Updated Values After Addition:", updatedValues);
+                setFormData({
+                    ...formData,
+                    [fieldLabel]: updatedValues,
+                });
             }
+            return;
         }
 
-        setFormData(prevData => ({
-            ...prevData,
+        setFormData({
+            ...formData,
             [fieldLabel]: value,
-        }));
+        });
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const submitFormData = {
-            ...formData
-        }
+        const submitFormData = new FormData();
 
+        Object.keys(formData).forEach(key => {
+            submitFormData.append(key, formData[key]);
+        });
+        // const submitFormData = {
+        //     ...formData
+        // }
+        console.log(submitFormData)
         try {
             const response = await Authapi.postdynamicupdatedata(id, submitFormData);
-            // console.log(response);
+            console.log(response);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 setFormData({});
@@ -144,11 +194,13 @@ const PostDynamicEdit = () => {
                                     {fields.map((field, index) => (
                                         <Grid item xs={12} sm={field.column || 6} key={index}>
                                             {field.type === 'dropdown' ? (
-                                                <FormControl fullWidth margin="normal">
+                                                <FormControl fullWidth margin="normal" >
                                                     <InputLabel>{field.label}</InputLabel>
                                                     <Select
                                                         value={formData[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type)}
+                                                        variant="outlined"
+
                                                     >
                                                         {field.options && field.options.map((option, idx) => (
                                                             <MenuItem key={idx} value={option.trim()}>
@@ -201,6 +253,18 @@ const PostDynamicEdit = () => {
                                                     variant="outlined"
                                                     margin="normal"
                                                 />
+                                            ) : field.type === 'date' ? (
+                                                <TextField
+                                                    label={field.label}
+                                                    type='date'
+                                                    value={formData[field.label] || ''}
+                                                    onChange={handleInputChange(field.label, field.type)}
+                                                    fullWidth
+                                                    InputLabelProps={{ shrink: true }}
+                                                    variant="outlined"
+                                                    margin="normal"
+
+                                                />
                                             ) : field.type === 'file' ? (
                                                 // <div>
                                                 //     <TextField
@@ -237,17 +301,17 @@ const PostDynamicEdit = () => {
                                                         className='mt-5'
                                                         InputLabelProps={{ shrink: true }}
                                                     />
-                                                    {formData[field.label]?.image instanceof File ? ( // Check if the image is a File object
+                                                    {formData[field.label] instanceof File ? (
                                                         <img
-                                                            src={URL.createObjectURL(formData[field.label].image)} // Use the image object for preview
+                                                            src={URL.createObjectURL(formData[field.label])}
                                                             alt="Preview"
                                                             width="100"
                                                         />
-                                                    ) : typeof formData[field.label]?.image === 'string' ? ( // Check if the image is a string (URL)
+                                                    ) : formData[field.label] ? (
                                                         <>
-                                                            <p>Current image: {formData[field.label].image.split('/').pop()} </p>
+                                                            <p>Current image: {formData[field.label].split('/').pop()} </p>
                                                             <img
-                                                                src={formData[field.label].image}
+                                                                src={formData[field.label]}
                                                                 alt="Current Image"
                                                                 width="100"
                                                             />
@@ -258,7 +322,7 @@ const PostDynamicEdit = () => {
                                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                                     <TextField
                                                         label={field.label}
-                                                        type="text" // Keep as text to show hex value
+                                                        type="text"
                                                         value={formData[field.label] || '#000000'}
                                                         onChange={handleInputChange(field.label, field.type)}
                                                         margin="normal"
@@ -279,7 +343,7 @@ const PostDynamicEdit = () => {
                                                 </div>
                                             ) : (
                                                 <>
-                                                    {console.log(formData[field.label]) || ''}
+
                                                     <TextField
                                                         fullWidth
                                                         label={field.label}
@@ -288,7 +352,7 @@ const PostDynamicEdit = () => {
                                                         value={formData[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type)}
                                                         margin="normal"
-                                                    // InputLabelProps={{ shrink: true }}
+
                                                     />
                                                 </>
                                             )}

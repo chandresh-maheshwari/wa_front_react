@@ -39,7 +39,23 @@ const PostFormDynamic = () => {
         }
     }, [fields]);
 
-    const handleInputChange = (fieldLabel, fieldType) => (event) => {
+    // const handleInputChange = (fieldLabel, fieldType) => (event) => {
+    //     let value = event.target.value;
+
+    //     if (fieldType === 'file') {
+    //         value = event.target.files[0];
+    //     }
+
+    //     if (fieldType === 'dropdown') {
+    //         value = value.toLowerCase();
+    //     }
+
+    //     setFormData({
+    //         ...formData,
+    //         [fieldLabel]: value,
+    //     });
+    // };
+    const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
         let value = event.target.value;
 
         if (fieldType === 'file') {
@@ -48,6 +64,24 @@ const PostFormDynamic = () => {
 
         if (fieldType === 'dropdown') {
             value = value.toLowerCase();
+        }
+
+        if (fieldType === 'checkbox') {
+            const currentValues = formData[fieldLabel] || [];
+            if (currentValues.includes(option)) {
+
+                setFormData({
+                    ...formData,
+                    [fieldLabel]: currentValues.filter(item => item !== option),
+                });
+            } else {
+
+                setFormData({
+                    ...formData,
+                    [fieldLabel]: [...currentValues, option],
+                });
+            }
+            return;
         }
 
         setFormData({
@@ -183,7 +217,7 @@ const PostFormDynamic = () => {
                                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                                     <TextField
                                                         label={field.label}
-                                                        type="text" // Keep as text to show hex value
+                                                        type="text"
                                                         value={formData[field.label] || '#000000'}
                                                         onChange={handleInputChange(field.label, field.type)}
                                                         margin="normal"
@@ -200,6 +234,7 @@ const PostFormDynamic = () => {
                                                         style={{
                                                             width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px"
                                                         }}
+                                                        className='color-code'
                                                     />
                                                 </div>
                                             ) : field.type === 'file' ? (
@@ -223,6 +258,19 @@ const PostFormDynamic = () => {
                                                     multiline
                                                     rows={4}
                                                     fullWidth
+                                                    variant="outlined"
+                                                    margin="normal"
+                                                    error={!!errors[field.label]}
+                                                    helperText={errors[field.label] || ''}
+                                                />
+                                            ) : field.type === 'date' ? (
+                                                <TextField
+                                                    label={field.label}
+                                                    type='date'
+                                                    value={formData[field.label] || ''}
+                                                    onChange={handleInputChange(field.label, field.type)}
+                                                    fullWidth
+                                                    InputLabelProps={{ shrink: true }}
                                                     variant="outlined"
                                                     margin="normal"
                                                     error={!!errors[field.label]}

@@ -117,6 +117,7 @@ const DynamicList = () => {
             } else {
                 throw new Error('Failed to update status');
             }
+            fetchData()
         } catch (error) {
             console.error('Error:', error);
             Swal.fire('Error', 'Failed to update status', 'error');
@@ -154,7 +155,7 @@ const DynamicList = () => {
                     </button>
                     <Switch
                         key={params.row.id}
-                        checked={activeStates[params.row.status]}
+                        checked={params.row.status}
                         size="xs"
                         onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 1 : 0)}
                     />

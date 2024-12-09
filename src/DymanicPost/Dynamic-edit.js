@@ -156,7 +156,7 @@ const DynamicEditForm = ({ existingData }) => {
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Post Title"
-                                            name="post_title" // Changed from "title" to "post_title"
+                                            name="post_title"
                                             fullWidth
                                             value={formData.post_title}
                                             onChange={handleTitleChange}
@@ -186,7 +186,7 @@ const DynamicEditForm = ({ existingData }) => {
                                             <InputLabel>Post Type</InputLabel>
                                             <Select
                                                 label="Post Type"
-                                                name="post-type"
+                                                name="post_type"
                                                 value={formData.post_type}
                                                 onChange={handleTitleChange}
                                                 fullWidth
@@ -240,7 +240,7 @@ const DynamicEditForm = ({ existingData }) => {
                                                         <MenuItem value="textarea">Textarea</MenuItem>
                                                         <MenuItem value="number">Number</MenuItem>
                                                         <MenuItem value="checkbox">Checkbox</MenuItem>
-                                                        <MenuItem value="redio">Redio</MenuItem>
+                                                        <MenuItem value="radio">Radio</MenuItem>
                                                         <MenuItem value="date">Date</MenuItem>
                                                         <MenuItem value="button">Button</MenuItem>
                                                         <MenuItem value="email">Email</MenuItem>
@@ -278,7 +278,7 @@ const DynamicEditForm = ({ existingData }) => {
                                             <Grid item xs={12} sm={4}>
                                                 <TextField
                                                     label={`${field.type.charAt(0).toUpperCase() + field.type.slice(1)} Options (comma-separated)`}
-                                                    value={field.options.join(', ')}
+                                                    value={field.options.join(',')}
                                                     onChange={(e) => handleOptionChange(e, field.id)}
                                                     fullWidth
                                                     style={{

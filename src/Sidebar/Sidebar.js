@@ -114,9 +114,9 @@ const Sidebar = () => {
   };
   const toggleDropdown1 = (postId) => {
     if (openPostId === postId) {
-      setOpenPostId(null); // Close the post if it's already open
+      setOpenPostId(null);
     } else {
-      setOpenPostId(postId); // Open the clicked post's dropdown
+      setOpenPostId(postId);
     }
   };
 
@@ -405,6 +405,7 @@ const Sidebar = () => {
                   >
                     <span>{post.post_title}</span>
                     {openPostId === post.id ? (
+
                       <IoIosArrowDown className="Arrow-icon-Sidebar" />
                     ) : (
                       <IoIosArrowUp className="Arrow-icon-Sidebar" />

@@ -198,26 +198,6 @@ const DynamicForm = () => {
                                             </Grid>
 
 
-
-
-
-                                            {/* Handle Dropdown, Checkbox, Radio options */}
-                                            {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
-                                                <Grid item xs={12} sm={4}>
-                                                    <TextField
-                                                        label={`${field.type.charAt(0).toUpperCase() + field.type.slice(1)} Options (comma-separated)`}
-                                                        value={field.options.join(', ')}
-                                                        onChange={(e) => handleOptionChange(e, field.id)}
-                                                        fullWidth
-                                                        style={{
-                                                            marginBottom: '15px',
-                                                            backgroundColor: '#f4f6f8',
-                                                            borderRadius: '5px'
-                                                        }}
-                                                    />
-                                                </Grid>
-                                            )}
-
                                             <Grid item xs={12} sm={4}>
                                                 <Button
                                                     variant="contained"
@@ -236,6 +216,26 @@ const DynamicForm = () => {
                                                 </Button>
                                             </Grid>
                                         </Grid>
+
+
+                                        {/* Handle Dropdown, Checkbox, Radio options */}
+                                        {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
+                                            <Grid item xs={12} sm={4}>
+                                                <TextField
+                                                    label={`${field.type.charAt(0).toUpperCase() + field.type.slice(1)} Options (comma-separated)`}
+                                                    value={field.options.join(',')}
+                                                    onChange={(e) => handleOptionChange(e, field.id)}
+                                                    fullWidth
+                                                    style={{
+                                                        marginBottom: '15px',
+                                                        backgroundColor: '#f4f6f8',
+                                                        borderRadius: '5px'
+                                                    }}
+                                                />
+                                            </Grid>
+                                        )}
+
+
                                     </div>
                                 ))}
 

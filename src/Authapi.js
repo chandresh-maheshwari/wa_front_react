@@ -1432,28 +1432,17 @@ export default new (class AuthApi {
   }
 
 
-
-
-
   async postdynamicupdatedata(id, formData) {
 
-    const PostData = {
-      "data": formData
-
-    }
-    // console.log(PostData);
-    //  console.log(PostData);
-    //  return false;
     try {
       const url = `${Config.apiurl}${Config.apis.postDynamicUpdate}${id}`;
-      console.log(url)
+      console.log(url);
       const token = ls('Token');
       this.setHeaders("post");
-      const response = await axios.post(url, PostData, {
+      const response = await axios.post(url, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          // 'Content-Type': formData instanceof FormData ? 'multipart/form-data' : 'application/json',
+          'Content-Type': formData instanceof FormData ? 'multipart/form-data' : 'application/json',
         },
       });
       return response.data;
@@ -1461,7 +1450,37 @@ export default new (class AuthApi {
       console.error("API Error:", error);
       throw error;
     }
+
   }
+
+
+  // async postdynamicupdatedata(id, formData) {
+
+  //   // const PostData = {
+  //   //   "data": formData
+
+  //   // }
+  //   // console.log(PostData);
+  //   //  console.log(PostData);
+  //   //  return false;
+  //   try {
+  //     const url = `${Config.apiurl}${Config.apis.postDynamicUpdate}${id}`;
+  //     console.log(url)
+  //     const token = ls('Token');
+  //     this.setHeaders("post");
+  //     const response = await axios.post(url, formData, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         'Content-Type': 'application/json',
+  //         // 'Content-Type': formData instanceof FormData ? 'multipart/form-data' : 'application/json',
+  //       },
+  //     });
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error("API Error:", error);
+  //     throw error;
+  //   }
+  // }
 
 
   // async postdynamicupdatedata(id, formData) {

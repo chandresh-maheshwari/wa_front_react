@@ -171,6 +171,7 @@ const PostDynamicList = () => {
                                                 {ls("readmore") === "hardik" && ls("data") === safeValue ? 'Read More' : 'Read Less'}
                                             </Link>
                                         )}
+
                                     </div>
                                 );
                             }
@@ -184,7 +185,7 @@ const PostDynamicList = () => {
                     dynamicColumns.push({
                         field: 'actions',
                         headerName: 'Actions',
-                        width: 190,
+                        width: 100,
                         cellClassName: 'wrap-text',
                         flex: 1,
                         renderCell: (params) => (
@@ -353,7 +354,7 @@ const PostDynamicList = () => {
                                         pageSizeOptions={[5, 10, 20]}
                                         checkboxSelection
                                         loading={loading}
-                                        autoHeight={true}
+                                        autoHeight={false}
                                         sx={{
                                             height: '100%',
                                             overflow: 'hidden',
