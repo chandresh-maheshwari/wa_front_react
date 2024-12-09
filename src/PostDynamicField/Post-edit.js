@@ -39,9 +39,10 @@ const PostDynamicEdit = () => {
 
 
     const fetchEditData = async (id) => {
+        console.log("Fetching edit data for ID:", id);
         try {
             const response = await Authapi.postdynamicEditData(id);
-            // console.log("Fetched Edit Data:", response.data);
+            console.log("Fetched Edit Data:", response.data);
             setFormData(response.data || {});
         } catch (error) {
             console.error('Error fetching edit data:', error);
@@ -100,11 +101,16 @@ const PostDynamicEdit = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const submitFormData = new FormData();
 
-        Object.keys(formData).forEach(key => {
-            submitFormData.append(key, formData[key]);
-        });
+        // Prepare the payload as a FormData object
+        const submitFormData = new FormData();
+        for (const key in formData) {
+            if (formData[key]?.image) {
+                submitFormData.append(key, formData[key].image); // Append the image file
+            } else {
+                submitFormData.append(key, formData[key]); // Append other fields
+            }
+        }
 
         try {
             const response = await Authapi.postdynamicupdatedata(post_title, submitFormData);
@@ -114,7 +120,6 @@ const PostDynamicEdit = () => {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 setFormData({});
                 navigate('/post-list', { state: { post_title } });
-
             }
         } catch (error) {
             Swal.fire('Error', 'There was an issue with your submission.', 'error');

@@ -1421,10 +1421,10 @@ export default new (class AuthApi {
 
 
 
-  async postdynamicupdatedata(post_title, formData) {
+  async postdynamicupdatedata(id, formData) {
 
     try {
-      const url = `${Config.apiurl}${Config.apis.postDynamicUpdate}${post_title}`;
+      const url = `${Config.apiurl}${Config.apis.postDynamicUpdate}${id}`;
       console.log(url)
       const token = ls('Token');
       this.setHeaders("post");

@@ -12,6 +12,7 @@ import { useLocation } from 'react-router-dom';
 import ls from 'local-storage';
 import "../Custom.css";
 // import jQuery from 'jquery';s
+import './common.css'
 import $ from 'jquery';
 
 
@@ -72,7 +73,7 @@ const PostDynamicList = () => {
 
                                 const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
                                 return (
-                                    <div style={{ whiteSpace: 'normal', wordWrap: 'break-word', textWrap: "wrap" }}>
+                                    <div style={{ whiteSpace: 'normal', }}>
                                         {isImage ? (
                                             <img src={value} alt={displayValue} style={{ width: '50px', height: '50px' }} />
                                         ) : (
@@ -289,15 +290,21 @@ const PostDynamicList = () => {
                                         pageSizeOptions={[5, 10, 20]}
                                         checkboxSelection
                                         loading={loading}
-                                        autoHeight={false}
-                                        onPageChange={(newPage) => setPage(newPage)}
-                                        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                                        autoHeight={true}
                                         sx={{
                                             height: '100%',
+                                            overflow: 'hidden',
                                             '& .MuiDataGrid-columnHeaders': {
                                                 backgroundColor: '#2c9dd4',
                                                 color: 'white',
-                                                wordWrap: 'break-word'
+                                                maxHeight: "50px",
+                                            },
+                                            "& .MuiDataGrid-columnHeaderTitle": {
+                                                whiteSpace: "normal",
+                                                lineHeight: "normal"
+                                            },
+                                            "& .MuiDataGrid-columnHeader": {
+                                                height: "unset !important"
                                             },
                                         }}
                                         selectionModel={selectedRows}

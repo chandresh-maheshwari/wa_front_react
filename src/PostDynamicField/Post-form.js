@@ -175,25 +175,40 @@ const PostFormDynamic = () => {
                                                     </RadioGroup>
                                                 </div>
                                             ) : field.type === 'color' ? (
-                                                <div >
+                                                // <div >
+                                                //     <TextField
+                                                //         label={field.label}
+                                                //         type="color"
+                                                //         value={formData[field.label] || '#000000'}
+                                                //         // style={{ width: "revert"  }}
+                                                //         onChange={handleInputChange(field.label, field.type)}
+                                                //         fullWidth
+                                                //         margin="normal"
+                                                //         error={!!errors[field.label]}
+                                                //         helperText={errors[field.label] || ''}
+                                                //     />
+                                                //     {/* Display RGB values */}
+                                                //     {formData[field.label] && (
+                                                //         <Typography variant="body2" color="textSecondary">
+                                                //             RGB: {JSON.stringify(hexToRgb(formData[field.label]))}
+                                                //         </Typography>
+                                                //     )}
+                                                // </div>
+                                                <>
                                                     <TextField
                                                         label={field.label}
                                                         type="color"
                                                         value={formData[field.label] || '#000000'}
-                                                        // style={{ width: "revert"  }}
                                                         onChange={handleInputChange(field.label, field.type)}
                                                         fullWidth
                                                         margin="normal"
-                                                        error={!!errors[field.label]}
-                                                        helperText={errors[field.label] || ''}
                                                     />
-                                                    {/* Display RGB values */}
                                                     {formData[field.label] && (
                                                         <Typography variant="body2" color="textSecondary">
                                                             RGB: {JSON.stringify(hexToRgb(formData[field.label]))}
                                                         </Typography>
                                                     )}
-                                                </div>
+                                                </>
                                             ) : field.type === 'file' ? (
                                                 <div>
                                                     <TextField
