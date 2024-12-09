@@ -1,0 +1,102 @@
+/* Sidebar arroe icon css */
+.Arrow-icon-Sidebar {
+  font-size: large;
+}
+
+.nav-dropdown-items-Dynamic_POST {
+  display: none;
+  /* Initially hidden */
+}
+
+.nav-dropdown-items-Dynamic_POST {
+  display: block;
+  /* Visible when 'open' class is added */
+}
+
+#nav-dropdown-items-dynamic_page {
+  display: none;
+  /* Initially hidden */
+}
+
+#nav-dropdown-items-dynamic_page {
+  display: block;
+  /* Visible when 'open' class is added */
+}
+
+/* Css for navbar */
+.navbar-search {
+  margin-left: 76%;
+  margin-top: -40px;
+  margin-bottom: 18px;
+}
+
+
+/* css for table cell hight width and wrapping */
+/* CSS FOR TABLE HEADING */
+
+.MuiDataGrid-columnHeaderTitle {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  height: auto !important;
+  /* width: auto !important; */
+  box-sizing: content-box !important;
+}
+
+.MuiDataGrid-cell {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow: visible !important;
+}
+
+.MuiDataGrid-columnHeaderDraggableContainer {
+  height: auto !important;
+  /* width: auto !important; */
+}
+
+.MuiDataGrid-columnHeaders {
+  line-height: inherit !important;
+}
+
+
+
+/* CSS FOR TABLE DATA */
+
+.MuiDataGrid-root .MuiDataGrid-cell {
+  height: auto !important;
+  /* width: auto !important; */
+  max-height: none !important;
+  /* max-width: none !important; */
+  min-height: auto !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  /* box-sizing: content-box !important; */
+
+}
+
+.MuiDataGrid-root .MuiDataGrid-cellContent {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+}
+
+.MuiDataGrid-root .MuiDataGrid-row {
+  height: auto !important;
+  max-height: none !important;
+  min-height: auto !important;
+}
+
+/* .MuiDataGrid-root .MuiDataGrid-columnHeaders {
+  overflow-x: hidden !important;
+} */
+ /* .color-code fieldset{
+  border-style: none;
+ } */
+
+ .color-code .MuiInputBase-root .MuiOutlinedInput-notchedOutline{
+  border-style: none !important;
+ }

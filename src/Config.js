@@ -21,6 +21,8 @@ export default {
 
 
   apis: {
+
+    login: 'api/login',
     LoginExToken: 'api/refresh',
 
 

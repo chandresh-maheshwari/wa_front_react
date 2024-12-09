@@ -22,21 +22,29 @@ export default new (class AuthApi {
   }
 
 
+  async loginData(formData) {
+    // console.log(formData)
+    try {
+      const url = Config.apiurl + Config.apis.login;
+      // console.log(url);
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+      });
 
-  // async refreshToken1(refreshToken) {
-  //   console.log(refreshToken)
+      return response.data;
+    } catch (error) {
+      console.error("Error  Login Data:", error);
+      throw new Error("Failed to Login Data");
+    }
+  }
 
-  //   try {
-  //     // const response = await axios.post(API_URL, { refreshToken });
-  //     const url = Config.apiurl + Config.apis.LoginExToken;
-  //     const response = await axios.get(url,  refreshToken );
-  //     // return url.data.token; 
 
-  //     return response.data.token;
-  //   } catch (error) {
-  //     throw new Error("Failed to refresh token");
-  //   }
-  // }
+
+
+
 
   async refreshToken1(formData) {
     // console.log()
@@ -1282,9 +1290,10 @@ export default new (class AuthApi {
 
 
 
-  async dynamicstatus(post_title) {
+  async dynamicstatus(id) {
+    console.log(id)
     try {
-      const url = `${Config.apiurl}${Config.apis.dynamicActive}${post_title}`;
+      const url = `${Config.apiurl}${Config.apis.dynamicActive}${id}`;
       const token = ls('Token');
       this.setHeaders("post");
       const response = await axios.post(url, {}, {
@@ -1301,9 +1310,10 @@ export default new (class AuthApi {
   }
 
 
-  async dynamicDeleteData(post_title) {
+  async dynamicDeleteData(id) {
     try {
-      const url = Config.apiurl + Config.apis.dynamicDelete + post_title;
+      const url = Config.apiurl + Config.apis.dynamicDelete + id;
+      console.log(url)
       const token = ls('Token');
       this.setHeaders("delete");
       const response = await axios.delete(url, {
@@ -1352,14 +1362,18 @@ export default new (class AuthApi {
 
 
   async postDynamicstoredata(formData, post_title) {
+    console.log(formData, post_title)
     try {
       const url = Config.apiurl + Config.apis.postDynamicstore + post_title;
+      console.log(url)
       const token = ls('Token');
 
       const response = await axios.post(url, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': formData instanceof FormData ? 'multipart/form-data' : 'application/json',
+          // 'Content-Type': 'application/json',
+
         },
       });
 
@@ -1421,18 +1435,25 @@ export default new (class AuthApi {
 
 
 
-  async postdynamicupdatedata(post_title, formData) {
+  async postdynamicupdatedata(id, formData) {
 
+    const PostData = {
+      "data": formData
+
+    }
+    // console.log(PostData);
+    //  console.log(PostData);
+    //  return false;
     try {
-      const url = `${Config.apiurl}${Config.apis.postDynamicUpdate}${post_title}`;
+      const url = `${Config.apiurl}${Config.apis.postDynamicUpdate}${id}`;
       console.log(url)
       const token = ls('Token');
       this.setHeaders("post");
-      const response = await axios.post(url, formData, {
+      const response = await axios.post(url, PostData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          // 'Content-Type': 'application/json',
-          'Content-Type': formData instanceof FormData ? 'multipart/form-data' : 'application/json',
+          'Content-Type': 'application/json',
+          // 'Content-Type': formData instanceof FormData ? 'multipart/form-data' : 'application/json',
         },
       });
       return response.data;
@@ -1443,9 +1464,37 @@ export default new (class AuthApi {
   }
 
 
+  // async postdynamicupdatedata(id, formData) {
+  //   console.log(formData)
+  //   try {
+  //     const url = `${Config.apiurl}${Config.apis.postDynamicUpdate}${id}`;
+  //     console.log(url);
+  //     const token = ls('Token');
+  //     this.setHeaders("post");
 
+  //     // Prepare the payload according to Laravel's expectations
+  //     const payload = {
+  //       post_name: formData.post_name, // Assuming formData has post_name
+  //       data: {
+  //         name: formData.name, // Ensure these fields are set correctly
+  //         eeee: formData.eeee,
+  //         te: formData.te
+  //       }
+  //     };
 
+  //     const response = await axios.post(url, payload, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         'Content-Type': 'application/json', // Sending as JSON
+  //       },
+  //     });
 
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error("API Error:", error);
+  //     throw error;
+  //   }
+  // }
   async postdynamicDeleteData(id) {
     console.log(id)
     try {

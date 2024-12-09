@@ -93,9 +93,14 @@ const PostFormDynamic = () => {
         Object.keys(formData).forEach(key => {
             submitFormData.append(key, formData[key]);
         });
+        // const submitFormData = {
+        //     ...formData
+        // }
+        console.log(formData)
 
         try {
             const response = await Authapi.postDynamicstoredata(submitFormData, post_title);
+            console.log(response);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 setFormData({});
@@ -174,25 +179,28 @@ const PostFormDynamic = () => {
                                                         ))}
                                                     </RadioGroup>
                                                 </div>
-                                            ) : field.type === 'color' ? (
-                                                <div >
+                                            ) : (field.type === 'color') ? (
+                                                <div style={{ display: 'flex', alignItems: 'center' }}>
                                                     <TextField
                                                         label={field.label}
-                                                        type="color"
+                                                        type="text" // Keep as text to show hex value
                                                         value={formData[field.label] || '#000000'}
-                                                        // style={{ width: "revert"  }}
                                                         onChange={handleInputChange(field.label, field.type)}
-                                                        fullWidth
                                                         margin="normal"
                                                         error={!!errors[field.label]}
                                                         helperText={errors[field.label] || ''}
+                                                        style={{ width: '100%', marginRight: '10px' }}
+
+
                                                     />
-                                                    {/* Display RGB values */}
-                                                    {formData[field.label] && (
-                                                        <Typography variant="body2" color="textSecondary">
-                                                            RGB: {JSON.stringify(hexToRgb(formData[field.label]))}
-                                                        </Typography>
-                                                    )}
+                                                    <TextField
+                                                        type="color"
+                                                        value={formData[field.label] || '#000000'}
+                                                        onChange={handleInputChange(field.label, field.type)}
+                                                        style={{
+                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px"
+                                                        }}
+                                                    />
                                                 </div>
                                             ) : field.type === 'file' ? (
                                                 <div>
@@ -207,19 +215,33 @@ const PostFormDynamic = () => {
                                                     />
                                                     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                 </div>
-                                            ) : (
+                                            ) : field.type === 'textarea' ? (
                                                 <TextField
-                                                    fullWidth
                                                     label={field.label}
-                                                    type={field.type}
-                                                    variant="outlined"
                                                     value={formData[field.label] || ''}
                                                     onChange={handleInputChange(field.label, field.type)}
+                                                    multiline
+                                                    rows={4}
+                                                    fullWidth
+                                                    variant="outlined"
                                                     margin="normal"
                                                     error={!!errors[field.label]}
                                                     helperText={errors[field.label] || ''}
                                                 />
-                                            )}
+                                            )
+                                                : (
+                                                    <TextField
+                                                        fullWidth
+                                                        label={field.label}
+                                                        type={field.type}
+                                                        variant="outlined"
+                                                        value={formData[field.label] || ''}
+                                                        onChange={handleInputChange(field.label, field.type)}
+                                                        margin="normal"
+                                                        error={!!errors[field.label]}
+                                                        helperText={errors[field.label] || ''}
+                                                    />
+                                                )}
                                         </Grid>
                                     ))}
                                 </Grid>

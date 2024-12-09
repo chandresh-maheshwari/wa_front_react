@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { useNavigate, Link } from "react-router-dom";
 import Swal from 'sweetalert2';
-
+import Authapi from '../Authapi';
 
 function Login() {
     const navigate = useNavigate();
@@ -43,38 +43,23 @@ function Login() {
             return;
         }
         setErrors({});
-
         let item = { email, password };
-        let result = await fetch('http://wa_front.localhost.com/api/login', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify(item)
-        });
+        const response = await Authapi.loginData(item);
+        // console.log(response);
 
-        result = await result.json();
-
-
-
-        if (result.status === true) {
-
-            const { token, user } = result;
-
-
+        if (response.status === true) {
+            const { token, user } = response;
             localStorage.setItem("user", JSON.stringify(user));
             localStorage.setItem("Token", token);
-
             navigate("/Dashboard");
-        }
-        else {
+        } else {
             Swal.fire({
                 icon: 'error',
-                title: 'login failed....',
+                title: 'Login failed...',
                 text: 'Email and password do not match!',
             });
         }
+
     }
 
 

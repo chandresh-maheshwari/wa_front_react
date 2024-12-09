@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import $ from "jquery";
 import { Link } from "react-router-dom";
 import '../App.css';
+import '../Custom.css';
+// import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import Authapi from '../Authapi';
@@ -63,6 +67,15 @@ $(document).ready(function () {
 
 const Sidebar = () => {
   const [postTitles, setPostTitles] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [openPostId, setOpenPostId] = useState(null); // Track which post is open
+
+
+  // Function to toggle the dropdown
+  // const toggleDropdown = () => {
+  //   setIsOpen(!isOpen);
+  // };
+
 
   useEffect(() => {
     fetchPostTitles();
@@ -94,6 +107,19 @@ const Sidebar = () => {
       console.error('Error fetching post titles:', error);
     }
   };
+
+  const toggleDropdown = (e) => {
+    e.preventDefault();
+    setIsOpen(!isOpen);
+  };
+  const toggleDropdown1 = (postId) => {
+    if (openPostId === postId) {
+      setOpenPostId(null); // Close the post if it's already open
+    } else {
+      setOpenPostId(postId); // Open the clicked post's dropdown
+    }
+  };
+
 
   return (
     <>
@@ -311,10 +337,11 @@ const Sidebar = () => {
             </li> */}
 
 
-            <li>
+            {/* <li>
               <Link id="Dynamic_POST" className="nav-link nav-dropdown-toggle" to="#">
-                Dynamic post
+                Dynamic post <IoIosArrowDown className="Arrow-icon-Sidebar" />
               </Link>
+
               <ul className="nav-dropdown-items-Dynamic_POST">
                 <li className="nav-item">
                   <Link className="nav-link" to="/dynamic-form">
@@ -329,37 +356,77 @@ const Sidebar = () => {
 
 
               </ul>
+            </li> */}
+            <li>
+              <Link
+                id="Dynamic_POST"
+                className="nav-link nav-dropdown-toggle"
+                to="#"
+                onClick={toggleDropdown}
+              >
+                Dynamic post
+                {isOpen ? (
+                  <IoIosArrowDown className="Arrow-icon-Sidebar" />
+                ) : (
+                  <IoIosArrowUp className="Arrow-icon-Sidebar" />
+                )}
+              </Link>
+              {/* {console.log(isOpen)} */}
+              {isOpen && (
+                <ul className="nav-dropdown-items-Dynamic_POST">
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/dynamic-form">
+                      <span>Add New Form</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/dynamic-list-data" style={{ marginTop: "-12px" }}>
+                      <span>Dynamic post List</span>
+                    </Link>
+                  </li>
+                </ul>
+              )}
             </li>
 
 
             {postTitles.map((post) => (
               <li key={post.id}>
+
                 <li className="nav-item">
                   <Link
-                    id="dynamic_page"
+                    id={`dynamic_page_${post.id}`}
                     className="nav-link nav-dropdown-toggle dynamic-page-link"
                     data-post-id={post.id}
                     to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleDropdown1(post.id);
+                    }}
                   >
                     <span>{post.post_title}</span>
+                    {openPostId === post.id ? (
+                      <IoIosArrowDown className="Arrow-icon-Sidebar" />
+                    ) : (
+                      <IoIosArrowUp className="Arrow-icon-Sidebar" />
+                    )}
                   </Link>
                 </li>
 
-                <ul className={`nav-dropdown-items-dynamic_page-${post.id}`} id="nav-dropdown-items-dynamic_page">
 
-                  <li className="nav-item" key={post.post_title}>
-                    <Link className="nav-link" to='/post-form' state={{ post_title: post.post_title }}>
-                      <span>Add New Form</span>
-                    </Link>
-                  </li>
-                  <li className="nav-item" key={post.post_title}>
-                    {/* {console.log(post.post_title)} */}
-                    <Link className="nav-link" to='/post-list' state={{ post_title: post.post_title }} >
-                      <span>View All Post</span>
-                    </Link>
-                  </li>
-
-                </ul>
+                {openPostId === post.id && (
+                  <ul className={`nav-dropdown-items-dynamic_page-${post.id}`} id="nav-dropdown-items-dynamic_page">
+                    <li className="nav-item">
+                      <Link className="nav-link" to='/post-form' state={{ post_title: post.post_title }}>
+                        <span>Add New Form</span>
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to='/post-list' state={{ post_title: post.post_title }}>
+                        <span>View All Post</span>
+                      </Link>
+                    </li>
+                  </ul>
+                )}
               </li>
             ))}
 
@@ -371,12 +438,12 @@ const Sidebar = () => {
               </Link>
               <ul className="nav-dropdown-items-POST">
                 <li className="nav-item">
-                  <Link className="nav-link" to="/Post" >
+                  <Link className="nav-link" to="/page-form" >
                     <span>Add New</span>
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/PostList" style={{ marginTop: "-12px" }}>
+                  <Link className="nav-link" to="/page-list" style={{ marginTop: "-12px" }}>
                     <span>page  List</span>
                   </Link>
                 </li>

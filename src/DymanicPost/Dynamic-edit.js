@@ -138,10 +138,25 @@ const DynamicEditForm = ({ existingData }) => {
                         <Container>
                             <form encType="multipart/form-data" onSubmit={handleSubmit}>
                                 <Grid container spacing={3}>
-                                    <Grid item xs={12} sm={6}>
+                                    {/* <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Post Title"
                                             name="title"
+                                            fullWidth
+                                            value={formData.post_title}
+                                            onChange={handleTitleChange}
+                                            style={{
+                                                marginBottom: '15px',
+                                                backgroundColor: '#f4f6f8',
+                                                borderRadius: '5px'
+                                            }}
+                                        />
+                                    </Grid> */}
+
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            label="Post Title"
+                                            name="post_title" // Changed from "title" to "post_title"
                                             fullWidth
                                             value={formData.post_title}
                                             onChange={handleTitleChange}

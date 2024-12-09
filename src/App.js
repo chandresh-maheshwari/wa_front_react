@@ -36,9 +36,11 @@ import ProducerList from "./P_Reciver/producerList";
 import QuoteList from "./Quote_section/QuoteList";
 import WestAccountList from "./West_account/WasteList";
 import ImpoveDataList from "./Improve_prodection/ImproveList";
-import PostDataForm from "./Post/Post";
-import PostListing from "./Post/PostList";
-import PostEditdata from "./Post/PostEdit";
+
+
+import PostDataForm from "./Post/Page-form";
+import PostListing from "./Post/page-list";
+import PostEditdata from "./Post/page-edit";
 
 import Dynamicform from "./DymanicPost/Dynamic-form";
 import DynamicList from "./DymanicPost/Dynamic-list-data";
@@ -88,9 +90,12 @@ const App = () => {
         <Route exact path="/QuoteList" element={<QuoteList />} />
         <Route exact path="/WasteList" element={<WestAccountList />} />
         <Route exact path="/ImproveList" element={<ImpoveDataList />} />
-        <Route exact path="/Post" element={<PostDataForm />} />
-        <Route exact path="/PostList" element={<PostListing />} />
-        <Route path="/PostEdit/:id" element={<PostEditdata />} />
+
+
+
+        <Route exact path="/page-form" element={<PostDataForm />} />
+        <Route exact path="/page-list" element={<PostListing />} />
+        <Route path="/page-edit/:id" element={<PostEditdata />} />
 
         <Route exact path="/dynamic-form" element={<Dynamicform />} />
         <Route exact path="/dynamic-list-data" element={<DynamicList />} />

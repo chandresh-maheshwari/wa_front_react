@@ -14,42 +14,54 @@ const PostDynamicEdit = () => {
     const [fields, setFields] = useState([]);
     const post_title = location.state?.post_title;
 
-    // console.log(post_title)
-
     useEffect(() => {
         fetchData();
     }, [post_title]);
 
-
     useEffect(() => {
+
         fetchEditData(id);
+
     }, [id]);
 
 
     const fetchData = async () => {
-
         try {
             const response = await Authapi.dynamifieldfetchdata(post_title);
-            // console.log("Fetched Fields:", response.data?.post_description);
+            console.log("Fetched Fields:", response.data);
             setFields(response.data?.post_description || []);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-
+    // const fetchEditData = async (id) => {
+    //     try {
+    //         const response = await Authapi.postdynamicEditData(id);
+    //         console.log("Fetched Edit Data:", response.data || {});
+    //         setFormData(response.data  || {});
+    //     } catch (error) {
+    //         console.error('Error fetching edit data:', error);
+    //     }
+    // }
     const fetchEditData = async (id) => {
+        console.log("Fetching edit data for ID:", id);
         try {
             const response = await Authapi.postdynamicEditData(id);
-            // console.log("Fetched Edit Data:", response.data);
-            setFormData(response.data || {});
+            setTimeout(() => {
+                setFormData(response.data || {});
+            }, 500);
+            console.log("Fetched Edit Data:", response.data);
+            console.log("Fetched Edit Data:", formData);
+
         } catch (error) {
             console.error('Error fetching edit data:', error);
         }
     }
 
+
+
     const hexToRgb = (hex) => {
-        // Ensure valid hex format
         if (hex.length === 7) {
             let r = parseInt(hex.slice(1, 3), 16);
             let g = parseInt(hex.slice(3, 5), 16);
@@ -65,7 +77,6 @@ const PostDynamicEdit = () => {
                 acc[field.label] = field.value || '';
                 return acc;
             }, {});
-            // console.log("Initial formData:", initialFormData);
             setFormData(initialFormData);
         }
     }, [fields]);
@@ -90,38 +101,32 @@ const PostDynamicEdit = () => {
             }
         }
 
-        setFormData({
-            ...formData,
+        setFormData(prevData => ({
+            ...prevData,
             [fieldLabel]: value,
-        });
-        // console.log("Updated formData:", { ...formData, [fieldLabel]: value });
+        }));
     };
-    console.log(post_title)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const submitFormData = new FormData();
 
-        Object.keys(formData).forEach(key => {
-            submitFormData.append(key, formData[key]);
-        });
+        const submitFormData = {
+            ...formData
+        }
 
         try {
-            const response = await Authapi.postdynamicupdatedata(post_title, submitFormData);
-            console.log('API response:', response);
-
+            const response = await Authapi.postdynamicupdatedata(id, submitFormData);
+            // console.log(response);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 setFormData({});
                 navigate('/post-list', { state: { post_title } });
-
             }
         } catch (error) {
             Swal.fire('Error', 'There was an issue with your submission.', 'error');
             console.error('Error submitting data:', error);
         }
     };
-
 
 
     return (
@@ -134,19 +139,16 @@ const PostDynamicEdit = () => {
                     </div>
                     <div className="card-body">
                         <Container>
-                            <form
-                                onSubmit={handleSubmit}
-                            >
+                            <form onSubmit={handleSubmit}>
                                 <Grid container spacing={3}>
                                     {fields.map((field, index) => (
                                         <Grid item xs={12} sm={field.column || 6} key={index}>
                                             {field.type === 'dropdown' ? (
                                                 <FormControl fullWidth margin="normal">
-                                                    <InputLabel >{field.label}</InputLabel>
+                                                    <InputLabel>{field.label}</InputLabel>
                                                     <Select
                                                         value={formData[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type)}
-
                                                     >
                                                         {field.options && field.options.map((option, idx) => (
                                                             <MenuItem key={idx} value={option.trim()}>
@@ -159,18 +161,17 @@ const PostDynamicEdit = () => {
                                                 <div>
                                                     <Typography variant="body1">{field.label}</Typography>
                                                     {field.options && field.options.map((option, idx) => (
-                                                        <>
-                                                            <FormControlLabel
-                                                                key={idx}
-                                                                control={
-                                                                    <Checkbox
-                                                                        checked={formData[field.label]?.includes(option) || false}
-                                                                        onChange={(e) => handleInputChange(field.label, field.type)(e, option)}
-                                                                        value={option}
-                                                                    />}
-                                                                label={option}
-                                                            />
-                                                        </>
+                                                        <FormControlLabel
+                                                            key={idx}
+                                                            control={
+                                                                <Checkbox
+                                                                    checked={formData[field.label]?.includes(option) || false}
+                                                                    onChange={(e) => handleInputChange(field.label, field.type)(e, option)}
+                                                                    value={option}
+                                                                />
+                                                            }
+                                                            label={option}
+                                                        />
                                                     ))}
                                                 </div>
                                             ) : field.type === 'radio' ? (
@@ -201,8 +202,33 @@ const PostDynamicEdit = () => {
                                                     margin="normal"
                                                 />
                                             ) : field.type === 'file' ? (
+                                                // <div>
+                                                //     <TextField
+                                                //         label={field.label}
+                                                //         type="file"
+                                                //         onChange={handleInputChange(field.label, field.type)}
+                                                //         fullWidth
+                                                //         className='mt-5'
+                                                //         InputLabelProps={{ shrink: true }}
+                                                //     />
+                                                //     {formData[field.label] instanceof File ? (
+                                                //         <img
+                                                //             src={URL.createObjectURL(formData[field.label])}
+                                                //             alt="Preview"
+                                                //             width="100"
+                                                //         />
+                                                //     ) : formData[field.label] ? (
+                                                //         <>
+                                                //             <p>Current image: {formData[field.label].split('/').pop()} </p>
+                                                //             <img
+                                                //                 src={formData[field.label]}
+                                                //                 alt="Current Image"
+                                                //                 width="100"
+                                                //             />
+                                                //         </>
+                                                //     ) : null}
+                                                // </div>
                                                 <div>
-
                                                     <TextField
                                                         label={field.label}
                                                         type="file"
@@ -210,52 +236,61 @@ const PostDynamicEdit = () => {
                                                         fullWidth
                                                         className='mt-5'
                                                         InputLabelProps={{ shrink: true }}
-
                                                     />
-                                                    {formData[field.label] instanceof File ? (
+                                                    {formData[field.label]?.image instanceof File ? ( // Check if the image is a File object
                                                         <img
-                                                            src={URL.createObjectURL(formData[field.label])}
+                                                            src={URL.createObjectURL(formData[field.label].image)} // Use the image object for preview
                                                             alt="Preview"
                                                             width="100"
                                                         />
-                                                    ) : formData[field.label] ? (
+                                                    ) : typeof formData[field.label]?.image === 'string' ? ( // Check if the image is a string (URL)
                                                         <>
-                                                            <p>Current image: {formData[field.label].split('/').pop()} </p>
+                                                            <p>Current image: {formData[field.label].image.split('/').pop()} </p>
                                                             <img
-                                                                src={formData[field.label]}
+                                                                src={formData[field.label].image}
                                                                 alt="Current Image"
                                                                 width="100"
                                                             />
                                                         </>
                                                     ) : null}
                                                 </div>
-
                                             ) : field.type === 'color' ? (
-                                                <>
+                                                <div style={{ display: 'flex', alignItems: 'center' }}>
                                                     <TextField
                                                         label={field.label}
+                                                        type="text" // Keep as text to show hex value
+                                                        value={formData[field.label] || '#000000'}
+                                                        onChange={handleInputChange(field.label, field.type)}
+                                                        margin="normal"
+                                                        style={{ width: '100%', marginRight: '10px' }}
+                                                    // className='color-code'   
+
+
+                                                    />
+                                                    <TextField
                                                         type="color"
                                                         value={formData[field.label] || '#000000'}
                                                         onChange={handleInputChange(field.label, field.type)}
-                                                        fullWidth
-                                                        margin="normal"
+                                                        style={{
+                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px"
+                                                        }}
+                                                        className='color-code'
                                                     />
-                                                    {formData[field.label] && (
-                                                        <Typography variant="body2" color="textSecondary">
-                                                            RGB: {JSON.stringify(hexToRgb(formData[field.label]))}
-                                                        </Typography>
-                                                    )}
-                                                </>
+                                                </div>
                                             ) : (
-                                                <TextField
-                                                    fullWidth
-                                                    label={field.label}
-                                                    type={field.type}
-                                                    variant="outlined"
-                                                    value={formData[field.label] || ''}
-                                                    onChange={handleInputChange(field.label, field.type)}
-                                                    margin="normal"
-                                                />
+                                                <>
+                                                    {console.log(formData[field.label]) || ''}
+                                                    <TextField
+                                                        fullWidth
+                                                        label={field.label}
+                                                        type={field.type}
+                                                        variant="outlined"
+                                                        value={formData[field.label] || ''}
+                                                        onChange={handleInputChange(field.label, field.type)}
+                                                        margin="normal"
+                                                    // InputLabelProps={{ shrink: true }}
+                                                    />
+                                                </>
                                             )}
                                         </Grid>
                                     ))}

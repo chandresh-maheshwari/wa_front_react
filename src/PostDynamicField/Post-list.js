@@ -31,9 +31,11 @@ const PostDynamicList = () => {
     const [abc, setAbc] = useState();
 
     useEffect(() => {
-        fetchData();
+        setTimeout(() => {
+            fetchData();
+        }, 100);
     }, [post_title]);
-    // console.log(post_title)
+    // console.log(post_title)s
 
     const fetchData = async () => {
         try {
@@ -64,15 +66,83 @@ const PostDynamicList = () => {
                             field: key,
                             headerName: key.charAt(0).toUpperCase() + key.slice(1),
                             width: 100,
+                            cellClassName: 'wrap-text',
+                            // renderCell: (params) => {
+                            //     const value = params.row[key];
+                            //     const isExpanded = expandedEmails[params.row.id];
+                            //     const displayValue = typeof value === 'string' ? value : String(value);
+                            //     const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
+
+                            //     const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
+                            //     return (
+                            //         <div style={{}}>
+                            //             {isImage ? (
+                            //                 <img src={value} alt={displayValue} style={{ width: '50px', height: '50px' }} />
+                            //             ) : (
+                            //                 <span className={`email-display-${safeValue}`}>
+                            //                     {isExpanded ? displayValue : `${displayValue.substring(0, 10)}`}
+                            //                 </span>
+                            //             )}
+                            //             {!isImage && displayValue.length > 10 && (
+                            //                 // <Link
+                            //                 //     onClick={() => {
+                            //                 //         toggleEmailExpand(safeValue);
+                            //                 //         if (ls("readmore") === "karmur") {
+                            //                 //             ls(`readmore`, "hardik");
+                            //                 //             ls(`data`, safeValue);
+                            //                 //             $(`.email-display-${safeValue}`).text(`${displayValue.substring(0, 10)}`);
+                            //                 //         } else {
+                            //                 //             ls(`readmore`, "karmur");
+                            //                 //             ls(`data`, "");
+                            //                 //             $(`.email-display-${safeValue}`).text(displayValue);
+                            //                 //         }
+                            //                 //     }}
+                            //                 //     style={{ marginLeft: '5px' }}
+                            //                 // >
+                            //                 //     {ls("readmore") === "hardik" && ls("data") === safeValue ? 'Read More' : 'Read Less'}
+                            //                 // </Link>
+                            //                 <Link
+                            //                     onClick={(e) => {
+                            //                         e.preventDefault();  // Prevent the page reload
+                            //                         toggleEmailExpand(safeValue);
+                            //                         if (ls("readmore") === "karmur") {
+                            //                             ls(`readmore`, "hardik");
+                            //                             ls(`data`, safeValue);
+                            //                             $(`.email-display-${safeValue}`).text(`${displayValue.substring(0, 10)}`);
+                            //                         } else {
+                            //                             ls(`readmore`, "karmur");
+                            //                             ls(`data`, "");
+                            //                             $(`.email-display-${safeValue}`).text(displayValue);
+                            //                         }
+                            //                     }}
+                            //                     style={{ marginLeft: '5px' }}
+                            //                 >
+                            //                     {ls("readmore") === "hardik" && ls("data") === safeValue ? 'Read More' : 'Read Less'}
+                            //                 </Link>
+
+                            //             )}
+                            //             {/* {isValidColor(value) && (
+                            //                 <div style={{
+                            //                     display: 'inline-block',
+                            //                     width: '20px',
+                            //                     height: '20px',
+                            //                     backgroundColor: value,
+                            //                     border: '1px solid #000',
+                            //                     marginLeft: '5px'
+                            //                 }} />
+                            //             )} */}
+                            //         </div>
+                            //     );
+                            // }
                             renderCell: (params) => {
                                 const value = params.row[key];
                                 const isExpanded = expandedEmails[params.row.id];
-                                const displayValue = typeof value === 'string' ? value : String(value);
+                                const displayValue = typeof value === 'string' ? value : (value !== undefined && value !== null ? String(value) : "-");
                                 const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
 
                                 const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
                                 return (
-                                    <div style={{ whiteSpace: 'normal', wordWrap: 'break-word', textWrap: "wrap" }}>
+                                    <div>
                                         {isImage ? (
                                             <img src={value} alt={displayValue} style={{ width: '50px', height: '50px' }} />
                                         ) : (
@@ -82,7 +152,8 @@ const PostDynamicList = () => {
                                         )}
                                         {!isImage && displayValue.length > 10 && (
                                             <Link
-                                                onClick={() => {
+                                                onClick={(e) => {
+                                                    e.preventDefault();
                                                     toggleEmailExpand(safeValue);
                                                     if (ls("readmore") === "karmur") {
                                                         ls(`readmore`, "hardik");
@@ -99,19 +170,10 @@ const PostDynamicList = () => {
                                                 {ls("readmore") === "hardik" && ls("data") === safeValue ? 'Read More' : 'Read Less'}
                                             </Link>
                                         )}
-                                        {/* {isValidColor(value) && (
-                                            <div style={{
-                                                display: 'inline-block',
-                                                width: '20px',
-                                                height: '20px',
-                                                backgroundColor: value,
-                                                border: '1px solid #000',
-                                                marginLeft: '5px'
-                                            }} />
-                                        )} */}
                                     </div>
                                 );
                             }
+
                         };
 
 
@@ -122,7 +184,8 @@ const PostDynamicList = () => {
                         field: 'actions',
                         headerName: 'Actions',
                         width: 190,
-
+                        cellClassName: 'wrap-text',
+                        flex: 1,
                         renderCell: (params) => (
                             <strong onClick={(e) => e.stopPropagation()}>
                                 <Link
@@ -297,7 +360,7 @@ const PostDynamicList = () => {
                                             '& .MuiDataGrid-columnHeaders': {
                                                 backgroundColor: '#2c9dd4',
                                                 color: 'white',
-                                                wordWrap: 'break-word'
+                                                // wordWrap: 'break-word'
                                             },
                                         }}
                                         selectionModel={selectedRows}
@@ -320,3 +383,4 @@ const PostDynamicList = () => {
 };
 
 export default PostDynamicList;
+

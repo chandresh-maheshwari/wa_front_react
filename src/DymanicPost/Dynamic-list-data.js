@@ -1,6 +1,6 @@
 import { Container, Button } from '@mui/material';
 import Authapi from '../Authapi';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { MdDelete, MdOutlineCancel } from 'react-icons/md';
 import "../Custom.css";
 import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
+// import '../Navbar.css'
 
 const DynamicList = () => {
     const [rows, setRows] = useState([]);
@@ -48,7 +49,7 @@ const DynamicList = () => {
 
                 const initialActiveStates = dataWithSrNo.reduce((acc, row) => ({
                     ...acc,
-                    [row.post_title]: row.status === 1,
+                    [row.id]: row.status === 1,
                 }), {});
                 setActiveStates(initialActiveStates);
             }
@@ -65,16 +66,19 @@ const DynamicList = () => {
         setSearchQuery(query);
 
         if (query) {
-            const filtered = rows.filter((row) =>
-                row.post_title.toLowerCase().includes(query.toLowerCase())
-            );
+            const filtered = rows.filter((row) => {
+
+                return Object.values(row).some((value) =>
+                    String(value).toLowerCase().includes(query.toLowerCase())
+                );
+            });
             setFilteredRows(filtered);
         } else {
             setFilteredRows(rows);
         }
     };
 
-    const handleDelete = async (post_title) => {
+    const handleDelete = async (id) => {
         const confirmDelete = await Swal.fire({
             title: 'Are you sure?',
             text: 'This will mark the item as deleted!',
@@ -87,7 +91,7 @@ const DynamicList = () => {
 
         if (confirmDelete.isConfirmed) {
             try {
-                const response = await Authapi.dynamicDeleteData(post_title);
+                const response = await Authapi.dynamicDeleteData(id);
                 if (response) {
                     Swal.fire('Success!', 'Item marked as deleted.', 'success');
                     fetchData();
@@ -100,14 +104,14 @@ const DynamicList = () => {
         }
     };
 
-    const getActive = async (post_title, currentStatus) => {
+    const getActive = async (id, currentStatus) => {
         try {
             const newStatus = currentStatus === 1 ? 0 : 1;
-            const response = await Authapi.dynamicstatus(post_title, newStatus);
+            const response = await Authapi.dynamicstatus(id, newStatus);
             if (response) {
                 setActiveStates((prevStates) => ({
                     ...prevStates,
-                    [post_title]: newStatus === 1,
+                    [id]: newStatus === 1,
                 }));
 
             } else {
@@ -144,16 +148,17 @@ const DynamicList = () => {
                     <button
                         className='btnkkk btn-oblong btn-danger btn-sm'
                         title="Soft Delete"
-                        onClick={() => handleDelete(params.row.post_title)}
+                        onClick={() => handleDelete(params.row.id)}
                     >
                         <MdDelete />
                     </button>
                     <Switch
-                        key={params.row.post_title}
-                        checked={activeStates[params.row.post_title]}
+                        key={params.row.id}
+                        checked={activeStates[params.row.status]}
                         size="xs"
-                        onChange={() => getActive(params.row.post_title, activeStates[params.row.post_title] ? 1 : 0)}
+                        onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 1 : 0)}
                     />
+                    {console.log(params.row.status)}
                 </strong>
             ),
         },
