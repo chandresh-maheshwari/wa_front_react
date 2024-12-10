@@ -99,9 +99,9 @@ const PostDynamicList = () => {
                     dynamicColumns.push({
                         field: 'actions',
                         headerName: 'Actions',
-                        width: 100,
+                        width: 200,
                         cellClassName: 'wrap-text',
-                        flex: 1,
+                        // flex: 1, 
                         renderCell: (params) => (
                             <strong onClick={(e) => e.stopPropagation()}>
                                 <Link

@@ -68,7 +68,9 @@ $(document).ready(function () {
 const Sidebar = () => {
   const [postTitles, setPostTitles] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [openPostId, setOpenPostId] = useState(null); // Track which post is open
+  const [openPostId, setOpenPostId] = useState(null);
+  const [isOpenpage, setIsOpenPage] = useState(false);
+
 
 
   // Function to toggle the dropdown
@@ -120,6 +122,10 @@ const Sidebar = () => {
     }
   };
 
+  const toggleDropdown3 = (e) => {
+    e.preventDefault();
+    setIsOpenPage(!isOpenpage);
+  };
 
   return (
     <>
@@ -434,21 +440,28 @@ const Sidebar = () => {
 
 
             <li>
-              <Link id="POST" className="nav-link nav-dropdown-toggle" to="#">
+              <Link id="POST" className="nav-link nav-dropdown-toggle" to="#" onClick={toggleDropdown3}>
                 page
+                {isOpenpage ? (
+                  <IoIosArrowDown className="Arrow-icon-Sidebar" />
+                ) : (
+                  <IoIosArrowUp className="Arrow-icon-Sidebar" />
+                )}
               </Link>
-              <ul className="nav-dropdown-items-POST">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/page-form" >
-                    <span>Add New</span>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/page-list" style={{ marginTop: "-12px" }}>
-                    <span>page  List</span>
-                  </Link>
-                </li>
-              </ul>
+              {isOpenpage && (
+                <ul className="nav-dropdown-items-POST">
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/page" >
+                      <span>Add New</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/page-list" style={{ marginTop: "-12px" }}>
+                      <span>page  List</span>
+                    </Link>
+                  </li>
+                </ul>
+              )}
             </li>
 
 

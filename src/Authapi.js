@@ -1454,66 +1454,7 @@ export default new (class AuthApi {
   }
 
 
-  // async postdynamicupdatedata(id, formData) {
 
-  //   // const PostData = {
-  //   //   "data": formData
-
-  //   // }
-  //   // console.log(PostData);
-  //   //  console.log(PostData);
-  //   //  return false;
-  //   try {
-  //     const url = `${Config.apiurl}${Config.apis.postDynamicUpdate}${id}`;
-  //     console.log(url)
-  //     const token = ls('Token');
-  //     this.setHeaders("post");
-  //     const response = await axios.post(url, formData, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         'Content-Type': 'application/json',
-  //         // 'Content-Type': formData instanceof FormData ? 'multipart/form-data' : 'application/json',
-  //       },
-  //     });
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("API Error:", error);
-  //     throw error;
-  //   }
-  // }
-
-
-  // async postdynamicupdatedata(id, formData) {
-  //   console.log(formData)
-  //   try {
-  //     const url = `${Config.apiurl}${Config.apis.postDynamicUpdate}${id}`;
-  //     console.log(url);
-  //     const token = ls('Token');
-  //     this.setHeaders("post");
-
-  //     // Prepare the payload according to Laravel's expectations
-  //     const payload = {
-  //       post_name: formData.post_name, // Assuming formData has post_name
-  //       data: {
-  //         name: formData.name, // Ensure these fields are set correctly
-  //         eeee: formData.eeee,
-  //         te: formData.te
-  //       }
-  //     };
-
-  //     const response = await axios.post(url, payload, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         'Content-Type': 'application/json', // Sending as JSON
-  //       },
-  //     });
-
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("API Error:", error);
-  //     throw error;
-  //   }
-  // }
   async postdynamicDeleteData(id) {
     console.log(id)
     try {
@@ -1557,6 +1498,130 @@ export default new (class AuthApi {
 
 
 
+  async Pagestoredata(formData) {
+    try {
+      const url = Config.apiurl + Config.apis.pageStore;
+      const token = ls('Token');
 
+      const response = await axios.post(url, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': formData instanceof FormData ? 'multipart/form-data' : 'application/json',
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("API Error:", error);
+      throw new Error(`Failed to store home data: ${error.message}`);
+    }
+  }
+
+
+  async pageListData() {
+    try {
+      const url = Config.apiurl + Config.apis.pageList;
+      const token = ls('Token');
+      this.setHeaders("get");
+      let data = await axios
+        .get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((error) => {
+          return false;
+        });
+      return data;
+    } catch (error) {
+      return false;
+    }
+  }
+
+
+
+  async pageEditData(id) {
+    try {
+      const url = `${Config.apiurl}${Config.apis.pageEdit}${id}`;
+      const token = ls('Token');
+      this.setHeaders("get");
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data.results;
+    } catch (error) {
+      console.error("API Error:", error);
+      throw error;
+    }
+  }
+
+
+
+
+  async pageupdatedata(id, formData) {
+
+    try {
+      const url = `${Config.apiurl}${Config.apis.pageUpdate}${id}`;
+      const token = ls('Token');
+      this.setHeaders("post");
+      const response = await axios.post(url, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          // 'Content-Type': 'application/json',
+          'Content-Type': formData instanceof FormData ? 'multipart/form-data' : 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("API Error:", error);
+      throw error;
+    }
+  }
+
+
+  async pageDeleteData(id) {
+    try {
+      const url = Config.apiurl + Config.apis.pageDelele + id;
+      console.log(url)
+      const token = ls('Token');
+      this.setHeaders("delete");
+      const response = await axios.delete(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+  async pagestatus(id) {
+    console.log(id)
+    try {
+      const url = `${Config.apiurl}${Config.apis.pageActie}${id}`;
+      const token = ls('Token');
+      this.setHeaders("post");
+      const response = await axios.post(url, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("API Error:", error);
+      throw error;
+    }
+  }
 
 })();

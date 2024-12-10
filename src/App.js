@@ -38,20 +38,19 @@ import WestAccountList from "./West_account/WasteList";
 import ImpoveDataList from "./Improve_prodection/ImproveList";
 
 
-// import PostDataForm from "./Post/Page-form";
-// import PostListing from "./Post/page-list";
-// import PostEditdata from "./Post/page-edit";
 
-// import PostDynamicEdit from "./PostDynamicField/Post-edit";
 
 import Dynamicform from "./DymanicPost/Dynamic-form";
 import DynamicList from "./DymanicPost/Dynamic-list-data";
 import DynamicEditForm from "./DymanicPost/Dynamic-edit";
-// import PostFormDynamic from "./Sidebar/Post-from";
+
 import PostFormDynamic from "./PostDynamicField/Post-form";
 import PostDynamicList from "./PostDynamicField/Post-list";
 import PostDynamicEdit from "./PostDynamicField/Post-edit";
 
+import Page from "./Page/Page";
+import PageEdit from "./Page/Page-edit";
+import PageList from "./Page/Page-list";
 
 
 const App = () => {
@@ -94,11 +93,6 @@ const App = () => {
         <Route exact path="/ImproveList" element={<ImpoveDataList />} />
 
 
-
-        {/* <Route exact path="/page-form" element={<PostDataForm />} />
-        <Route exact path="/page-list" element={<PostListing />} />
-        <Route path="/page-edit/:id" element={<PostEditdata />} /> */}
-
         <Route exact path="/dynamic-form" element={<Dynamicform />} />
         <Route exact path="/dynamic-list-data" element={<DynamicList />} />
         <Route path="/dynamic-edit/:id" element={<DynamicEditForm />} />
@@ -106,6 +100,10 @@ const App = () => {
         <Route exact path="/post-list" element={<PostDynamicList />} />
         <Route path="/post-edit/:id" element={<PostDynamicEdit />} />
 
+        <Route path="/Page" element={<Page />} />
+        <Route exact path="/Page-list" element={<PageList />} />
+
+        <Route path="/Page-edit/:id" element={<PageEdit />} />
 
 
 

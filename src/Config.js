@@ -108,5 +108,14 @@ export default {
     postDynamicUpdate: 'api/post-data-update/',
     postDynamicDelete: 'api/post-data-delete/',
     postDynamicActive: 'api/post-data-active/',
+
+
+    pageStore: 'api/page-store',
+    pageList: 'api/page-list',
+    pageEdit: 'api/page-edit/',
+    pageUpdate: 'api/page-update/',
+    pageDelele:'api/page-delete/',
+    pageActie:'api/page-active/',
+
   },
 };
