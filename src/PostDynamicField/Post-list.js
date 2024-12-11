@@ -12,7 +12,7 @@ import { useLocation } from 'react-router-dom';
 import ls from 'local-storage';
 import "../Custom.css";
 // import jQuery from 'jquery';s
-import './common.css'
+// import './common.css'
 import $ from 'jquery';
 
 
