@@ -57,25 +57,20 @@ const PostFormDynamic = () => {
     // };
     const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
         let value = event.target.value;
-
         if (fieldType === 'file') {
             value = event.target.files[0];
         }
-
         if (fieldType === 'dropdown') {
             value = value.toLowerCase();
         }
-
         if (fieldType === 'checkbox') {
             const currentValues = formData[fieldLabel] || [];
             if (currentValues.includes(option)) {
-
                 setFormData({
                     ...formData,
                     [fieldLabel]: currentValues.filter(item => item !== option),
                 });
             } else {
-
                 setFormData({
                     ...formData,
                     [fieldLabel]: [...currentValues, option],
@@ -83,7 +78,6 @@ const PostFormDynamic = () => {
             }
             return;
         }
-
         setFormData({
             ...formData,
             [fieldLabel]: value,
@@ -103,25 +97,26 @@ const PostFormDynamic = () => {
     };
 
     // Validation function
-    const validate = () => {
-        const newErrors = {};
-        fields.forEach((field) => {
-            const value = formData[field.label] || '';
-            if (field.label && !value) {
-                newErrors[field.label] = 'This field is required';
-            } else if (field.type === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
-                newErrors[field.label] = 'Please enter a valid email address';
-            }
-        });
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    // const validate = () => {
+    //     const newErrors = {};
+    //     fields.forEach((field) => {
+    //         const value = formData[field.label] || '';
+    //         if (field.label && !value) {
+    //             newErrors[field.label] = 'This field is required';
+    //         } else if (field.type === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
+    //             newErrors[field.label] = 'Please enter a valid email address';
+    //         }
+    //     });
+    //     setErrors(newErrors);
+    //     return Object.keys(newErrors).length === 0;
+    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validate()) {
-            return;
-        }
+        // Remove validation call
+        // if (!validate()) {
+        //     return;
+        // }
         const submitFormData = new FormData();
 
         Object.keys(formData).forEach(key => {

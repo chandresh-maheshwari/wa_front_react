@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import ForgetPasswordForm from "./Login/ForgetPassword";
 
 // eslint-disable import/no-anonymous-default-export 
@@ -6,7 +7,7 @@ export default {
 
 
   apiurl: process.env.NODE_ENV === "development"
-    ? "http://wa_front.localhost.com/"
+    ? "http://wafront.localhost.com/"
     // : "https://hrmsapi.cherrypiksoftware.com/",
     : "http://hrmsstagingapi.cherrypiksoftware.com/",
 
@@ -83,8 +84,6 @@ export default {
     impoveEdit: 'api/improve-envirmental-protectiont-edit/',
     improveUpdate: 'api/improve-envirmental-protectiont-update/',
     improveActive: 'api/improve-envirmental-protectiont-active/',
-
-
 
     postStore: 'api/post-page-store',
     postListingData: 'api/post-page-list',
