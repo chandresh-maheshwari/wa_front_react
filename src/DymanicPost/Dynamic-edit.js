@@ -45,7 +45,7 @@ const DynamicEditForm = ({ existingData }) => {
             const fetchData = async () => {
                 try {
                     const response = await Authapi.dynamicEditData(id);
-                    console.log(response)
+                    // console.log(response)
                     setFormData(response);
                     setFields(response.post_description.map((desc, index) => ({
                         id: index,

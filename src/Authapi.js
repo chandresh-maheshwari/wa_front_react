@@ -1291,7 +1291,7 @@ export default new (class AuthApi {
 
 
   async dynamicstatus(id) {
-    console.log(id)
+    // console.log(id)
     try {
       const url = `${Config.apiurl}${Config.apis.dynamicActive}${id}`;
       const token = ls('Token');

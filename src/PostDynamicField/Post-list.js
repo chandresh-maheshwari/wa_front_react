@@ -100,7 +100,7 @@ const PostDynamicList = () => {
                     dynamicColumns.push({
                         field: 'actions',
                         headerName: 'Actions',
-                        width: 200,
+                        width: 150,
                         cellClassName: 'wrap-text',
                         // flex: 1, 
                         renderCell: (params) => (
@@ -266,7 +266,7 @@ const PostDynamicList = () => {
                                         rows={searchQuery ? filteredRows : rows}
                                         columns={columns}
                                         initialState={{ pagination: { paginationModel: { page, pageSize } } }}
-                                        pageSizeOptions={[5, 10, 20]}
+                                        pageSizeOptions={[5, 10, 100]}
                                         checkboxSelection
                                         loading={loading}
                                         autoHeight={false}

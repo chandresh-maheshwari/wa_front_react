@@ -114,10 +114,15 @@ const DynamicList = () => {
                     [id]: newStatus === 1,
                 }));
 
+                const event = new CustomEvent('dynamicPostStatusChanged', {
+                    detail: { id, status: newStatus }
+                });
+                window.dispatchEvent(event);
+
+                fetchData();
             } else {
                 throw new Error('Failed to update status');
             }
-            fetchData()
         } catch (error) {
             console.error('Error:', error);
             Swal.fire('Error', 'Failed to update status', 'error');
@@ -159,7 +164,7 @@ const DynamicList = () => {
                         size="xs"
                         onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 1 : 0)}
                     />
-                    {console.log(params.row.status)}
+                    {/* {console.log(params.row.status)} */}
                 </strong>
             ),
         },
@@ -202,7 +207,7 @@ const DynamicList = () => {
                                         rows={searchQuery ? filteredRows : rows}
                                         columns={columns}
                                         initialState={{ pagination: { paginationModel } }}
-                                        pageSizeOptions={[5, 10, 20]}
+                                        pageSizeOptions={[5, 10, 100]}
                                         checkboxSelection
                                         loading={loading}
                                         autoHeight={false}

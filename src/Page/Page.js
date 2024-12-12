@@ -18,12 +18,12 @@ const Page = () => {
         const fetchPostTitles = async () => {
             try {
                 const response = await Authapi.dynamicListData();
-                console.log("API Response:", response);
+                // console.log("API Response:", response);
 
                 if (response && response.results) {
-                    console.log("Response Results:", response.results);
+                    // console.log("Response Results:", response.results);
                     const titles = response.results;
-                    console.log("Post Titles:", titles);
+                    // console.log("Post Titles:", titles);
 
 
                     if (Array.isArray(titles)) {
@@ -158,7 +158,7 @@ const Page = () => {
                                                 }}
                                                 error={!!errors.post_type}
                                             >
-                                                {console.log(postTitles)}
+                                                {/* {console.log(postTitles)} */}
                                                 {postTitles.length > 0 ? (
                                                     postTitles
                                                         .filter((title) => title.post_type === 'custom_post')
