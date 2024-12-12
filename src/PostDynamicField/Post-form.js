@@ -103,6 +103,46 @@ const PostFormDynamic = () => {
     };
 
     // Validation function
+    // const validate = () => {
+    //     const newErrors = {};
+    //     fields.forEach((field) => {
+    //         const value = formData[field.label] || '';
+    //         if (field.label && !value) {
+    //             newErrors[field.label] = 'This field is required';
+    //         } else if (field.type === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
+    //             newErrors[field.label] = 'Please enter a valid email address';
+    //         }
+
+
+    //         else if (field.type === 'password') {
+    //             // Minimum length check
+    //             if (value.length < 8) {
+    //                 newErrors[field.label] = 'Password must be at least 8 characters long';
+    //             }
+    //             const hasUpperCase = /[A-Z]/.test(value);
+    //             const hasLowerCase = /[a-z]/.test(value);
+    //             const hasNumbers = /[0-9]/.test(value);
+    //             const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
+
+    //             if (!hasUpperCase) {
+    //                 newErrors[field.label] = 'Password must contain at least one uppercase letter';
+    //             }
+    //             else if (!hasLowerCase) {
+    //                 newErrors[field.label] = 'Password must contain at least one lowercase letter';
+    //             }
+    //             else if (!hasNumbers) {
+    //                 newErrors[field.label] = 'Password must contain at least one number';
+    //             }
+    //             else if (!hasSpecialChar) {
+    //                 newErrors[field.label] = 'Password must contain at least one special character';
+    //             }
+    //         }
+    //     });
+
+    //     setErrors(newErrors);
+    //     return Object.keys(newErrors).length === 0;
+    // };
+
     const validate = () => {
         const newErrors = {};
         fields.forEach((field) => {
@@ -111,32 +151,27 @@ const PostFormDynamic = () => {
                 newErrors[field.label] = 'This field is required';
             } else if (field.type === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
                 newErrors[field.label] = 'Please enter a valid email address';
-            }
-
-            // Password validation
-            else if (field.type === 'password') {
-                // Minimum length check
-                if (value.length < 8) {
+            } else if (field.type === 'password') {
+                const passwordLength = value.length;
+                if (passwordLength < 8) {
                     newErrors[field.label] = 'Password must be at least 8 characters long';
-                }
+                } else if (passwordLength > 8) {
+                    newErrors[field.label] = 'Password must not exceed 8 characters';
+                } else {
+                    const hasUpperCase = /[A-Z]/.test(value);
+                    const hasLowerCase = /[a-z]/.test(value);
+                    const hasNumbers = /[0-9]/.test(value);
+                    const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
 
-                // Complexity checks
-                const hasUpperCase = /[A-Z]/.test(value);
-                const hasLowerCase = /[a-z]/.test(value);
-                const hasNumbers = /[0-9]/.test(value);
-                const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
-
-                if (!hasUpperCase) {
-                    newErrors[field.label] = 'Password must contain at least one uppercase letter';
-                }
-                else if (!hasLowerCase) {
-                    newErrors[field.label] = 'Password must contain at least one lowercase letter';
-                }
-                else if (!hasNumbers) {
-                    newErrors[field.label] = 'Password must contain at least one number';
-                }
-                else if (!hasSpecialChar) {
-                    newErrors[field.label] = 'Password must contain at least one special character';
+                    if (!hasUpperCase) {
+                        newErrors[field.label] = 'Password must contain at least one uppercase letter';
+                    } else if (!hasLowerCase) {
+                        newErrors[field.label] = 'Password must contain at least one lowercase letter';
+                    } else if (!hasNumbers) {
+                        newErrors[field.label] = 'Password must contain at least one number';
+                    } else if (!hasSpecialChar) {
+                        newErrors[field.label] = 'Password must contain at least one special character';
+                    }
                 }
             }
         });
