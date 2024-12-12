@@ -418,8 +418,6 @@ const Sidebar = () => {
                     )}
                   </Link>
                 </li>
-
-
                 {openPostId === post.id && (
                   <ul className={`nav-dropdown-items-dynamic_page-${post.id}`} id="nav-dropdown-items-dynamic_page">
                     <li className="nav-item">
@@ -436,9 +434,6 @@ const Sidebar = () => {
                 )}
               </li>
             ))}
-
-
-
             <li>
               <Link id="POST" className="nav-link nav-dropdown-toggle" to="#" onClick={toggleDropdown3}>
                 page
@@ -463,9 +458,6 @@ const Sidebar = () => {
                 </ul>
               )}
             </li>
-
-
-
           </ul>
         </div>
       </div>

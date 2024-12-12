@@ -84,6 +84,12 @@
   text-overflow: unset !important;
 }
 
+.MuiDataGrid-cellContent{
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+}
 .MuiDataGrid-root .MuiDataGrid-row {
   height: auto !important;
   max-height: none !important;
@@ -112,3 +118,15 @@
     line-height: normal;
     white-space: normal;
     }
+    
+/*css for pagination dropdown  */
+.MuiInputBase-colorPrimary{
+margin-bottom: 13px;
+}
+
+/* for word wrap */
+.MuiDataGrid-virtualScrollerRenderZone div{
+  /* background-color: brown !important; */
+  word-break: break-all !important;
+}
+

@@ -82,7 +82,8 @@ const PostDynamicList = () => {
                                             <img src={value} alt={displayValue} style={{ width: '50px', height: '50px' }} />
                                         ) : (
                                             <span className={`email-display-${safeValue}`}>
-                                                {isExpanded ? displayValue : `${displayValue.substring(0, 10)}`}
+                                                {/* {isExpanded ? displayValue : `${displayValue.substring(0, 10)}`} */}
+                                                {displayValue}
                                             </span>
                                         )}
 
@@ -298,4 +299,5 @@ const PostDynamicList = () => {
 };
 
 export default PostDynamicList;
+
 
