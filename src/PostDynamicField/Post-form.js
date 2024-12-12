@@ -375,7 +375,7 @@ const PostFormDynamic = () => {
                                         <Button
                                             style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
                                             type="button"
-                                            onClick={handleCancel}
+                                            onClick={() => (navigate('/post-list', { state: { post_title } }))}
                                         >
                                             Cancel
                                         </Button>
