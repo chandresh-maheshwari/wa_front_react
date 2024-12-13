@@ -97,19 +97,19 @@ const PostFormDynamic = () => {
     };
 
     // Validation function
-    // const validate = () => {
-    //     const newErrors = {};
-    //     fields.forEach((field) => {
-    //         const value = formData[field.label] || '';
-    //         if (field.label && !value) {
-    //             newErrors[field.label] = 'This field is required';
-    //         } else if (field.type === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
-    //             newErrors[field.label] = 'Please enter a valid email address';
-    //         }
-    //     });
-    //     setErrors(newErrors);
-    //     return Object.keys(newErrors).length === 0;
-    // };
+    const validate = () => {
+        const newErrors = {};
+        fields.forEach((field) => {
+            const value = formData[field.label] || '';
+            if (field.label && !value) {
+                newErrors[field.label] = 'This field is required';
+            } else if (field.type === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
+                newErrors[field.label] = 'Please enter a valid email address';
+            }
+        });
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -230,7 +230,7 @@ const PostFormDynamic = () => {
                                                         value={formData[field.label] || '#000000'}
                                                         onChange={handleInputChange(field.label, field.type)}
                                                         style={{
-                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px"
+                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
                                                         }}
                                                         className='color-code'
                                                     />
@@ -307,7 +307,7 @@ const PostFormDynamic = () => {
                                         <Button
                                             style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
                                             type="button"
-                                            onClick={handleCancel}
+                                            onClick={() => (navigate('/post-list', { state: { post_title } }))}
                                         >
                                             Cancel
                                         </Button>

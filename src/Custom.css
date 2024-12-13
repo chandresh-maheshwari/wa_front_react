@@ -1,6 +1,14 @@
 /* Sidebar arroe icon css */
 .Arrow-icon-Sidebar {
-  font-size: large;
+  font-size: medium;
+}
+
+#listing {
+  margin-top: -5px;
+}
+
+#Dynamic_POST {
+  margin-top: -14px;
 }
 
 .nav-dropdown-items-Dynamic_POST {
@@ -10,17 +18,25 @@
 
 .nav-dropdown-items-Dynamic_POST {
   display: block;
-  /* Visible when 'open' class is added */
+
 }
 
 #nav-dropdown-items-dynamic_page {
   display: none;
-  /* Initially hidden */
+
 }
 
 #nav-dropdown-items-dynamic_page {
   display: block;
-  /* Visible when 'open' class is added */
+
+}
+
+.nav-dropdown-items-Page {
+  display: none;
+}
+
+.nav-dropdown-items-Page {
+  display: block;
 }
 
 /* Css for navbar */
@@ -84,6 +100,13 @@
   text-overflow: unset !important;
 }
 
+.MuiDataGrid-cellContent {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+}
+
 .MuiDataGrid-root .MuiDataGrid-row {
   height: auto !important;
   max-height: none !important;
@@ -93,22 +116,72 @@
 /* .MuiDataGrid-root .MuiDataGrid-columnHeaders {
   overflow-x: hidden !important;
 } */
- /* .color-code fieldset{
+/* .color-code fieldset{
   border-style: none;
  } */
 
- .color-code .MuiInputBase-root .MuiOutlinedInput-notchedOutline{
+.color-code .MuiInputBase-root .MuiOutlinedInput-notchedOutline {
   border-style: none !important;
- }
-
-.MuiDataGrid-cell--withRenderer{
-    display: none;   
-      max-height: "168px !important"
 }
 
-.MuiDataGrid-cell{
-    /* display: none !important; */
+.MuiDataGrid-cell--withRenderer {
+  display: none;
+  max-height: "168px !important"
+}
 
-    line-height: normal;
-    white-space: normal;
-    }
+.MuiDataGrid-cell {
+  /* display: none !important; */
+
+  line-height: normal;
+  white-space: normal;
+}
+
+/*css for pagination dropdown  */
+.MuiInputBase-colorPrimary {
+  margin-bottom: 13px;
+}
+
+/* css  pagination back next*/
+.MuiTablePagination-actions {
+  margin-top: -12px;
+}
+
+
+/* for word wrap */
+.MuiDataGrid-virtualScrollerRenderZone div {
+  /* background-color: brown !important; */
+  word-break: break-all !important;
+}
+
+/* sidebar hover menu css */
+.nav-item {
+  position: relative;
+}
+
+.nav-item:hover {
+  background-color: #304d5b;
+}
+
+.nav-dropdown-items {
+  display: none;
+}
+
+.nav-item:hover .nav-dropdown-items {
+  display: block;
+}
+
+.nav-dropdown-items li {
+  padding: 10px;
+}
+
+.nav-dropdown-items li:hover {
+  background-color: #304d5b;
+}
+
+/* .slideractive {
+  background-color: #c2cddf;
+} */
+.nav-item.active {
+  background-color: #304d5b;
+  /* Change to desired active color */
+}

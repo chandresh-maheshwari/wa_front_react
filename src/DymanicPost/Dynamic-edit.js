@@ -45,7 +45,7 @@ const DynamicEditForm = ({ existingData }) => {
             const fetchData = async () => {
                 try {
                     const response = await Authapi.dynamicEditData(id);
-                    console.log(response)
+                    // console.log(response)
                     setFormData(response);
                     setFields(response.post_description.map((desc, index) => ({
                         id: index,
@@ -64,6 +64,17 @@ const DynamicEditForm = ({ existingData }) => {
 
     const handleAddField = () => {
         setFields([...fields, { id: Date.now(), label: '', type: '', value: '', options: [] }]);
+    };
+
+
+    const handleAddFieldAfter = (id) => {
+        const newField = { id: Date.now(), label: '', type: '', value: '', options: [] };
+        const index = fields.findIndex(field => field.id === id);
+        setFields([
+            ...fields.slice(0, index + 1),
+            newField,
+            ...fields.slice(index + 1)
+        ]);
     };
 
     const handleInputChange = (e, id) => {
@@ -252,7 +263,7 @@ const DynamicEditForm = ({ existingData }) => {
                                                 </FormControl>
                                             </Grid>
 
-                                            <Grid item xs={12} sm={4}>
+                                            <Grid item xs={12} sm={2}>
                                                 <Button
                                                     variant="contained"
                                                     color="error"
@@ -267,6 +278,22 @@ const DynamicEditForm = ({ existingData }) => {
                                                     }}
                                                 >
                                                     <MdDelete />
+                                                </Button>
+                                            </Grid>
+                                            <Grid item xs={12} sm={2}>
+                                                <Button
+                                                    variant="contained"
+                                                    onClick={() => handleAddFieldAfter(field.id)}
+                                                    style={{
+                                                        marginTop: '15px',
+                                                        fontSize: "larger",
+                                                        backgroundColor: '#2c9dd4',
+                                                        '&:hover': {
+                                                            backgroundColor: '#1565c0'
+                                                        }
+                                                    }}
+                                                >
+                                                    <FaCirclePlus />
                                                 </Button>
                                             </Grid>
                                         </Grid>

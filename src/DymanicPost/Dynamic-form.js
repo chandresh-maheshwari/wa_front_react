@@ -16,20 +16,29 @@ const DynamicForm = () => {
         value: '',
         options: []
     }]);
-    // const [post_title, setTitle] = useState('');
-    // const [post_type, setPosttype] = useState('');
-    // const [ordering, setOrdering] = useState('');
     const [formData, setFormData] = useState({
         post_title: '',
         post_type: '',
         ordering: '',
-    })
-
+    });
 
     const navigate = useNavigate();
 
     const handleAddField = () => {
-        setFields([...fields, { id: Date.now(), label: '', type: '', value: '', options: [] }]);
+        setFields([
+            ...fields,
+            { id: Date.now(), label: '', type: '', value: '', options: [] }
+        ]);
+    };
+
+    const handleAddFieldAfter = (id) => {
+        const newField = { id: Date.now(), label: '', type: '', value: '', options: [] };
+        const index = fields.findIndex(field => field.id === id);
+        setFields([
+            ...fields.slice(0, index + 1),
+            newField,
+            ...fields.slice(index + 1)
+        ]);
     };
 
     const handleInputChange = (e, id) => {
@@ -141,7 +150,6 @@ const DynamicForm = () => {
                                             >
                                                 <MenuItem value="custom_post">Custom Post</MenuItem>
                                                 <MenuItem value="normal_post">Normal Post</MenuItem>
-
                                             </Select>
                                         </FormControl>
                                     </Grid>
@@ -192,13 +200,11 @@ const DynamicForm = () => {
                                                         <MenuItem value="url">Url</MenuItem>
                                                         <MenuItem value="dropdown">Dropdown</MenuItem>
                                                         <MenuItem value="color">Color</MenuItem>
-
                                                     </Select>
                                                 </FormControl>
                                             </Grid>
 
-
-                                            <Grid item xs={12} sm={4}>
+                                            <Grid item xs={12} sm={2}>
                                                 <Button
                                                     variant="contained"
                                                     color="error"
@@ -215,10 +221,25 @@ const DynamicForm = () => {
                                                     <MdDelete />
                                                 </Button>
                                             </Grid>
+
+                                            <Grid item xs={12} sm={2}>
+                                                <Button
+                                                    variant="contained"
+                                                    onClick={() => handleAddFieldAfter(field.id)}
+                                                    style={{
+                                                        marginTop: '15px',
+                                                        fontSize: "larger",
+                                                        backgroundColor: '#2c9dd4',
+                                                        '&:hover': {
+                                                            backgroundColor: '#1565c0'
+                                                        }
+                                                    }}
+                                                >
+                                                    <FaCirclePlus />
+                                                </Button>
+                                            </Grid>
                                         </Grid>
 
-
-                                        {/* Handle Dropdown, Checkbox, Radio options */}
                                         {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
                                             <Grid item xs={12} sm={4}>
                                                 <TextField
@@ -234,8 +255,6 @@ const DynamicForm = () => {
                                                 />
                                             </Grid>
                                         )}
-
-
                                     </div>
                                 ))}
 
@@ -262,17 +281,17 @@ const DynamicForm = () => {
                                     </Grid>
                                     <Grid item>
                                         <Button style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
-                                            onClick={() => (navigate('/dynamic-list-data'))}
-                                         >
-                                        Cancel
-                                    </Button>
+                                            onClick={() => navigate('/dynamic-list-data')}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </form>
-                    </Container>
+                            </form>
+                        </Container>
+                    </div>
                 </div>
-            </div>
-        </div >
+            </div >
         </>
     );
 };
