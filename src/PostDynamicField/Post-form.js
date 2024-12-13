@@ -298,7 +298,7 @@ const PostFormDynamic = () => {
                                                         value={formData[field.label] || '#000000'}
                                                         onChange={handleInputChange(field.label, field.type)}
                                                         style={{
-                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px"
+                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
                                                         }}
                                                         className='color-code'
                                                     />

@@ -174,7 +174,7 @@
   padding: 10px;
 }
 
-.nav-dropdown-items li:hover {    
+.nav-dropdown-items li:hover {
   background-color: #304d5b;
 }
 
@@ -182,6 +182,6 @@
   background-color: #c2cddf;
 } */
 .nav-item.active {
-  background-color:  #304d5b; /* Change to desired active color */
+  background-color: #304d5b;
+  /* Change to desired active color */
 }
-
