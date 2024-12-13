@@ -1290,6 +1290,9 @@ export default new (class AuthApi {
 
 
 
+
+
+  
   async dynamicstatus(id) {
     // console.log(id)
     try {

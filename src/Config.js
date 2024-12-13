@@ -91,6 +91,7 @@ export default {
     postActive: 'api/post-page-active/',
     postEdit: 'api/post-page-edit/',
     postUpdate: 'api/post-page-update/',
+    
 
     dynamicstore: 'api/dynamic-post-store',
     dynamicList: 'api/dynamic-post-list',

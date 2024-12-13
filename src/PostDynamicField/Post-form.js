@@ -97,19 +97,19 @@ const PostFormDynamic = () => {
     };
 
     // Validation function
-    const validate = () => {
-        const newErrors = {};
-        fields.forEach((field) => {
-            const value = formData[field.label] || '';
-            if (field.label && !value) {
-                newErrors[field.label] = 'This field is required';
-            } else if (field.type === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
-                newErrors[field.label] = 'Please enter a valid email address';
-            }
-        });
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    // const validate = () => {
+    //     const newErrors = {};
+    //     fields.forEach((field) => {
+    //         const value = formData[field.label] || '';
+    //         if (field.label && !value) {
+    //             newErrors[field.label] = 'This field is required';
+    //         } else if (field.type === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
+    //             newErrors[field.label] = 'Please enter a valid email address';
+    //         }
+    //     });
+    //     setErrors(newErrors);
+    //     return Object.keys(newErrors).length === 0;
+    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
