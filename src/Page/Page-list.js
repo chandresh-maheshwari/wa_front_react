@@ -40,6 +40,7 @@ const PageList = () => {
                     id: item.id,
                     sr_no: index + 1,
                     status: item.status,
+                    page_status: item.page_status,
                     page_name: item.page_name,
                     page_description: item.page_description,
                     image_url: item.image_url,
@@ -114,10 +115,32 @@ const PageList = () => {
 
 
     const paginationModel = { page: 0, pageSize: 5 };
+
+    // first active btn 
     const getActive = async (id, currentStatus) => {
         try {
             const newStatus = currentStatus === 1 ? 0 : 1;
             const response = await Authapi.pagestatus(id, newStatus);
+            if (response) {
+
+                setActiveStates((prevStates) => ({
+                    ...prevStates,
+                    [id]: newStatus === 1,
+                }));
+                fetchData()
+            } else {
+                throw new Error('Failed to update status');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire('Error', 'Failed to update status', 'error');
+        }
+    };
+    // section active btn 
+    const getActive1 = async (id, currentStatus) => {
+        try {
+            const newStatus = currentStatus === 1 ? 0 : 1;
+            const response = await Authapi.pageActive(id, newStatus);
             if (response) {
 
                 setActiveStates((prevStates) => ({
@@ -180,6 +203,12 @@ const PageList = () => {
                         checked={params.row.status}
                         size="xs"
                         onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 0 : 1)}
+                    />
+                    <Switch
+                        key={params.row.id}
+                        checked={params.row.page_status}
+                        size="xs"
+                        onChange={() => getActive1(params.row.id, activeStates[params.row.id] ? 0 : 1)}
                     />
                 </strong>
             ),

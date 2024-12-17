@@ -1292,7 +1292,7 @@ export default new (class AuthApi {
 
 
 
-  
+
   async dynamicstatus(id) {
     // console.log(id)
     try {
@@ -1626,5 +1626,29 @@ export default new (class AuthApi {
       throw error;
     }
   }
+
+  async pageActive(id) {
+    console.log(id)
+    try {
+      const url = `${Config.apiurl}${Config.apis.pageActive1}${id}`;
+      const token = ls('Token');
+      this.setHeaders("post");
+      const response = await axios.post(url, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("API Error:", error);
+      throw error;
+    }
+  }
+
+
+
+
+
 
 })();

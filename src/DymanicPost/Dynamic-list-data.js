@@ -152,7 +152,7 @@ const DynamicList = () => {
                         <BiEditAlt />
                     </Link>
                     <button
-                        className='btnkkk btn-oblong btn-danger btn-sm'
+                        // className='btnkkk btn-oblong btn-danger btn-sm'
                         title="Soft Delete"
                         onClick={() => handleDelete(params.row.id)}
                     >

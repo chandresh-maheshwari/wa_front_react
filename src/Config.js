@@ -7,7 +7,7 @@ export default {
 
 
   apiurl: process.env.NODE_ENV === "development"
-    ? "http://wafront.localhost.com/"
+    ? "http://wa_front.localhost.com/"
     // : "https://hrmsapi.cherrypiksoftware.com/",
     : "http://hrmsstagingapi.cherrypiksoftware.com/",
 
@@ -91,7 +91,7 @@ export default {
     postActive: 'api/post-page-active/',
     postEdit: 'api/post-page-edit/',
     postUpdate: 'api/post-page-update/',
-    
+
 
     dynamicstore: 'api/dynamic-post-store',
     dynamicList: 'api/dynamic-post-list',
@@ -114,8 +114,10 @@ export default {
     pageList: 'api/page-list',
     pageEdit: 'api/page-edit/',
     pageUpdate: 'api/page-update/',
-    pageDelele:'api/page-delete/',
-    pageActie:'api/page-active/',
+    pageDelele: 'api/page-delete/',
+    pageActie: 'api/page-active/',
+
+    pageActive1: 'api/page-status/'
 
   },
 };
