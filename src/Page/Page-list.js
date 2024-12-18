@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 import Swal from 'sweetalert2';
-import { BiEditAlt } from "react-icons/bi";
+import { FaEdit } from "react-icons/fa";
 import { MdDelete, MdOutlineCancel } from "react-icons/md";
-import { Container, TextField, Button, Grid } from '@mui/material';
+import { Container, TextField, Button, Grid, IconButton, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from "react-router-dom";
 import Authapi from '../Authapi';
@@ -69,8 +69,8 @@ const PageList = () => {
 
         const filteredData = rows.filter((row) =>
             row.page_name.toLowerCase().includes(query) ||
-            row.page_description.toLowerCase().includes(query) ||
-            row.ordering.toString().includes(query)
+            row.ordering.toLowerCase().includes(query)
+
         );
         setFilteredRows(filteredData);
     };
@@ -183,33 +183,69 @@ const PageList = () => {
             headerName: 'Actions',
             width: 150,
             flex: 1,
+            // renderCell: (params) => (
+            //     <strong>
+            //         <Link
+            //             to={`/Page-edit/${params.row.id}`}
+            //             className="btn btn-primary m-2"
+            //             style={{ backgroundColor: "#113b4f" }}
+            //             id="edit"
+            //             title="Edit"
+            //         >
+            //             <BiEditAlt />
+            //         </Link>
+            //         <button className='btnkkk btn-oblong btn-danger btn-sm' title="Soft Delete"
+            //             onClick={() => handleDelete(params.row.id)}>
+            //             <MdDelete />
+            //         </button>
+            //         <Switch
+            //             key={params.row.id}
+            //             checked={params.row.status}
+            //             size="xs"
+            //             onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 0 : 1)}
+            //         />
+            //         <Switch
+            //             key={params.row.id}
+            //             checked={params.row.page_status}
+            //             size="xs"
+            //             onChange={() => getActive1(params.row.id, activeStates[params.row.id] ? 0 : 1)}
+            //         />
+            //     </strong>
+            // ),
             renderCell: (params) => (
-                <strong>
-                    <Link
-                        to={`/Page-edit/${params.row.id}`}
-                        className="btn btn-primary m-2"
-                        style={{ backgroundColor: "#113b4f" }}
-                        id="edit"
-                        title="Edit"
-                    >
-                        <BiEditAlt />
-                    </Link>
-                    <button className='btnkkk btn-oblong btn-danger btn-sm' title="Soft Delete"
-                        onClick={() => handleDelete(params.row.id)}>
-                        <MdDelete />
-                    </button>
-                    <Switch
-                        key={params.row.id}
-                        checked={params.row.status}
-                        size="xs"
-                        onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 0 : 1)}
-                    />
-                    <Switch
-                        key={params.row.id}
-                        checked={params.row.page_status}
-                        size="xs"
-                        onChange={() => getActive1(params.row.id, activeStates[params.row.id] ? 0 : 1)}
-                    />
+                <strong onClick={(e) => e.stopPropagation()}>
+                    <Tooltip title="Update">
+                        <IconButton aria-label="Update" color='primary' className='Edit-list' >
+                            <Link
+                                to={`/Page-edit/${params.row.id}`}
+                                id="edit"
+                                className='m-2'
+                            >
+                                <FaEdit />
+                            </Link>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                        <IconButton aria-label="delete" color='primary'>
+                            <MdDelete onClick={() => handleDelete(params.row.id)} />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Active">
+                        <Switch
+                            key={params.row.id}
+                            checked={params.row.status}
+                            size="xs"
+                            onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 0 : 1)}
+                        />
+                    </Tooltip>
+                    <Tooltip title="Active">
+                        <Switch
+                            key={params.row.id}
+                            checked={params.row.page_status}
+                            size="xs"
+                            onChange={() => getActive1(params.row.id, activeStates[params.row.id] ? 0 : 1)}
+                        />
+                    </Tooltip>
                 </strong>
             ),
         },

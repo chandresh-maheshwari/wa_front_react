@@ -1647,6 +1647,52 @@ export default new (class AuthApi {
   }
 
 
+  async contactListData() {
+    try {
+      const url = Config.apiurl + Config.apis.contactlist;
+      const token = ls('Token');
+      this.setHeaders("get");
+      let data = await axios
+        .get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((error) => {
+          return false;
+        });
+      return data;
+    } catch (error) {
+      return false;
+    }
+  }
+
+
+
+
+  async contactdelete(id) {
+    try {
+      const url = Config.apiurl + Config.apis.contactdelete + id;
+      console.log(url)
+      const token = ls('Token');
+      this.setHeaders("delete");
+      const response = await axios.delete(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
 
 
 

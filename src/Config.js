@@ -117,7 +117,10 @@ export default {
     pageDelele: 'api/page-delete/',
     pageActie: 'api/page-active/',
 
-    pageActive1: 'api/page-status/'
+    pageActive1: 'api/page-status/',
+
+    contactlist: 'api/contact-page-list',
+    contactdelete: 'api/contact-page-delete/'
 
   },
 };

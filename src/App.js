@@ -4,38 +4,38 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./Dashboard/Dashboard";
 import "./App.css"
 import "./Service/Addrvices.css";
-import Addrvices from "./Service/Addrvices";
+// import Addrvices from "./Service/Addrvices";
 // import Servicelist from "./Servicelist";
 import Servicenave from "./Service/Servicenave";
-import Servicelist from "./Service/Servicelist"
+// import Servicelist from "./Service/Servicelist"
 import Login from "./Login/Login";
 import ForgetPasswordForm from "./Login/ForgetPassword";
-import Testimonial from "./Testimonial/Testimonial";
-import Testimonial_List from "./Testimonial/Testimonial_List";
-import Testimonialedit from "./Testimonial/Testimonialedit";
-import ProducerForm from "./P_Reciver/P_Reciver";
+// import Testimonial from "./Testimonial/Testimonial";
+// import Testimonial_List from "./Testimonial/Testimonial_List";
+// import Testimonialedit from "./Testimonial/Testimonialedit";
+// import ProducerForm from "./P_Reciver/P_Reciver";
 import Sidebar from "./Sidebar/Sidebar";
 import MaybeshowNavbar from "./MaybeshowNavbar";
-import EditServiceForm from "./Service/EditServiceForm";
-import Topmenu from "./Menu/TopMenu";
-import Navbar from "./Navbar/Navbar";
-import NavbarListData from "./Navbar/NabarList";
-import Home from "./Home/Home";
-import HomeListData from "./Home/HomeList";
-import Topmanuedit from "./Menu/TopMenuEdit";
-import NavbarEdit from "./Navbar/NavbarEdit";
-import HomeEditform from "./Home/Homeedit";
-import ReciversrEditForm from "./P_Reciver/ProducerReciverEdit";
-import Quote from "./Quote_section/Quote";
-import QuoteEditForm from "./Quote_section/QuoteEdit";
-import WestAccount from "./West_account/Westacc";
-import WestAccountEdit from "./West_account/westaccEdit";
-import ImpoveData from "./Improve_prodection/Improve";
-import ImpoveDataEdit from "./Improve_prodection/ImproveEdit";
-import ProducerList from "./P_Reciver/producerList";
-import QuoteList from "./Quote_section/QuoteList";
-import WestAccountList from "./West_account/WasteList";
-import ImpoveDataList from "./Improve_prodection/ImproveList";
+// import EditServiceForm from "./Service/EditServiceForm";
+// import Topmenu from "./Menu/TopMenu";
+// import Navbar from "./Navbar/Navbar";
+// import NavbarListData from "./Navbar/NabarList";
+// import Home from "./Home/Home";
+// import HomeListData from "./Home/HomeList";
+// import Topmanuedit from "./Menu/TopMenuEdit";
+// import NavbarEdit from "./Navbar/NavbarEdit";
+// import HomeEditform from "./Home/Homeedit";
+// import ReciversrEditForm from "./P_Reciver/ProducerReciverEdit";
+// import Quote from "./Quote_section/Quote";
+// import QuoteEditForm from "./Quote_section/QuoteEdit";
+// import WestAccount from "./West_account/Westacc";
+// import WestAccountEdit from "./West_account/westaccEdit";
+// import ImpoveData from "./Improve_prodection/Improve";
+// import ImpoveDataEdit from "./Improve_prodection/ImproveEdit";
+// import ProducerList from "./P_Reciver/producerList";
+// import QuoteList from "./Quote_section/QuoteList";
+// import WestAccountList from "./West_account/WasteList";
+// import ImpoveDataList from "./Improve_prodection/ImproveList";
 
 
 
@@ -53,6 +53,9 @@ import PageEdit from "./Page/Page-edit";
 import PageList from "./Page/Page-list";
 
 
+import Contact from "./Page/Contact-listing";
+
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -65,7 +68,7 @@ const App = () => {
         <Route path="/ForgetPassword" element={<ForgetPasswordForm />} />
 
         <Route exact path="/Dashboard" element={<Dashboard />} />
-        <Route exact path="/Addrvices" element={<Addrvices />} />
+        {/* <Route exact path="/Addrvices" element={<Addrvices />} />
         <Route exact path="/Servicelist" element={<Servicelist />} />
         <Route exact path="/EditServiceForm/:id" element={<EditServiceForm />} />
         <Route exact path="/Testimonial" element={<Testimonial />} />
@@ -90,7 +93,7 @@ const App = () => {
         <Route exact path="/producerList" element={<ProducerList />} />
         <Route exact path="/QuoteList" element={<QuoteList />} />
         <Route exact path="/WasteList" element={<WestAccountList />} />
-        <Route exact path="/ImproveList" element={<ImpoveDataList />} />
+        <Route exact path="/ImproveList" element={<ImpoveDataList />} /> */}
 
 
         <Route exact path="/dynamic-form" element={<Dynamicform />} />
@@ -104,6 +107,8 @@ const App = () => {
         <Route exact path="/Page-list" element={<PageList />} />
 
         <Route path="/Page-edit/:id" element={<PageEdit />} />
+        <Route exact path="/Contact-listing" element={<Contact />} />
+
 
 
 

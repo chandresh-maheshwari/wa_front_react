@@ -1,10 +1,10 @@
-import { Container, Button } from '@mui/material';
+import { Container, Button, IconButton, Tooltip } from '@mui/material';
 import Authapi from '../Authapi';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
-import { BiEditAlt } from 'react-icons/bi';
+import { FaEdit } from "react-icons/fa";
 import { MdDelete, MdOutlineCancel } from 'react-icons/md';
 import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
@@ -42,21 +42,35 @@ const PostDynamicList = () => {
         try {
             const response = await Authapi.postdynamicListData(post_title);
             // console.log(post_title)
-            console.log("sddf", response)
+            console.log("sddf", response.results)
+
 
             if (response.status === true) {
-                const formattedRows = response.results.map((item, index) => ({
-                    id: item.id,
-                    status: item.status,
-                    sr_No: index + 1,
-                    ...item.data,
-                }));
+                const formattedRows = response.results.map((item, index) => {
+                    const filteredData = Object.keys(item.data)
+                        .filter(key => !key.includes('_'))
+                        .reduce((obj, key) => {
+                            obj[key] = item.data[key];
+                            return obj;
+                        }, {});
+
+                    return {
+                        id: item.id,
+                        status: item.status,
+                        sr_No: index + 1,
+                        ...filteredData,
+                    };
+                });
+
+
+                console.log(formattedRows);
+
                 const sortedData = formattedRows.sort((a, b) => b.id - a.id);
                 const dataWithSrNo = sortedData.map((item, index) => ({
                     ...item,
                     sr_No: index + 1,
                 }));
-
+                // console.log(dataWithSrNo)
 
                 setRows(dataWithSrNo);
 
@@ -71,6 +85,7 @@ const PostDynamicList = () => {
 
                             renderCell: (params) => {
                                 const value = params.row[key];
+                                // console.log("prms", params)
                                 const isExpanded = expandedEmails[params.row.id];
                                 const displayValue = typeof value === 'string' ? value : (value !== undefined && value !== null ? String(value) : "-");
                                 const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
@@ -101,35 +116,35 @@ const PostDynamicList = () => {
                         field: 'actions',
                         headerName: 'Actions',
                         width: 150,
-                        cellClassName: 'wrap-text',
-                        // flex: 1, 
+                        cellClassName: 'wrap-text',                       
                         renderCell: (params) => (
                             <strong onClick={(e) => e.stopPropagation()}>
-                                <Link
-                                    className="btn btn-primary m-2"
-                                    style={{ backgroundColor: '#113b4f' }}
-                                    id="edit"
-                                    title="Edit"
-                                    to={{
-                                        pathname: `/post-edit/${params.row.id}`,
-                                    }}
-                                    state={{ post_title: post_title }}
-                                >
-                                    <BiEditAlt />
-                                </Link>
-                                <button
-                                    className="btnkkk btn-oblong btn-danger btn-sm"
-                                    title="Soft Delete"
-                                    onClick={() => handleDelete(params.row.id)}
-                                >
-                                    <MdDelete />
-                                </button>
-                                <Switch
-                                    key={params.row.id}
-                                    checked={params.row.status}
-                                    size="xs"
-                                    onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 0 : 1)}
-                                />
+                                <Tooltip title="Update">
+                                    <IconButton aria-label="Update" className='Edit-list' >
+                                        <Link
+                                            to={{
+                                                pathname: `/post-edit/${params.row.id}`,
+                                            }}
+                                            state={{ post_title: post_title }}
+                                            className='m-2'
+                                        >
+                                            <FaEdit />
+                                        </Link>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Delete">
+                                    <IconButton aria-label="delete" color='primary'>
+                                        <MdDelete onClick={() => handleDelete(params.row.id)} />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Active">
+                                    <Switch
+                                        key={params.row.id}
+                                        checked={params.row.status}
+                                        size="xs"
+                                        onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 1 : 0)}
+                                    />
+                                </Tooltip>
                             </strong>
                         ),
                     });

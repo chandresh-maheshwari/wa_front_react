@@ -1,15 +1,16 @@
-import { Container, Button } from '@mui/material';
+import { Container, Button, IconButton, Tooltip } from '@mui/material';
 import Authapi from '../Authapi';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
-import { BiEditAlt } from 'react-icons/bi';
+import { FaEdit } from "react-icons/fa";
 import { MdDelete, MdOutlineCancel } from 'react-icons/md';
 import "../Custom.css";
 import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
 // import '../Navbar.css'
+// import DeleteIcon from '@mui/icons-material/Delete';
 
 const DynamicList = () => {
     const [rows, setRows] = useState([]);
@@ -142,29 +143,29 @@ const DynamicList = () => {
             flex: 1,
             renderCell: (params) => (
                 <strong onClick={(e) => e.stopPropagation()}>
-                    <Link
-                        to={`/dynamic-edit/${params.row.id}`}
-                        className="btn btn-primary m-2"
-                        style={{ backgroundColor: '#113b4f' }}
-                        id="edit"
-                        title="Edit"
-                    >
-                        <BiEditAlt />
-                    </Link>
-                    <button
-                        // className='btnkkk btn-oblong btn-danger btn-sm'
-                        title="Soft Delete"
-                        onClick={() => handleDelete(params.row.id)}
-                    >
-                        <MdDelete />
-                    </button>
-                    <Switch
-                        key={params.row.id}
-                        checked={params.row.status}
-                        size="xs"
-                        onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 1 : 0)}
-                    />
-                    {/* {console.log(params.row.status)} */}
+                    <Tooltip title="Update">
+                        <IconButton aria-label="Update" color='primary' className='Edit-list' >
+                            <Link
+                                to={`/dynamic-edit/${params.row.id}`}
+                                id="edit"
+                            >
+                                <FaEdit />
+                            </Link>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                        <IconButton aria-label="delete" color='primary'>
+                            <MdDelete onClick={() => handleDelete(params.row.id)} />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Active">
+                        <Switch
+                            key={params.row.id}
+                            checked={params.row.status}
+                            size="xs"
+                            onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 1 : 0)}
+                        />
+                    </Tooltip>
                 </strong>
             ),
         },

@@ -185,3 +185,9 @@
   background-color: #304d5b;
   /* Change to desired active color */
 }
+
+/* post edit  bg color  */
+
+.Edit-list a {
+  color: #1976d2;
+}
