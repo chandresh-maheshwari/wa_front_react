@@ -34,7 +34,7 @@ const PageList = () => {
     const fetchData = async () => {
         try {
             const response = await Authapi.pageListData();
-            console.log("API Response:", response);
+            // console.log("API Response:", response);
             if (Array.isArray(response.results)) {
                 const formattedData = response.results.map((item, index) => ({
                     id: item.id,
@@ -43,7 +43,7 @@ const PageList = () => {
                     page_status: item.page_status,
                     page_name: item.page_name,
                     page_description: item.page_description,
-                    image_url: item.image_url,
+                    image: item.image,
                     ordering: item.ordering,
                     // post_type: item.post_type,
 
@@ -63,22 +63,55 @@ const PageList = () => {
         }
     };
 
+    // const handleSearch = (event) => {
+    //     const query = event.target.value.toLowerCase();
+    //     setSearchQuery(query);
+
+    //     const filteredData = rows.filter((row) =>
+    //         row.page_name.toLowerCase().includes(query) ||
+    //         row.ordering.toLowerCase().includes(query)
+
+    //     );
+    //     setFilteredRows(filteredData);
+    // };
+    // const handleSearch = (event) => {
+    //     const query = event.target.value;
+    //     setSearchQuery(query);
+
+    //     if (query) {
+    //         const filtered = rows.filter((row) => {
+
+    //             return Object.values(row).some((value) =>
+    //                 String(value).toLowerCase().includes(query.toLowerCase())
+    //             );
+    //         });
+    //         setFilteredRows(filtered);
+    //     } else {
+    //         setFilteredRows(rows);
+    //     }
+    // };.
     const handleSearch = (event) => {
-        const query = event.target.value.toLowerCase();
+        const query = event.target.value.trim();
         setSearchQuery(query);
 
-        const filteredData = rows.filter((row) =>
-            row.page_name.toLowerCase().includes(query) ||
-            row.ordering.toLowerCase().includes(query)
-
-        );
-        setFilteredRows(filteredData);
+        if (query) {
+            const filtered = rows.filter((row) => {
+                return Object.values(row).some((value) =>
+                    String(value).toLowerCase().includes(query.toLowerCase())
+                );
+            });
+            setFilteredRows(filtered);
+        } else {
+            setFilteredRows(rows);
+        }
     };
 
-    const handleCancel = () => {
-        setSearchQuery('');
-        fetchData();
-    };
+    // const handleCancel = () => {
+    //     setSearchQuery('');
+    //     setFilteredRows(rows);
+    //     fetchData();
+    // };
+
     const handleSelectionChange = (newSelection) => {
         setSelectedRows(newSelection);
     };
@@ -169,7 +202,7 @@ const PageList = () => {
             flex: 1,
             renderCell: (params) => (
                 <img
-                    src={params.row.image_url}
+                    src={params.row.image}
                     alt="Page"
                     style={{ width: '50%', height: 'auto' }}
                 />
@@ -230,7 +263,7 @@ const PageList = () => {
                             <MdDelete onClick={() => handleDelete(params.row.id)} />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Active">
+                    <Tooltip title=" Page Active">
                         <Switch
                             key={params.row.id}
                             checked={params.row.status}
@@ -238,7 +271,7 @@ const PageList = () => {
                             onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 0 : 1)}
                         />
                     </Tooltip>
-                    <Tooltip title="Active">
+                    <Tooltip title=" Inner Page Active">
                         <Switch
                             key={params.row.id}
                             checked={params.row.page_status}
@@ -267,15 +300,15 @@ const PageList = () => {
                             <div style={{ width: '100%', marginTop: '20px', marginBottom: "45px" }}>
                                 <h4>Page Listing</h4>
                                 <input
-                                    type='text'
+                                    type='search'
                                     className='form-control form control navbar-search'
                                     placeholder='Search'
                                     value={searchQuery}
                                     onChange={handleSearch}
                                 />
-                                <Button className='text-dark' style={{ marginTop: "-96px", marginLeft: "92%" }} onClick={handleCancel}>
+                                {/* <Button className='text-dark' style={{ marginTop: "-96px", marginLeft: "92%" }} onClick={handleCancel}>
                                     <MdOutlineCancel style={{ marginLeft: "30px" }} />
-                                </Button>
+                                </Button> */}
                                 <div style={{ width: '100%', height: '400px', overflowY: 'auto' }}>
                                     <DataGrid
                                         rows={searchQuery ? filteredRows : rows}

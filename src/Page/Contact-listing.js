@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import Swal from 'sweetalert2';
 import { FaEdit } from "react-icons/fa";
 import { MdDelete, MdOutlineCancel } from "react-icons/md";
@@ -7,11 +6,11 @@ import { Container, TextField, Button, Grid, IconButton, Tooltip } from '@mui/ma
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from "react-router-dom";
 import Authapi from '../Authapi';
-
 import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
 import { useNavigate } from 'react-router-dom';
+import '../Custom.css'
 
 const Contact = () => {
 
@@ -59,24 +58,38 @@ const Contact = () => {
         }
     };
 
+    // const handleSearch = (event) => {
+    //     const query = event.target.value.toLowerCase();
+    //     setSearchQuery(query);
+
+    //     const filteredData = rows.filter((row) =>
+    //         row.name.toLowerCase().includes(query) ||
+    //         row.email.toLowerCase().includes(query) ||
+    //         row.contact_number.toString().includes(query) ||
+    //         row.description.toString().includes(query)
+
+    //     );
+    //     setFilteredRows(filteredData);
+    // };
     const handleSearch = (event) => {
-        const query = event.target.value.toLowerCase();
+        const query = event.target.value.trim();
         setSearchQuery(query);
 
-        const filteredData = rows.filter((row) =>
-            row.name.toLowerCase().includes(query) ||
-            row.email.toLowerCase().includes(query) ||
-            row.contact_number.toString().includes(query) ||
-            row.description.toString().includes(query)
-
-        );
-        setFilteredRows(filteredData);
+        if (query) {
+            const filtered = rows.filter((row) => {
+                return Object.values(row).some((value) =>
+                    String(value).toLowerCase().includes(query.toLowerCase())
+                );
+            });
+            setFilteredRows(filtered);
+        } else {
+            setFilteredRows(rows);
+        }
     };
-
-    const handleCancel = () => {
-        setSearchQuery('');
-        fetchData();
-    };
+    // const handleCancel = () => {
+    //     setSearchQuery('');
+    //     fetchData();
+    // };
     const handleSelectionChange = (newSelection) => {
         setSelectedRows(newSelection);
     };
@@ -118,7 +131,7 @@ const Contact = () => {
 
 
 
-    const columns = [      
+    const columns = [
         { field: 'sr_no', headerName: 'Sr.No', width: 90, flex: 1 },
         { field: 'name', headerName: 'Name', width: 90, flex: 1 },
         { field: 'email', headerName: 'Email', width: 90, flex: 1 },
@@ -158,15 +171,15 @@ const Contact = () => {
                             <div style={{ width: '100%', marginTop: '20px', marginBottom: "45px" }}>
                                 <h4>Contact Us</h4>
                                 <input
-                                    type='text'
+                                    type='search'
                                     className='form-control form control navbar-search'
                                     placeholder='Search'
                                     value={searchQuery}
                                     onChange={handleSearch}
                                 />
-                                <Button className='text-dark' style={{ marginTop: "-96px", marginLeft: "92%" }} onClick={handleCancel}>
+                                {/* <Button className='text-dark' style={{ marginTop: "-96px", marginLeft: "92%" }} onClick={handleCancel}>
                                     <MdOutlineCancel style={{ marginLeft: "30px" }} />
-                                </Button>
+                                </Button> */}
                                 <div style={{ width: '100%', height: '400px', overflowY: 'auto' }}>
                                     <DataGrid
                                         rows={searchQuery ? filteredRows : rows}

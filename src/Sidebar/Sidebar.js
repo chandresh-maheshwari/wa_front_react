@@ -19,6 +19,7 @@ const Sidebar = () => {
       try {
         setIsLoading(true);
         const response = await Authapi.dynamicListData();
+      
         if (response && response.results) {
           const activePosts = response.results.filter(post => post.status === 1);
 

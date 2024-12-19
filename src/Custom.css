@@ -73,8 +73,9 @@
 
 .MuiDataGrid-columnHeaders {
   line-height: inherit !important;
+  word-break: break-all !important;
+   max-height: none !important;
 }
-
 
 
 /* CSS FOR TABLE DATA */

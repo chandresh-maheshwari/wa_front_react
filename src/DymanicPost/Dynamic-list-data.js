@@ -63,12 +63,11 @@ const DynamicList = () => {
 
 
     const handleSearch = (event) => {
-        const query = event.target.value;
+        const query = event.target.value.trim();
         setSearchQuery(query);
 
         if (query) {
             const filtered = rows.filter((row) => {
-
                 return Object.values(row).some((value) =>
                     String(value).toLowerCase().includes(query.toLowerCase())
                 );
@@ -148,6 +147,7 @@ const DynamicList = () => {
                             <Link
                                 to={`/dynamic-edit/${params.row.id}`}
                                 id="edit"
+                                className='m-2'
                             >
                                 <FaEdit />
                             </Link>
@@ -171,11 +171,11 @@ const DynamicList = () => {
         },
     ];
 
-    const handlesearchCancel = () => {
-        setSearchQuery('');
-        setFilteredRows([]);
-        fetchData();
-    };
+    // const handlesearchCancel = () => {
+    //     setSearchQuery('');
+    //     setFilteredRows(rows);
+    //     fetchData();
+    // };
 
     const handleSelectionChange = (newSelection) => {
         setSelectedRows(newSelection);
@@ -194,15 +194,17 @@ const DynamicList = () => {
                             <div style={{ marginTop: '30px' }}>
                                 <h4>Post Data</h4>
                                 <input
-                                    type='text'
+                                    type='search'
                                     className='form-control form control navbar-search'
                                     placeholder='Search'
                                     value={searchQuery}
                                     onChange={handleSearch}
                                 />
-                                <Button className='text-dark' style={{ marginTop: "-96px", marginLeft: "92%" }} onClick={handlesearchCancel}>
-                                    <MdOutlineCancel style={{ marginLeft: "30px" }} />
-                                </Button>
+                                {/* <Tooltip title="Cancel">
+                                    <IconButton aria-label="Cancel" style={{ marginTop: "-96px", marginLeft: "92%" }}>
+                                        <MdOutlineCancel onClick={handlesearchCancel} style={{ marginLeft: "30px" }} />
+                                    </IconButton>
+                                </Tooltip> */}
                                 <div style={{ width: '100%', height: '400px', overflowY: 'auto' }}>
                                     <DataGrid
                                         rows={searchQuery ? filteredRows : rows}
@@ -221,8 +223,16 @@ const DynamicList = () => {
                                                 color: 'white',
                                             },
                                         }}
+                                        // selectionModel={selectedRows}
+                                        // onSelectionModelChange={handleSelectionChange}
                                         selectionModel={selectedRows}
                                         onSelectionModelChange={handleSelectionChange}
+                                        onCellClick={(params, event) => {
+                                            if (event.target.closest('.MuiCheckbox-root')) {
+                                                return;
+                                            }
+                                            event.stopPropagation();
+                                        }}
                                     />
                                 </div>
                             </div>

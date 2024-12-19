@@ -36,24 +36,23 @@ const PostDynamicList = () => {
             fetchData();
         }, 100);
     }, [post_title]);
-    // console.log(post_title)s
+
 
     const fetchData = async () => {
         try {
             const response = await Authapi.postdynamicListData(post_title);
-            // console.log(post_title)
-            console.log("sddf", response.results)
+            // console.log("sddf", response.results)
 
 
             if (response.status === true) {
                 const formattedRows = response.results.map((item, index) => {
                     const filteredData = Object.keys(item.data)
-                        .filter(key => !key.includes('_'))
+                        .filter(key => !key.includes('_') && !key.includes('slug'))
                         .reduce((obj, key) => {
                             obj[key] = item.data[key];
                             return obj;
                         }, {});
-
+                    // console.log(filteredData)
                     return {
                         id: item.id,
                         status: item.status,
@@ -63,7 +62,7 @@ const PostDynamicList = () => {
                 });
 
 
-                console.log(formattedRows);
+
 
                 const sortedData = formattedRows.sort((a, b) => b.id - a.id);
                 const dataWithSrNo = sortedData.map((item, index) => ({
@@ -116,7 +115,7 @@ const PostDynamicList = () => {
                         field: 'actions',
                         headerName: 'Actions',
                         width: 150,
-                        cellClassName: 'wrap-text',                       
+                        cellClassName: 'wrap-text',
                         renderCell: (params) => (
                             <strong onClick={(e) => e.stopPropagation()}>
                                 <Tooltip title="Update">
@@ -163,14 +162,7 @@ const PostDynamicList = () => {
 
 
 
-    const toggleEmailExpand = (id) => {
-        setAbc(id)
-        setExpandedEmails((prev) => ({
-            ...prev,
-            [id]: !prev[id],
-        }));
 
-    };
     const getActive = async (id, currentStatus) => {
         try {
             const newStatus = currentStatus === 1 ? 0 : 1;
@@ -217,13 +209,28 @@ const PostDynamicList = () => {
         }
     };
 
+    // const handleSearch = (event) => {
+    //     const query = event.target.value;
+    //     setSearchQuery(query);
+
+    //     if (query) {
+    //         const filtered = rows.filter((row) => {
+
+    //             return Object.values(row).some((value) =>
+    //                 String(value).toLowerCase().includes(query.toLowerCase())
+    //             );
+    //         });
+    //         setFilteredRows(filtered);
+    //     } else {
+    //         setFilteredRows(rows);
+    //     }
+    // };
     const handleSearch = (event) => {
-        const query = event.target.value;
+        const query = event.target.value.trim();
         setSearchQuery(query);
 
         if (query) {
             const filtered = rows.filter((row) => {
-
                 return Object.values(row).some((value) =>
                     String(value).toLowerCase().includes(query.toLowerCase())
                 );
@@ -234,10 +241,12 @@ const PostDynamicList = () => {
         }
     };
 
-    const handlesearchCancel = () => {
-        setSearchQuery('');
-        setFilteredRows([]);
-    };
+    // const handlesearchCancel = () => {
+    //     setSearchQuery('');
+    //     setFilteredRows(rows);
+    //     fetchData();
+    // };
+
 
     const handleSelectionChange = (newSelection) => {
         setSelectedRows(newSelection);
@@ -263,19 +272,19 @@ const PostDynamicList = () => {
                             <div style={{ marginTop: '30px', }}>
                                 <h4>{post_title}</h4>
                                 <input
-                                    type="text"
+                                    type="search"
                                     className="form-control form control navbar-search"
                                     placeholder="Search"
                                     value={searchQuery}
                                     onChange={handleSearch}
                                 />
-                                <Button
+                                {/* <Button
                                     className="text-dark"
                                     style={{ marginTop: '-96px', marginLeft: '92%' }}
                                     onClick={handlesearchCancel}
                                 >
                                     <MdOutlineCancel style={{ marginLeft: '30px' }} />
-                                </Button>
+                                </Button> */}
                                 <div style={{ width: '100%', height: '400px', overflowY: 'auto' }}>
                                     <DataGrid
                                         rows={searchQuery ? filteredRows : rows}
