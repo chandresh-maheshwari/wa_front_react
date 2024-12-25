@@ -199,7 +199,7 @@ const Page = () => {
                                     </Grid>
                                     <Grid item>
                                         <Button style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
-                                        onClick={()=>navigate('/page-list')}>
+                                            onClick={() => navigate('/page-list')}>
                                             Cancel
                                         </Button>
                                     </Grid>

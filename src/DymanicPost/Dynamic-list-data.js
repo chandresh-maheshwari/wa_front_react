@@ -1,17 +1,14 @@
-import { Container, Button, IconButton, Tooltip } from '@mui/material';
+import { Container, IconButton, Tooltip, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Authapi from '../Authapi';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
-import { MdDelete, MdOutlineCancel } from 'react-icons/md';
+import { MdDelete } from 'react-icons/md';
 import "../Custom.css";
 import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
-// import '../Navbar.css'
-// import DeleteIcon from '@mui/icons-material/Delete';
-
 const DynamicList = () => {
     const [rows, setRows] = useState([]);
     const [filteredRows, setFilteredRows] = useState([]);
@@ -21,7 +18,7 @@ const DynamicList = () => {
     const [selectedRows, setSelectedRows] = useState([]);
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(5);
-
+    const [statusFilter, setStatusFilter] = useState('all');
     useEffect(() => {
         fetchData();
     }, []);
@@ -44,10 +41,8 @@ const DynamicList = () => {
                     ...item,
                     sr_no: index + 1,
                 }));
-
                 setRows(dataWithSrNo);
                 setFilteredRows(dataWithSrNo);
-
                 const initialActiveStates = dataWithSrNo.reduce((acc, row) => ({
                     ...acc,
                     [row.id]: row.status === 1,
@@ -60,8 +55,6 @@ const DynamicList = () => {
             Swal.fire('Error', 'Failed to load data.', 'error');
         }
     };
-
-
     const handleSearch = (event) => {
         const query = event.target.value.trim();
         setSearchQuery(query);
@@ -77,16 +70,44 @@ const DynamicList = () => {
             setFilteredRows(rows);
         }
     };
+    // multi deleted DAta 
+    const handleDelete = async (ids) => {
+        if (Array.isArray(ids)) {
+            ids = [ids];
+        }
 
-    const handleDelete = async (id) => {
         const confirmDelete = await Swal.fire({
             title: 'Are you sure?',
-            text: 'This will mark the item as deleted!',
+            text: 'This will mark the selected items as deleted!',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, mark it!',
+            confirmButtonText: 'Yes, mark them!',
+        });
+
+        if (confirmDelete.isConfirmed) {
+            try {
+                const promises = ids.map(id => Authapi.dynamicDeleteData(id));
+                await Promise.all(promises);
+                // console.log(promises);
+                Swal.fire('Success!', 'Selected items marked as deleted.', 'success');
+                fetchData();
+            } catch (error) {
+                Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete items', 'error');
+            }
+        }
+    };
+    // single Delelete Data
+    const handleDelete1 = async (id) => {
+        const confirmDelete = await Swal.fire({
+            title: 'Are you sure?',
+            text: "This will mark the item as deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, mark it!'
         });
 
         if (confirmDelete.isConfirmed) {
@@ -104,7 +125,9 @@ const DynamicList = () => {
         }
     };
 
-    const getActive = async (id, currentStatus) => {
+    // single active nd inactive data 
+    const getSingleActive = async (id, currentStatus) => {
+
         try {
             const newStatus = currentStatus === 1 ? 0 : 1;
             const response = await Authapi.dynamicstatus(id, newStatus);
@@ -128,9 +151,112 @@ const DynamicList = () => {
             Swal.fire('Error', 'Failed to update status', 'error');
         }
     };
+    // multi inactive data 
+    const getInactive = async (ids) => {
+        if (Array.isArray(ids) && ids.length > 0) {
+            const newStatus = 0;
+            try {
+                // const idsToDeactivate = ids.filter(id => activeStates[id] !== false);
+                // console.log(idsToDeactivate)
+                // if (idsToDeactivate.length > 0) {
+                const promises = ids.map(id => Authapi.dynamicstatus(id, newStatus));
+                await Promise.all(promises);
 
+                setActiveStates(prevStates => {
+                    const newStates = { ...prevStates };
+                    ids.forEach(id => {
+                        newStates[id] = false;
+                    });
+                    return newStates;
+                });
+                const event = new CustomEvent('dynamicPostStatusChanged', {
+                    detail: { ids, status: newStatus }
+                });
+                window.dispatchEvent(event);
+                fetchData();
+                Swal.fire('Success!', 'Selected items are now inactive.', 'success');
+                // } else {
+                //     Swal.fire('Info', 'All selected items are already inactive.', 'info');
+                // }
+            } catch (error) {
+                Swal.fire('Error', 'Failed to update status', 'error');
+            }
+        }
+    };
+
+
+    // multi active data 
+    const getActive = async (ids) => {
+        if (Array.isArray(ids) && ids.length > 0) {
+            const newStatus = 1;
+            try {
+
+                // const idsToActivate = ids.filter(id => activeStates[id] !== true);
+                // console.log(idsToActivate)
+                if (ids.length > 0) {
+                    const promises = ids.map(id => Authapi.dynamicstatus(id, newStatus));
+                    await Promise.all(promises);
+
+                    setActiveStates(prevStates => {
+                        const newStates = { ...prevStates };
+                        ids.forEach(id => {
+                            newStates[id] = true;
+                        });
+                        return newStates;
+                    });
+                    const event = new CustomEvent('dynamicPostStatusChanged', {
+                        detail: { ids, status: newStatus }
+                    });
+                    window.dispatchEvent(event);
+                    fetchData();
+                    Swal.fire('Success!', 'Selected items are now active.', 'success');
+
+                } else {
+                    Swal.fire('Info', 'All selected items are already active.', 'info');
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Failed to update status', 'error');
+            }
+        }
+    };
+
+    const handleStatusFilterChange = (event) => {
+        const filterValue = event.target.value;
+        setStatusFilter(filterValue);
+        if (filterValue === 'all') {
+            setFilteredRows(rows);
+        } else if (filterValue === 'active') {
+            setFilteredRows(rows.filter(row => row.status === 1));
+            setSelectedRows([]);
+        } else if (filterValue === 'inactive') {
+            setFilteredRows(rows.filter(row => row.status === 0));
+            setSelectedRows([]);
+        } else if (filterValue === 'deleted') {
+            setFilteredRows(rows.filter(row => row.status === -1));
+            setSelectedRows([]);
+        }
+    };
     const paginationModel = { page: 0, pageSize: 5 };
     const columns = [
+        {
+            field: 'checkboxSelection',
+            headerName: 'Select',
+            width: 100,
+            renderHeader: () => (
+                <input
+                    type="checkbox"
+                    checked={selectedRows.length === rows.length}
+                    onChange={() => handleSelectAllRows()}
+                />
+            ),
+            renderCell: (params) => (
+                <input
+                    type="checkbox"
+                    checked={selectedRows.includes(params.row.id)}
+                    onChange={() => handleCheckboxChange(params.row.id)}
+                />
+            ),
+        },
         { field: 'sr_no', headerName: 'Sr.No', width: 90, flex: 1 },
         { field: 'post_title', headerName: 'Title', width: 150, flex: 1 },
         { field: 'post_type', headerName: 'Post Type', width: 150, flex: 1 },
@@ -143,19 +269,15 @@ const DynamicList = () => {
             renderCell: (params) => (
                 <strong onClick={(e) => e.stopPropagation()}>
                     <Tooltip title="Update">
-                        <IconButton aria-label="Update" color='primary' className='Edit-list' >
-                            <Link
-                                to={`/dynamic-edit/${params.row.id}`}
-                                id="edit"
-                                className='m-2'
-                            >
+                        <IconButton aria-label="Update" color='primary' className='Edit-list'>
+                            <Link to={`/dynamic-edit/${params.row.id}`} id="edit">
                                 <FaEdit />
                             </Link>
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
                         <IconButton aria-label="delete" color='primary'>
-                            <MdDelete onClick={() => handleDelete(params.row.id)} />
+                            <MdDelete onClick={() => handleDelete1(params.row.id)} />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Active">
@@ -163,7 +285,7 @@ const DynamicList = () => {
                             key={params.row.id}
                             checked={params.row.status}
                             size="xs"
-                            onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 1 : 0)}
+                            onChange={() => getSingleActive(params.row.id, activeStates[params.row.id] ? 1 : 0)}
                         />
                     </Tooltip>
                 </strong>
@@ -171,70 +293,88 @@ const DynamicList = () => {
         },
     ];
 
-    // const handlesearchCancel = () => {
-    //     setSearchQuery('');
-    //     setFilteredRows(rows);
-    //     fetchData();
-    // };
-
     const handleSelectionChange = (newSelection) => {
         setSelectedRows(newSelection);
+    };
+
+    const handleCheckboxChange = (id) => {
+        const newSelectedRows = selectedRows.includes(id)
+            ? selectedRows.filter(rowId => rowId !== id)
+            : [...selectedRows, id];
+
+        setSelectedRows(newSelectedRows);
+        // fetchData()
+
+    };
+
+    const handleSelectAllRows = () => {
+        if (selectedRows.length === rows.length) {
+            setSelectedRows([]);
+        } else {
+            setSelectedRows(rows.map(row => row.id));
+        }
+
     };
 
     return (
         <>
             <Expired />
             <div className="col-md-12">
-                <div className="row card" style={{ marginLeft: '22%', width: '75%', marginBottom: '20px', marginTop: '10%' }}>
-                    <div className="card-header">
-                        <h5 className="title">Post</h5>
+                <div className="row" style={{ marginLeft: '20%', width: '80%', marginBottom: '20px', marginTop: '7%' }}>
+                    <div className="card-header col-6">
+                        <h5 className="title ">Post</h5>
+                    </div>
+                    <div className="card-header col-3">
+                        <FormControl fullWidth>
+                            <InputLabel>Status Filter</InputLabel>
+                            <Select
+                                value={statusFilter}
+                                onChange={handleStatusFilterChange}
+                                label="Status Filter"
+                            >
+                                <MenuItem value="all" disabled>All</MenuItem>
+                                <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
+                                <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
+                                <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
+                    <div className="card-header col-3">
+                        <input
+                            type="search"
+                            className="form-control form control navbar-search"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={handleSearch}
+                        />
                     </div>
                     <div className="card-body">
                         <Container>
-                            <div style={{ marginTop: '30px' }}>
-                                <h4>Post Data</h4>
-                                <input
-                                    type='search'
-                                    className='form-control form control navbar-search'
-                                    placeholder='Search'
-                                    value={searchQuery}
-                                    onChange={handleSearch}
+                            <div>
+                                <DataGrid
+                                    rows={searchQuery ? filteredRows : rows}
+                                    columns={columns}
+                                    initialState={{ pagination: { paginationModel } }}
+                                    pageSizeOptions={[5, 10, 20]}
+                                    loading={loading}
+                                    autoHeight={false}
+                                    onPageChange={(newPage) => setPage(newPage)}
+                                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                                    sx={{
+                                        '& .MuiDataGrid-columnHeaders': {
+                                            backgroundColor: '#2c9dd4',
+                                            color: 'white',
+                                        },
+                                    }}
+                                    selectionModel={selectedRows}
+                                    onSelectionModelChange={handleSelectionChange}
+                                    onCellClick={(params, event) => {
+                                        if (event.target.closest('.MuiCheckbox-root')) {
+                                            return;
+                                        }
+                                        event.stopPropagation();
+                                    }}
                                 />
-                                {/* <Tooltip title="Cancel">
-                                    <IconButton aria-label="Cancel" style={{ marginTop: "-96px", marginLeft: "92%" }}>
-                                        <MdOutlineCancel onClick={handlesearchCancel} style={{ marginLeft: "30px" }} />
-                                    </IconButton>
-                                </Tooltip> */}
-                                <div style={{ width: '100%', height: '400px', overflowY: 'auto' }}>
-                                    <DataGrid
-                                        rows={searchQuery ? filteredRows : rows}
-                                        columns={columns}
-                                        initialState={{ pagination: { paginationModel } }}
-                                        pageSizeOptions={[5, 10, 100]}
-                                        checkboxSelection
-                                        loading={loading}
-                                        autoHeight={false}
-                                        onPageChange={(newPage) => setPage(newPage)}
-                                        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                                        sx={{
-                                            height: '100%',
-                                            '& .MuiDataGrid-columnHeaders': {
-                                                backgroundColor: '#2c9dd4',
-                                                color: 'white',
-                                            },
-                                        }}
-                                        // selectionModel={selectedRows}
-                                        // onSelectionModelChange={handleSelectionChange}
-                                        selectionModel={selectedRows}
-                                        onSelectionModelChange={handleSelectionChange}
-                                        onCellClick={(params, event) => {
-                                            if (event.target.closest('.MuiCheckbox-root')) {
-                                                return;
-                                            }
-                                            event.stopPropagation();
-                                        }}
-                                    />
-                                </div>
                             </div>
                         </Container>
                     </div>

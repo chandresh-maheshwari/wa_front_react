@@ -289,6 +289,7 @@ export default new (class AuthApi {
       const url = `${Config.apiurl}${Config.apis.navbarActive}${id}`;
       const token = ls('Token');
       console.log("massge tokan ", token)
+
       this.setHeaders("post");
       const response = await axios.post(url, {}, {
         headers: {
@@ -1293,13 +1294,16 @@ export default new (class AuthApi {
 
 
 
-  async dynamicstatus(id) {
+  async dynamicstatus(id, status1) {
     // console.log(id)
     try {
       const url = `${Config.apiurl}${Config.apis.dynamicActive}${id}`;
       const token = ls('Token');
       this.setHeaders("post");
-      const response = await axios.post(url, {}, {
+      const status = {
+        status: status1
+      }
+      const response = await axios.post(url, status, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -1314,9 +1318,11 @@ export default new (class AuthApi {
 
 
   async dynamicDeleteData(id) {
+    // console.log(id)
     try {
       const url = Config.apiurl + Config.apis.dynamicDelete + id;
-      console.log(url)
+
+      // console.log(url)
       const token = ls('Token');
       this.setHeaders("delete");
       const response = await axios.delete(url, {
@@ -1365,7 +1371,7 @@ export default new (class AuthApi {
 
 
   async postDynamicstoredata(formData, post_title) {
-    console.log(formData, post_title)
+    // console.log(formData, post_title)
     try {
       const url = Config.apiurl + Config.apis.postDynamicstore + post_title;
       console.log(url)
@@ -1439,7 +1445,7 @@ export default new (class AuthApi {
 
     try {
       const url = `${Config.apiurl}${Config.apis.postDynamicUpdate}${id}`;
-      console.log(url);
+      // console.log(url);
       const token = ls('Token');
       this.setHeaders("post");
       const response = await axios.post(url, formData, {
@@ -1459,7 +1465,7 @@ export default new (class AuthApi {
 
 
   async postdynamicDeleteData(id) {
-    console.log(id)
+    // console.log(id)
     try {
       const url = Config.apiurl + Config.apis.postDynamicDelete + id;
       const token = ls('Token');
@@ -1478,12 +1484,15 @@ export default new (class AuthApi {
 
 
 
-  async postdynamicstatus(id) {
+  async postdynamicstatus(id, status1) {
     try {
       const url = `${Config.apiurl}${Config.apis.postDynamicActive}${id}`;
       const token = ls('Token');
       this.setHeaders("post");
-      const response = await axios.post(url, {}, {
+      const status = {
+        status: status1
+      }
+      const response = await axios.post(url, status, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -1592,7 +1601,7 @@ export default new (class AuthApi {
   async pageDeleteData(id) {
     try {
       const url = Config.apiurl + Config.apis.pageDelele + id;
-      console.log(url)
+      // console.log(url)
       const token = ls('Token');
       this.setHeaders("delete");
       const response = await axios.delete(url, {
@@ -1608,13 +1617,16 @@ export default new (class AuthApi {
   }
 
 
-  async pagestatus(id) {
-    console.log(id)
+  async pagestatus(id, status1) {
+    // console.log(status1)
     try {
       const url = `${Config.apiurl}${Config.apis.pageActie}${id}`;
       const token = ls('Token');
       this.setHeaders("post");
-      const response = await axios.post(url, {}, {
+      const status = {
+        status: status1
+      }
+      const response = await axios.post(url, status, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -1627,13 +1639,16 @@ export default new (class AuthApi {
     }
   }
 
-  async pageActive(id) {
-    console.log(id)
+  async pageActive(id, status1) {
+    // console.log(id)
     try {
       const url = `${Config.apiurl}${Config.apis.pageActive1}${id}`;
       const token = ls('Token');
       this.setHeaders("post");
-      const response = await axios.post(url, {}, {
+      const status = {
+        page_status: status1
+      }
+      const response = await axios.post(url, status, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -1677,7 +1692,7 @@ export default new (class AuthApi {
   async contactdelete(id) {
     try {
       const url = Config.apiurl + Config.apis.contactdelete + id;
-      console.log(url)
+      // console.log(url)
       const token = ls('Token');
       this.setHeaders("delete");
       const response = await axios.delete(url, {

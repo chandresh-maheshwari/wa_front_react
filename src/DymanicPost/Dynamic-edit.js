@@ -30,7 +30,7 @@ const DynamicEditForm = ({ existingData }) => {
 
         if (existingData) {
             setFormData(existingData.formData);
-            console.log(existingData.formData)
+            // console.log(existingData.formData)
             setFields(existingData.post_description.map((desc, index) => ({
                 id: index,
                 label: desc.label,
@@ -106,7 +106,7 @@ const DynamicEditForm = ({ existingData }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form data:', { formData, fields });
+        // console.log('Form data:', { formData, fields });
 
         const submitformData = {
             post_title: formData.post_title,
@@ -124,7 +124,7 @@ const DynamicEditForm = ({ existingData }) => {
 
         try {
             const response = await Authapi.dynamicupdatedata(id, submitformData);
-            console.log('Data submitted successfully:', response);
+            // console.log('Data submitted successfully:', response);
             if (response) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 navigate('/dynamic-list-data');

@@ -120,7 +120,9 @@ export default {
     pageActive1: 'api/page-status/',
 
     contactlist: 'api/contact-page-list',
-    contactdelete: 'api/contact-page-delete/'
+    contactdelete: 'api/contact-page-delete/',
+
+   
 
   },
 };

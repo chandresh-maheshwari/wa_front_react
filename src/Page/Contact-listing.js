@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { FaEdit } from "react-icons/fa";
 import { MdDelete, MdOutlineCancel } from "react-icons/md";
-import { Container, TextField, Button, Grid, IconButton, Tooltip } from '@mui/material';
+import { Container, IconButton, Tooltip, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from "react-router-dom";
 import Authapi from '../Authapi';
@@ -25,6 +25,7 @@ const Contact = () => {
     // const navigate = useNavigate();
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(5);
+    const [statusFilter, setStatusFilter] = useState('all');
 
     useEffect(() => {
         fetchData();
@@ -86,18 +87,44 @@ const Contact = () => {
             setFilteredRows(rows);
         }
     };
-    // const handleCancel = () => {
-    //     setSearchQuery('');
-    //     fetchData();
-    // };
+
     const handleSelectionChange = (newSelection) => {
         setSelectedRows(newSelection);
     };
 
 
+    // multi Delete Data
+    const handleDelete = async (ids) => {
+        if (Array.isArray(ids)) {
+            ids = [ids];
+        }
 
+        const confirmDelete = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'This will mark the selected items as deleted!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, mark them!',
+        });
 
-    const handleDelete = async (id) => {
+        if (confirmDelete.isConfirmed) {
+            try {
+                const promises = ids.map(id => Authapi.contactdelete(id));
+                await Promise.all(promises);
+                // console.log(ids);
+
+                Swal.fire('Success!', 'Selected items marked as deleted.', 'success');
+                fetchData();
+            } catch (error) {
+                Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete items', 'error');
+            }
+        }
+    };
+
+    // Single Delete Data
+    const handleDelete1 = async (id) => {
         const confirmDelete = await Swal.fire({
             title: 'Are you sure?',
             text: "This will mark the item as deleted!",
@@ -128,10 +155,43 @@ const Contact = () => {
     const paginationModel = { page: 0, pageSize: 5 };
 
 
+    const handleStatusFilterChange = (event) => {
+        const filterValue = event.target.value;
+        setStatusFilter(filterValue);
+
+        if (filterValue === 'all') {
+            setFilteredRows(rows);
+        } else if (filterValue === 'active') {
+            setFilteredRows(rows.filter(row => row.status === 1));
+        } else if (filterValue === 'inactive') {
+            setFilteredRows(rows.filter(row => row.status === 0));
+        } else if (filterValue === 'deleted') {
+            setFilteredRows(rows.filter(row => row.status === -1)); // Assuming -1 represents deleted status
+        }
+    };
 
 
 
     const columns = [
+        {
+            field: 'checkboxSelection',
+            headerName: 'Select',
+            width: 100,
+            renderHeader: () => (
+                <input
+                    type="checkbox"
+                    checked={selectedRows.length === rows.length}
+                    onChange={() => handleSelectAllRows()}
+                />
+            ),
+            renderCell: (params) => (
+                <input
+                    type="checkbox"
+                    checked={selectedRows.includes(params.row.id)}
+                    onChange={() => handleCheckboxChange(params.row.id)}
+                />
+            ),
+        },
         { field: 'sr_no', headerName: 'Sr.No', width: 90, flex: 1 },
         { field: 'name', headerName: 'Name', width: 90, flex: 1 },
         { field: 'email', headerName: 'Email', width: 90, flex: 1 },
@@ -146,7 +206,7 @@ const Contact = () => {
                 <strong onClick={(e) => e.stopPropagation()}>
                     <Tooltip title="Delete">
                         <IconButton aria-label="delete" color='primary'>
-                            <MdDelete onClick={() => handleDelete(params.row.id)} />
+                            <MdDelete onClick={() => handleDelete1(params.row.id)} />
                         </IconButton>
                     </Tooltip>
 
@@ -155,47 +215,74 @@ const Contact = () => {
         },
     ];
 
+    const handleCheckboxChange = (id) => {
+        const newSelectedRows = selectedRows.includes(id)
+            ? selectedRows.filter(rowId => rowId !== id)
+            : [...selectedRows, id];
+
+        setSelectedRows(newSelectedRows);
+    };
+
+    const handleSelectAllRows = () => {
+        if (selectedRows.length === rows.length) {
+            setSelectedRows([]);
+        } else {
+            setSelectedRows(rows.map(row => row.id));
+        }
+    };
+
     return (
         <>
 
             <Expired />
-            <div className="container-fluid panel-header panel-header-sm"></div>
+
             <div className="col-md-12">
-                <div className="row card mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
-                    <div className="card-header">
-                        <h5 className="title">Contact Us</h5>
+                <div className="row " style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: "7%" }}>
+
+                    <div className="card-header col-6">
+                        <h5 className="title ">Contact Us</h5>
+                    </div>
+                    <div className="card-header col-3">
+                        <FormControl fullWidth>
+                            <InputLabel>Status Filter</InputLabel>
+                            <Select
+                                value={statusFilter}
+                                onChange={handleStatusFilterChange}
+                                label="Status Filter"
+                            >
+                                <MenuItem value="all" disabled>All</MenuItem>
+                                <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
+                    <div className="card-header col-3">
+                        <input
+                            type="search"
+                            className="form-control form control navbar-search"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={handleSearch}
+                        />
                     </div>
                     <div className="card-body">
                         <Container>
 
-                            <div style={{ width: '100%', marginTop: '20px', marginBottom: "45px" }}>
-                                <h4>Contact Us</h4>
-                                <input
-                                    type='search'
-                                    className='form-control form control navbar-search'
-                                    placeholder='Search'
-                                    value={searchQuery}
-                                    onChange={handleSearch}
-                                />
-                                {/* <Button className='text-dark' style={{ marginTop: "-96px", marginLeft: "92%" }} onClick={handleCancel}>
-                                    <MdOutlineCancel style={{ marginLeft: "30px" }} />
-                                </Button> */}
+                            <div style={{ width: '100%', marginBottom: "45px" }}>
+
                                 <div style={{ width: '100%', height: '400px', overflowY: 'auto' }}>
                                     <DataGrid
                                         rows={searchQuery ? filteredRows : rows}
                                         columns={columns}
-                                        initialState={{ pagination: { paginationModel: { page, pageSize } } }}
+                                        initialState={{ pagination: { paginationModel } }}
                                         pageSizeOptions={[5, 10, 20]}
-                                        checkboxSelection
                                         loading={loading}
                                         autoHeight={false}
+                                        onPageChange={(newPage) => setPage(newPage)}
+                                        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                                         sx={{
-                                            height: '100%',
-                                            overflow: 'hidden',
                                             '& .MuiDataGrid-columnHeaders': {
                                                 backgroundColor: '#2c9dd4',
                                                 color: 'white',
-                                                // wordWrap: 'break-word'
                                             },
                                         }}
                                         selectionModel={selectedRows}

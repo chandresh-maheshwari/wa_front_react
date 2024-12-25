@@ -67,7 +67,7 @@ const DynamicForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+        // console.log(formData);
 
         const SubmitformData = {
             post_title: formData.post_title,
@@ -83,7 +83,7 @@ const DynamicForm = () => {
 
         try {
             const response = await Authapi.Dynamicstoredata(SubmitformData);
-            console.log('Data submitted successfully:', response);
+            // console.log('Data submitted successfully:', response);
             if (response) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 navigate('/dynamic-list-data');

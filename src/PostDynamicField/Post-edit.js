@@ -109,7 +109,7 @@ const PostDynamicEdit = () => {
 
 
     const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
-        console.log(option)
+        // console.log(option)
 
         let value = event.target.value;
 
@@ -126,7 +126,7 @@ const PostDynamicEdit = () => {
             // const currentValues = formData[fieldLabel] || [];
             if (currentValues.includes(option)) {
 
-                console.log(currentValues.includes(option))
+                // console.log(currentValues.includes(option))
 
                 setFormData({
                     ...formData,
@@ -160,10 +160,10 @@ const PostDynamicEdit = () => {
         // const submitFormData = {
         //     ...formData
         // }
-        console.log(submitFormData)
+        // console.log(submitFormData)
         try {
             const response = await Authapi.postdynamicupdatedata(id, submitFormData);
-            console.log(response);
+            // console.log(response);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 setFormData({});

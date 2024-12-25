@@ -50,11 +50,11 @@ const Servicenave = () => {
                         <span className="navbar-toggler-bar navbar-kebab"></span>
                         <span className="navbar-toggler-bar navbar-kebab"></span>
                     </button>
-                    <div className="collapse navbar-collapse justify-content-end" id="navigation">
+                    {/* <div className="collapse navbar-collapse justify-content-end" id="navigation">
                         <ul className="navbar-nav">
                             <li className="nav-item">
                                 <a className="nav-link" href="#pablo">
-                                    {/* <i className="now-ui-icons media-2_sound-wave"><MdDensityMedium /></i> */}
+                                    <i className="now-ui-icons media-2_sound-wave"><MdDensityMedium /></i>
                                     <p>
                                         <span className="d-lg-none d-md-block">Stats</span>
                                     </p>
@@ -63,7 +63,7 @@ const Servicenave = () => {
                             <ul className="navbar-nav">
                                 <li className="nav-item dropdown">
                                     <a className="nav-link" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        {/* <i className="now-ui-icons location_world dropdown-toggle"><FaLocationCrosshairs /></i> */}
+                                        <i className="now-ui-icons location_world dropdown-toggle"><FaLocationCrosshairs /></i>
                                         <p>
                                             <span className="d-lg-none d-md-block">Stats</span>
                                         </p>
@@ -76,9 +76,9 @@ const Servicenave = () => {
                                 </li>
                             </ul>
                         </ul>
-                    </div>
+                    </div> */}
                     <form>
-                        <div className="input-group">
+                        {/* <div className="input-group">
                             <input type="text"
                                 className="form-control"
                                 placeholder="Search..."
@@ -92,7 +92,7 @@ const Servicenave = () => {
                                 </button>
                             </div>
                        
-                        </div>
+                        </div> */}
                         <ul className='ulseachlist' >
 
                             {searchResults.map((hardik) => (

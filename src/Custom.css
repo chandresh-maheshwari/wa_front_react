@@ -11,6 +11,17 @@
   margin-top: -14px;
 }
 
+/* Table CSS */
+.wrap-text {
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.css-78trlr-MuiButtonBase-root-MuiIconButton-root {
+  padding: 0px !important;
+}
+
 .nav-dropdown-items-Dynamic_POST {
   display: none;
   /* Initially hidden */
@@ -39,11 +50,17 @@
   display: block;
 }
 
-/* Css for navbar */
+/* Css for search all */
 .navbar-search {
-  margin-left: 76%;
-  margin-top: -40px;
-  margin-bottom: 18px;
+  margin-left: 5%;
+  margin-top: 0px;
+}
+
+/* all table card header  */
+.card-header {
+  padding: -0.5rem 1rem;
+  /* text-align: center; */
+
 }
 
 
@@ -74,7 +91,7 @@
 .MuiDataGrid-columnHeaders {
   line-height: inherit !important;
   word-break: break-all !important;
-   max-height: none !important;
+  max-height: none !important;
 }
 
 
@@ -147,8 +164,14 @@
   margin-top: -12px;
 }
 
+/* Table Pading Left Right*/
+.css-1oqqzyl-MuiContainer-root {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
 
-/* for word wrap */
+
+/* For Wrap Word */
 .MuiDataGrid-virtualScrollerRenderZone div {
   /* background-color: brown !important; */
   word-break: break-all !important;
@@ -191,4 +214,9 @@
 
 .Edit-list a {
   color: #1976d2;
+}
+
+/* Table Height In Bottom */
+.css-1kwdphh-MuiDataGrid-virtualScrollerContent {
+  height: 238px !important;
 }

@@ -1,4 +1,5 @@
-import { Container, Button, IconButton, Tooltip } from '@mui/material';
+import { Container, IconButton, Tooltip, Select, MenuItem, FormControl, InputLabel, Checkbox } from '@mui/material';
+
 import Authapi from '../Authapi';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
@@ -11,18 +12,14 @@ import Expired from '../Login/ExpiredToken';
 import { useLocation } from 'react-router-dom';
 import ls from 'local-storage';
 import "../Custom.css";
-// import jQuery from 'jquery';s
-// import './common.css'
 import $ from 'jquery';
-
-
 const PostDynamicList = () => {
     const [rows, setRows] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
     const [filteredRows, setFilteredRows] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeStates, setActiveStates] = useState({});
-    const [selectedRows, setSelectedRows] = useState([]);
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(5);
     const location = useLocation();
@@ -30,6 +27,7 @@ const PostDynamicList = () => {
     const [columns, setColumns] = useState([]);
     const [expandedEmails, setExpandedEmails] = useState({});
     const [abc, setAbc] = useState();
+    const [statusFilter, setStatusFilter] = useState('all');
 
     useEffect(() => {
         setTimeout(() => {
@@ -37,22 +35,17 @@ const PostDynamicList = () => {
         }, 100);
     }, [post_title]);
 
-
     const fetchData = async () => {
         try {
             const response = await Authapi.postdynamicListData(post_title);
-            // console.log("sddf", response.results)
-
-
             if (response.status === true) {
                 const formattedRows = response.results.map((item, index) => {
                     const filteredData = Object.keys(item.data)
-                        .filter(key => !key.includes('_') && !key.includes('slug'))
+                        .filter(key => !key.includes('_') && !key.includes('slug') && key !== 'id' && key !== 'status')
                         .reduce((obj, key) => {
                             obj[key] = item.data[key];
                             return obj;
                         }, {});
-                    // console.log(filteredData)
                     return {
                         id: item.id,
                         status: item.status,
@@ -60,96 +53,7 @@ const PostDynamicList = () => {
                         ...filteredData,
                     };
                 });
-
-
-
-
-                const sortedData = formattedRows.sort((a, b) => b.id - a.id);
-                const dataWithSrNo = sortedData.map((item, index) => ({
-                    ...item,
-                    sr_No: index + 1,
-                }));
-                // console.log(dataWithSrNo)
-
-                setRows(dataWithSrNo);
-
-                if (formattedRows.length > 0) {
-                    const dynamicColumns = Object.keys(formattedRows[0]).map(key => {
-                        if (key === 'id' || key === 'status') return null;
-                        return {
-                            field: key,
-                            headerName: key.charAt(0).toUpperCase() + key.slice(1),
-                            width: 100,
-                            cellClassName: 'wrap-text',
-
-                            renderCell: (params) => {
-                                const value = params.row[key];
-                                // console.log("prms", params)
-                                const isExpanded = expandedEmails[params.row.id];
-                                const displayValue = typeof value === 'string' ? value : (value !== undefined && value !== null ? String(value) : "-");
-                                const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
-
-                                const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
-                                return (
-                                    <div style={{ whiteSpace: 'normal', }}>
-                                        {isImage ? (
-                                            <img src={value} alt={displayValue} style={{ width: '50px', height: '50px' }} />
-                                        ) : (
-                                            <span className={`email-display-${safeValue}`}>
-                                                {/* {isExpanded ? displayValue : `${displayValue.substring(0, 10)}`} */}
-                                                {displayValue}
-                                            </span>
-                                        )}
-
-                                    </div>
-                                );
-                            }
-
-                        };
-
-
-
-                    }).filter(Boolean);
-
-                    dynamicColumns.push({
-                        field: 'actions',
-                        headerName: 'Actions',
-                        width: 150,
-                        cellClassName: 'wrap-text',
-                        renderCell: (params) => (
-                            <strong onClick={(e) => e.stopPropagation()}>
-                                <Tooltip title="Update">
-                                    <IconButton aria-label="Update" className='Edit-list' >
-                                        <Link
-                                            to={{
-                                                pathname: `/post-edit/${params.row.id}`,
-                                            }}
-                                            state={{ post_title: post_title }}
-                                            className='m-2'
-                                        >
-                                            <FaEdit />
-                                        </Link>
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Delete">
-                                    <IconButton aria-label="delete" color='primary'>
-                                        <MdDelete onClick={() => handleDelete(params.row.id)} />
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip title="Active">
-                                    <Switch
-                                        key={params.row.id}
-                                        checked={params.row.status}
-                                        size="xs"
-                                        onChange={() => getActive(params.row.id, activeStates[params.row.id] ? 1 : 0)}
-                                    />
-                                </Tooltip>
-                            </strong>
-                        ),
-                    });
-
-                    setColumns(dynamicColumns);
-                }
+                setRows(formattedRows);
             } else {
                 console.error('Invalid response structure:', response);
             }
@@ -160,10 +64,176 @@ const PostDynamicList = () => {
         }
     };
 
+    const dynamicColumns = [
+        {
+            field: 'checkboxSelection',
+            headerName: 'Select',
+            width: 100,
+            renderHeader: () => (
+                <input
+                    type="checkbox"
+                    checked={selectedRows.length === rows.length}
+                    onChange={handleSelectAllRows}
+                />
+            ),
+            renderCell: (params) => (
+                <input
+                    type="checkbox"
+                    checked={selectedRows.includes(params.row.id)}
+                    onChange={() => handleCheckboxChange(params.row.id)}
+                />
+            ),
+        },
+
+        ...Object.keys(rows[0] || {}).map((key) => {
+            if (key === 'id' || key === 'status') return null;
+            return {
+                field: key,
+                headerName: key.charAt(0).toUpperCase() + key.slice(1),
+                // width: 100,
+                width: key === 'quote_section_image' ? 150 : 200,
+                cellClassName: 'wrap-text',
+                // flex:1,
+
+                renderCell: (params) => {
+                    const value = params.row[key];
+                    // console.log("prms", params)
+                    const isExpanded = expandedEmails[params.row.id];
+                    const displayValue = typeof value === 'string' ? value : (value !== undefined && value !== null ? String(value) : "-");
+                    const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
+
+                    const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
+                    return (
+                        <div style={{ whiteSpace: 'normal', }}>
+                            {isImage ? (
+                                <img src={value} alt={displayValue} style={{ width: '50%', height: 'auto' }} />
+                            ) : (
+                                <span className={`email-display-${safeValue}`}>
+                                    {/* {isExpanded ? displayValue : `${displayValue.substring(0, 10)}`} */}
+                                    {displayValue}
+                                </span>
+                            )}
+                            {/* {console.log(formattedRows)} */}
+
+                        </div>
+                    );
+                }
+
+            };
+        }).filter(Boolean),
+        {
+            field: 'actions',
+            headerName: 'Actions',
+            width: 150,
+            renderCell: (params) => (
+                <strong onClick={(e) => e.stopPropagation()}>
+                    <Tooltip title="Update">
+                        <IconButton aria-label="Update" className="Edit-list">
+                            <Link
+                                to={{
+                                    pathname: `/post-edit/${params.row.id}`,
+                                }}
+                                state={{ post_title }}
+                            >
+                                <FaEdit />
+                            </Link>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                        <IconButton aria-label="delete" color="primary">
+                            <MdDelete onClick={() => handleDelete1(params.row.id)} />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Active">
+                        {/* <Switch
+                            checked={params.row.status}
+                            size="small"
+                            onChange={() => getActive1(params.row.id, params.row.status )}
+                        /> */}
+                        <Switch
+                            key={params.row.id}
+                            checked={params.row.status}
+                            size="xs"
+                            onChange={() => getActive1(params.row.id, params.row.status)}
+                        />
+                    </Tooltip>
+                </strong>
+            ),
+        },
+    ];
 
 
+    const handleSelectAllRows = (e) => {
+        const isChecked = e.target.checked;
+        if (isChecked) {
+            setSelectedRows(rows.map((row) => row.id));
+        } else {
+            setSelectedRows([]);
+        }
+    };
 
-    const getActive = async (id, currentStatus) => {
+
+    const handleCheckboxChange = (id) => {
+        setSelectedRows((prevSelectedRows) => {
+            if (prevSelectedRows.includes(id)) {
+                return prevSelectedRows.filter((rowId) => rowId !== id);
+            } else {
+                return [...prevSelectedRows, id];
+            }
+        });
+    };
+
+
+    const handleSearch = (event) => {
+        const query = event.target.value.trim();
+        setSearchQuery(query);
+
+        if (query) {
+            const filtered = rows.filter((row) => {
+                return Object.values(row).some((value) =>
+                    String(value).toLowerCase().includes(query.toLowerCase())
+                );
+            });
+            setRows(filtered);
+        } else {
+            setRows(rows);
+        }
+    };
+
+
+    // const handleStatusFilterChange = (event) => {
+    //     const filterValue = event.target.value;
+    //     setStatusFilter(filterValue);
+
+    //     if (filterValue === 'all') {
+    //         setRows(rows);
+    //     } else if (filterValue === 'active') {
+    //         setRows(rows.filter((row) => row.status === 1));
+    //     } else if (filterValue === 'inactive') {
+    //         setRows(rows.filter((row) => row.status === 0));
+    //     } else if (filterValue === 'deleted') {
+    //         setRows(rows.filter((row) => row.status === -1));
+    //     }
+    // };
+    const handleStatusFilterChange = (event) => {
+        const filterValue = event.target.value;
+        setStatusFilter(filterValue);
+        if (filterValue === 'all') {
+            setFilteredRows(rows);
+        } else if (filterValue === 'active') {
+            setFilteredRows(rows.filter(row => row.status === 1));
+            setSelectedRows([]);
+        } else if (filterValue === 'inactive') {
+            setFilteredRows(rows.filter(row => row.status === 0));
+            setSelectedRows([]);
+        } else if (filterValue === 'deleted') {
+            setFilteredRows(rows.filter(row => row.status === -1));
+            setSelectedRows([]);
+        }
+    };
+
+    const getActive1 = async (id, currentStatus) => {
+
         try {
             const newStatus = currentStatus === 1 ? 0 : 1;
             const response = await Authapi.postdynamicstatus(id, newStatus);
@@ -183,15 +253,102 @@ const PostDynamicList = () => {
         }
     };
 
-    const handleDelete = async (id) => {
+    // multi inactive data 
+    const getInactive = async (ids) => {
+        if (Array.isArray(ids) && ids.length > 0) {
+            const newStatus = 0;
+            try {
+                // const idsToDeactivate = ids.filter(id => activeStates[id] !== false);
+                if (ids.length > 0) {
+                    const promises = ids.map(id => Authapi.postdynamicstatus(id, newStatus));
+                    await Promise.all(promises);
+
+                    setActiveStates(prevStates => {
+                        const newStates = { ...prevStates };
+                        ids.forEach(id => {
+                            newStates[id] = false;
+                        });
+                        return newStates;
+                    });
+
+                    fetchData();
+                    Swal.fire('Success!', 'Selected items are now inactive.', 'success');
+                } else {
+                    Swal.fire('Info', 'All selected items are already inactive.', 'info');
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Failed to update status', 'error');
+            }
+        }
+    };
+
+    // multi page active data 
+    const getActive = async (ids) => {
+        if (Array.isArray(ids) && ids.length > 0) {
+            const newStatus = 1;
+            try {
+                // const idsToActivate = ids.filter(id => activeStates[id] !== true);
+                if (ids.length > 0) {
+                    const promises = ids.map(id => Authapi.postdynamicstatus(id, newStatus));
+                    await Promise.all(promises);
+
+                    setActiveStates(prevStates => {
+                        const newStates = { ...prevStates };
+                        ids.forEach(id => {
+                            newStates[id] = true;
+                        });
+                        return newStates;
+                    });
+
+                    fetchData();
+                    Swal.fire('Success!', 'Selected items are now active.', 'success');
+                } else {
+                    Swal.fire('Info', 'All selected items are already active.', 'info');
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Failed to update status', 'error');
+            }
+        }
+    };
+    // multi Delete Data 
+    const handleDelete = async (ids) => {
+        if (Array.isArray(ids)) {
+            ids = [ids];
+        }
+
         const confirmDelete = await Swal.fire({
             title: 'Are you sure?',
-            text: 'This will mark the item as deleted!',
+            text: 'This will mark the selected items as deleted!',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, mark it!',
+            confirmButtonText: 'Yes, mark them!',
+        });
+
+        if (confirmDelete.isConfirmed) {
+            try {
+                const promises = ids.map(id => Authapi.postdynamicDeleteData(id));
+                await Promise.all(promises);
+
+                Swal.fire('Success!', 'Selected items marked as deleted.', 'success');
+                fetchData();
+            } catch (error) {
+                Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete items', 'error');
+            }
+        }
+    };
+
+
+    const handleDelete1 = async (id) => {
+        const confirmDelete = await Swal.fire({
+            title: 'Are you sure?',
+            text: "This will mark the item as deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, mark it!'
         });
 
         if (confirmDelete.isConfirmed) {
@@ -208,111 +365,87 @@ const PostDynamicList = () => {
             }
         }
     };
-
-    // const handleSearch = (event) => {
-    //     const query = event.target.value;
-    //     setSearchQuery(query);
-
-    //     if (query) {
-    //         const filtered = rows.filter((row) => {
-
-    //             return Object.values(row).some((value) =>
-    //                 String(value).toLowerCase().includes(query.toLowerCase())
-    //             );
-    //         });
-    //         setFilteredRows(filtered);
-    //     } else {
-    //         setFilteredRows(rows);
-    //     }
-    // };
-    const handleSearch = (event) => {
-        const query = event.target.value.trim();
-        setSearchQuery(query);
-
-        if (query) {
-            const filtered = rows.filter((row) => {
-                return Object.values(row).some((value) =>
-                    String(value).toLowerCase().includes(query.toLowerCase())
-                );
-            });
-            setFilteredRows(filtered);
-        } else {
-            setFilteredRows(rows);
-        }
-    };
-
-    // const handlesearchCancel = () => {
-    //     setSearchQuery('');
-    //     setFilteredRows(rows);
-    //     fetchData();
-    // };
-
-
     const handleSelectionChange = (newSelection) => {
         setSelectedRows(newSelection);
     };
 
 
-    const isValidColor = (color) => {
-        const s = new Option().style;
-        s.color = color;
-        return s.color !== '';
-    };
-
     return (
         <>
             <Expired />
             <div className="col-md-12">
-                <div className="row card" style={{ marginLeft: '22%', width: '75%', marginBottom: '20px', marginTop: '10%' }}>
-                    <div className="card-header">
-                        <h5 className="title">Post</h5>
+                <div className="row " style={{ marginLeft: '20%', width: '80%', marginBottom: '20px', marginTop: '7%' }}>
+                    <div className="card-header col-6">
+                        <h5 className="title ">{post_title}</h5>
+                    </div>
+
+                    <div className="card-header col-3">
+                        <FormControl fullWidth>
+                            <InputLabel>Status Filter</InputLabel>
+                            <Select
+                                value={statusFilter}
+                                onChange={handleStatusFilterChange}
+                                label="Status Filter"
+                            >
+                                <MenuItem value="all" disabled>All</MenuItem>
+                                <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
+                                <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
+                                <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
+                    <div className="card-header col-3">
+                        <input
+                            type="search"
+                            className="form-control form control navbar-search"
+                            placeholder="Search"
+                            value={searchQuery}
+                            onChange={handleSearch}
+                        />
                     </div>
                     <div className="card-body">
                         <Container>
-                            <div style={{ marginTop: '30px', }}>
-                                <h4>{post_title}</h4>
-                                <input
-                                    type="search"
-                                    className="form-control form control navbar-search"
-                                    placeholder="Search"
-                                    value={searchQuery}
-                                    onChange={handleSearch}
-                                />
-                                {/* <Button
-                                    className="text-dark"
-                                    style={{ marginTop: '-96px', marginLeft: '92%' }}
-                                    onClick={handlesearchCancel}
-                                >
-                                    <MdOutlineCancel style={{ marginLeft: '30px' }} />
-                                </Button> */}
-                                <div style={{ width: '100%', height: '400px', overflowY: 'auto' }}>
-                                    <DataGrid
-                                        rows={searchQuery ? filteredRows : rows}
-                                        columns={columns}
-                                        initialState={{ pagination: { paginationModel: { page, pageSize } } }}
-                                        pageSizeOptions={[5, 10, 100]}
-                                        checkboxSelection
-                                        loading={loading}
-                                        autoHeight={false}
-                                        sx={{
-                                            height: '100%',
+                            <div style={{ overflowX: 'auto' }}>
+                                <DataGrid
+                                    rows={searchQuery ? filteredRows : rows}
+                                    columns={dynamicColumns}
+                                    initialState={{ pagination: { paginationModel: { page, pageSize } } }}
+                                    pageSizeOptions={[5, 10, 20]}
+                                    loading={loading}
+                                    autoHeight={false}
+                                    onPageChange={(newPage) => setPage(newPage)}
+                                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                                    sx={{
+                                        height: '100%',
+                                        overflow: 'hidden',
+                                        '& .MuiDataGrid-columnHeaders': {
+                                            backgroundColor: '#2c9dd4',
+                                            color: 'white',
+                                        },
+                                        '& .MuiDataGrid-cell': {
+                                            padding: '10px',
+                                            borderBottom: '1px solid #e0e0e0',
                                             overflow: 'hidden',
-                                            '& .MuiDataGrid-columnHeaders': {
-                                                backgroundColor: '#2c9dd4',
-                                                color: 'white',
-                                                // wordWrap: 'break-word'
-                                            },
-                                        }}
-                                        selectionModel={selectedRows}
-                                        onSelectionModelChange={handleSelectionChange}
-                                        onCellClick={(params, event) => {
-                                            if (event.target.closest('.MuiCheckbox-root')) {
-                                                return;
-                                            }
-                                            event.stopPropagation();
-                                        }}
-                                    />
-                                </div>
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                        },
+                                        '& .MuiDataGrid-row:hover': {
+                                            backgroundColor: '#f5f5f5',
+                                        },
+                                        // '& .MuiDataGrid-footerContainer': {
+                                        //     backgroundColor: '#2c9dd4',
+                                        //     color: 'white',
+                                        // },
+                                    }}
+                                    selectionModel={selectedRows}
+                                    onSelectionModelChange={handleSelectionChange}
+                                    onCellClick={(params, event) => {
+                                        if (event.target.closest('.MuiCheckbox-root')) {
+                                            return;
+                                        }
+                                        event.stopPropagation();
+                                    }}
+                                />
                             </div>
                         </Container>
                     </div>
@@ -323,5 +456,3 @@ const PostDynamicList = () => {
 };
 
 export default PostDynamicList;
-
-

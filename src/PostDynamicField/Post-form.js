@@ -125,11 +125,11 @@ const PostFormDynamic = () => {
         // const submitFormData = {
         //     ...formData
         // }
-        console.log(formData)
+        // console.log(formData)
 
         try {
             const response = await Authapi.postDynamicstoredata(submitFormData, post_title);
-            console.log(response);
+            // console.log(response);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 setFormData({});

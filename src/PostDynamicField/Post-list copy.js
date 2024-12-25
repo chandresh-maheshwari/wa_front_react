@@ -42,7 +42,7 @@ const PostDynamicList = () => {
         try {
             const response = await Authapi.postdynamicListData(post_title);
             // console.log(post_title)
-            console.log("sddf", response)
+            // console.log("sddf", response)
 
             if (response.status === true) {
                 const formattedRows = response.results.map((item, index) => ({
