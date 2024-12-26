@@ -17,7 +17,6 @@ const DynamicEditForm = ({ existingData }) => {
         value: '',
         options: []
     }]);
-    // const [post_title, setTitle] = useState('');
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         post_title: '',
@@ -30,7 +29,6 @@ const DynamicEditForm = ({ existingData }) => {
 
         if (existingData) {
             setFormData(existingData.formData);
-            // console.log(existingData.formData)
             setFields(existingData.post_description.map((desc, index) => ({
                 id: index,
                 label: desc.label,
@@ -45,7 +43,6 @@ const DynamicEditForm = ({ existingData }) => {
             const fetchData = async () => {
                 try {
                     const response = await Authapi.dynamicEditData(id);
-                    // console.log(response)
                     setFormData(response);
                     setFields(response.post_description.map((desc, index) => ({
                         id: index,
@@ -106,8 +103,6 @@ const DynamicEditForm = ({ existingData }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // console.log('Form data:', { formData, fields });
-
         const submitformData = {
             post_title: formData.post_title,
             post_type: formData.post_type,
@@ -124,7 +119,6 @@ const DynamicEditForm = ({ existingData }) => {
 
         try {
             const response = await Authapi.dynamicupdatedata(id, submitformData);
-            // console.log('Data submitted successfully:', response);
             if (response) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 navigate('/dynamic-list-data');
@@ -149,21 +143,6 @@ const DynamicEditForm = ({ existingData }) => {
                         <Container>
                             <form encType="multipart/form-data" onSubmit={handleSubmit}>
                                 <Grid container spacing={3}>
-                                    {/* <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            label="Post Title"
-                                            name="title"
-                                            fullWidth
-                                            value={formData.post_title}
-                                            onChange={handleTitleChange}
-                                            style={{
-                                                marginBottom: '15px',
-                                                backgroundColor: '#f4f6f8',
-                                                borderRadius: '5px'
-                                            }}
-                                        />
-                                    </Grid> */}
-
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Post Title"
@@ -297,9 +276,6 @@ const DynamicEditForm = ({ existingData }) => {
                                                 </Button>
                                             </Grid>
                                         </Grid>
-
-
-
                                         {/* Handle Dropdown, Checkbox, Radio options */}
                                         {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
                                             <Grid item xs={12} sm={4}>

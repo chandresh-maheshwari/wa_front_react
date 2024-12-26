@@ -128,7 +128,7 @@
 .MuiDataGrid-root .MuiDataGrid-row {
   height: auto !important;
   max-height: none !important;
-  min-height: auto !important;
+  /* min-height: auto !important; */
 }
 
 /* .MuiDataGrid-root .MuiDataGrid-columnHeaders {
@@ -186,6 +186,9 @@
   background-color: #304d5b;
 }
 
+/* .nav-item:hover :active {
+  background-color: #304d5b;
+} */
 .nav-dropdown-items {
   display: none;
 }

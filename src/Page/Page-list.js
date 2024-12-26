@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 
 import Swal from 'sweetalert2';
 import { FaEdit } from "react-icons/fa";
-import { MdDelete, MdOutlineCancel } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { Container, IconButton, Tooltip, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from "react-router-dom";
 import Authapi from '../Authapi';
-import BootstrapSwitchButton from 'bootstrap-switch-button-react'
 import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
 import { useNavigate } from 'react-router-dom';
@@ -379,7 +378,7 @@ const PageList = () => {
                             <Link
                                 to={`/Page-edit/${params.row.id}`}
                                 id="edit"
-                                className='m-2'
+                                className='m-3'
                             >
                                 <FaEdit />
                             </Link>
@@ -391,15 +390,14 @@ const PageList = () => {
                         </IconButton>
                     </Tooltip>
                     <Tooltip title=" Page Active">
-                        <>
-                            <Switch
-                                key={params.row.id}
-                                checked={params.row.status}
-                                size="xs"
-                                onChange={() => getSingleActive(params.row.id, params.row.status)}
-                            />
-                            {/* {console.log(activeStates)} */}
-                        </>
+                        {/* <> */}
+                        <Switch
+                            key={params.row.id}
+                            checked={params.row.status}
+                            size="xs"
+                            onChange={() => getSingleActive(params.row.id, params.row.status)}
+                        />
+                        {/* </> */}
 
                     </Tooltip>
                     <Tooltip title=" Inner Page Active">
@@ -480,7 +478,7 @@ const PageList = () => {
                                         rows={searchQuery ? filteredRows : rows}
                                         columns={columns}
                                         initialState={{ pagination: { paginationModel } }}
-                                        pageSizeOptions={[5, 10, 20]}
+                                        pageSizeOptions={[5, 10, 20, { value: rows.length, label: 'All' }]}
                                         loading={loading}
                                         autoHeight={false}
                                         onPageChange={(newPage) => setPage(newPage)}

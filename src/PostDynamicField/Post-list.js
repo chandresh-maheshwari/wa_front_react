@@ -184,6 +184,21 @@ const PostDynamicList = () => {
     };
 
 
+    // const handleSearch = (event) => {
+    //     const query = event.target.value.trim();
+    //     setSearchQuery(query);
+
+    //     if (query) {
+    //         const filtered = rows.filter((row) => {
+    //             return Object.values(row).some((value) =>
+    //                 String(value).toLowerCase().includes(query.toLowerCase())
+    //             );
+    //         });
+    //         setRows(filtered);
+    //     } else {
+    //         setRows(rows);
+    //     }
+    // };
     const handleSearch = (event) => {
         const query = event.target.value.trim();
         setSearchQuery(query);
@@ -194,10 +209,16 @@ const PostDynamicList = () => {
                     String(value).toLowerCase().includes(query.toLowerCase())
                 );
             });
-            setRows(filtered);
+            setFilteredRows(filtered);
         } else {
-            setRows(rows);
+            setFilteredRows(rows);
         }
+    };
+
+
+    const handlesearchCancel = () => {
+        setSearchQuery('');
+        setFilteredRows([]);
     };
 
 
@@ -369,7 +390,7 @@ const PostDynamicList = () => {
         setSelectedRows(newSelection);
     };
 
-
+    const paginationModel = { page: 0, pageSize: 5 };
     return (
         <>
             <Expired />
@@ -409,8 +430,8 @@ const PostDynamicList = () => {
                                 <DataGrid
                                     rows={searchQuery ? filteredRows : rows}
                                     columns={dynamicColumns}
-                                    initialState={{ pagination: { paginationModel: { page, pageSize } } }}
-                                    pageSizeOptions={[5, 10, 20]}
+                                    initialState={{ pagination: { paginationModel } }}
+                                    pageSizeOptions={[5, 10, 20, { value: rows.length, label: 'All' }]}
                                     loading={loading}
                                     autoHeight={false}
                                     onPageChange={(newPage) => setPage(newPage)}

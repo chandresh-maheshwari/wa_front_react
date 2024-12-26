@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
-
 import Swal from 'sweetalert2';
 import { TextField, Button, Container, MenuItem, Select, InputLabel, FormControl, Grid, Typography } from '@mui/material';
 import Authapi from '../Authapi';
-
 import Expired from '../Login/ExpiredToken';
 import { useNavigate } from 'react-router-dom';
-
-
 const Page = () => {
     const [formData, setFormData] = useState({});
     const [postTitles, setPostTitles] = useState([]);
@@ -18,17 +14,10 @@ const Page = () => {
         const fetchPostTitles = async () => {
             try {
                 const response = await Authapi.dynamicListData();
-                // console.log("API Response:", response);
-
                 if (response && response.results) {
-                    // console.log("Response Results:", response.results);
                     const titles = response.results;
-                    // console.log("Post Titles:", titles);
-
-
                     if (Array.isArray(titles)) {
                         setPostTitles(titles);
-
                     } else {
                         console.error("Post titles is not an array:", titles);
                     }
@@ -58,7 +47,6 @@ const Page = () => {
             setErrors(newErrors);
             return;
         }
-
         const form = new FormData();
         form.append('page_name', formData.page_name);
         form.append('page_description', formData.page_description);
@@ -89,7 +77,6 @@ const Page = () => {
 
     return (
         <>
-
             <Expired />
             <div className="container-fluid panel-header panel-header-sm"></div>
             <div className="col-md-12">
@@ -158,7 +145,6 @@ const Page = () => {
                                                 }}
                                                 error={!!errors.post_type}
                                             >
-                                                {/* {console.log(postTitles)} */}
                                                 {postTitles.length > 0 ? (
                                                     postTitles
                                                         .filter((title) => title.post_type === 'custom_post')
@@ -205,8 +191,6 @@ const Page = () => {
                                     </Grid>
                                 </Grid>
                             </form>
-
-
                         </Container>
                     </div>
                 </div>

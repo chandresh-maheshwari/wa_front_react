@@ -5,7 +5,9 @@ import '../App.css';
 import '../Custom.css';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import Authapi from '../Authapi';
-const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
+// const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
+const img = `http://wa_front.localhost.com/images/page/WasteAccountant_LOGO.png`;
+
 
 const Sidebar = () => {
   const [postTitles, setPostTitles] = useState([]);

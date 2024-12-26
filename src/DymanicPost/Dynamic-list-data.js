@@ -18,7 +18,7 @@ const DynamicList = () => {
     const [selectedRows, setSelectedRows] = useState([]);
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(5);
-    const [statusFilter, setStatusFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState('all');    
     useEffect(() => {
         fetchData();
     }, []);
@@ -75,7 +75,6 @@ const DynamicList = () => {
         if (Array.isArray(ids)) {
             ids = [ids];
         }
-
         const confirmDelete = await Swal.fire({
             title: 'Are you sure?',
             text: 'This will mark the selected items as deleted!',
@@ -90,7 +89,6 @@ const DynamicList = () => {
             try {
                 const promises = ids.map(id => Authapi.dynamicDeleteData(id));
                 await Promise.all(promises);
-                // console.log(promises);
                 Swal.fire('Success!', 'Selected items marked as deleted.', 'success');
                 fetchData();
             } catch (error) {
@@ -156,8 +154,7 @@ const DynamicList = () => {
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 0;
             try {
-                // const idsToDeactivate = ids.filter(id => activeStates[id] !== false);
-                // console.log(idsToDeactivate)
+                // const idsToDeactivate = ids.filter(id => activeStates[id] !== false);              
                 // if (idsToDeactivate.length > 0) {
                 const promises = ids.map(id => Authapi.dynamicstatus(id, newStatus));
                 await Promise.all(promises);
@@ -190,7 +187,6 @@ const DynamicList = () => {
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 1;
             try {
-
                 // const idsToActivate = ids.filter(id => activeStates[id] !== true);
                 // console.log(idsToActivate)
                 if (ids.length > 0) {
@@ -270,7 +266,7 @@ const DynamicList = () => {
                 <strong onClick={(e) => e.stopPropagation()}>
                     <Tooltip title="Update">
                         <IconButton aria-label="Update" color='primary' className='Edit-list'>
-                            <Link to={`/dynamic-edit/${params.row.id}`} id="edit">
+                            <Link to={`/dynamic-edit/${params.row.id}`} id="edit"   >
                                 <FaEdit />
                             </Link>
                         </IconButton>
@@ -303,7 +299,6 @@ const DynamicList = () => {
             : [...selectedRows, id];
 
         setSelectedRows(newSelectedRows);
-        // fetchData()
 
     };
 
@@ -321,6 +316,7 @@ const DynamicList = () => {
             <Expired />
             <div className="col-md-12">
                 <div className="row" style={{ marginLeft: '20%', width: '80%', marginBottom: '20px', marginTop: '7%' }}>
+
                     <div className="card-header col-6">
                         <h5 className="title ">Post</h5>
                     </div>
@@ -348,14 +344,14 @@ const DynamicList = () => {
                             onChange={handleSearch}
                         />
                     </div>
-                    <div className="card-body">
+                    <div className="card-body" style={{ height: 400, width: '100%' }}>
                         <Container>
                             <div>
                                 <DataGrid
                                     rows={searchQuery ? filteredRows : rows}
                                     columns={columns}
                                     initialState={{ pagination: { paginationModel } }}
-                                    pageSizeOptions={[5, 10, 20]}
+                                    pageSizeOptions={[5, 10, 20, { value: rows.length, label: 'All' }]}
                                     loading={loading}
                                     autoHeight={false}
                                     onPageChange={(newPage) => setPage(newPage)}

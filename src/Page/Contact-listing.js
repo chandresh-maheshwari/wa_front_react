@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import { FaEdit } from "react-icons/fa";
-import { MdDelete, MdOutlineCancel } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { Container, IconButton, Tooltip, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { Link } from "react-router-dom";
 import Authapi from '../Authapi';
-import BootstrapSwitchButton from 'bootstrap-switch-button-react'
-import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
-import { useNavigate } from 'react-router-dom';
 import '../Custom.css'
-
 const Contact = () => {
 
     const [rows, setRows] = useState([]);
@@ -19,9 +13,9 @@ const Contact = () => {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
-    const [activeStates, setActiveStates] = useState(
-        Array.isArray(rows) ? rows.reduce((acc, row) => ({ ...acc, [row.id]: false }), {}) : {}
-    );
+    // const [activeStates, setActiveStates] = useState(
+    //     Array.isArray(rows) ? rows.reduce((acc, row) => ({ ...acc, [row.id]: false }), {}) : {}
+    // );
     // const navigate = useNavigate();
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(5);
@@ -34,7 +28,6 @@ const Contact = () => {
     const fetchData = async () => {
         try {
             const response = await Authapi.contactListData();
-            // console.log("API Response:", response);
             if (Array.isArray(response.results)) {
                 const formattedData = response.results.map((item, index) => ({
                     id: item.id,
@@ -58,20 +51,6 @@ const Contact = () => {
             setLoading(false);
         }
     };
-
-    // const handleSearch = (event) => {
-    //     const query = event.target.value.toLowerCase();
-    //     setSearchQuery(query);
-
-    //     const filteredData = rows.filter((row) =>
-    //         row.name.toLowerCase().includes(query) ||
-    //         row.email.toLowerCase().includes(query) ||
-    //         row.contact_number.toString().includes(query) ||
-    //         row.description.toString().includes(query)
-
-    //     );
-    //     setFilteredRows(filteredData);
-    // };
     const handleSearch = (event) => {
         const query = event.target.value.trim();
         setSearchQuery(query);
@@ -151,10 +130,6 @@ const Contact = () => {
     };
 
 
-
-    const paginationModel = { page: 0, pageSize: 5 };
-
-
     const handleStatusFilterChange = (event) => {
         const filterValue = event.target.value;
         setStatusFilter(filterValue);
@@ -231,11 +206,11 @@ const Contact = () => {
         }
     };
 
+    // pagination perpage
+    const paginationModel = { page: 0, pageSize: 5 };
     return (
         <>
-
             <Expired />
-
             <div className="col-md-12">
                 <div className="row " style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: "7%" }}>
 
@@ -266,15 +241,15 @@ const Contact = () => {
                     </div>
                     <div className="card-body">
                         <Container>
-
                             <div style={{ width: '100%', marginBottom: "45px" }}>
-
-                                <div style={{ width: '100%', height: '400px', overflowY: 'auto' }}>
+                                <div style={{ width: '100%', overflowY: 'auto' }}>
                                     <DataGrid
                                         rows={searchQuery ? filteredRows : rows}
                                         columns={columns}
                                         initialState={{ pagination: { paginationModel } }}
-                                        pageSizeOptions={[5, 10, 20]}
+                                        // pageSizeOptions={[5, 10, 20]}                                       
+                                        pageSizeOptions={[5, 10, 20, { value: rows.length, label: 'All' }]}
+
                                         loading={loading}
                                         autoHeight={false}
                                         onPageChange={(newPage) => setPage(newPage)}

@@ -13,37 +13,23 @@ const PostDynamicEdit = () => {
     const [formData, setFormData] = useState({});
     const [fields, setFields] = useState([]);
     const post_title = location.state?.post_title;
-
     useEffect(() => {
         fetchData();
     }, [post_title]);
-
     useEffect(() => {
-
         fetchEditData(id);
-
     }, [id]);
 
 
     const fetchData = async () => {
         try {
             const response = await Authapi.dynamifieldfetchdata(post_title);
-            // console.log("Fetched Fields:", response.data);
             setFields(response.data?.post_description || []);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-    // const fetchEditData = async (id) => {
-    //     try {
-    //         const response = await Authapi.postdynamicEditData(id);
-    //         console.log("Fetched Edit Data:", response.data || {});
-    //         setFormData(response.data  || {});
-    //     } catch (error) {
-    //         console.error('Error fetching edit data:', error);
-    //     }
-    // }
     const fetchEditData = async (id) => {
         // console.log("Fetching edit data for ID:", id);
         try {
@@ -51,25 +37,10 @@ const PostDynamicEdit = () => {
             setTimeout(() => {
                 setFormData(response.data || {});
             }, 500);
-            // console.log("Fetched Edit Data:", response.data);
-            // console.log("Fetched Edit Data:", formData);
-
         } catch (error) {
             console.error('Error fetching edit data:', error);
         }
     }
-
-
-
-    const hexToRgb = (hex) => {
-        if (hex.length === 7) {
-            let r = parseInt(hex.slice(1, 3), 16);
-            let g = parseInt(hex.slice(3, 5), 16);
-            let b = parseInt(hex.slice(5, 7), 16);
-            return { r, g, b };
-        }
-        return { r: 0, g: 0, b: 0 };
-    };
 
     useEffect(() => {
         if (fields.length > 0) {
@@ -80,7 +51,6 @@ const PostDynamicEdit = () => {
             setFormData(initialFormData);
         }
     }, [fields]);
-
     // const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
     //     let value = event.target.value;
 
@@ -106,34 +76,22 @@ const PostDynamicEdit = () => {
     //         [fieldLabel]: value,
     //     }));
     // };
-
-
     const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
-        // console.log(option)
-
         let value = event.target.value;
-
         if (fieldType === 'file') {
             value = event.target.files[0];
         }
-
         if (fieldType === 'dropdown') {
             value = value.toLowerCase();
         }
-
         if (fieldType === 'checkbox') {
             const currentValues = Array.isArray(formData[fieldLabel]) ? formData[fieldLabel] : [];
-            // const currentValues = formData[fieldLabel] || [];
             if (currentValues.includes(option)) {
-
-                // console.log(currentValues.includes(option))
-
                 setFormData({
                     ...formData,
                     [fieldLabel]: currentValues.filter(item => item !== option),
                 });
             } else {
-
                 setFormData({
                     ...formData,
                     [fieldLabel]: [...currentValues, option],
@@ -141,7 +99,6 @@ const PostDynamicEdit = () => {
             }
             return;
         }
-
         setFormData({
             ...formData,
             [fieldLabel]: value,
@@ -151,19 +108,13 @@ const PostDynamicEdit = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const submitFormData = new FormData();
-
         Object.keys(formData).forEach(key => {
             submitFormData.append(key, formData[key]);
         });
-        // const submitFormData = {
-        //     ...formData
-        // }
-        // console.log(submitFormData)
+
         try {
             const response = await Authapi.postdynamicupdatedata(id, submitFormData);
-            // console.log(response);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 setFormData({});
@@ -174,7 +125,6 @@ const PostDynamicEdit = () => {
             console.error('Error submitting data:', error);
         }
     };
-
 
     return (
         <>
@@ -324,9 +274,6 @@ const PostDynamicEdit = () => {
                                                         onChange={handleInputChange(field.label, field.type)}
                                                         margin="normal"
                                                         style={{ width: '100%', marginRight: '10px' }}
-                                                    // className='color-code'   
-
-
                                                     />
                                                     <TextField
                                                         type="color"

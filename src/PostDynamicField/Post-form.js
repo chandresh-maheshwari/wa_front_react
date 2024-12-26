@@ -5,7 +5,6 @@ import Expired from '../Login/ExpiredToken';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import "../Custom.css";
-
 const PostFormDynamic = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -13,7 +12,6 @@ const PostFormDynamic = () => {
     const [fields, setFields] = useState([]);
     const [errors, setErrors] = useState({});
     const post_title = location.state?.post_title;
-
     useEffect(() => {
         if (post_title) {
             fetchData();
@@ -38,23 +36,7 @@ const PostFormDynamic = () => {
             setFormData(initialFormData);
         }
     }, [fields]);
-
-    // const handleInputChange = (fieldLabel, fieldType) => (event) => {
-    //     let value = event.target.value;
-
-    //     if (fieldType === 'file') {
-    //         value = event.target.files[0];
-    //     }
-
-    //     if (fieldType === 'dropdown') {
-    //         value = value.toLowerCase();
-    //     }
-
-    //     setFormData({
-    //         ...formData,
-    //         [fieldLabel]: value,
-    //     });
-    // };
+    ;
     const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
         let value = event.target.value;
         if (fieldType === 'file') {
@@ -84,17 +66,6 @@ const PostFormDynamic = () => {
         });
     };
 
-    // Convert hex to RGB
-    const hexToRgb = (hex) => {
-        // Ensure valid hex format
-        if (hex.length === 7) {
-            let r = parseInt(hex.slice(1, 3), 16);
-            let g = parseInt(hex.slice(3, 5), 16);
-            let b = parseInt(hex.slice(5, 7), 16);
-            return { r, g, b };
-        }
-        return { r: 0, g: 0, b: 0 };
-    };
 
     // Validation function
     // const validate = () => {
@@ -122,14 +93,9 @@ const PostFormDynamic = () => {
         Object.keys(formData).forEach(key => {
             submitFormData.append(key, formData[key]);
         });
-        // const submitFormData = {
-        //     ...formData
-        // }
-        // console.log(formData)
 
         try {
             const response = await Authapi.postDynamicstoredata(submitFormData, post_title);
-            // console.log(response);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 setFormData({});

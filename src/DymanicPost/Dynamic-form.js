@@ -67,7 +67,6 @@ const DynamicForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // console.log(formData);
 
         const SubmitformData = {
             post_title: formData.post_title,
