@@ -12,6 +12,7 @@ const PostDynamicEdit = () => {
     const { id } = useParams();
     const [formData, setFormData] = useState({});
     const [fields, setFields] = useState([]);
+    const [errors, setErrors] = useState({});
     const post_title = location.state?.post_title;
     useEffect(() => {
         fetchData();
@@ -81,7 +82,37 @@ const PostDynamicEdit = () => {
     const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
         let value = event.target.value;
         if (fieldType === 'file') {
-            value = event.target.files[0];
+            const file = event.target.files[0];
+            if (file) {
+                const img = new Image();
+                const reader = new FileReader();
+                reader.onload = () => {
+                    img.src = reader.result;
+                    img.onload = () => {
+                        const { width, height } = img;
+                        console.log(width)
+                        console.log(height)
+
+                        if (width >= 50 && height >= 50 && width <= 1000 && height <= 1000) {
+                            setErrors(prevErrors => ({
+                                ...prevErrors,
+                                [fieldLabel]: ''
+                            }));
+                            setFormData({
+                                ...formData,
+                                [fieldLabel]: file
+                            });
+                        } else {
+                            setErrors(prevErrors => ({
+                                ...prevErrors,
+                                [fieldLabel]: 'Image must be between 51px and 999px in both width and height.'
+                            }));
+                        }
+
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
         }
         if (fieldType === 'dropdown') {
             value = value.toLowerCase();
@@ -249,7 +280,9 @@ const PostDynamicEdit = () => {
                                                         fullWidth
                                                         className='mt-5'
                                                         InputLabelProps={{ shrink: true }}
+                                                        error={!!errors[field.label]}
                                                     />
+                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                     {formData[field.label] instanceof File ? (
                                                         <img
                                                             src={URL.createObjectURL(formData[field.label])}

@@ -5,6 +5,7 @@ import Expired from '../Login/ExpiredToken';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import "../Custom.css";
+
 const PostFormDynamic = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -12,6 +13,7 @@ const PostFormDynamic = () => {
     const [fields, setFields] = useState([]);
     const [errors, setErrors] = useState({});
     const post_title = location.state?.post_title;
+
     useEffect(() => {
         if (post_title) {
             fetchData();
@@ -36,16 +38,45 @@ const PostFormDynamic = () => {
             setFormData(initialFormData);
         }
     }, [fields]);
-    ;
+
     const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
         let value = event.target.value;
+
         if (fieldType === 'file') {
-            value = event.target.files[0];
-        }
-        if (fieldType === 'dropdown') {
+            const file = event.target.files[0];
+            if (file) {
+                const img = new Image();
+                const reader = new FileReader();
+                reader.onload = () => {
+                    img.src = reader.result;
+                    img.onload = () => {
+                        const { width, height } = img;
+                        console.log(width)
+                        console.log(height)
+
+                        if (width >= 50 && height >= 50 && width <= 1000 && height <= 1000) {
+                            setErrors(prevErrors => ({
+                                ...prevErrors,
+                                [fieldLabel]: ''
+                            }));
+                            setFormData({
+                                ...formData,
+                                [fieldLabel]: file
+                            });
+                        } else {
+                            setErrors(prevErrors => ({
+                                ...prevErrors,
+                                [fieldLabel]: 'Image must be between 51px and 999px in both width and height.'
+                            }));
+                        }
+
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        } else if (fieldType === 'dropdown') {
             value = value.toLowerCase();
-        }
-        if (fieldType === 'checkbox') {
+        } else if (fieldType === 'checkbox') {
             const currentValues = formData[fieldLabel] || [];
             if (currentValues.includes(option)) {
                 setFormData({
@@ -60,36 +91,17 @@ const PostFormDynamic = () => {
             }
             return;
         }
+
         setFormData({
             ...formData,
             [fieldLabel]: value,
         });
     };
 
-
-    // Validation function
-    // const validate = () => {
-    //     const newErrors = {};
-    //     fields.forEach((field) => {
-    //         const value = formData[field.label] || '';
-    //         if (field.label && !value) {
-    //             newErrors[field.label] = 'This field is required';
-    //         } else if (field.type === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
-    //             newErrors[field.label] = 'Please enter a valid email address';
-    //         }
-    //     });
-    //     setErrors(newErrors);
-    //     return Object.keys(newErrors).length === 0;
-    // };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Remove validation call
-        // if (!validate()) {
-        //     return;
-        // }
-        const submitFormData = new FormData();
 
+        const submitFormData = new FormData();
         Object.keys(formData).forEach(key => {
             submitFormData.append(key, formData[key]);
         });
@@ -159,7 +171,6 @@ const PostFormDynamic = () => {
                                                     ))}
                                                     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                 </div>
-
                                             ) : field.type === 'radio' ? (
                                                 <div>
                                                     <Typography variant="body1">{field.label}</Typography>
@@ -188,8 +199,6 @@ const PostFormDynamic = () => {
                                                         error={!!errors[field.label]}
                                                         helperText={errors[field.label] || ''}
                                                         style={{ width: '100%', marginRight: '10px' }}
-
-
                                                     />
                                                     <TextField
                                                         type="color"

@@ -4,6 +4,7 @@ import { TextField, Button, Container, MenuItem, Select, InputLabel, FormControl
 import Authapi from '../Authapi';
 import Expired from '../Login/ExpiredToken';
 import { useNavigate } from 'react-router-dom';
+
 const Page = () => {
     const [formData, setFormData] = useState({});
     const [postTitles, setPostTitles] = useState([]);
@@ -47,12 +48,14 @@ const Page = () => {
             setErrors(newErrors);
             return;
         }
+
         const form = new FormData();
         form.append('page_name', formData.page_name);
         form.append('page_description', formData.page_description);
         form.append('image', formData.image);
         form.append('ordering', formData.ordering);
         form.append('post_type', formData.post_type);
+
         try {
             const response = await Authapi.Pagestoredata(form);
             if (response) {
@@ -69,18 +72,57 @@ const Page = () => {
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: files ? files[0] : value,
-        }));
+
+        if (name === 'image' && files && files[0]) {
+            const file = files[0];
+
+
+            if (file && file.type.startsWith('image')) {
+                const img = new Image();
+                const reader = new FileReader();
+
+                reader.onload = () => {
+                    img.src = reader.result;
+                    img.onload = () => {
+                        const { width, height } = img;
+                        if (width >= 50 && height >= 50 && width <= 1000 && height <= 1000) {
+                            setErrors((prev) => ({
+                                ...prev,
+                                image: '',
+                            }));
+                            setFormData((prev) => ({
+                                ...prev,
+                                [name]: file,
+                            }));
+                        } else {
+                            setErrors((prev) => ({
+                                ...prev,
+                                image: 'Image dimensions must be between 50px and 1000px for both width and height.',
+                            }));
+                        }
+                    };
+                };
+                reader.readAsDataURL(file);
+            } else {
+                setErrors((prev) => ({
+                    ...prev,
+                    image: 'Please select a valid image file.',
+                }));
+            }
+        } else {
+            // Handle regular form inputs (non-image fields)
+            setFormData((prev) => ({
+                ...prev,
+                [name]: files ? files[0] : value, // Update formData
+            }));
+        }
     };
 
     return (
         <>
             <Expired />
-            {/* <div className="container-fluid panel-header panel-header-sm"></div> */}
             <div className="col-md-12">
-                <div className="row card " style={{ marginLeft: "20%", width: "80%", marginBottom: "20px" , marginTop:'7%'}}>
+                <div className="row card " style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: '7%' }}>
                     <div className="card-header">
                         <h5 className="title">Page</h5>
                     </div>
@@ -129,8 +171,10 @@ const Page = () => {
                                             error={!!errors.image}
                                             helperText={errors.image}
                                         />
+                                        {errors[!!errors.image] && <Typography color="error">{errors[!!errors.image]}</Typography>}
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+
+                                    <Grid item xs={12} sm={6}>s
                                         <FormControl fullWidth style={{ marginBottom: '15px' }}>
                                             <InputLabel>Post Type</InputLabel>
                                             <Select
@@ -160,6 +204,7 @@ const Page = () => {
                                             {errors.post_type && <Typography color="error">{errors.post_type}</Typography>}
                                         </FormControl>
                                     </Grid>
+
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Page Description"
@@ -200,4 +245,3 @@ const Page = () => {
 };
 
 export default Page;
-
