@@ -49,10 +49,16 @@ const PostDynamicList = () => {
                     return {
                         id: item.id,
                         status: item.status,
-                        sr_No: index + 1,
+                        sr_no: index + 1,
                         ...filteredData,
                     };
                 });
+
+                // const sortedData = formattedRows.sort((a, b) => b.id - a.id);
+                // const dataWithSrNo = sortedData.map((item, index) => ({
+                //     ...item,
+                //     sr_no: index + 1,
+                // }));
                 setRows(formattedRows);
             } else {
                 console.error('Invalid response structure:', response);
@@ -101,8 +107,10 @@ const PostDynamicList = () => {
                     const isExpanded = expandedEmails[params.row.id];
                     const displayValue = typeof value === 'string' ? value : (value !== undefined && value !== null ? String(value) : "-");
                     const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
+                    // console.log(safeValue)
 
                     const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
+                    // console.log(isImage)
                     return (
                         <div style={{ whiteSpace: 'normal', }}>
                             {isImage ? (
@@ -145,11 +153,6 @@ const PostDynamicList = () => {
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Active">
-                        {/* <Switch
-                            checked={params.row.status}
-                            size="small"
-                            onChange={() => getActive1(params.row.id, params.row.status )}
-                        /> */}
                         <Switch
                             key={params.row.id}
                             checked={params.row.status}
@@ -183,22 +186,6 @@ const PostDynamicList = () => {
         });
     };
 
-
-    // const handleSearch = (event) => {
-    //     const query = event.target.value.trim();
-    //     setSearchQuery(query);
-
-    //     if (query) {
-    //         const filtered = rows.filter((row) => {
-    //             return Object.values(row).some((value) =>
-    //                 String(value).toLowerCase().includes(query.toLowerCase())
-    //             );
-    //         });
-    //         setRows(filtered);
-    //     } else {
-    //         setRows(rows);
-    //     }
-    // };
     const handleSearch = (event) => {
         const query = event.target.value.trim();
         setSearchQuery(query);

@@ -78,9 +78,9 @@ const Page = () => {
     return (
         <>
             <Expired />
-            <div className="container-fluid panel-header panel-header-sm"></div>
+            {/* <div className="container-fluid panel-header panel-header-sm"></div> */}
             <div className="col-md-12">
-                <div className="row card mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
+                <div className="row card " style={{ marginLeft: "20%", width: "80%", marginBottom: "20px" , marginTop:'7%'}}>
                     <div className="card-header">
                         <h5 className="title">Page</h5>
                     </div>

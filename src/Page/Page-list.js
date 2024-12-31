@@ -39,7 +39,7 @@ const PageList = () => {
                     page_status: item.page_status,
                     page_name: item.page_name,
                     page_description: item.page_description,
-                    image: item.image,
+                    image_url: item.image_url,
                     ordering: item.ordering,
                     // post_type: item.post_type,
                 }));
@@ -358,7 +358,7 @@ const PageList = () => {
             flex: 1,
             renderCell: (params) => (
                 <img
-                    src={params.row.image}
+                    src={params.row.image_url}
                     alt="Page"
                     style={{ width: '50%', height: 'auto' }}
                 />

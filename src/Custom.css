@@ -223,3 +223,7 @@
 .css-1kwdphh-MuiDataGrid-virtualScrollerContent {
   height: 238px !important;
 }
+
+.MuiDataGrid-virtualScrollerContent {
+  height: 238px !important;
+}

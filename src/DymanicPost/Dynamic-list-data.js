@@ -18,7 +18,7 @@ const DynamicList = () => {
     const [selectedRows, setSelectedRows] = useState([]);
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(5);
-    const [statusFilter, setStatusFilter] = useState('all');    
+    const [statusFilter, setStatusFilter] = useState('all');
     useEffect(() => {
         fetchData();
     }, []);

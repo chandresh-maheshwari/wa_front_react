@@ -51,7 +51,7 @@ const PageEdit = () => {
                 setFormData({
                     page_name: event.page_name || '',
                     page_description: event.page_description || '',
-                    image_url: event.image_url || '',
+                    image: event.image || '',
                     ordering: event.ordering || '',
                     post_type: event.post_type || '',
                 });
@@ -73,7 +73,6 @@ const PageEdit = () => {
         form.append('post_type', formData.post_type);
         try {
             const response = await Authapi.pageupdatedata(id, form);
-            // console.log(response);
             if (response) {
                 Swal.fire('Success', ' added successfully!', 'success');
                 navigate('/page-list')
@@ -86,11 +85,10 @@ const PageEdit = () => {
         }
     };
 
-
     return (
         <>
             <Expired />
-            <div className="container-fluid panel-header panel-header-sm"></div>
+            {/* <div className="container-fluid panel-header panel-header-sm"></div> */}
             <div className="col-md-12">
                 <div className="row card mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
                     <div className="card-header">
@@ -136,15 +134,15 @@ const PageEdit = () => {
                                             name="image"
                                             onChange={(e) => {
                                                 const file = e.target.files[0];
-                                                setFormData({ ...formData, image: file, image_url: file });
+                                                setFormData({ ...formData, image: file, image: file });
                                             }}
                                         />
-                                        {formData.image_url ? (
-                                            formData.image_url instanceof File ? (
+                                        {formData.image ? (
+                                            formData.image instanceof File ? (
                                                 <div>
-                                                    <p>Image: {formData.image_url.name}</p>
+                                                    <p>Image: {formData.image.name}</p>
                                                     <img
-                                                        src={URL.createObjectURL(formData.image_url)}
+                                                        src={URL.createObjectURL(formData.image)}
                                                         alt="Preview"
                                                         width="100"
                                                     />
@@ -152,11 +150,11 @@ const PageEdit = () => {
                                             ) : (
                                                 <div>
                                                     <img
-                                                        src={formData.image_url}
+                                                        src={formData.image}
                                                         alt="Current image preview"
                                                         width="100"
                                                     />
-                                                    <p>{formData.image_url.split('/').pop()}</p>
+                                                    <p>{formData.image.split('/').pop()}</p>
                                                 </div>
                                             )
                                         ) : null}

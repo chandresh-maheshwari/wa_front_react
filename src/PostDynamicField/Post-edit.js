@@ -24,6 +24,7 @@ const PostDynamicEdit = () => {
     const fetchData = async () => {
         try {
             const response = await Authapi.dynamifieldfetchdata(post_title);
+
             setFields(response.data?.post_description || []);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -34,8 +35,9 @@ const PostDynamicEdit = () => {
         // console.log("Fetching edit data for ID:", id);
         try {
             const response = await Authapi.postdynamicEditData(id);
+            console.log(response.data.data)
             setTimeout(() => {
-                setFormData(response.data || {});
+                setFormData(response.data.data || {});
             }, 500);
         } catch (error) {
             console.error('Error fetching edit data:', error);
