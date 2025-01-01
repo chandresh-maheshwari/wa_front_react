@@ -54,7 +54,7 @@ const PostFormDynamic = () => {
                         console.log(width)
                         console.log(height)
 
-                        if (width >= 50 && height >= 50 && width <= 1000 && height <= 1000) {
+                        if (width >= 50 && height >= 50 && width <= 1600 && height <= 1600) {
                             setErrors(prevErrors => ({
                                 ...prevErrors,
                                 [fieldLabel]: ''

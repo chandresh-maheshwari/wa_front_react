@@ -5,11 +5,17 @@ import { AiOutlineSearch } from 'react-icons/ai';
 import { MdDensityMedium } from 'react-icons/md';
 import { FaLocationCrosshairs } from 'react-icons/fa6';
 import axios from 'axios';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import Authapi from '../Authapi';
+import ls from 'local-storage';
 
 
-const Servicenave = () => {
+const Servicenave = ({ setIsLoggedIn }) => {
     const [query, setQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -29,6 +35,23 @@ const Servicenave = () => {
             setSearchResults([]);
         }
     }, [query])
+
+
+    const logoutData = async () => {
+        try {
+
+            const response = await Authapi.logoutData();
+            console.log(response)
+            ls.removeItem('Token');
+            ls.removeItem('user');
+            navigate('/');
+        } catch (error) {
+            console.error("Logout Error:", error);
+        }
+    };
+
+
+
 
     return (
         <div className="hadik" style={{ marginLeft: "19%" }}>
@@ -50,57 +73,16 @@ const Servicenave = () => {
                         <span className="navbar-toggler-bar navbar-kebab"></span>
                         <span className="navbar-toggler-bar navbar-kebab"></span>
                     </button>
-                    {/* <div className="collapse navbar-collapse justify-content-end" id="navigation">
-                        <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <a className="nav-link" href="#pablo">
-                                    <i className="now-ui-icons media-2_sound-wave"><MdDensityMedium /></i>
-                                    <p>
-                                        <span className="d-lg-none d-md-block">Stats</span>
-                                    </p>
-                                </a>
-                            </li>
-                            <ul className="navbar-nav">
-                                <li className="nav-item dropdown">
-                                    <a className="nav-link" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i className="now-ui-icons location_world dropdown-toggle"><FaLocationCrosshairs /></i>
-                                        <p>
-                                            <span className="d-lg-none d-md-block">Stats</span>
-                                        </p>
-                                    </a>
-                                    <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                                        <a className="dropdown-item" href="/">Action</a>
-                                        <a className="dropdown-item" href="/">Another action</a>
-                                        <a className="dropdown-item" href="/">Something else here</a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </ul>
-                    </div> */}
                     <form>
-                        {/* <div className="input-group">
-                            <input type="text"
-                                className="form-control"
-                                placeholder="Search..."
-                                value={query}
-                                onChange={(e) => setQuery(e.target.value)}
-                            />
-
-                            <div className="input-group-append">
-                                <button className="input-group-text" style={{height: "90%"}}>
-                                    <i className="now-ui-icons ui-1_zoom-bold"><AiOutlineSearch /></i>
-                                </button>
-                            </div>
-                       
-                        </div> */}
                         <ul className='ulseachlist' >
-
                             {searchResults.map((hardik) => (
                                 <div key={hardik.id}>
                                     <p style={{ whiteSpace: 'pre-line' }}>{hardik.id} {hardik.service_title} {hardik.description && hardik.description.replace(/<\/?[^>]+(>|$)/g, "")}</p>
                                 </div>
                             ))}
+
                         </ul>
+                        <Button className='bg-white'style={{ color: "black" }} onClick={logoutData}>Log Out</Button>
                     </form>
                 </div>
             </nav>

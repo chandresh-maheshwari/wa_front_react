@@ -1,12 +1,13 @@
 import React from 'react'
-import localStorage from 'local-storage'
+// import localStorage from 'local-storage'
 // import '../App.css';
+import Expired from '../Login/ExpiredToken'
 
 function Dashboard() {
-    const hardik =localStorage("token")
-    console.log(hardik)
+
     return (
         <>
+            <Expired />
             <div class="container-fluid panel-header panel-header-sm">
             </div>
             <div className='maincard'>
@@ -23,7 +24,7 @@ function Dashboard() {
             </div>
 
 
-        </>
+        </ >
     )
 }
 

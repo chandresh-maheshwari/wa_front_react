@@ -1,7 +1,7 @@
 import { Container, TextField } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Authapi from '../Authapi';
 
@@ -23,34 +23,36 @@ function Login() {
         }
 
         if (localStorage.getItem('Token')) {
-            navigate("./Dashboard");
+            if (window.location.pathname !== "/") {
+                navigate("/Dashboard");
+            }
         }
-    }, []);
+    }, [navigate]);
 
     async function submitform(e) {
         e.preventDefault();
 
         const newErrors = {};
         if (!email.trim()) {
-            newErrors.email = "Email is required";
+            newErrors.email = 'Email is required';
         }
 
         if (!password) {
-            newErrors.password = "Password is required";
+            newErrors.password = 'Password is required';
         }
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             return;
         }
         setErrors({});
-        let item = { email, password };
+
+        const item = { email, password };
         const response = await Authapi.loginData(item);
-        // console.log(response);
 
         if (response.status === true) {
             const { token, user } = response;
-            localStorage.setItem("user", JSON.stringify(user));
-            localStorage.setItem("Token", token);
+            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('Token', token);
             navigate("/Dashboard");
         } else {
             Swal.fire({
@@ -59,14 +61,7 @@ function Login() {
                 text: 'Email and password do not match!',
             });
         }
-
     }
-
-
-
-
-
-
 
     return (
         <main className="py-4">
@@ -81,7 +76,6 @@ function Login() {
                             <div className="col-md-12 col-lg-10">
                                 <div className="row wrap d-md-flex">
                                     <div className="col-6 img bg-dark hardik"></div>
-
                                     <div className="col-6 login-wrap p-4 p-md-5">
                                         <div className="d-flex">
                                             <div className="w-100">
@@ -93,38 +87,35 @@ function Login() {
                                             <Container>
                                                 <div className="form-group mb-3">
                                                     <TextField
-                                                        label="email"
-
+                                                        label="Email"
                                                         type="email"
-                                                        placeholder="Username"
-                                                        className=""
+                                                        placeholder="Email"
                                                         name="email"
                                                         onChange={e => setemail(e.target.value)}
+                                                        fullWidth
                                                     />
                                                     {errors.email && (
-                                                        <p style={{ color: "red" }}>{errors.email}</p>
+                                                        <p style={{ color: 'red' }}>{errors.email}</p>
                                                     )}
                                                 </div>
                                                 <div className="form-group mb-3">
                                                     <TextField
-                                                        label="password"
-
+                                                        label="Password"
                                                         type="password"
                                                         placeholder="Password"
-                                                        className=""
                                                         name="password"
                                                         onChange={e => setpassword(e.target.value)}
+                                                        fullWidth
                                                     />
                                                     {errors.password && (
-                                                        <p style={{ color: "red" }}>{errors.password}</p>
+                                                        <p style={{ color: 'red' }}>{errors.password}</p>
                                                     )}
                                                 </div>
 
                                                 <div className="form-group">
                                                     <Button
                                                         type="submit"
-                                                        onClick={submitform}
-                                                        className=" btn  bg-primary rounded submit w-100"
+                                                        className="btn bg-primary rounded submit w-100"
                                                     >
                                                         Sign In
                                                     </Button>
@@ -132,33 +123,28 @@ function Login() {
 
                                                 <div className="form-group d-md-flex">
                                                     <div className="w-50 text-left">
-                                                        <label
-                                                            className="checkbox-wrap checkbox-primary mb-0"
-                                                        >
+                                                        <label className="checkbox-wrap checkbox-primary mb-0">
                                                             Remember Me
                                                             <input
                                                                 className="form-check-input"
                                                                 type="checkbox"
                                                                 name="remember"
                                                                 id="remember"
-                                                                style={{ marginLeft: "2%" }}
+                                                                style={{ marginLeft: '2%' }}
                                                             />
                                                             <span className="checkmark"></span>
                                                         </label>
                                                     </div>
                                                     <div className="w-50 text-md-right">
-                                                        <Link to="/ForgetPassword">
-                                                            Forgot Password
-                                                        </Link>
+                                                        <Link to="/ForgetPassword">Forgot Password</Link>
                                                     </div>
                                                 </div>
                                             </Container>
                                         </form>
+
                                         <p className="text-center">
                                             Not a member?{' '}
-                                            <a data-toggle="tab" href="#signup">
-                                                Sign Up
-                                            </a>
+                                            <a data-toggle="tab" href="#signup">Sign Up</a>
                                         </p>
                                     </div>
                                 </div>

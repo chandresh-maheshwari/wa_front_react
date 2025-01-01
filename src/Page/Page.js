@@ -85,7 +85,7 @@ const Page = () => {
                     img.src = reader.result;
                     img.onload = () => {
                         const { width, height } = img;
-                        if (width >= 50 && height >= 50 && width <= 1000 && height <= 1000) {
+                        if (width >= 50 && height >= 50 && width <= 1600 && height <= 1600) {
                             setErrors((prev) => ({
                                 ...prev,
                                 image: '',

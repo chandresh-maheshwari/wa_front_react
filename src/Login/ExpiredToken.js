@@ -36,7 +36,6 @@ const Expired = () => {
         try {
             let formData = {
                 user_id: localStorage("user").id
-
             };
             const newToken = await Authapi.refreshToken1(formData);
             console.log("New Token: ", newToken.data.add_token);
