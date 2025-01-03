@@ -39,22 +39,105 @@ const PostFormDynamic = () => {
         }
     }, [fields]);
 
+    // const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
+    //     let value = event.target.value;
+
+    //     if (fieldType === 'file') {
+    //         const file = event.target.files[0];
+    //         if (file) {
+    //             const fileType = file.type;
+    //             const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg', 'image/svg', 'image/webp'];
+    //             if (!allowedImageTypes.includes(fileType)) {
+    //                 setErrors(prevErrors => ({
+    //                     ...prevErrors,
+    //                     [fieldLabel]: 'Please upload a valid image file (JPEG, PNG, GIF).'
+    //                 }));
+    //                 return;
+    //             }
+    //             const img = new Image();
+    //             const reader = new FileReader();
+    //             reader.onload = () => {
+    //                 img.src = reader.result;
+    //                 img.onload = () => {
+    //                     const { width, height } = img;
+    //                     console.log(width)
+    //                     console.log(height)
+
+    //                     if (width >= 40 && height >= 40 && width <= 1700 && height <= 1700) {
+    //                         setErrors(prevErrors => ({
+    //                             ...prevErrors,
+    //                             [fieldLabel]: ''
+    //                         }));
+    //                         setFormData({
+    //                             ...formData,
+    //                             [fieldLabel]: file
+    //                         });
+    //                     } else {
+    //                         setErrors(prevErrors => ({
+    //                             ...prevErrors,
+    //                             [fieldLabel]: 'Image must be between 40px and 1700px in both width and height.'
+    //                         }));
+    //                     }
+    //                 };
+    //             };
+    //             reader.readAsDataURL(file);
+    //         } else {
+    //             setErrors(prevErrors => ({
+    //                 ...prevErrors,
+    //                 [fieldLabel]: 'Please select a valid image file.',
+    //             }));
+    //         }
+    //     } else if (fieldType === 'dropdown') {
+    //         value = value.toLowerCase();
+    //     } else if (fieldType === 'checkbox') {
+    //         const currentValues = formData[fieldLabel] || [];
+    //         if (currentValues.includes(option)) {
+    //             setFormData({
+    //                 ...formData,
+    //                 [fieldLabel]: currentValues.filter(item => item !== option),
+    //             });
+    //         } else {
+    //             setFormData({
+    //                 ...formData,
+    //                 [fieldLabel]: [...currentValues, option],
+    //             });
+    //         }
+    //         return;
+    //     }
+
+    //     setFormData({
+    //         ...formData,
+    //         [fieldLabel]: value,
+    //     });
+    // };
     const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
         let value = event.target.value;
+
+        // Clear error when the input changes
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            [fieldLabel]: '',
+        }));
 
         if (fieldType === 'file') {
             const file = event.target.files[0];
             if (file) {
+                const fileType = file.type;
+                const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg', 'image/svg', 'image/webp'];
+                if (!allowedImageTypes.includes(fileType)) {
+                    setErrors(prevErrors => ({
+                        ...prevErrors,
+                        [fieldLabel]: 'Please upload a valid image file (JPEG, PNG, GIF).'
+                    }));
+                    return;
+                }
                 const img = new Image();
                 const reader = new FileReader();
                 reader.onload = () => {
                     img.src = reader.result;
                     img.onload = () => {
                         const { width, height } = img;
-                        console.log(width)
-                        console.log(height)
-
-                        if (width >= 50 && height >= 50 && width <= 1600 && height <= 1600) {
+                        if (width >= 40 && height >= 40 && width <= 1700 && height <= 1700) {
                             setErrors(prevErrors => ({
                                 ...prevErrors,
                                 [fieldLabel]: ''
@@ -66,13 +149,17 @@ const PostFormDynamic = () => {
                         } else {
                             setErrors(prevErrors => ({
                                 ...prevErrors,
-                                [fieldLabel]: 'Image must be between 51px and 999px in both width and height.'
+                                [fieldLabel]: 'Image must be between 40px and 1700px in both width and height.'
                             }));
                         }
-
                     };
                 };
                 reader.readAsDataURL(file);
+            } else {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    [fieldLabel]: 'Please select a valid image file.',
+                }));
             }
         } else if (fieldType === 'dropdown') {
             value = value.toLowerCase();
@@ -98,9 +185,28 @@ const PostFormDynamic = () => {
         });
     };
 
+
+    // Validation function
+    const validate = () => {
+        const newErrors = {};
+        fields.forEach((field) => {
+            const value = formData[field.label] || '';
+            if (field.label && !value) {
+                newErrors[field.label] = 'This field is required';
+            } else if (field.type === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
+                newErrors[field.label] = 'Please enter a valid email address';
+            }
+        });
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        // Remove validation call
+        if (!validate()) {
+            return;
+        }
         const submitFormData = new FormData();
         Object.keys(formData).forEach(key => {
             submitFormData.append(key, formData[key]);

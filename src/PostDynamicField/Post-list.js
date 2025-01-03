@@ -106,6 +106,7 @@ const PostDynamicList = () => {
                     // console.log("prms", params)
                     const isExpanded = expandedEmails[params.row.id];
                     const displayValue = typeof value === 'string' ? value : (value !== undefined && value !== null ? String(value) : "-");
+                    // console.log(displayValue)
                     const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
                     // console.log(safeValue)
 
@@ -263,6 +264,10 @@ const PostDynamicList = () => {
 
     // multi inactive data 
     const getInactive = async (ids) => {
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            return;
+        }
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 0;
             try {
@@ -292,6 +297,10 @@ const PostDynamicList = () => {
 
     // multi page active data 
     const getActive = async (ids) => {
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            return;
+        }
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 1;
             try {
@@ -320,6 +329,10 @@ const PostDynamicList = () => {
     };
     // multi Delete Data 
     const handleDelete = async (ids) => {
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            return;
+        }
         if (Array.isArray(ids)) {
             ids = [ids];
         }

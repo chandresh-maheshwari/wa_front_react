@@ -130,6 +130,17 @@ const DynamicEditForm = ({ existingData }) => {
         }
     };
 
+    const preventTextAndMinus = (e) => {
+
+        const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter', 'NumpadAdd', 'NumpadSubtract'];
+
+        if (
+            !/^[0-9]$/.test(e.key) &&
+            !allowedKeys.includes(e.key)
+        ) {
+            e.preventDefault();
+        }
+    };
 
     return (
         <>
@@ -162,6 +173,8 @@ const DynamicEditForm = ({ existingData }) => {
                                             label="Ordering"
                                             name="ordering"
                                             fullWidth
+                                            min="0"
+                                            onKeyPress={preventTextAndMinus}
                                             value={formData.ordering}
                                             onChange={handleTitleChange}
                                             style={{
@@ -172,7 +185,7 @@ const DynamicEditForm = ({ existingData }) => {
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <FormControl fullWidth style={{ marginBottom: '15px' }}>
+                                        <FormControl fullWidth style={{ marginTop: '15px' }}>
                                             <InputLabel>Post Type</InputLabel>
                                             <Select
                                                 label="Post Type"

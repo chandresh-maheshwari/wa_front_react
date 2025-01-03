@@ -1,5 +1,6 @@
 {
   "name": "wa_frontendreactjs",
+  "homepage": "/cms",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

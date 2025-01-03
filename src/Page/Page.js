@@ -15,6 +15,7 @@ const Page = () => {
         const fetchPostTitles = async () => {
             try {
                 const response = await Authapi.dynamicListData();
+                // console.log(response)
                 if (response && response.results) {
                     const titles = response.results;
                     if (Array.isArray(titles)) {
@@ -22,6 +23,8 @@ const Page = () => {
                     } else {
                         console.error("Post titles is not an array:", titles);
                     }
+
+
                 } else {
                     console.error("Response or results are undefined:", response);
                 }
@@ -33,16 +36,56 @@ const Page = () => {
         fetchPostTitles();
     }, []);
 
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     setErrors({});
+
+    //     const newErrors = {};
+    //     if (!formData.page_name) newErrors.page_name = "Page Name is required.";
+    //     if (!formData.image) newErrors.image = "Image is required.";
+
+    //     if (Object.keys(newErrors).length > 0) {
+    //         setErrors(newErrors);
+    //         return;
+    //     }
+
+    //     const form = new FormData();
+    //     form.append('page_name', formData.page_name);
+    //     form.append('page_description', formData.page_description);
+    //     form.append('image', formData.image);
+    //     form.append('ordering', formData.ordering);
+    //     form.append('post_type', formData.post_type);
+
+    //     try {
+    //         const response = await Authapi.Pagestoredata(form);
+    //         if (response) {
+    //             Swal.fire('Success', ' added successfully!', 'success');
+    //             navigate('/page-list')
+    //         } else {
+    //             Swal.fire('Error', 'Failed to add .', 'error');
+    //         }
+    //     } catch (error) {
+    //         console.error("API Error:", error);
+    //         Swal.fire('Error', 'An error occurred while submitting.', 'error');
+    //     }
+    // };
     const handleSubmit = async (event) => {
         event.preventDefault();
         setErrors({});
 
+        const newFormData = { ...formData };
+
+        // if (!newFormData.page_name) newFormData.page_name = '-';
+        // if (!newFormData.ordering) newFormData.ordering = '-';  
+        // if (!newFormData.image) newFormData.image = '-';  
+        // if (!newFormData.page_description) newFormData.page_description = '-'; 
+        // if (!newFormData.post_type) newFormData.post_type = '-';  
+
+
+
         const newErrors = {};
-        if (!formData.page_name) newErrors.page_name = "Page Name is required.";
-        if (!formData.page_description) newErrors.page_description = "Page Description is required.";
-        if (!formData.ordering) newErrors.ordering = "Ordering is required.";
-        if (!formData.image) newErrors.image = "Image is required.";
-        if (!formData.post_type) newErrors.post_type = "Post Type is required.";
+        if (!newFormData.page_name) newErrors.page_name = "Page Name is required.";
+        if (!newFormData.image) newErrors.image = "Image is required.";
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
@@ -50,17 +93,17 @@ const Page = () => {
         }
 
         const form = new FormData();
-        form.append('page_name', formData.page_name);
-        form.append('page_description', formData.page_description);
-        form.append('image', formData.image);
-        form.append('ordering', formData.ordering);
-        form.append('post_type', formData.post_type);
+        form.append('page_name', newFormData.page_name);
+        form.append('page_description', newFormData.page_description || "");
+        form.append('image', newFormData.image);
+        form.append('ordering', newFormData.ordering || " ");
+        form.append('post_type', newFormData.post_type || " ");
 
         try {
             const response = await Authapi.Pagestoredata(form);
             if (response) {
                 Swal.fire('Success', ' added successfully!', 'success');
-                navigate('/page-list')
+                navigate('/page-list');
             } else {
                 Swal.fire('Error', 'Failed to add .', 'error');
             }
@@ -70,12 +113,12 @@ const Page = () => {
         }
     };
 
+
     const handleChange = (e) => {
         const { name, value, files } = e.target;
 
         if (name === 'image' && files && files[0]) {
             const file = files[0];
-
 
             if (file && file.type.startsWith('image')) {
                 const img = new Image();
@@ -97,7 +140,7 @@ const Page = () => {
                         } else {
                             setErrors((prev) => ({
                                 ...prev,
-                                image: 'Image dimensions must be between 50px and 1000px for both width and height.',
+                                image: 'Image dimensions must be between 50px and 1600px for both width and height.',
                             }));
                         }
                     };
@@ -106,15 +149,25 @@ const Page = () => {
             } else {
                 setErrors((prev) => ({
                     ...prev,
-                    image: 'Please select a valid image file.',
+                    image: 'Please select a valid image file (e.g., PNG, JPG, GIF).',
                 }));
             }
         } else {
-            // Handle regular form inputs (non-image fields)
             setFormData((prev) => ({
                 ...prev,
-                [name]: files ? files[0] : value, // Update formData
+                [name]: files ? files[0] : value,
             }));
+        }
+    };
+    const preventTextAndMinus = (e) => {
+
+        const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter', 'NumpadAdd', 'NumpadSubtract'];
+
+        if (
+            !/^[0-9]$/.test(e.key) &&
+            !allowedKeys.includes(e.key)
+        ) {
+            e.preventDefault();
         }
     };
 
@@ -144,13 +197,16 @@ const Page = () => {
                                         />
                                     </Grid>
 
+
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Ordering"
-                                            type="number"
+                                            type="Ordering"
                                             fullWidth
                                             margin="normal"
-                                            name='ordering'
+                                            min="0"
+                                            onKeyPress={preventTextAndMinus}
+                                            name="ordering"
                                             onChange={handleChange}
                                             value={formData.ordering}
                                             error={!!errors.ordering}
@@ -174,8 +230,8 @@ const Page = () => {
                                         {errors[!!errors.image] && <Typography color="error">{errors[!!errors.image]}</Typography>}
                                     </Grid>
 
-                                    <Grid item xs={12} sm={6}>s
-                                        <FormControl fullWidth style={{ marginBottom: '15px' }}>
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth style={{ marginTop: '15px' }}>
                                             <InputLabel>Post Type</InputLabel>
                                             <Select
                                                 label="Post Type"

@@ -92,6 +92,17 @@ const DynamicForm = () => {
             Swal.fire('Error', 'There was an issue with your submission.', 'error');
         }
     };
+    const preventTextAndMinus = (e) => {
+
+        const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter', 'NumpadAdd', 'NumpadSubtract'];
+
+        if (
+            !/^[0-9]$/.test(e.key) &&
+            !allowedKeys.includes(e.key)
+        ) {
+            e.preventDefault();
+        }
+    };
 
     return (
         <>
@@ -123,7 +134,10 @@ const DynamicForm = () => {
                                         <TextField
                                             label="Ordering"
                                             name="ordering"
+                                            // type='number'
                                             value={formData.ordering}
+                                            min="0"
+                                            onKeyPress={preventTextAndMinus}
                                             onChange={handleTitleChange}
                                             fullWidth
                                             style={{

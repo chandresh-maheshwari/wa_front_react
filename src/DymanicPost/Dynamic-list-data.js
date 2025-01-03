@@ -72,6 +72,12 @@ const DynamicList = () => {
     };
     // multi deleted DAta 
     const handleDelete = async (ids) => {
+        // Check if at least one checkbox is selected
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            return;
+        }
+
         if (Array.isArray(ids)) {
             ids = [ids];
         }
@@ -96,6 +102,7 @@ const DynamicList = () => {
             }
         }
     };
+
     // single Delelete Data
     const handleDelete1 = async (id) => {
         const confirmDelete = await Swal.fire({
@@ -151,6 +158,10 @@ const DynamicList = () => {
     };
     // multi inactive data 
     const getInactive = async (ids) => {
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            return;
+        }
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 0;
             try {
@@ -184,6 +195,10 @@ const DynamicList = () => {
 
     // multi active data 
     const getActive = async (ids) => {
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            return;
+        }
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 1;
             try {

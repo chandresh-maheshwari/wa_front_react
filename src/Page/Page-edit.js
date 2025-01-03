@@ -15,6 +15,7 @@ const PageEdit = () => {
     })
     const { id } = useParams();
     const navigate = useNavigate();
+    const [errors, setErrors] = useState({})
 
 
     useEffect(() => {
@@ -85,6 +86,68 @@ const PageEdit = () => {
         }
     };
 
+
+
+
+
+
+    const handleChange = (e) => {
+        const { name, value, files } = e.target;
+
+        if (name === 'image' && files && files[0]) {
+            const file = files[0];
+            if (file && file.type.startsWith('image')) {
+                const img = new Image();
+                const reader = new FileReader();
+
+                reader.onload = () => {
+                    img.src = reader.result;
+                    img.onload = () => {
+                        const { width, height } = img;
+                        if (width >= 50 && height >= 50 && width <= 1600 && height <= 1600) {
+                            setErrors((prev) => ({
+                                ...prev,
+                                image: '',
+                            }));
+                            setFormData((prev) => ({
+                                ...prev,
+                                [name]: file,
+                            }));
+                        } else {
+                            setErrors((prev) => ({
+                                ...prev,
+                                image: 'Image dimensions must be between 50px and 1600px for both width and height.',
+                            }));
+                        }
+                    };
+                };
+                reader.readAsDataURL(file);
+            } else {
+                setErrors((prev) => ({
+                    ...prev,
+                    image: 'Please select a valid image file (e.g., PNG, JPG, GIF).',
+                }));
+            }
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                [name]: files ? files[0] : value,
+            }));
+        }
+    };
+
+    const preventTextAndMinus = (e) => {
+
+        const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter', 'NumpadAdd', 'NumpadSubtract'];
+
+        if (
+            !/^[0-9]$/.test(e.key) &&
+            !allowedKeys.includes(e.key)
+        ) {
+            e.preventDefault();
+        }
+    };
+
     return (
         <>
             <Expired />
@@ -102,7 +165,6 @@ const PageEdit = () => {
                                         <TextField
                                             label="Page Title"
                                             type="text"
-                                            required
                                             fullWidth
                                             margin="normal"
                                             InputLabelProps={{ shrink: true }}
@@ -111,16 +173,18 @@ const PageEdit = () => {
                                         />
                                     </Grid>
 
+
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Ordering"
-                                            type="number"
+                                            type="Ordering"
                                             fullWidth
                                             margin="normal"
-                                            name='ordering'
-                                            InputLabelProps={{ shrink: true }}
+                                            min="0"
+                                            onKeyPress={preventTextAndMinus}
+                                            name="ordering"
+                                            onChange={handleChange}
                                             value={formData.ordering}
-                                            onChange={(e) => setFormData({ ...formData, ordering: e.target.value })}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
@@ -132,10 +196,13 @@ const PageEdit = () => {
                                             inputProps={{ accept: 'image/jpeg, image/png, image/jpg' }}
                                             InputLabelProps={{ shrink: true }}
                                             name="image"
-                                            onChange={(e) => {
-                                                const file = e.target.files[0];
-                                                setFormData({ ...formData, image: file, image: file });
-                                            }}
+                                            // onChange={(e) => {
+                                            //     const file = e.target.files[0];
+                                            //     setFormData({ ...formData, image: file, image: file });
+                                            // }}
+                                            onChange={handleChange}
+                                            error={!!errors.image}
+                                            helperText={errors.image}
                                         />
                                         {formData.image ? (
                                             formData.image instanceof File ? (

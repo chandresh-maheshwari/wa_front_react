@@ -81,9 +81,22 @@ const PostDynamicEdit = () => {
     // };
     const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
         let value = event.target.value;
+
         if (fieldType === 'file') {
             const file = event.target.files[0];
             if (file) {
+                const fileType = file.type;
+                const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg', 'image/svg', 'image/webp'];
+
+                if (!allowedImageTypes.includes(fileType)) {
+                    // Check if the file is not an image (for example, PDF or video)
+                    setErrors(prevErrors => ({
+                        ...prevErrors,
+                        [fieldLabel]: 'Please upload a valid image file (JPEG, PNG, GIF).'
+                    }));
+                    return;
+                }
+
                 const img = new Image();
                 const reader = new FileReader();
                 reader.onload = () => {
@@ -93,7 +106,7 @@ const PostDynamicEdit = () => {
                         console.log(width)
                         console.log(height)
 
-                        if (width >= 50 && height >= 50 && width <= 1000 && height <= 1000) {
+                        if (width >= 40 && height >= 40 && width <= 1700 && height <= 1700) {
                             setErrors(prevErrors => ({
                                 ...prevErrors,
                                 [fieldLabel]: ''
@@ -105,20 +118,22 @@ const PostDynamicEdit = () => {
                         } else {
                             setErrors(prevErrors => ({
                                 ...prevErrors,
-                                [fieldLabel]: 'Image must be between 51px and 999px in both width and height.'
+                                [fieldLabel]: 'Image must be between 40px and 1700px in both width and height.'
                             }));
                         }
-
                     };
                 };
                 reader.readAsDataURL(file);
+            } else {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    [fieldLabel]: 'Please select a valid image file.',
+                }));
             }
-        }
-        if (fieldType === 'dropdown') {
+        } else if (fieldType === 'dropdown') {
             value = value.toLowerCase();
-        }
-        if (fieldType === 'checkbox') {
-            const currentValues = Array.isArray(formData[fieldLabel]) ? formData[fieldLabel] : [];
+        } else if (fieldType === 'checkbox') {
+            const currentValues = formData[fieldLabel] || [];
             if (currentValues.includes(option)) {
                 setFormData({
                     ...formData,
@@ -132,11 +147,13 @@ const PostDynamicEdit = () => {
             }
             return;
         }
+
         setFormData({
             ...formData,
             [fieldLabel]: value,
         });
     };
+
 
 
     const handleSubmit = async (e) => {

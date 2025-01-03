@@ -84,6 +84,10 @@ const PageList = () => {
 
     // multi delete data 
     const handleDelete = async (ids) => {
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            return;
+        }
         if (Array.isArray(ids)) {
             ids = [ids];
         }
@@ -168,6 +172,10 @@ const PageList = () => {
 
     // multi page inactive data 
     const getInactive = async (ids) => {
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            return;
+        }
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 0;
             try {
@@ -197,6 +205,10 @@ const PageList = () => {
 
     // multi page active data 
     const getActive = async (ids) => {
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            return;
+        }
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 1;
             try {
@@ -274,6 +286,10 @@ const PageList = () => {
 
     // inner Page Multi Active
     const getMultiActive = async (ids) => {
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            return;
+        }
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 1;
             try {
@@ -303,6 +319,10 @@ const PageList = () => {
 
     // multi in active data in inner page 
     const getmultiInactive = async (ids) => {
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            return;
+        }
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 0;
             try {
@@ -329,6 +349,89 @@ const PageList = () => {
             }
         }
     };
+    // const columns = [
+    //     {
+    //         field: 'checkboxSelection',
+    //         headerName: 'Select',
+    //         width: 100,
+    //         renderHeader: () => (
+    //             <input
+    //                 type="checkbox"
+    //                 checked={selectedRows.length === rows.length}
+    //                 onChange={() => handleSelectAllRows()}
+    //             />
+    //         ),
+    //         renderCell: (params) => (
+    //             <input
+    //                 type="checkbox"
+    //                 checked={selectedRows.includes(params.row.id)}
+    //                 onChange={() => handleCheckboxChange(params.row.id)}
+    //             />
+    //         ),
+    //     },
+    //     { field: 'sr_no', headerName: 'Sr.No', width: 90, flex: 1 },
+    //     { field: 'page_name', headerName: 'Page Name', width: 150, flex: 1 },
+    //     {
+    //         field: 'image',
+    //         headerName: 'Image',
+    //         width: 250,
+    //         flex: 1,
+    //         renderCell: (params) => (
+    //             <img
+    //                 src={params.row.image_url}
+    //                 alt="Page"
+    //                 style={{ width: '50%', height: 'auto' }}
+    //             />
+    //         ),
+    //     },
+    //     { field: 'ordering', headerName: 'Ordering', width: 150, flex: 1 },
+
+    //     {
+    //         field: 'actions',
+    //         headerName: 'Actions',
+    //         width: 150,
+    //         flex: 1,
+    //         renderCell: (params) => (
+    //             <strong onClick={(e) => e.stopPropagation()}>
+    //                 <Tooltip title="Update">
+    //                     <IconButton aria-label="Update" color='primary' className='Edit-list' >
+    //                         <Link
+    //                             to={`/Page-edit/${params.row.id}`}
+    //                             id="edit"
+    //                             className='m-3'
+    //                         >
+    //                             <FaEdit />
+    //                         </Link>
+    //                     </IconButton>
+    //                 </Tooltip>
+    //                 <Tooltip title="Delete">
+    //                     <IconButton aria-label="delete" color='primary'>
+    //                         <MdDelete onClick={() => handleDelete1(params.row.id)} />
+    //                     </IconButton>
+    //                 </Tooltip>
+    //                 <Tooltip title=" Page Active">
+    //                     {/* <> */}
+    //                     <Switch
+    //                         key={params.row.id}
+    //                         checked={params.row.status}
+    //                         size="xs"
+    //                         onChange={() => getSingleActive(params.row.id, params.row.status)}
+    //                     />
+    //                     {/* </> */}
+
+    //                 </Tooltip>
+    //                 <Tooltip title=" Inner Page Active">
+    //                     <Switch
+    //                         key={params.row.id}
+    //                         checked={params.row.page_status}
+    //                         size="xs"
+    //                         onChange={() => getActive1(params.row.id, params.row.page_status)}
+    //                     />
+    //                 </Tooltip>
+    //             </strong>
+    //         ),
+    //     },
+    // ];
     const columns = [
         {
             field: 'checkboxSelection',
@@ -349,22 +452,50 @@ const PageList = () => {
                 />
             ),
         },
-        { field: 'sr_no', headerName: 'Sr.No', width: 90, flex: 1 },
-        { field: 'page_name', headerName: 'Page Name', width: 150, flex: 1 },
+        {
+            field: 'sr_no',
+            headerName: 'Sr.No',
+            width: 90,
+            flex: 1
+        },
+        {
+            field: 'page_name',
+            headerName: 'Page Name',
+            width: 150,
+            flex: 1,
+            renderCell: (params) => params.row.page_name || '-'
+        },
+        {
+            field: 'page_description',
+            headerName: 'Page Description',
+            width: 200,
+            flex: 1,
+            renderCell: (params) => params.row.page_description || '-'
+        },
         {
             field: 'image',
             headerName: 'Image',
             width: 250,
             flex: 1,
-            renderCell: (params) => (
-                <img
-                    src={params.row.image_url}
-                    alt="Page"
-                    style={{ width: '50%', height: 'auto' }}
-                />
-            ),
+            renderCell: (params) => {
+                return params.row.image_url ? (
+                    <img
+                        src={params.row.image_url}
+                        alt="Page"
+                        style={{ width: '50%', height: 'auto' }}
+                    />
+                ) : (
+                    <span>-</span>
+                );
+            }
         },
-        { field: 'ordering', headerName: 'Ordering', width: 150, flex: 1 },
+        {
+            field: 'ordering',
+            headerName: 'Ordering',
+            width: 150,
+            flex: 1,
+            renderCell: (params) => params.row.ordering || '-'
+        },
 
         {
             field: 'actions',
@@ -374,7 +505,7 @@ const PageList = () => {
             renderCell: (params) => (
                 <strong onClick={(e) => e.stopPropagation()}>
                     <Tooltip title="Update">
-                        <IconButton aria-label="Update" color='primary' className='Edit-list' >
+                        <IconButton aria-label="Update" color='primary' className='Edit-list'>
                             <Link
                                 to={`/Page-edit/${params.row.id}`}
                                 id="edit"
@@ -389,18 +520,15 @@ const PageList = () => {
                             <MdDelete onClick={() => handleDelete1(params.row.id)} />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title=" Page Active">
-                        {/* <> */}
+                    <Tooltip title="Page Active">
                         <Switch
                             key={params.row.id}
                             checked={params.row.status}
                             size="xs"
                             onChange={() => getSingleActive(params.row.id, params.row.status)}
                         />
-                        {/* </> */}
-
                     </Tooltip>
-                    <Tooltip title=" Inner Page Active">
+                    <Tooltip title="Inner Page Active">
                         <Switch
                             key={params.row.id}
                             checked={params.row.page_status}
@@ -412,6 +540,7 @@ const PageList = () => {
             ),
         },
     ];
+
     const handleSelectionChange = (newSelection) => {
         setSelectedRows(newSelection);
     };

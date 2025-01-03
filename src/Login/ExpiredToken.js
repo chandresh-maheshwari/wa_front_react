@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 
 const Expired = () => {
     const [isTokenExpired, setIsTokenExpired] = useState(false);
-
+    const [hasShownPopup, setHasShownPopup] = useState(false);
 
     const checkTokenExpiry = () => {
         const token = localStorage.get("Token");
@@ -54,10 +54,6 @@ const Expired = () => {
         }
     };
 
-    
-
-
-
     useEffect(() => {
         checkTokenExpiry();
     }, []);
@@ -79,11 +75,29 @@ const Expired = () => {
         });
     }
 
-    useEffect(() => {
+    // if (isTokenExpired && !hasShownPopup) {
+    //     setHasShownPopup(true);
+    //     Swal.fire({
+    //         title: "Session Expired",
+    //         text: "Your session has expired. Do you want to continue?",
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonText: "Continue",
+    //         cancelButtonText: "Cancel",
+    //     }).then((result) => {
+    //         console.log(result);
+    //         if (result.isConfirmed === true) {
+    //             regenerateToken();
+    //         }
+    //     });
+    // }
 
-    }, []);
+    // useEffect(() => {
+
+    // }, []);
 
     return null;
 };
 
 export default Expired;
+
