@@ -59,24 +59,7 @@ const Expired = () => {
     }, []);
 
 
-    if (isTokenExpired) {
-        Swal.fire({
-            title: "Session Expired",
-            text: "Your session has expired. Do you want to continue?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Continue",
-            cancelButtonText: "Cancel",
-        }).then((result) => {
-            console.log(result);
-            if (result.isConfirmed === true) {
-                regenerateToken();
-            }
-        });
-    }
-
-    // if (isTokenExpired && !hasShownPopup) {
-    //     setHasShownPopup(true);
+    // if (isTokenExpired) {
     //     Swal.fire({
     //         title: "Session Expired",
     //         text: "Your session has expired. Do you want to continue?",
@@ -91,6 +74,23 @@ const Expired = () => {
     //         }
     //     });
     // }
+
+    if (isTokenExpired && !hasShownPopup) {
+        setHasShownPopup(true);
+        Swal.fire({
+            title: "Session Expired",
+            text: "Your session has expired. Do you want to continue?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Continue",
+            cancelButtonText: "Cancel",
+        }).then((result) => {
+            console.log(result);
+            if (result.isConfirmed === true) {
+                regenerateToken();
+            }
+        });
+    }
 
     // useEffect(() => {
 

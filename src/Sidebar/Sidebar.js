@@ -5,8 +5,12 @@ import '../App.css';
 import '../Custom.css';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import Authapi from '../Authapi';
+// import img from './images/WasteAccountant_LOGO.png'
 // const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
 const img = `http://wa_front.localhost.com/images/page/WasteAccountant_LOGO.png`;
+
+// const img = `https://front.wasteaccountant.com/images/page/WasteAccountant_LOGO.png`;
+
 
 
 const Sidebar = () => {
@@ -21,7 +25,7 @@ const Sidebar = () => {
       try {
         setIsLoading(true);
         const response = await Authapi.dynamicListData();
-      
+
         if (response && response.results) {
           const activePosts = response.results.filter(post => post.status === 1);
 
