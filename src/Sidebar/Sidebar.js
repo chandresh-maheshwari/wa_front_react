@@ -7,7 +7,7 @@ import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import Authapi from '../Authapi';
 // import img from './images/WasteAccountant_LOGO.png'
 // const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
-const img = `http://wa_front.localhost.com/images/page/WasteAccountant_LOGO.png`;
+const img = `https://laravel.wasteaccountant.com/admin/images/WasteAccountant_LOGO.png`;
 
 // const img = `https://front.wasteaccountant.com/images/page/WasteAccountant_LOGO.png`;
 
