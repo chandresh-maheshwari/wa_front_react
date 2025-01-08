@@ -42,47 +42,6 @@ export default new (class AuthApi {
   }
 
 
-  // Logout function
-  async logoutData() {
-    try {
-      const url = Config.apiurl + Config.apis.logout;
-      const token = localStorage.getItem('Token');
-      if (!token) {
-        localStorage.removeItem('Token');
-        localStorage.setItem('user',false);
-
-        window.location.href = '/cms ';
-        return;
-      }
-      const response = await axios.post(url, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-      });
-
-      if (response.data.status === false && response.data.message === "User Already Logged Out") {
-        console.log("User is already logged out.");
-      }
-
-      localStorage.removeItem('Token');
-      localStorage.removeItem('user');
-
-      window.location.href = '/cms';
-
-      return response.data;
-    } catch (error) {
-      console.error("Error logging out:", error);
-
-      localStorage.removeItem('Token');
-      localStorage.removeItem('user');
-
-      window.location.href = '/cms';
-      throw new Error("Failed to log out.");
-    }
-  }
-
 
 
 
