@@ -65,6 +65,7 @@ const Servicenave = ({ setIsLoggedIn }) => {
                                 <span className="navbar-toggler-bar bar2"></span>
                                 <span className="navbar-toggler-bar bar3"></span>
                             </button>
+                            <h5 className="text-cnter">Welcome to WasteAccountant Dashboard</h5> {/*change on 7 jan a add titlez*/}
                         </div>
                         <a className="navbar-brand" href="#pablo"></a>
                     </div>
@@ -82,7 +83,8 @@ const Servicenave = ({ setIsLoggedIn }) => {
                             ))}
 
                         </ul>
-                        <Button className='bg-white'style={{ color: "black" }} onClick={logoutData}>Log Out</Button>
+                        {/* <Button className='btn btn-outline-light' onClick={logoutData}>Log Out</Button> */}
+                        <button type="button" className="btn btn-outline-light" onClick={logoutData}>Logout</button>
                     </form>
                 </div>
             </nav>

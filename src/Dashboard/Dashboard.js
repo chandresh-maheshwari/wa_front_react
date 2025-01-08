@@ -8,7 +8,8 @@ function Dashboard() {
     return (
         <>
             <Expired />
-            <div class="container-fluid panel-header panel-header-sm">
+            {/* change on 7 jan a Comment this code  */}
+            {/* <div class="container-fluid panel-header panel-header-sm">
             </div>
             <div className='maincard'>
                 <div className="col-md-12">
@@ -21,7 +22,7 @@ function Dashboard() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
 
         </ >

@@ -105,6 +105,8 @@ const PostDynamicList = () => {
                     const value = params.row[key];
                     // console.log("prms", params)
                     const isExpanded = expandedEmails[params.row.id];
+                    // console.log('testngs');
+                    // console.log(value);
                     const displayValue = typeof value === 'string' ? value : (value !== undefined && value !== null ? String(value) : "-");
                     // console.log(displayValue)
                     const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
@@ -115,6 +117,7 @@ const PostDynamicList = () => {
                     return (
                         <div style={{ whiteSpace: 'normal', }}>
                             {isImage ? (
+                             
                                 <img src={value} alt={displayValue} style={{ width: '50%', height: 'auto' }} />
                             ) : (
                                 <span className={`email-display-${safeValue}`}>

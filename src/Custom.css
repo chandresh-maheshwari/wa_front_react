@@ -227,3 +227,41 @@
 .MuiDataGrid-virtualScrollerContent {
   height: 238px !important;
 }
+
+
+/* change on 7 jan a */
+.css-1e6y48t-MuiButtonBase-root-MuiButton-root {
+  --bs-btn-color: #f8f9fa !important;
+  --bs-btn-border-color: #f8f9fa !important;
+  --bs-btn-hover-color: #000 !important;
+  --bs-btn-hover-bg: #f8f9fa !important;
+  --bs-btn-hover-border-color: #f8f9fa !important;
+  --bs-btn-focus-shadow-rgb: 248, 249, 250 !important;
+  --bs-btn-active-color: #000 !important;
+  --bs-btn-active-bg: #f8f9fa !important;
+  --bs-btn-active-border-color: #f8f9fa !important;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;
+  --bs-btn-disabled-color: #f8f9fa !important;
+  --bs-btn-disabled-bg: transparent !important;
+  --bs-btn-disabled-border-color: #f8f9fa !important;
+  --bs-gradient: none !important;
+}
+
+.css-180cd0o-MuiGrid-root .css-sghohy-MuiButtonBase-root-MuiButton-root {
+  background-color: #48AD3B !important;
+  /* background-image: linear-gradient(to right, #48AD3B 0%, #48AD3B 100%); */
+  background-repeat: repeat-x !important;
+  border-width: 0 !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  text-transform: capitalize !important;
+  padding: 0.594rem 0.75rem !important;
+}
+
+.css-1e6y48t-MuiButtonBase-root-MuiButton-root {
+  border-radius: 10px !important;
+  color: #fff !important;
+  background-color: #87888a !important;
+  padding: 0.594rem 0.75rem !important;
+  text-transform: capitalize !important;
+}
