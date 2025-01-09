@@ -454,7 +454,7 @@ const PageList = () => {
         },
         {
             field: 'sr_no',
-            headerName: 'Sr.No',
+            headerName: 'Sr No',
             width: 90,
             flex: 1
         },

@@ -49,7 +49,7 @@ const PostDynamicList = () => {
                     return {
                         id: item.id,
                         status: item.status,
-                        sr_no: index + 1,
+                        "Sr No": index + 1,
                         ...filteredData,
                     };
                 });
@@ -138,9 +138,9 @@ const PostDynamicList = () => {
             headerName: 'Actions',
             width: 150,
             renderCell: (params) => (
-                <strong onClick={(e) => e.stopPropagation()}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Tooltip title="Update">
-                        <IconButton aria-label="Update" className="Edit-list">
+                        <IconButton aria-label="Update" className="Edit-list" style={{ margin: '1px' }}>
                             <Link
                                 to={{
                                     pathname: `/post-edit/${params.row.id}`,
@@ -152,7 +152,7 @@ const PostDynamicList = () => {
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton aria-label="delete" color="primary">
+                        <IconButton aria-label="delete" color="primary" style={{ margin: '1px' }}>
                             <MdDelete onClick={() => handleDelete1(params.row.id)} />
                         </IconButton>
                     </Tooltip>
@@ -162,9 +162,10 @@ const PostDynamicList = () => {
                             checked={params.row.status}
                             size="xs"
                             onChange={() => getActive1(params.row.id, params.row.status)}
+                            style={{ margin: '1px' }}
                         />
                     </Tooltip>
-                </strong>
+                </div>
             ),
         },
     ];

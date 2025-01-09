@@ -1,6 +1,9 @@
 /* Sidebar arroe icon css */
+/* Add this to your CSS file */
 .Arrow-icon-Sidebar {
-  font-size: medium;
+  margin-left: auto;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 #listing {
@@ -10,6 +13,12 @@
 #Dynamic_POST {
   margin-top: -14px;
 }
+
+/* Custom.css */
+.nav-item.active-sidebar-item {
+  background-color: #f0f0f0 !important; /* Use !important if necessary */
+}
+
 
 /* Table CSS */
 .wrap-text {
@@ -216,7 +225,7 @@
 /* post edit  bg color  */
 
 .Edit-list a {
-  color: #1976d2;
+  color: #113B4F;
 }
 
 /* Table Height In Bottom */
@@ -264,4 +273,11 @@
   background-color: #87888a !important;
   padding: 0.594rem 0.75rem !important;
   text-transform: capitalize !important;
+}
+
+.css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root{
+  color: #113B4F !important;
+}
+.css-jsexje-MuiSwitch-thumb{
+  background-color: #113B4F !important
 }

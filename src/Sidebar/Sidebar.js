@@ -79,10 +79,26 @@ const Sidebar = () => {
   }, []);
 
   const toggle = (id) => {
-    setOpenItems(prevState => ({
-      ...prevState,
-      [id]: !prevState[id]
-    }));
+    setOpenItems(prevState => {
+      const newState = Object.keys(prevState).reduce((acc, key) => {
+        acc[key] = false; // Close all items
+        return acc;
+      }, {});
+      newState[id] = !prevState[id]; // Toggle the current item
+      // console.log('Toggling:', id, 'New State:', newState); // Debugging log
+      return newState;
+    });
+  };
+
+  const isActive = (id) => {
+    const active = openItems[id];
+    console.log('Checking active state for:', id, 'Active:', active);
+    return active || window.location.pathname === id;
+  };
+
+  const activeStyle = {
+    backgroundColor: '#f0f0f0',
+    color: '#333',
   };
 
   return (
@@ -92,69 +108,65 @@ const Sidebar = () => {
       </div>
       <div className="sidebar-wrapper" id="navigation">
         <ul className="nav">
-          <li className="nav-item nav-dropdown">
+
+          <li className={`nav-item nav-dropdown ${isActive('/Dashboard') ? 'active-sidebar-item' : ''}`}>
             <Link to="/Dashboard">
               <p>Dashboard</p>
             </Link>
+          </li>          <li>
+            <Link
+              id="Dynamic_POST"
+              className={`nav-link nav-dropdown-toggle nav-item nav-dropdown ${isActive('Dynamic_POST') ? 'active-sidebar-item' : ''}`}
+              style={{ ...isActive('Dynamic_POST') ? activeStyle : {}, display: 'flex', alignItems: 'center' }}
+              to="#"
+              onClick={(e) => {
+                e.preventDefault();
+                toggle('Dynamic_POST');
+              }}
+            >
+              Dynamic post
+              {openItems['Dynamic_POST'] ? (
+                <IoIosArrowUp className="Arrow-icon-Sidebar" />
+              ) : (
+                <IoIosArrowDown className="Arrow-icon-Sidebar" />
+              )}
+            </Link>
           </li>
 
+          {openItems['Dynamic_POST'] && (
+            <ul className="nav-dropdown-items-Dynamic_POST">
+              <li className="nav-item">
+                <Link className="nav-link" to="/dynamic-form">
+                  <span>Add New Form</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link " id="listing" to="/dynamic-list-data">
+                  <span>Dynamic post List</span>
+                </Link>
+              </li>
+            </ul>
+          )}
 
-          <li>
-            <li className="nav-item nav-dropdown">
+          {postTitles.length > 0 && postTitles.map((post) => (
+            <li key={post.id}>
               <Link
-                id="Dynamic_POST"
-                className="nav-link nav-dropdown-toggle"
+                id={`dynamic_page_${post.id}`}
                 to="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  toggle('Dynamic_POST');
+                  toggle(post.id);
                 }}
+                className={`nav-link nav-dropdown-toggle dynamic-page-link nav-item ${isActive(post.id) ? 'active-sidebar-item' : ''}`}
+                style={{ ...isActive(post.id) ? activeStyle : {}, display: 'flex', alignItems: 'center' }}
               >
-                Dynamic post
-                {openItems['Dynamic_POST'] ? (
+                <span>{post.post_title}</span>
+                {openItems[post.id] ? (
                   <IoIosArrowUp className="Arrow-icon-Sidebar" />
                 ) : (
                   <IoIosArrowDown className="Arrow-icon-Sidebar" />
                 )}
               </Link>
-            </li>
-            {openItems['Dynamic_POST'] && (
-              <ul className="nav-dropdown-items-Dynamic_POST">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/dynamic-form">
-                    <span>Add New Form</span>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link " id="listing" to="/dynamic-list-data">
-                    <span>Dynamic post List</span>
-                  </Link>
-                </li>
-              </ul>
-            )}
-          </li>
-
-
-          {postTitles.length > 0 && postTitles.map((post) => (
-            <li key={post.id}>
-              <li className="nav-item">
-                <Link
-                  id={`dynamic_page_${post.id}`}
-                  className="nav-link nav-dropdown-toggle dynamic-page-link"
-                  to="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    toggle(post.id);
-                  }}
-                >
-                  <span>{post.post_title}</span>
-                  {openItems[post.id] ? (
-                    <IoIosArrowUp className="Arrow-icon-Sidebar" />
-                  ) : (
-                    <IoIosArrowDown className="Arrow-icon-Sidebar" />
-                  )}
-                </Link>
-              </li>
               {openItems[post.id] && (
                 <ul className={`nav-dropdown-items-dynamic_page-${post.id}`} id="nav-dropdown-items-dynamic_page">
                   <li className="nav-item">
@@ -172,71 +184,51 @@ const Sidebar = () => {
             </li>
           ))}
 
-
           <li>
-            <li className="nav-item nav-dropdown">
-              <Link
-                id="Page"
-                className="nav-link nav-dropdown-toggle"
-                to="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  toggle('page');
-                }}
-              >
-                Page
-                {openItems['page'] ? (
-                  <IoIosArrowUp className="Arrow-icon-Sidebar" />
-                ) : (
-                  <IoIosArrowDown className="Arrow-icon-Sidebar" />
-                )}
-              </Link>
-            </li>
-            {openItems['page'] && (
-              <ul className="nav-dropdown-items-Page">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/page">
-                    <span>Add New</span>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link  " id="listing" to="/page-list">
-                    <span>Page List</span>
-                  </Link>
-                </li>
-              </ul>
-            )}
+            <Link
+              id="Page"
+              className={`nav-link nav-dropdown-toggle nav-item nav-dropdown ${isActive('page') ? 'active-sidebar-item' : ''}`}
+              style={{ ...isActive('page') ? activeStyle : {}, display: 'flex', alignItems: 'center' }}
+              to="#"
+              onClick={(e) => {
+                e.preventDefault();
+                toggle('page');
+              }}
+            >
+              Page
+              {openItems['page'] ? (
+                <IoIosArrowUp className="Arrow-icon-Sidebar" />
+              ) : (
+                <IoIosArrowDown className="Arrow-icon-Sidebar" />
+              )}
+            </Link>
           </li>
-
-
-
+          {openItems['page'] && (
+            <ul className="nav-dropdown-items-Page">
+              <li className="nav-item">
+                <Link className="nav-link" to="/page">
+                  <span>Add New</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link  " id="listing" to="/page-list">
+                  <span>Page List</span>
+                </Link>
+              </li>
+            </ul>
+          )}
 
           <li className="nav-item nav-dropdown">
-            <Link className="nav-link  " id="listing" to="/Contact-listing">
+            <Link
+              className="nav-link"
+              id="listing"
+              to="/Contact-listing">
               <p>Contact List</p>
             </Link>
           </li>
-
-
-
-
-
-
-
         </ul>
       </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
   );
 };
 

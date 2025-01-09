@@ -42,24 +42,42 @@ function Login() {
         }
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            
+            // Show SweetAlert popup for validation errors
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please fill in all required fields.',
+            });
+
             return;
         }
         setErrors({});
 
         const item = { email, password };
-        const response = await Authapi.loginData(item);
+        try {
+            const response = await Authapi.loginData(item);
 
-        if (response.status === true) {
-            const { token, user } = response;
-            localStorage.setItem('user', JSON.stringify(user));
-            localStorage.setItem('Token', token);
-            navigate("/Dashboard");
-        } else {
+            if (response.status === true) {
+                const { token, user } = response;
+                localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('Token', token);
+                navigate("/Dashboard");
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login failed...',
+                    text: 'Email and password do not match!',
+                });
+            }
+        } catch (error) {
+            // Handle errors from the loginData function
             Swal.fire({
                 icon: 'error',
-                title: 'Login failed...',
-                text: 'Email and password do not match!',
+                title: 'Error',
+                text: 'Failed to login. Please try again later.',
             });
+            console.error('Failed to login:', error);
         }
     }
 

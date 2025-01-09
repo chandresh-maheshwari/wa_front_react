@@ -268,7 +268,7 @@ const DynamicList = () => {
                 />
             ),
         },
-        { field: 'sr_no', headerName: 'Sr.No', width: 90, flex: 1 },
+        { field: 'sr_no', headerName: 'Sr No', width: 90, flex: 1 },
         { field: 'post_title', headerName: 'Title', width: 150, flex: 1 },
         { field: 'post_type', headerName: 'Post Type', width: 150, flex: 1 },
         { field: 'ordering', headerName: 'Ordering', width: 150, flex: 1 },
@@ -329,8 +329,8 @@ const DynamicList = () => {
     return (
         <>
             <Expired />
-            <div className="col-md-12">
-                <div className="row" style={{ marginLeft: '20%', width: '80%', marginBottom: '20px', marginTop: '7%' }}>
+            {/* <div className="col-md-12"> */}
+                <div className="row" style={{  width: '100%', marginBottom: '20px', marginTop: '13%' }}>
 
                     <div className="card-header col-6">
                         <h5 className="title ">Post</h5>
@@ -390,7 +390,7 @@ const DynamicList = () => {
                         </Container>
                     </div>
                 </div>
-            </div>
+            {/* </div> */}
         </>
     );
 };

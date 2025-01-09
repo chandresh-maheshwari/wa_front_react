@@ -14,6 +14,7 @@ const PostDynamicEdit = () => {
     const [fields, setFields] = useState([]);
     const [errors, setErrors] = useState({});
     const post_title = location.state?.post_title;
+    const [isModified, setIsModified] = useState(false);
     useEffect(() => {
         fetchData();
     }, [post_title]);
@@ -81,6 +82,9 @@ const PostDynamicEdit = () => {
     // };
     const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
         let value = event.target.value;
+
+        // Update the isModified state to true when any field changes
+        setIsModified(true);
 
         if (fieldType === 'file') {
             const file = event.target.files[0];
@@ -158,21 +162,29 @@ const PostDynamicEdit = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const submitFormData = new FormData();
         Object.keys(formData).forEach(key => {
             submitFormData.append(key, formData[key]);
         });
 
-        try {
-            const response = await Authapi.postdynamicupdatedata(id, submitFormData);
-            if (response.status === true) {
-                Swal.fire('Success', 'Data submitted successfully!', 'success');
-                setFormData({});
-                navigate('/post-list', { state: { post_title } });
+        // Only submit if there are modifications
+        if (isModified) {
+            try {
+                const response = await Authapi.postdynamicupdatedata(id, submitFormData);
+                if (response.status === true) {
+                    Swal.fire('Success', 'Data submitted successfully!', 'success');
+                    setFormData({});
+                    setIsModified(false); // Reset the modified state
+                    navigate('/post-list', { state: { post_title } });
+                }
+            } catch (error) {
+                Swal.fire('Error', 'There was an issue with your submission.', 'error');
+                console.error('Error submitting data:', error);
             }
-        } catch (error) {
-            Swal.fire('Error', 'There was an issue with your submission.', 'error');
-            console.error('Error submitting data:', error);
+        } else {
+            Swal.fire('Success', 'Data submitted successfully!', 'success');
+            navigate('/post-list', { state: { post_title } });
         }
     };
 
