@@ -101,6 +101,7 @@ const PostDynamicEdit = () => {
                     return;
                 }
 
+
                 const img = new Image();
                 const reader = new FileReader();
                 reader.onload = () => {
