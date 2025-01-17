@@ -997,3 +997,294 @@ a.text-warning:hover {
   background-color: rgb(17, 59, 79);
   color: #fff;
 }     
+
+
+
+
+
+
+
+
+/* Sidebar arroe icon css */
+/* Add this to your CSS file */
+.Arrow-icon-Sidebar {
+  margin-left: auto;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#listing {
+  margin-top: -5px;
+}
+
+#Dynamic_POST {
+  margin-top: -14px;
+}
+
+/* Custom.css */
+.nav-item.active-sidebar-item {
+  background-color: #f0f0f0 !important; /* Use !important if necessary */
+}
+
+
+/* Table CSS */
+.wrap-text {
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.css-78trlr-MuiButtonBase-root-MuiIconButton-root {
+  padding: 0px !important;
+}
+
+.nav-dropdown-items-Dynamic_POST {
+  display: none;
+  /* Initially hidden */
+}
+
+.nav-dropdown-items-Dynamic_POST {
+  display: block;
+
+}
+
+#nav-dropdown-items-dynamic_page {
+  display: none;
+
+}
+
+#nav-dropdown-items-dynamic_page {
+  display: block;
+
+}
+
+.nav-dropdown-items-Page {
+  display: none;
+}
+
+.nav-dropdown-items-Page {
+  display: block;
+}
+
+/* Css for search all */
+.navbar-search {
+  margin-left: 5%;
+  margin-top: 0px;
+}
+
+/* all table card header  */
+.card-header {
+  padding: -0.5rem 1rem;
+  /* text-align: center; */
+
+}
+
+
+/* css for table cell hight width and wrapping */
+/* CSS FOR TABLE HEADING */
+
+.MuiDataGrid-columnHeaderTitle {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  height: auto !important;
+  /* width: auto !important; */
+  box-sizing: content-box !important;
+}
+
+.MuiDataGrid-cell {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow: visible !important;
+}
+
+.MuiDataGrid-columnHeaderDraggableContainer {
+  height: auto !important;
+  /* width: auto !important; */
+}
+
+.MuiDataGrid-columnHeaders {
+  line-height: inherit !important;
+  word-break: break-all !important;
+  max-height: none !important;
+}
+
+
+/* CSS FOR TABLE DATA */
+
+.MuiDataGrid-root .MuiDataGrid-cell {
+  height: auto !important;
+  /* width: auto !important; */
+  max-height: none !important;
+  /* max-width: none !important; */
+  min-height: auto !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  /* box-sizing: content-box !important; */
+
+}
+
+.MuiDataGrid-root .MuiDataGrid-cellContent {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+}
+
+.MuiDataGrid-cellContent {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+}
+
+.MuiDataGrid-root .MuiDataGrid-row {
+  height: auto !important;
+  max-height: none !important;
+  /* min-height: auto !important; */
+}
+
+/* .MuiDataGrid-root .MuiDataGrid-columnHeaders {
+  overflow-x: hidden !important;
+} */
+/* .color-code fieldset{
+  border-style: none;
+ } */
+
+.color-code .MuiInputBase-root .MuiOutlinedInput-notchedOutline {
+  border-style: none !important;
+}
+
+.MuiDataGrid-cell--withRenderer {
+  display: none;
+  max-height: "168px !important"
+}
+
+.MuiDataGrid-cell {
+  /* display: none !important; */
+
+  line-height: normal;
+  white-space: normal;
+}
+
+/*css for pagination dropdown  */
+.MuiInputBase-colorPrimary {
+  margin-bottom: 13px;
+}
+
+/* css  pagination back next*/
+.MuiTablePagination-actions {
+  margin-top: -12px;
+}
+
+/* Table Pading Left Right*/
+.css-1oqqzyl-MuiContainer-root {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+
+/* For Wrap Word */
+.MuiDataGrid-virtualScrollerRenderZone div {
+  /* background-color: brown !important; */
+  word-break: break-all !important;
+}
+
+/* sidebar hover menu css */
+.nav-item {
+  position: relative;
+}
+
+.nav-item:hover {
+  background-color: #304d5b;
+}
+
+/* .nav-item:hover :active {
+  background-color: #304d5b;
+} */
+.nav-dropdown-items {
+  display: none;
+}
+
+.nav-item:hover .nav-dropdown-items {
+  display: block;
+}
+
+.nav-dropdown-items li {
+  padding: 10px;
+}
+
+.nav-dropdown-items li:hover {
+  background-color: #304d5b;
+}
+
+/* .slideractive {
+  background-color: #c2cddf;
+} */
+.nav-item.active {
+  background-color: #304d5b;
+  /* Change to desired active color */
+}
+
+/* post edit  bg color  */
+
+.Edit-list a {
+  color: #113B4F;
+}
+
+/* Table Height In Bottom */
+.css-1kwdphh-MuiDataGrid-virtualScrollerContent {
+  height: 238px !important;
+}
+
+.MuiDataGrid-virtualScrollerContent {
+  height: 238px !important;
+}
+
+
+/* change on 7 jan a */
+.css-1e6y48t-MuiButtonBase-root-MuiButton-root {
+  --bs-btn-color: #f8f9fa !important;
+  --bs-btn-border-color: #f8f9fa !important;
+  --bs-btn-hover-color: #000 !important;
+  --bs-btn-hover-bg: #f8f9fa !important;
+  --bs-btn-hover-border-color: #f8f9fa !important;
+  --bs-btn-focus-shadow-rgb: 248, 249, 250 !important;
+  --bs-btn-active-color: #000 !important;
+  --bs-btn-active-bg: #f8f9fa !important;
+  --bs-btn-active-border-color: #f8f9fa !important;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;
+  --bs-btn-disabled-color: #f8f9fa !important;
+  --bs-btn-disabled-bg: transparent !important;
+  --bs-btn-disabled-border-color: #f8f9fa !important;
+  --bs-gradient: none !important;
+}
+
+.css-180cd0o-MuiGrid-root .css-sghohy-MuiButtonBase-root-MuiButton-root {
+  background-color: #48AD3B !important;
+  /* background-image: linear-gradient(to right, #48AD3B 0%, #48AD3B 100%); */
+  background-repeat: repeat-x !important;
+  border-width: 0 !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  text-transform: capitalize !important;
+  padding: 0.594rem 0.75rem !important;
+}
+
+.css-1e6y48t-MuiButtonBase-root-MuiButton-root {
+  border-radius: 10px !important;
+  color: #fff !important;
+  background-color: #87888a !important;
+  padding: 0.594rem 0.75rem !important;
+  text-transform: capitalize !important;
+}
+
+.css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root{
+  color: #113B4F !important;
+}
+.css-jsexje-MuiSwitch-thumb{
+  background-color: #113B4F !important
+}

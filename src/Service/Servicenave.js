@@ -60,9 +60,9 @@ const Servicenave = ({ setIsLoggedIn }) => {
 
 
     return (
-        <div className="hadik" style={{ marginLeft: "19%" }}>
+        <div className="hadik" style={{ marginLeft: "17%" }}>
 
-            <nav className="navbar navbar-expand-lg navacolor navbar-absolute" style={{ width: "81%" }}>
+            <nav className="navbar navbar-expand-lg navacolor navbar-absolute" style={{ width: "84%" }}>
                 <div className="container-fluid">
                     <div className="navbar-wrapper">
                         <div className="navbar-toggle">

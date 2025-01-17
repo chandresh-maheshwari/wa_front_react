@@ -15,9 +15,11 @@ const PostDynamicEdit = () => {
     const [errors, setErrors] = useState({});
     const post_title = location.state?.post_title;
     const [isModified, setIsModified] = useState(false);
+
     useEffect(() => {
         fetchData();
     }, [post_title]);
+    
     useEffect(() => {
         fetchEditData(id);
     }, [id]);
@@ -26,7 +28,6 @@ const PostDynamicEdit = () => {
     const fetchData = async () => {
         try {
             const response = await Authapi.dynamifieldfetchdata(post_title);
-
             setFields(response.data?.post_description || []);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -101,6 +102,7 @@ const PostDynamicEdit = () => {
                     return;
                 }
 
+
                 const img = new Image();
                 const reader = new FileReader();
                 reader.onload = () => {
@@ -164,8 +166,20 @@ const PostDynamicEdit = () => {
         e.preventDefault();
 
         const submitFormData = new FormData();
+        // Create a new object to hold only modified fields
+        const modifiedData = {};
+
         Object.keys(formData).forEach(key => {
-            submitFormData.append(key, formData[key]);
+            // Check if the field has been modified
+            if (isModified) {
+                const value = Array.isArray(formData[key]) ? [...new Set(formData[key])] : formData[key];
+                modifiedData[key] = value; // Store only modified fields
+            }
+        });
+
+        // Append only modified fields to FormData
+        Object.keys(modifiedData).forEach(key => {
+            submitFormData.append(key, modifiedData[key]);
         });
 
         // Only submit if there are modifications

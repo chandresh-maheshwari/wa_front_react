@@ -19,6 +19,7 @@ const DynamicList = () => {
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(5);
     const [statusFilter, setStatusFilter] = useState('all');
+
     useEffect(() => {
         fetchData();
     }, []);
@@ -330,66 +331,66 @@ const DynamicList = () => {
         <>
             <Expired />
             {/* <div className="col-md-12"> */}
-                <div className="row" style={{  width: '100%', marginBottom: '20px', marginTop: '13%' }}>
+            <div className="row" style={{  marginBottom: '20px',  marginLeft: "262px" }}>
 
-                    <div className="card-header col-6">
-                        <h5 className="title ">Post</h5>
-                    </div>
-                    <div className="card-header col-3">
-                        <FormControl fullWidth>
-                            <InputLabel>Status Filter</InputLabel>
-                            <Select
-                                value={statusFilter}
-                                onChange={handleStatusFilterChange}
-                                label="Status Filter"
-                            >
-                                <MenuItem value="all" disabled>All</MenuItem>
-                                <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
-                                <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
-                                <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </div>
-                    <div className="card-header col-3">
-                        <input
-                            type="search"
-                            className="form-control form control navbar-search"
-                            placeholder="Search"
-                            value={searchQuery}
-                            onChange={handleSearch}
-                        />
-                    </div>
-                    <div className="card-body" style={{ height: 400, width: '100%' }}>
-                        <Container>
-                            <div>
-                                <DataGrid
-                                    rows={searchQuery ? filteredRows : rows}
-                                    columns={columns}
-                                    initialState={{ pagination: { paginationModel } }}
-                                    pageSizeOptions={[5, 10, 20, { value: rows.length, label: 'All' }]}
-                                    loading={loading}
-                                    autoHeight={false}
-                                    onPageChange={(newPage) => setPage(newPage)}
-                                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                                    sx={{
-                                        '& .MuiDataGrid-columnHeaders': {
-                                            backgroundColor: '#2c9dd4',
-                                            color: 'white',
-                                        },
-                                    }}
-                                    selectionModel={selectedRows}
-                                    onSelectionModelChange={handleSelectionChange}
-                                    onCellClick={(params, event) => {
-                                        if (event.target.closest('.MuiCheckbox-root')) {
-                                            return;
-                                        }
-                                        event.stopPropagation();
-                                    }}
-                                />
-                            </div>
-                        </Container>
-                    </div>
+                <div className="card-header col-6">
+                    <h5 className="title ">Post</h5>
                 </div>
+                <div className="card-header col-3">
+                    <FormControl fullWidth>
+                        <InputLabel>Status Filter</InputLabel>
+                        <Select
+                            value={statusFilter}
+                            onChange={handleStatusFilterChange}
+                            label="Status Filter"
+                        >
+                            <MenuItem value="all" disabled>All</MenuItem>
+                            <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
+                            <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
+                            <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
+                        </Select>
+                    </FormControl>
+                </div>
+                <div className="card-header col-3">
+                    <input
+                        type="search"
+                        className="form-control form control navbar-search"
+                        placeholder="Search"
+                        value={searchQuery}
+                        onChange={handleSearch}
+                    />
+                </div>
+                <div className="card-body" style={{ height: 400, width: '100%' }}>
+                    <Container>
+                        <div>
+                            <DataGrid
+                                rows={searchQuery ? filteredRows : rows}
+                                columns={columns}
+                                initialState={{ pagination: { paginationModel } }}
+                                pageSizeOptions={[5, 10, 20, { value: rows.length, label: 'All' }]}
+                                loading={loading}
+                                autoHeight={false}
+                                onPageChange={(newPage) => setPage(newPage)}
+                                onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                                sx={{
+                                    '& .MuiDataGrid-columnHeaders': {
+                                        backgroundColor: '#2c9dd4',
+                                        color: 'white',
+                                    },
+                                }}
+                                selectionModel={selectedRows}
+                                onSelectionModelChange={handleSelectionChange}
+                                onCellClick={(params, event) => {
+                                    if (event.target.closest('.MuiCheckbox-root')) {
+                                        return;
+                                    }
+                                    event.stopPropagation();
+                                }}
+                            />
+                        </div>
+                    </Container>
+                </div>
+            </div>
             {/* </div> */}
         </>
     );
