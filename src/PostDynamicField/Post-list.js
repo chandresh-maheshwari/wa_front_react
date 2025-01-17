@@ -70,6 +70,7 @@ const PostDynamicList = () => {
         }
     };
 
+    // console.log(selectedRows.length === rows.length);
     const dynamicColumns = [
         {
             field: 'checkboxSelection',
@@ -78,7 +79,8 @@ const PostDynamicList = () => {
             renderHeader: () => (
                 <input
                     type="checkbox"
-                    checked={selectedRows.length === rows.length}
+                    // checked={selectedRows.length === rows.length}
+                    checked={rows.length > 0 && selectedRows.length === rows.length}
                     onChange={handleSelectAllRows}
                 />
             ),
@@ -269,7 +271,7 @@ const PostDynamicList = () => {
     // multi inactive data 
     const getInactive = async (ids) => {
         if (selectedRows.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            Swal.fire('Warning', 'Please select at least one item to Inactive.', 'warning');
             return;
         }
         if (Array.isArray(ids) && ids.length > 0) {
@@ -302,7 +304,7 @@ const PostDynamicList = () => {
     // multi page active data 
     const getActive = async (ids) => {
         if (selectedRows.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            Swal.fire('Warning', 'Please select at least one item to Active.', 'warning');
             return;
         }
         if (Array.isArray(ids) && ids.length > 0) {

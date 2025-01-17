@@ -180,6 +180,7 @@ const PageEdit = () => {
                                             type="Ordering"
                                             fullWidth
                                             margin="normal"
+                                            InputLabelProps={{ shrink: true }} 
                                             min="0"
                                             onKeyPress={preventTextAndMinus}
                                             name="ordering"

@@ -173,7 +173,7 @@ const PageList = () => {
     // multi page inactive data 
     const getInactive = async (ids) => {
         if (selectedRows.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            Swal.fire('Warning', 'Please select at least one item to Inactive.', 'warning');
             return;
         }
         if (Array.isArray(ids) && ids.length > 0) {
@@ -206,7 +206,7 @@ const PageList = () => {
     // multi page active data 
     const getActive = async (ids) => {
         if (selectedRows.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            Swal.fire('Warning', 'Please select at least one item to Active.', 'warning');
             return;
         }
         if (Array.isArray(ids) && ids.length > 0) {
@@ -287,7 +287,7 @@ const PageList = () => {
     // inner Page Multi Active
     const getMultiActive = async (ids) => {
         if (selectedRows.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            Swal.fire('Warning', 'Please select at least one item to in inner page active.', 'warning');
             return;
         }
         if (Array.isArray(ids) && ids.length > 0) {
@@ -320,7 +320,7 @@ const PageList = () => {
     // multi in active data in inner page 
     const getmultiInactive = async (ids) => {
         if (selectedRows.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            Swal.fire('Warning', 'Please select at least one item to inner page inactive.', 'warning');
             return;
         }
         if (Array.isArray(ids) && ids.length > 0) {
@@ -440,7 +440,8 @@ const PageList = () => {
             renderHeader: () => (
                 <input
                     type="checkbox"
-                    checked={selectedRows.length === rows.length}
+                    // checked={selectedRows.length === rows.length}
+                    checked={rows.length > 0 && selectedRows.length === rows.length}
                     onChange={() => handleSelectAllRows()}
                 />
             ),

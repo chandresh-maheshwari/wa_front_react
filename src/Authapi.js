@@ -22,6 +22,23 @@ export default new (class AuthApi {
   }
 
 
+
+  async notfoundpageget() {
+    try {
+      const url = `${Config.apiurl}${Config.apis.notfoundpageget}`;
+      this.setHeaders("get");
+      const response = await axios.get(url, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("API Error:", error);
+      throw error;
+    }
+  }
+
   async loginData(formData) {
     // console.log(formData)
     try {
@@ -43,7 +60,37 @@ export default new (class AuthApi {
 
 
 
+ async logoutData() {
+  try {
+    const url = Config.apiurl + Config.apis.logout;
+    const token = ls('Token');  // Assuming ls is a function to get the token from localStorage
+    
+    // Check if token exists
+    if (!token) {
+      throw new Error('Token not found, cannot log out.');
+    }
 
+    const response = await axios.post(
+      url,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    // Handle the response
+    return response.data;
+
+  } catch (error) {
+    console.error("Error during Logout Data:", error);
+    
+    // You can rethrow or return a default error message
+    throw new Error("Failed to log out.");
+  }
+}
 
 
   async refreshToken1(formData) {

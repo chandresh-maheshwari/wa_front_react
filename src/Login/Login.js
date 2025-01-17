@@ -42,7 +42,7 @@ function Login() {
         }
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
-            
+
             // Show SweetAlert popup for validation errors
             Swal.fire({
                 icon: 'error',
@@ -139,7 +139,8 @@ function Login() {
                                                     </Button>
                                                 </div>
 
-                                                <div className="form-group d-md-flex">
+                                                {/* OLD CODE 17-1-25 START */}
+                                                {/* <div className="form-group d-md-flex">
                                                     <div className="w-50 text-left">
                                                         <label className="checkbox-wrap checkbox-primary mb-0">
                                                             Remember Me
@@ -156,6 +157,24 @@ function Login() {
                                                     <div className="w-50 text-md-right">
                                                         <Link to="/ForgetPassword">Forgot Password</Link>
                                                     </div>
+                                                </div> */}
+                                                {/* OLD CODE 17-1-25 START */}
+                                            
+                                              <div className="form-group d-md-flex">
+                                                <input
+                                                    className="form-check-input mx-2"
+                                                    type="checkbox"
+                                                    name="remember"
+                                                    id="remember"
+                                                    style={{ marginLeft: '2%' }}
+                                                />
+                                                <span className="checkmark"></span>
+                                                <label className="checkbox-wrap checkbox-primary mb-0">
+                                                    Remember Me
+                                                </label>
+                                                </div>
+                                                <div className="form-group d-md-flex">
+                                                <Link to="/ForgetPassword" className='text-center mx-2'>Forgot Password</Link>
                                                 </div>
                                             </Container>
                                         </form>

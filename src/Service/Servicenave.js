@@ -40,17 +40,23 @@ const Servicenave = ({ setIsLoggedIn }) => {
     const logoutData = async () => {
         try {
 
+            // // const response = await Authapi.logoutData();
+            // // console.log(response)
+            // localStorage.removeItem('Token');
+            // localStorage.removeItem('user');
+
             const response = await Authapi.logoutData();
-            console.log(response)
-            ls.removeItem('Token');
-            ls.removeItem('user');
-            navigate('/');
+            // console.log(response)
+            if (response.status === true) {
+
+                localStorage.removeItem('Token');
+                localStorage.removeItem('user');
+                navigate('/');
+            }
         } catch (error) {
             console.error("Logout Error:", error);
         }
     };
-
-
 
 
     return (

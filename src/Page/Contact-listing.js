@@ -155,7 +155,8 @@ const Contact = () => {
             renderHeader: () => (
                 <input
                     type="checkbox"
-                    checked={selectedRows.length === rows.length}
+                    // checked={selectedRows.length === rows.length}
+                    checked={rows.length > 0 && selectedRows.length === rows.length}
                     onChange={() => handleSelectAllRows()}
                 />
             ),

@@ -20,6 +20,8 @@ import PageEdit from "./Page/Page-edit";
 import PageList from "./Page/Page-list";
 import Contact from "./Page/Contact-listing";
 import ls from "local-storage";
+import NoPage from './NoPage'; 
+
 
 // ProtectedRoute Component for guarding the routes
 function ProtectedRoute({ children }) {
@@ -51,7 +53,11 @@ function App() {
         <Route path="/Page-list" element={<ProtectedRoute><PageList /></ProtectedRoute>} />
         <Route path="/Page-edit/:id" element={<ProtectedRoute><PageEdit /></ProtectedRoute>} />
         <Route path="/Contact-listing" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
-        <Route path="*" element={<ProtectedRoute><Navigate to="/" /></ProtectedRoute>} />
+        {/* <Route path="*" element={<ProtectedRoute><Navigate to="/" /></ProtectedRoute>} /> */}
+        {/* <Route path="*" element={<ProtectedRoute><Navigate to="/" /></ProtectedRoute>} /> */}
+        {/* <Route path="*" element={<ProtectedRoute><Navigate to="/" /></ProtectedRoute>} /> */}
+        <Route path="*" element={<NoPage />} />
+
       </Routes>
     </BrowserRouter>
   );

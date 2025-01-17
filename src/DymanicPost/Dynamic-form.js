@@ -114,7 +114,7 @@ const DynamicForm = () => {
                     </div>
                     <div className="card-body">
                         <Container>
-                            <form onSubmit={handleSubmit} encType="multipart/form-data">
+                            <form onSubmit={handleSubmit} encType="multipart/form-data" className='createForm'>
                                 <Grid container spacing={3}>
                                     <Grid item xs={12} sm={6}>
                                         <TextField

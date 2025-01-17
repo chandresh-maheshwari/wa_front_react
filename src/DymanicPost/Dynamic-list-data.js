@@ -159,7 +159,7 @@ const DynamicList = () => {
     // multi inactive data 
     const getInactive = async (ids) => {
         if (selectedRows.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            Swal.fire('Warning', 'Please select at least one item to Inactive.', 'warning');
             return;
         }
         if (Array.isArray(ids) && ids.length > 0) {
@@ -196,7 +196,7 @@ const DynamicList = () => {
     // multi active data 
     const getActive = async (ids) => {
         if (selectedRows.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+            Swal.fire('Warning', 'Please select at least one item to Active.', 'warning');
             return;
         }
         if (Array.isArray(ids) && ids.length > 0) {

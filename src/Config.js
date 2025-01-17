@@ -123,6 +123,8 @@ export default {
     contactlist: 'api/contact-page-list',
     contactdelete: 'api/contact-page-delete/',
 
+    notfoundpageget: 'api/page/Page Not Found',
+
 
 
   },

@@ -85,7 +85,7 @@ const Expired = () => {
             confirmButtonText: "Continue",
             cancelButtonText: "Cancel",
         }).then((result) => {
-            console.log(result);
+            // console.log(result);
             if (result.isConfirmed === true) {
                 regenerateToken();
             }

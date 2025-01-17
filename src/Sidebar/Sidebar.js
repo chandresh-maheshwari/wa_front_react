@@ -92,7 +92,7 @@ const Sidebar = () => {
 
   const isActive = (id) => {
     const active = openItems[id];
-    console.log('Checking active state for:', id, 'Active:', active);
+    // console.log('Checking active state for:', id, 'Active:', active);
     return active || window.location.pathname === id;
   };
 
