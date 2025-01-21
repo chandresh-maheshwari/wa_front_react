@@ -69,6 +69,8 @@
 /* all table card header  */
 .card-header {
   padding: -0.5rem 1rem;
+  height: 50px;  
+  border-bottom: none;
   /* text-align: center; */
 
 }
@@ -331,6 +333,7 @@
   /* Prevent text wrapping */
 }
 
+
 .MuiDataGrid-main {
   width: 100%;
   table-layout: fixed;
@@ -364,7 +367,7 @@
 }
 
 .form-control {
-  background-color: rgba(0, 0, 0, .03) !important;
+  background-color:  rgba(255, 255, 255, 0.03) !important;
   border-color: rgba(0, 0, 0, 0.23) !important;
 }
 
@@ -400,3 +403,46 @@
   border-radius: 50%;
   font-size: 22px;
 }
+/* css for table dropdown size date-20-01-25 */
+/* .MuiInputBase-root.MuiOutlinedInput-root .MuiInputBase-colorPrimary .MuiInputBase-formControl   
+.css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root{padding: 9px;} */
+
+
+/* ==================== */
+
+/* .Edit-list {
+  transition: background-color 0.3s ease, transform 0.3s ease; 
+  padding: 4px;
+  border-radius: 50%;
+}
+
+
+.Edit-list .m-3 {
+  display: inline-flex; 
+  transition: transform 0.3s ease; 
+}
+
+.Edit-list:hover .m-3 {
+  transform: none; 
+}
+
+.IconButton:hover {
+  background-color: #f50057; 
+} */
+
+
+/* Custom.css */
+.Edit-list {
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+  transition: background-color 0.3s, border-radius 0.3s; 
+  padding: 0.5px; 
+  border-radius: 50%px; }
+
+.Edit-list:hover {
+  background-color: rgba(44, 157, 212, 0.3); 
+  border-radius: 50%px; 
+  
+}
+

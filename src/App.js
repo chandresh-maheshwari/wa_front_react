@@ -37,7 +37,7 @@ function App() {
   return (
     <BrowserRouter basename="/cms">
       <MaybeshowNavbar>
-        <Servicenave />
+        {/* <Servicenave /> */}
         <Sidebar />
       </MaybeshowNavbar>
       <Routes>
