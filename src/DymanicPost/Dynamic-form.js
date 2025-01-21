@@ -34,22 +34,6 @@ const DynamicForm = () => {
     ]);
   };
 
-  /*const handleAddFieldAfter = (id) => {
-    const newField = {
-      id: Date.now(),
-      label: "",
-      type: "",
-      value: "",
-      options: [],
-    };
-    const index = fields.findIndex((field) => field.id === id);
-    setFields([
-      ...fields.slice(0, index + 1),
-      newField,
-      ...fields.slice(index + 1),
-    ]);
-  };*/
-
     const handleAddFieldAfter = (id) => {
         const newField = { id: Date.now(), label: '', type: '', value: '', options: [] };
         const index = fields.findIndex(field => field.id === id);
@@ -661,6 +645,5 @@ const DynamicForm = () => {
       </div>
     </>
   );
-};
 
 export default DynamicForm;
