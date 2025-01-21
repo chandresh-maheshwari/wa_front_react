@@ -527,7 +527,22 @@ const PageList = () => {
                             key={params.row.id}
                             checked={params.row.status}
                             size="xs"
-                            onChange={() => getSingleActive(params.row.id, params.row.status)}
+                            onChange={async () => {
+                                const confirmToggle = await Swal.fire({
+                                    title: 'Are you sure?',
+                                    text: 'Do you want to change the page active status?',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, change it!'
+                                });
+
+                                if (confirmToggle.isConfirmed) {
+                                    await getSingleActive(params.row.id, params.row.status);
+                                    Swal.fire('Success!', 'Page active status changed successfully.', 'success');
+                                }
+                            }}
                         />
                     </Tooltip>
                     <Tooltip title="Inner Page Active">
@@ -535,7 +550,22 @@ const PageList = () => {
                             key={params.row.id}
                             checked={params.row.page_status}
                             size="xs"
-                            onChange={() => getActive1(params.row.id, params.row.page_status)}
+                            onChange={async () => {
+                                const confirmToggle = await Swal.fire({
+                                    title: 'Are you sure?',
+                                    text: 'Do you want to change the inner page active status?',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, change it!'
+                                });
+
+                                if (confirmToggle.isConfirmed) {
+                                    await getActive1(params.row.id, params.row.page_status);
+                                    Swal.fire('Success!', 'Inner page active status changed successfully.', 'success');
+                                }
+                            }}
                         />
                     </Tooltip>
                 </strong>

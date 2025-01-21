@@ -301,7 +301,22 @@ const DynamicList = () => {
                             key={params.row.id}
                             checked={params.row.status}
                             size="xs"
-                            onChange={() => getSingleActive(params.row.id, activeStates[params.row.id] ? 1 : 0)}
+                            onChange={async () => {
+                                const confirmToggle = await Swal.fire({
+                                    title: 'Are you sure?',
+                                    text: 'Do you want to change the active status?',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, change it!'
+                                });
+
+                                if (confirmToggle.isConfirmed) {
+                                    await getSingleActive(params.row.id, activeStates[params.row.id] ? 1 : 0);
+                                    Swal.fire('Success!', 'Active status changed successfully.', 'success');
+                                }
+                            }}
                         />
                     </Tooltip>
                 </strong>
