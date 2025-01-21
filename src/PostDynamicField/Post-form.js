@@ -234,7 +234,15 @@ const PostFormDynamic = () => {
         <>
             <Expired />
             <div className="col-md-12">
-                <div className="row card" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px", marginTop: "10%" }}>
+        <div
+          className="row "
+          style={{
+            marginLeft: "20%",
+            width: "80%",
+            marginBottom: "20px",
+            marginTop: "1%",
+          }}
+        >
                     <div className="card-header">
                         <Typography variant="h5" className="title" align="center">Post</Typography>
                     </div>
@@ -253,7 +261,7 @@ const PostFormDynamic = () => {
                                                     >
                                                         {field.options && field.options.map((option, idx) => (
                                                             <MenuItem key={idx} value={option.trim()}>
-                                                                {option.trim()}
+                                                                {option.trim()} 
                                                             </MenuItem>
                                                         ))}
                                                     </Select>

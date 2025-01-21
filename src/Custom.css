@@ -62,7 +62,7 @@
 
 /* Css for search all */
 .navbar-search {
-  margin-left: 5%;
+  margin-left: -5px;
   margin-top: 0px;
 }
 
@@ -362,9 +362,9 @@
   background-color: #fff !important;
 }
 
-.css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+/* .css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
   padding: 6.5px 14px !important;
-}
+} */
 
 .form-control {
   background-color:  rgba(255, 255, 255, 0.03) !important;
@@ -396,6 +396,7 @@
 .page-title-section, .dynamic-post-section, .post-section {
   display: flex;
 }
+
 
 .page-add-btn svg, .dynamic-post-add-btn svg, .post-add-btn svg{
   background-color: rgb(15, 50, 67);

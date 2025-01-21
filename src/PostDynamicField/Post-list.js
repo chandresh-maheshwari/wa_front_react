@@ -403,7 +403,7 @@ const PostDynamicList = () => {
         navigate('/dynamic-form'); // Navigate to the /page route
     };
 
-    const paginationModel = { page: 0, pageSize: 5 };
+    const paginationModel = { page: 0, pageSize: 10 };
     return (
         <>
             <Expired />

@@ -175,7 +175,15 @@ const Page = () => {
         <>
             <Expired />
             <div className="col-md-12">
-                <div className="row card " style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: '7%' }}>
+        <div
+          className="row "
+          style={{
+            marginLeft: "20%",
+            width: "80%",
+            marginBottom: "20px",
+            marginTop: "1%",
+          }}
+        >  
                     <div className="card-header">
                         <h5 className="title">Page</h5>
                     </div>

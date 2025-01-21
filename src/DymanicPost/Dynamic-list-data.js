@@ -338,7 +338,7 @@ const DynamicList = () => {
     return (
         <>
             <Expired />
-            {/* <div className="col-md-12"> */}
+            <div className="col-md-12">
              <div className="row" style={{ marginTop:'10px', marginBottom: '20px',  marginLeft: "262px" }}>
 
                 <div className="card-header col-6 dynamic-post-section">
@@ -404,7 +404,7 @@ const DynamicList = () => {
                     </Container>
                 </div>
             </div>
-            {/* </div> */}
+            </div>
         </>
     );
 };
