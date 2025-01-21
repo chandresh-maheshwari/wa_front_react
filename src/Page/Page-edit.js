@@ -244,7 +244,7 @@ const PageEdit = () => {
                                             >
                                                 {postTitles.length > 0 ? (
                                                     postTitles
-                                                        .filter((title) => title.post_type === 'custom_post')
+                                                        .filter((title) => title.post_type === 'custom_post' && title.status === 1)
                                                         .map((title) => (
                                                             <MenuItem key={title.id} value={title.id}>
                                                                 {title.post_title}
@@ -274,12 +274,12 @@ const PageEdit = () => {
 
                                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
                                     <Grid item>
-                                        <Button variant="contained" color="primary" style={{ backgroundColor: "#2c9dd4" }} type="submit">
+                                        <Button className='submit-btn' variant="contained" color="primary" style={{ backgroundColor: "#2c9dd4" }} type="submit">
                                             Submit
                                         </Button>
                                     </Grid>
                                     <Grid item>
-                                        <Button style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
+                                        <Button className='cancel-btn' style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
                                             onClick={() => navigate('/page-list')}>
                                             Cancel
                                         </Button>

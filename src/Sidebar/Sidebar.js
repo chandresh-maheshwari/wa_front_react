@@ -170,6 +170,7 @@ const Sidebar = () => {
               {openItems[post.id] && (
                 <ul className={`nav-dropdown-items-dynamic_page-${post.id}`} id="nav-dropdown-items-dynamic_page">
                   <li className="nav-item">
+                    {console.log(post.post_title)}
                     <Link className="nav-link" to="/post-form" state={{ post_title: post.post_title }}>
                       <span>Add New Form</span>
                     </Link>
@@ -218,14 +219,16 @@ const Sidebar = () => {
             </ul>
           )}
 
-          <li className="nav-item nav-dropdown">
+          <li className="nav-item nav-dropdown mt-2">
             <Link
-              className="nav-link"
+              className="nav-link contact-us"
               id="listing"
               to="/Contact-listing">
               <p>Contact List</p>
             </Link>
           </li>
+
+          
         </ul>
       </div>
     </div>

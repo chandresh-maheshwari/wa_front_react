@@ -325,12 +325,12 @@ const DynamicEditForm = ({ existingData }) => {
 
                                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
                                     <Grid item>
-                                        <Button variant="contained" color="primary" style={{ backgroundColor: "#2c9dd4" }} type="submit">
+                                        <Button variant="contained" className='submit-btn' color="primary" style={{ backgroundColor: "#2c9dd4" }} type="submit">
                                             Submit
                                         </Button>
                                     </Grid>
                                     <Grid item>
-                                        <Button style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
+                                        <Button className='cancel-btn' style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
                                             onClick={() => navigate('/dynamic-list-data')}>
                                             Cancel
                                         </Button>

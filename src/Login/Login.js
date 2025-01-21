@@ -4,6 +4,8 @@ import { Button } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Authapi from '../Authapi';
+import WasteAccountantLogo from '../img/WasteAccountant_LOGO.png';  // Import the image
+
 
 function Login() {
     const navigate = useNavigate();
@@ -88,8 +90,9 @@ function Login() {
                     <div className="col-md-1"></div>
                     <div className="col-md-10">
                         <div className="text-center">
-                            <h4 className="mt-5">Login Form</h4>
-                        </div>
+                            {/* <h4 className="mt-5">Login Form</h4> */}
+                            <img src={WasteAccountantLogo} alt="My Image" height="100" width="300" />
+                            </div>
                         <div className="row justify-content-center mt-5">
                             <div className="col-md-12 col-lg-10">
                                 <div className="row wrap d-md-flex">
@@ -179,10 +182,10 @@ function Login() {
                                             </Container>
                                         </form>
 
-                                        <p className="text-center">
+                                        {/* <p className="text-center">
                                             Not a member?{' '}
                                             <a data-toggle="tab" href="#signup">Sign Up</a>
-                                        </p>
+                                        </p> */}
                                     </div>
                                 </div>
                             </div>

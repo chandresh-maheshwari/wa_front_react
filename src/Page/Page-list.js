@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import Swal from 'sweetalert2';
 import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdAdd } from "react-icons/md";
 import { Container, IconButton, Tooltip, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from "react-router-dom";
@@ -562,7 +562,9 @@ const PageList = () => {
         }
     };
 
-
+    const handleAddNavigate = () => {
+        navigate('/page'); // Navigate to the /page route
+    };
     return (
         <>
 
@@ -570,8 +572,11 @@ const PageList = () => {
             <div className="col-md-12">
                 <div className="row " style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: '7%' }}>
 
-                    <div className="card-header col-6">
-                        <h5 className="title ">Page</h5>
+                    <div className="card-header col-6 page-title-section">
+                        <h5 className="title">Page</h5>
+                        <IconButton className="page-add-btn" aria-label="add" color="primary" onClick={handleAddNavigate}>
+                            <MdAdd />
+                        </IconButton>
                     </div>
                     <div className="card-header col-3">
                         <FormControl fullWidth>

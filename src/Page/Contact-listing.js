@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdVisibility } from "react-icons/md";
 import { Container, IconButton, Tooltip, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Authapi from '../Authapi';
 import Expired from '../Login/ExpiredToken';
 import '../Custom.css'
+import { Link } from 'react-router-dom';
+
+
 const Contact = () => {
 
     const [rows, setRows] = useState([]);
@@ -130,6 +133,49 @@ const Contact = () => {
     };
 
 
+    // const ViewData = async (id) => {
+    //     // const confirmDelete = await Swal.fire({
+    //     //     title: 'Are you sure?',
+    //     //     text: "This will mark the item as deleted!",
+    //     //     icon: 'warning',
+    //     //     showCancelButton: true,
+    //     //     confirmButtonColor: '#d33',
+    //     //     cancelButtonColor: '#3085d6',
+    //     //     confirmButtonText: 'Yes, mark it!'
+    //     // });
+
+    //     // if (confirmDelete.isConfirmed) {
+
+            
+    //         try {
+    //             const response = await Authapi.contactview(id);
+    //             if (response) {
+    //                 Swal.fire('Success!', 'Item marked as deleted.', 'success');
+    //                 fetchData();
+    //             } else {
+    //                 throw new Error(response?.message || 'Failed to delete item');
+    //             }
+    //         } catch (error) {
+    //             Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete item', 'error');
+    //         }
+    //     // }
+    // };
+
+
+    const handleView = (row) => {
+        Swal.fire({
+          title: `Details for ${row.name}`,
+          html: `
+            <p><strong>Email:</strong> ${row.email}</p>
+            <p><strong>Contact Number:</strong> ${row.contact_number}</p>
+            <p><strong>Description:</strong> ${row.description}</p>
+          `,
+          icon: 'info',
+          confirmButtonText: 'Close',
+        });
+      };
+
+
     const handleStatusFilterChange = (event) => {
         const filterValue = event.target.value;
         setStatusFilter(filterValue);
@@ -172,22 +218,79 @@ const Contact = () => {
         { field: 'name', headerName: 'Name', width: 90, flex: 1 },
         { field: 'email', headerName: 'Email', width: 90, flex: 1 },
         { field: 'contact_number', headerName: 'Contact Number', width: 90, flex: 1 },
-        { field: 'description', headerName: 'Description', width: 90, flex: 1 },
+        // { field: 'description', headerName: 'Description', width: 90, flex: 1 },
         {
             field: 'actions',
             headerName: 'Actions',
             width: 150,
             flex: 1,
+            // renderCell: (params) => (
+            //     <strong onClick={(e) => e.stopPropagation()}>
+            //         <Tooltip title="Delete">
+            //             <IconButton aria-label="delete" color='primary'>
+            //                 <MdDelete onClick={() => handleDelete1(params.row.id)} />
+            //             </IconButton>
+            //         </Tooltip>
+
+            //     </strong>
+
+            //     <strong onClick={(e) => e.stopPropagation()}>
+            //         <Tooltip title="Delete">
+            //             <IconButton aria-label="delete" color='primary'>
+            //                 <MdDelete onClick={() => handleDelete1(params.row.id)} />
+            //             </IconButton>
+            //         </Tooltip>
+
+            //     </strong>
+            // ),
+
+            // renderCell: (params) => (
+            //     <div>
+            //         <strong onClick={(e) => e.stopPropagation()}>
+            //             {/* <Tooltip title="Delete">
+            //           <IconButton aria-label="delete" color="primary">
+            //           </IconButton>
+            //           <MdVisibility onClick={() => handleDelete1(params.row.id)} />
+            //         </Tooltip> */}
+            //             <Tooltip title="View">
+            //                 <IconButton aria-label="View" className="Edit-list view-data" style={{ margin: '1px' }}>
+            //                     {/* <Link
+            //                         to={{
+            //                             pathname: `/contact-view/${params.row.id}`,
+            //                         }}
+            //                     >
+                               
+            //                     </Link> */}
+            //                     <MdVisibility onClick={() => ViewData(params.row.id)} />
+            //                 </IconButton>
+            //             </Tooltip>
+            //         </strong>
+
+            //         <strong onClick={(e) => e.stopPropagation()}>
+            //             <Tooltip title="Delete">
+            //                 <IconButton aria-label="delete" color="primary">
+            //                     <MdDelete onClick={() => handleDelete1(params.row.id)} />
+            //                 </IconButton>
+            //             </Tooltip>
+            //         </strong>
+            //     </div>
+            // ),
+
             renderCell: (params) => (
                 <strong onClick={(e) => e.stopPropagation()}>
-                    <Tooltip title="Delete">
-                        <IconButton aria-label="delete" color='primary'>
-                            <MdDelete onClick={() => handleDelete1(params.row.id)} />
-                        </IconButton>
-                    </Tooltip>
-
+                  <Tooltip title="View">
+                    <IconButton aria-label="view" color="primary" onClick={() => handleView(params.row)}>
+                      <MdVisibility />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete">
+                    <IconButton aria-label="delete" color="primary">
+                      <MdDelete onClick={() => handleDelete1(params.row.id)} />
+                    </IconButton>
+                  </Tooltip>
                 </strong>
-            ),
+              ),
+
         },
     ];
 

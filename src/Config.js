@@ -122,6 +122,10 @@ export default {
 
     contactlist: 'api/contact-page-list',
     contactdelete: 'api/contact-page-delete/',
+    // contactView: 'api/Contact-view/',
+
+    imgdelete: 'api/post-img-delete/',
+
 
     notfoundpageget: 'api/page/Page Not Found',
 

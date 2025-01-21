@@ -6,14 +6,17 @@ import Swal from 'sweetalert2';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
-import { MdDelete, MdOutlineCancel } from 'react-icons/md';
+import { MdDelete, MdAdd, MdOutlineCancel } from 'react-icons/md';
 import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
 import { useLocation } from 'react-router-dom';
 import ls from 'local-storage';
 import "../Custom.css";
 import $ from 'jquery';
+import { useNavigate } from 'react-router-dom';
+
 const PostDynamicList = () => {
+    const navigate = useNavigate();
     const [rows, setRows] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const [filteredRows, setFilteredRows] = useState([]);
@@ -119,7 +122,7 @@ const PostDynamicList = () => {
                     return (
                         <div style={{ whiteSpace: 'normal', }}>
                             {isImage ? (
-                             
+
                                 <img src={value} alt={displayValue} style={{ width: '50%', height: 'auto' }} />
                             ) : (
                                 <span className={`email-display-${safeValue}`}>
@@ -396,14 +399,24 @@ const PostDynamicList = () => {
         setSelectedRows(newSelection);
     };
 
+    const handleAddNavigate = () => {
+        navigate('/dynamic-form'); // Navigate to the /page route
+    };
+
     const paginationModel = { page: 0, pageSize: 5 };
     return (
         <>
             <Expired />
             <div className="col-md-12">
                 <div className="row " style={{ marginLeft: '20%', width: '80%', marginBottom: '20px', marginTop: '7%' }}>
-                    <div className="card-header col-6">
-                        <h5 className="title ">{post_title}</h5>
+                    <div className="card-header col-6 post-section">
+                        <h5 className="title">{post_title}</h5>
+                        {/* <IconButton className="post-add-btn" aria-label="add" color="primary" state={{ post_title }} onClick={handleAddNavigate}>
+                            <MdAdd />
+                        </IconButton> */}
+                        <Link className="post-add-btn" title={`Add ${post_title}`} id="listing" to="/post-form" state={{ post_title }}>
+                        <MdAdd />
+                        </Link>
                     </div>
 
                     <div className="card-header col-3">

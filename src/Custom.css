@@ -16,7 +16,8 @@
 
 /* Custom.css */
 .nav-item.active-sidebar-item {
-  background-color: #f0f0f0 !important; /* Use !important if necessary */
+  background-color: #f0f0f0 !important;
+  /* Use !important if necessary */
 }
 
 
@@ -191,9 +192,9 @@
   position: relative;
 }
 
-.nav-item:hover {
+/* .nav-item:hover {
   background-color: #304d5b;
-}
+} */
 
 /* .nav-item:hover :active {
   background-color: #304d5b;
@@ -202,9 +203,9 @@
   display: none;
 }
 
-.nav-item:hover .nav-dropdown-items {
+/* .nav-item:hover .nav-dropdown-items {
   display: block;
-}
+} */
 
 .nav-dropdown-items li {
   padding: 10px;
@@ -224,7 +225,7 @@
 
 /* post edit  bg color  */
 
-.Edit-list a {
+.Edit-list a, .view-data svg {
   color: #113B4F;
 }
 
@@ -256,7 +257,8 @@
   --bs-gradient: none !important;
 }
 
-.css-180cd0o-MuiGrid-root .css-sghohy-MuiButtonBase-root-MuiButton-root {
+/* .css-180cd0o-MuiGrid-root .css-sghohy-MuiButtonBase-root-MuiButton-root { */
+.submit-btn{
   background-color: #48AD3B !important;
   /* background-image: linear-gradient(to right, #48AD3B 0%, #48AD3B 100%); */
   background-repeat: repeat-x !important;
@@ -267,7 +269,8 @@
   padding: 0.594rem 0.75rem !important;
 }
 
-.css-1e6y48t-MuiButtonBase-root-MuiButton-root {
+/* .css-1e6y48t-MuiButtonBase-root-MuiButton-root { */
+.cancel-btn{
   border-radius: 10px !important;
   color: #fff !important;
   background-color: #87888a !important;
@@ -275,47 +278,57 @@
   text-transform: capitalize !important;
 }
 
-.css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root{
+.css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root {
   color: #113B4F !important;
 }
-.css-jsexje-MuiSwitch-thumb{
+
+.css-jsexje-MuiSwitch-thumb {
   background-color: #113B4F !important
 }
-.sidebar .nav li>a{
+
+.sidebar .nav li>a {
   text-transform: capitalize;
   font-size: .9000em;
 }
 
 .css-qvtrhg-MuiDataGrid-virtualScroller {
   width: 100%;
-  height: 200px;  /* Set height to enable scrolling */
+  height: 200px;
+  /* Set height to enable scrolling */
   overflow: auto;
 }
 
 /* Styling the scrollbar */
 .css-qvtrhg-MuiDataGrid-virtualScroller::-webkit-scrollbar {
-  width: 12px;  /* Horizontal scrollbar width */
-  height: 12px; /* Vertical scrollbar height */
+  width: 12px;
+  /* Horizontal scrollbar width */
+  height: 12px;
+  /* Vertical scrollbar height */
 }
 
 .css-qvtrhg-MuiDataGrid-virtualScroller::-webkit-scrollbar-track {
-  background-color: #f1f1f1;  /* Track color */
+  background-color: #f1f1f1;
+  /* Track color */
   border-radius: 10px;
 }
 
 .css-qvtrhg-MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb {
-  background-color: #74b0ce;  /* Thumb color */
+  background-color: #74b0ce;
+  /* Thumb color */
   border-radius: 10px;
 }
 
 .css-qvtrhg-MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover {
-  background-color: #555;  /* Thumb hover color */
+  background-color: #555;
+  /* Thumb hover color */
 }
 
-.MuiDataGrid-cell{
+.MuiDataGrid-cell {
   overflow: hidden;
-  text-overflow: ellipsis; /* Hide overflow text */
-  white-space: nowrap; /* Prevent text wrapping */
+  text-overflow: ellipsis;
+  /* Hide overflow text */
+  white-space: nowrap;
+  /* Prevent text wrapping */
 }
 
 .MuiDataGrid-main {
@@ -323,7 +336,7 @@
   table-layout: fixed;
 }
 
- /* /* .MuiDataGrid-cell, .MuiDataGrid-columnHeader {
+/* /* .MuiDataGrid-cell, .MuiDataGrid-columnHeader {
   min-width: auto !important;
   max-width: auto !important;
 
@@ -339,19 +352,51 @@
   overflow: hidden;
 } */
 
-.createForm .MuiFormControl-root, .createForm .css-1ualgfl-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root{
+.createForm .MuiFormControl-root,
+.createForm .css-1ualgfl-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root,
+.css-1ualgfl-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root,
+.css-wb57ya-MuiFormControl-root-MuiTextField-root {
   background-color: #fff !important;
 }
 
-.css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
+.css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
   padding: 6.5px 14px !important;
 }
 
 .form-control {
-  background-color:  rgba(0, 0, 0, .03) !important;
+  background-color: rgba(0, 0, 0, .03) !important;
   border-color: rgba(0, 0, 0, 0.23) !important;
 }
 
-.titleSection{
+.contact-us {
+  margin: 10px 15px 0;
+  border-radius: 30px;
+  color: #ffffff;
+  /* display: block; */
+  text-decoration: none;
+  position: relative;
+  /* text-transform: uppercase; */
+  cursor: pointer;
+  /* font-size: 0.7142em; */
+  padding: 10px 8px;
+  line-height: 1.625rem;
+}
 
+.nav-link:hover {
+  background-color: #304d5b;
+}
+
+.nav-link:hover .nav-dropdown-items {
+  display: block;
+}
+
+.page-title-section, .dynamic-post-section, .post-section {
+  display: flex;
+}
+
+.page-add-btn svg, .dynamic-post-add-btn svg, .post-add-btn svg{
+  background-color: rgb(15, 50, 67);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 22px;
 }

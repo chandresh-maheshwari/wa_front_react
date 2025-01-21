@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Authapi from "../Authapi";
-import { Typography, Container, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, FormControlLabel, Checkbox, Radio, RadioGroup } from '@mui/material';
+import { Typography, IconButton, Tooltip, Container, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, FormControlLabel, Checkbox, Radio, RadioGroup } from '@mui/material';
 import Expired from '../Login/ExpiredToken';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import "../Custom.css";
+import { MdDelete } from "react-icons/md";
 
 const PostDynamicEdit = () => {
     const location = useLocation();
@@ -38,7 +39,7 @@ const PostDynamicEdit = () => {
         // console.log("Fetching edit data for ID:", id);
         try {
             const response = await Authapi.postdynamicEditData(id);
-            console.log(response.data.data)
+            // console.log(response.data.data)
             setTimeout(() => {
                 setFormData(response.data.data || {});
             }, 500);
@@ -46,6 +47,41 @@ const PostDynamicEdit = () => {
             console.error('Error fetching edit data:', error);
         }
     }
+
+    const handleDelete1 = async (id, name) => {
+       
+        
+        const confirmDelete = await Swal.fire({
+            title: 'Are you sure?',
+            text: "This will mark the item as deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, mark it!'
+        });
+    
+        if (confirmDelete.isConfirmed) {
+            try {
+                const response = await Authapi.imgdelete(id, name);
+                console.log("Delete response:", response); // Log the response for debugging
+    
+                if (response && response.status) {
+                    Swal.fire('Success!', 'Item marked as deleted.', 'success').then(() => {
+                        // Fetch updated data to ensure state is in sync with backend
+                        fetchData(); // Fetch data again to ensure state is updated
+                        window.location.reload(); // Reload the page (optional based on your state management)
+                    });
+                } else {
+                    throw new Error(response?.message || 'Failed to delete item');
+                }
+            } catch (error) {
+                console.error("Error deleting item:", error); // Log the error for debugging
+                Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete item', 'error');
+            }
+        }
+    };
+
 
     useEffect(() => {
         if (fields.length > 0) {
@@ -334,12 +370,20 @@ const PostDynamicEdit = () => {
                                                         />
                                                     ) : formData[field.label] ? (
                                                         <>
+
+                                                     
                                                             <p>Current image: {formData[field.label].split('/').pop()} </p>
                                                             <img
                                                                 src={formData[field.label]}
                                                                 alt="Current Image"
                                                                 width="100"
+                                                                style={{ marginRight: '10px' }} 
                                                             />
+                                                             <Tooltip title="Delete">
+                                                                      <IconButton aria-label="delete" color="primary" onClick={() => handleDelete1(id, formData[field.label].split('/').pop())}>
+                                                                        <MdDelete />
+                                                                      </IconButton>
+                                                                    </Tooltip>
                                                         </>
                                                     ) : null}
                                                 </div>
@@ -385,6 +429,7 @@ const PostDynamicEdit = () => {
                                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
                                     <Grid item>
                                         <Button
+                                        className='submit-btn'
                                             variant="contained"
                                             color="primary"
                                             style={{ backgroundColor: "#2c9dd4" }}
@@ -395,6 +440,7 @@ const PostDynamicEdit = () => {
                                     </Grid>
                                     <Grid item>
                                         <Button
+                                            className='cancel-btn'
                                             style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
                                             type="button"
                                             onClick={() => (navigate('/post-list', { state: { post_title } }))}

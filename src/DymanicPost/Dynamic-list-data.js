@@ -5,11 +5,15 @@ import Swal from 'sweetalert2';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
-import { MdDelete } from 'react-icons/md';
+import { MdDelete, MdAdd } from 'react-icons/md';
 import "../Custom.css";
 import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
+import { useNavigate } from 'react-router-dom';
+
+
 const DynamicList = () => {
+    const navigate = useNavigate();    
     const [rows, setRows] = useState([]);
     const [filteredRows, setFilteredRows] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -327,14 +331,22 @@ const DynamicList = () => {
 
     };
 
+    const handleAddNavigate = () => {
+        navigate('/dynamic-form'); // Navigate to the /page route
+    };
+
     return (
         <>
             <Expired />
             {/* <div className="col-md-12"> */}
-            <div className="row" style={{  marginBottom: '20px',  marginLeft: "262px" }}>
+            <div className="row" style={{ marginBottom: '20px', marginLeft: "262px" }}>
 
-                <div className="card-header col-6">
+                <div className="card-header col-6 dynamic-post-section">
                     <h5 className="title ">Post</h5>
+                    <IconButton className="dynamic-post-add-btn" aria-label="add" color="primary" onClick={handleAddNavigate}>
+                        <MdAdd />
+                    </IconButton>
+
                 </div>
                 <div className="card-header col-3">
                     <FormControl fullWidth>

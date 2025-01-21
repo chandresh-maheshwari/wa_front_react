@@ -1198,9 +1198,9 @@ a.text-warning:hover {
   position: relative;
 }
 
-.nav-item:hover {
+/* .nav-item:hover {
   background-color: #304d5b;
-}
+} */
 
 /* .nav-item:hover :active {
   background-color: #304d5b;
@@ -1287,4 +1287,8 @@ a.text-warning:hover {
 }
 .css-jsexje-MuiSwitch-thumb{
   background-color: #113B4F !important
+}
+
+.contact-us p{
+  margin-bottom: 0 !important;
 }

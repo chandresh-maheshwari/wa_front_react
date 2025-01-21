@@ -376,6 +376,7 @@ const PostFormDynamic = () => {
                                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
                                     <Grid item>
                                         <Button
+                                            className='submit-btn'
                                             variant="contained"
                                             color="primary"
                                             style={{ backgroundColor: "#2c9dd4" }}
@@ -386,6 +387,7 @@ const PostFormDynamic = () => {
                                     </Grid>
                                     <Grid item>
                                         <Button
+                                            className='cancel-btn'
                                             style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
                                             type="button"
                                             onClick={() => (navigate('/post-list', { state: { post_title } }))}

@@ -1755,6 +1755,32 @@ export default new (class AuthApi {
   }
 
 
+  async imgdelete(id, name) {
+    console.log(name);
+    try {
+        // Ensure the URL is properly formatted
+        const url = `${Config.apiurl}${Config.apis.imgdelete}${id}/${name}`;
+        console.log("API URL:", url); // Debugging the URL to ensure it's correct
+        const token = ls('Token');
+        
+        // Ensure headers are set correctly for DELETE request
+        this.setHeaders("delete");
+        const response = await axios.delete(url, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        return response.data; // Ensure the response structure matches the expected output
+    } catch (error) {
+        // Log the error for debugging and throw it so the frontend can handle it
+        console.error("API Error:", error);
+        throw error;
+    }
+}
+
+
 
 
 
