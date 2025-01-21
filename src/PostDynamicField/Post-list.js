@@ -166,7 +166,22 @@ const PostDynamicList = () => {
                             key={params.row.id}
                             checked={params.row.status}
                             size="xs"
-                            onChange={() => getActive1(params.row.id, params.row.status)}
+                            onChange={async () => {
+                                const confirmToggle = await Swal.fire({
+                                    title: 'Are you sure?',
+                                    text: 'Do you want to change the active status?',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, change it!'
+                                });
+
+                                if (confirmToggle.isConfirmed) {
+                                    await getActive1(params.row.id, params.row.status);
+                                    Swal.fire('Success!', 'Active status changed successfully.', 'success');
+                                }
+                            }}
                             style={{ margin: '1px' }}
                         />
                     </Tooltip>

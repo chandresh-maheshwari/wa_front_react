@@ -4,13 +4,13 @@ import { Button } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Authapi from '../Authapi';
-import WasteAccountantLogo from '../img/WasteAccountant_LOGO.png';  // Import the image
-
+import WasteAccountantLogo from '../img/WasteAccountant_LOGO.png';  
 
 function Login() {
     const navigate = useNavigate();
-    const [email, setemail] = useState('');
-    const [password, setpassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [remember, setRemember] = useState(false);
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
@@ -29,6 +29,16 @@ function Login() {
                 navigate("/Dashboard");
             }
         }
+
+        const savedEmail = localStorage.getItem('rememberedEmail');
+        const savedPassword = localStorage.getItem('rememberedPassword');
+        const savedRemember = localStorage.getItem('remember') === 'true';
+
+        if (savedRemember) {
+            setEmail(savedEmail || '');
+            setPassword(savedPassword || '');
+            setRemember(savedRemember);
+        }
     }, [navigate]);
 
     async function submitform(e) {
@@ -45,7 +55,6 @@ function Login() {
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
 
-            // Show SweetAlert popup for validation errors
             Swal.fire({
                 icon: 'error',
                 title: 'Validation Error',
@@ -56,7 +65,7 @@ function Login() {
         }
         setErrors({});
 
-        const item = { email, password };
+        const item = { email, password, remember };
         try {
             const response = await Authapi.loginData(item);
 
@@ -64,6 +73,17 @@ function Login() {
                 const { token, user } = response;
                 localStorage.setItem('user', JSON.stringify(user));
                 localStorage.setItem('Token', token);
+
+                if (remember) {
+                    localStorage.setItem('rememberedEmail', email);
+                    localStorage.setItem('rememberedPassword', password);
+                    localStorage.setItem('remember', remember);
+                } else {
+                    localStorage.removeItem('rememberedEmail');
+                    localStorage.removeItem('rememberedPassword');
+                    localStorage.removeItem('remember');
+                }
+
                 navigate("/Dashboard");
             } else {
                 Swal.fire({
@@ -73,7 +93,6 @@ function Login() {
                 });
             }
         } catch (error) {
-            // Handle errors from the loginData function
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -90,9 +109,8 @@ function Login() {
                     <div className="col-md-1"></div>
                     <div className="col-md-10">
                         <div className="text-center">
-                            {/* <h4 className="mt-5">Login Form</h4> */}
                             <img src={WasteAccountantLogo} alt="My Image" height="100" width="300" />
-                            </div>
+                        </div>
                         <div className="row justify-content-center mt-5">
                             <div className="col-md-12 col-lg-10">
                                 <div className="row wrap d-md-flex">
@@ -112,7 +130,8 @@ function Login() {
                                                         type="email"
                                                         placeholder="Email"
                                                         name="email"
-                                                        onChange={e => setemail(e.target.value)}
+                                                        value={email}
+                                                        onChange={e => setEmail(e.target.value)}
                                                         fullWidth
                                                     />
                                                     {errors.email && (
@@ -125,12 +144,29 @@ function Login() {
                                                         type="password"
                                                         placeholder="Password"
                                                         name="password"
-                                                        onChange={e => setpassword(e.target.value)}
+                                                        value={password}
+                                                        onChange={e => setPassword(e.target.value)}
                                                         fullWidth
                                                     />
                                                     {errors.password && (
                                                         <p style={{ color: 'red' }}>{errors.password}</p>
                                                     )}
+                                                </div>
+
+                                                <div className="form-group d-md-flex">
+                                                    <input
+                                                        className="form-check-input mx-2"
+                                                        type="checkbox"
+                                                        name="remember"
+                                                        id="remember"
+                                                        checked={remember}
+                                                        onChange={e => setRemember(e.target.checked)}
+                                                        style={{ marginLeft: '2%' }}
+                                                    />
+                                                    <span className="checkmark"></span>
+                                                    <label className="checkbox-wrap checkbox-primary mb-0">
+                                                        Remember Me
+                                                    </label>
                                                 </div>
 
                                                 <div className="form-group">
@@ -142,50 +178,11 @@ function Login() {
                                                     </Button>
                                                 </div>
 
-                                                {/* OLD CODE 17-1-25 START */}
-                                                {/* <div className="form-group d-md-flex">
-                                                    <div className="w-50 text-left">
-                                                        <label className="checkbox-wrap checkbox-primary mb-0">
-                                                            Remember Me
-                                                            <input
-                                                                className="form-check-input"
-                                                                type="checkbox"
-                                                                name="remember"
-                                                                id="remember"
-                                                                style={{ marginLeft: '2%' }}
-                                                            />
-                                                            <span className="checkmark"></span>
-                                                        </label>
-                                                    </div>
-                                                    <div className="w-50 text-md-right">
-                                                        <Link to="/ForgetPassword">Forgot Password</Link>
-                                                    </div>
-                                                </div> */}
-                                                {/* OLD CODE 17-1-25 START */}
-                                            
-                                              <div className="form-group d-md-flex">
-                                                <input
-                                                    className="form-check-input mx-2"
-                                                    type="checkbox"
-                                                    name="remember"
-                                                    id="remember"
-                                                    style={{ marginLeft: '2%' }}
-                                                />
-                                                <span className="checkmark"></span>
-                                                <label className="checkbox-wrap checkbox-primary mb-0">
-                                                    Remember Me
-                                                </label>
-                                                </div>
                                                 <div className="form-group d-md-flex">
-                                                <Link to="/ForgetPassword" className='text-center mx-2'>Forgot Password</Link>
+                                                    <Link to="/ForgetPassword" className='text-center mx-2'>Forgot Password</Link>
                                                 </div>
                                             </Container>
                                         </form>
-
-                                        {/* <p className="text-center">
-                                            Not a member?{' '}
-                                            <a data-toggle="tab" href="#signup">Sign Up</a>
-                                        </p> */}
                                     </div>
                                 </div>
                             </div>

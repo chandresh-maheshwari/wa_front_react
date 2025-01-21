@@ -39,24 +39,32 @@ export default new (class AuthApi {
     }
   }
 
-  async loginData(formData) {
-    // console.log(formData)
+  async loginData(formData, rememberMe) {
     try {
-      const url = Config.apiurl + Config.apis.login;
-      // console.log(url);
-      const response = await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-      });
+        const url = Config.apiurl + Config.apis.login;
+        const response = await axios.post(url, formData, {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+        });
 
-      return response.data;
+        const data = response.data;
+
+        if (data.status === true && data.token) {
+            if (rememberMe) {
+                localStorage.setItem('authToken', data.token);
+            } else {
+                sessionStorage.setItem('authToken', data.token);
+            }
+        }
+
+        return data;
     } catch (error) {
-      console.error("Error  Login Data:", error);
-      throw new Error("Failed to Login Data");
+        console.error("Error Login Data:", error);
+        throw new Error("Failed to Login Data");
     }
-  }
+}
 
 
 
