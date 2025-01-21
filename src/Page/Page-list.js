@@ -144,7 +144,7 @@ const PageList = () => {
     };
 
 
-    const paginationModel = { page: 0, pageSize: 5 };
+    const paginationModel = { page: 0, pageSize: 10 };
 
     // single page active
     const getSingleActive = async (id, currentStatus) => {
@@ -538,6 +538,9 @@ const PageList = () => {
                         />
                     </Tooltip>
                 </strong>
+
+
+
             ),
         },
     ];
@@ -568,7 +571,7 @@ const PageList = () => {
 
             <Expired />
             <div className="col-md-12">
-                <div className="row " style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: '7%' }}>
+                <div className="row " style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: '1%' }}>
 
                     <div className="card-header col-6">
                         <h5 className="title ">Page</h5>
@@ -599,11 +602,11 @@ const PageList = () => {
                             onChange={handleSearch}
                         />
                     </div>
-                    <div className="card-body">
-                        <Container>
+                    <div className="card-body" style={{ height: 'calc(115vh - 200px)', width: '80%' }}>
+                    <Container style={{ height: '100%' }}>
                             <div style={{ width: '100%', marginBottom: "45px" }}>
 
-                                <div style={{ width: '100%', height: '400px', overflowY: 'auto' }}>
+                                <div style={{ width: '100%', height: '500px', overflowY: 'auto' }}>
                                     <DataGrid
                                         rows={searchQuery ? filteredRows : rows}
                                         columns={columns}

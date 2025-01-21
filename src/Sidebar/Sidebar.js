@@ -5,6 +5,8 @@ import '../App.css';
 import '../Custom.css';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import Authapi from '../Authapi';
+import { useNavigate } from 'react-router-dom';
+import { CiLogout } from "react-icons/ci";
 // import img from './images/WasteAccountant_LOGO.png'
 // const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
 const img = `https://laravel.wasteaccountant.com/admin/images/WasteAccountant_LOGO.png`;
@@ -20,6 +22,7 @@ const Sidebar = () => {
 
   const [, forceUpdate] = useState();
 
+    const navigate = useNavigate();
   useEffect(() => {
     const fetchPostTitles = async () => {
       try {
@@ -101,6 +104,30 @@ const Sidebar = () => {
     color: '#333',
   };
 
+ const logoutData = async () => {
+        try {
+
+            // // const response = await Authapi.logoutData();
+            // // console.log(response)
+            // localStorage.removeItem('Token');
+            // localStorage.removeItem('user');
+
+            const response = await Authapi.logoutData();
+            // console.log(response)
+            if (response.status === true) {
+
+                localStorage.removeItem('Token');
+                localStorage.removeItem('user');
+                navigate('/');
+            }
+        } catch (error) {
+            console.error("Logout Error:", error);
+        }
+    };
+
+
+
+
   return (
     <div className="sidebar" data-color="orange">
       <div className="logo">
@@ -137,7 +164,7 @@ const Sidebar = () => {
             <ul className="nav-dropdown-items-Dynamic_POST">
               <li className="nav-item">
                 <Link className="nav-link" to="/dynamic-form">
-                  <span>Add New Form</span>
+                  <span>Add New </span>
                 </Link>
               </li>
               <li className="nav-item">
@@ -171,7 +198,7 @@ const Sidebar = () => {
                 <ul className={`nav-dropdown-items-dynamic_page-${post.id}`} id="nav-dropdown-items-dynamic_page">
                   <li className="nav-item">
                     <Link className="nav-link" to="/post-form" state={{ post_title: post.post_title }}>
-                      <span>Add New Form</span>
+                      <span>Add New</span>
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -224,6 +251,16 @@ const Sidebar = () => {
               id="listing"
               to="/Contact-listing">
               <p>Contact List</p>
+            </Link>
+          </li>
+
+          <li className="logout">
+            <Link
+              className="nav-link logout"
+              onClick={logoutData} 
+              to="/">                        
+              
+              <p><CiLogout /> Logout</p>
             </Link>
           </li>
         </ul>

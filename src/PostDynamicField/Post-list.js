@@ -401,8 +401,8 @@ const PostDynamicList = () => {
         <>
             <Expired />
             <div className="col-md-12">
-                <div className="row " style={{ marginLeft: '20%', width: '80%', marginBottom: '20px', marginTop: '7%' }}>
-                    <div className="card-header col-6">
+            <div className="row " style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: '1%' }}>
+            <div className="card-header col-6">
                         <h5 className="title ">{post_title}</h5>
                     </div>
 
@@ -430,9 +430,14 @@ const PostDynamicList = () => {
                             onChange={handleSearch}
                         />
                     </div>
-                    <div className="card-body">
+                    {/* <div className="card-body">
                         <Container>
-                            <div style={{ overflowX: 'auto' }}>
+                            <div style={{ overflowX: 'auto' }}> */}
+                            <div className="card-body" style={{ height: 'calc(115vh - 200px)', width: '80%' }}>
+                                                <Container style={{ height: '100%' }}>
+                                                        <div style={{ width: '100%', marginBottom: "45px" }}>
+                            
+                                                            <div style={{ width: '100%', height: '500px', overflowY: 'auto' }}>
                                 <DataGrid
                                     rows={searchQuery ? filteredRows : rows}
                                     columns={dynamicColumns}
@@ -473,6 +478,7 @@ const PostDynamicList = () => {
                                         event.stopPropagation();
                                     }}
                                 />
+                            </div>
                             </div>
                         </Container>
                     </div>

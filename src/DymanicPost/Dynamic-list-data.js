@@ -248,7 +248,7 @@ const DynamicList = () => {
             setSelectedRows([]);
         }
     };
-    const paginationModel = { page: 0, pageSize: 5 };
+    const paginationModel = { page: 0, pageSize: 10};
     const columns = [
         {
             field: 'checkboxSelection',
@@ -281,19 +281,19 @@ const DynamicList = () => {
             renderCell: (params) => (
                 <strong onClick={(e) => e.stopPropagation()}>
                     <Tooltip title="Update">
-                        <IconButton aria-label="Update" color='primary' className='Edit-list'>
+                        <IconButton aria-label="Update" color='primary' className='Edit-list action-button'>
                             <Link to={`/dynamic-edit/${params.row.id}`} id="edit"   >
                                 <FaEdit />
                             </Link>
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton aria-label="delete" color='primary'>
+                        <IconButton aria-label="delete" color='primary' className='action-button'>
                             <MdDelete onClick={() => handleDelete1(params.row.id)} />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Active">
-                        <Switch
+                        <Switch className='action-button'
                             key={params.row.id}
                             checked={params.row.status}
                             size="xs"
@@ -331,10 +331,10 @@ const DynamicList = () => {
         <>
             <Expired />
             {/* <div className="col-md-12"> */}
-            <div className="row" style={{  marginBottom: '20px',  marginLeft: "262px" }}>
+            <div className="row" style={{ marginTop:'10px', marginBottom: '20px',  marginLeft: "262px" }}>
 
                 <div className="card-header col-6">
-                    <h5 className="title ">Post</h5>
+                    <h5 className="title">Post</h5>
                 </div>
                 <div className="card-header col-3">
                     <FormControl fullWidth>
@@ -360,9 +360,10 @@ const DynamicList = () => {
                         onChange={handleSearch}
                     />
                 </div>
-                <div className="card-body" style={{ height: 400, width: '100%' }}>
-                    <Container>
-                        <div>
+                <div className="card-body" style={{ height: 'calc(115vh - 200px)', width: '100%' }}>
+                    <Container style={{ height: '100%' }}>
+           
+                        <div style={{ height: '100%' }}>
                             <DataGrid
                                 rows={searchQuery ? filteredRows : rows}
                                 columns={columns}
