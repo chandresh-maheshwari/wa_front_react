@@ -68,37 +68,37 @@ export default new (class AuthApi {
 
 
 
- async logoutData() {
-  try {
-    const url = Config.apiurl + Config.apis.logout;
-    const token = ls('Token');  // Assuming ls is a function to get the token from localStorage
-    
-    // Check if token exists
-    if (!token) {
-      throw new Error('Token not found, cannot log out.');
-    }
+  async logoutData() {
+    try {
+      const url = Config.apiurl + Config.apis.logout;
+      const token = ls('Token');  // Assuming ls is a function to get the token from localStorage
 
-    const response = await axios.post(
-      url,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+      // Check if token exists
+      if (!token) {
+        throw new Error('Token not found, cannot log out.');
       }
-    );
 
-    // Handle the response
-    return response.data;
+      const response = await axios.post(
+        url,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-  } catch (error) {
-    console.error("Error during Logout Data:", error);
-    
-    // You can rethrow or return a default error message
-    throw new Error("Failed to log out.");
+      // Handle the response
+      return response.data;
+
+    } catch (error) {
+      console.error("Error during Logout Data:", error);
+
+      // You can rethrow or return a default error message
+      throw new Error("Failed to log out.");
+    }
   }
-}
 
 
   async refreshToken1(formData) {
@@ -1762,35 +1762,59 @@ export default new (class AuthApi {
     }
   }
 
-
+// code for delete image from edit page of post
   async imgdelete(id, name) {
     console.log(name);
     try {
-        // Ensure the URL is properly formatted
-        const url = `${Config.apiurl}${Config.apis.imgdelete}${id}/${name}`;
-        console.log("API URL:", url); // Debugging the URL to ensure it's correct
-        const token = ls('Token');
-        
-        // Ensure headers are set correctly for DELETE request
-        this.setHeaders("delete");
-        const response = await axios.delete(url, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        });
+      // Ensure the URL is properly formatted
+      const url = `${Config.apiurl}${Config.apis.imgdelete}${id}/${name}`;
+      console.log("API URL:", url); // Debugging the URL to ensure it's correct
+      const token = ls('Token');
 
-        return response.data; // Ensure the response structure matches the expected output
+      // Ensure headers are set correctly for DELETE request
+      this.setHeaders("delete");
+      const response = await axios.delete(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return response.data; // Ensure the response structure matches the expected output
     } catch (error) {
-        // Log the error for debugging and throw it so the frontend can handle it
-        console.error("API Error:", error);
-        throw error;
+      // Log the error for debugging and throw it so the frontend can handle it
+      console.error("API Error:", error);
+      throw error;
     }
-}
+  }
 
 
+// code for delete image form edit page of page module
+  async imgdeletepage(id) {
+    // console.log(id);
+    // console.log(name);
+    try {
+      // Ensure the URL is properly formatted
+      const url = `${Config.apiurl}${Config.apis.imgdeletepage}${id}`;
+      console.log("API URL:", url); // Debugging the URL to ensure it's correct
+      const token = ls('Token');
 
+      // Ensure headers are set correctly for DELETE request
+      this.setHeaders("delete");
+      const response = await axios.delete(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
+      return response.data; // Ensure the response structure matches the expected output
+    } catch (error) {
+      // Log the error for debugging and throw it so the frontend can handle it
+      console.error("API Error:", error);
+      throw error;
+    }
+  }
 
 
 })();

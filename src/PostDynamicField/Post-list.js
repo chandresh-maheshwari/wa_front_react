@@ -429,7 +429,7 @@ const PostDynamicList = () => {
                         {/* <IconButton className="post-add-btn" aria-label="add" color="primary" state={{ post_title }} onClick={handleAddNavigate}>
                             <MdAdd />
                         </IconButton> */}
-                        <Link className="post-add-btn" title={`Add ${post_title}`} id="listing" to="/post-form" state={{ post_title }}>
+                        <Link className="post-add-btn " title={`Add ${post_title}`} id="listing" to="/post-form" state={{ post_title }}>
                         <MdAdd />
                         </Link>
                     </div>
@@ -439,6 +439,7 @@ const PostDynamicList = () => {
                             <InputLabel>Status Filter</InputLabel>
                             <Select
                                 value={statusFilter}
+                                className='filter_dropdown_of_main_page'
                                 onChange={handleStatusFilterChange}
                                 label="Status Filter"
                             >

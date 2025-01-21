@@ -368,6 +368,7 @@ const DynamicList = () => {
                         <InputLabel>Status Filter</InputLabel>
                         <Select
                             value={statusFilter}
+                            className='filter_dropdown_of_main_page'
                             onChange={handleStatusFilterChange}
                             label="Status Filter"
                         >

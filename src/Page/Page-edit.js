@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
 import Swal from 'sweetalert2';
-import { Typography, Container, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, FormControlLabel, Checkbox, Radio, RadioGroup } from '@mui/material';
+import { Typography, Container, IconButton, Tooltip, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, FormControlLabel, Checkbox, Radio, RadioGroup } from '@mui/material';
 import Authapi from '../Authapi';
 
 import Expired from '../Login/ExpiredToken';
 import { useNavigate, useParams } from 'react-router-dom';
+import { MdDelete } from "react-icons/md";
+
 
 
 const PageEdit = () => {
@@ -89,7 +91,37 @@ const PageEdit = () => {
 
 
 
+    const handleDelete1 = async (id) => {
+        const confirmDelete = await Swal.fire({
+            title: 'Are you sure?',
+            text: "This will mark the item as deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, mark it!'
+        });
 
+        if (confirmDelete.isConfirmed) {
+            try {
+                const response = await Authapi.imgdeletepage(id);
+                console.log("Delete response:", response); // Log the response for debugging
+
+                if (response && response.status) {
+                    Swal.fire('Success!', 'Item marked as deleted.', 'success').then(() => {
+                        // Fetch updated data to ensure state is in sync with backend
+                        fetchData(); // Fetch data again to ensure state is updated
+                        window.location.reload(); // Reload the page (optional based on your state management)
+                    });
+                } else {
+                    throw new Error(response?.message || 'Failed to delete item');
+                }
+            } catch (error) {
+                console.error("Error deleting item:", error); // Log the error for debugging
+                Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete item', 'error');
+            }
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -180,7 +212,7 @@ const PageEdit = () => {
                                             type="Ordering"
                                             fullWidth
                                             margin="normal"
-                                            InputLabelProps={{ shrink: true }} 
+                                            InputLabelProps={{ shrink: true }}
                                             min="0"
                                             onKeyPress={preventTextAndMinus}
                                             name="ordering"
@@ -217,12 +249,17 @@ const PageEdit = () => {
                                                 </div>
                                             ) : (
                                                 <div>
+                                                    <p>{formData.image.split('/').pop()}</p>
                                                     <img
                                                         src={formData.image}
                                                         alt="Current image preview"
                                                         width="100"
                                                     />
-                                                    <p>{formData.image.split('/').pop()}</p>
+                                                    <Tooltip title="Delete">
+                                                        <IconButton aria-label="delete" color="primary" onClick={() => handleDelete1(id, formData.image.split('/').pop())}>
+                                                            <MdDelete />
+                                                        </IconButton>
+                                                    </Tooltip>
                                                 </div>
                                             )
                                         ) : null}

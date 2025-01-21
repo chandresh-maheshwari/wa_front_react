@@ -293,37 +293,7 @@
   font-size: .9000em;
 }
 
-.css-qvtrhg-MuiDataGrid-virtualScroller {
-  width: 100%;
-  height: 200px;
-  /* Set height to enable scrolling */
-  overflow: auto;
-}
 
-/* Styling the scrollbar */
-.css-qvtrhg-MuiDataGrid-virtualScroller::-webkit-scrollbar {
-  width: 12px;
-  /* Horizontal scrollbar width */
-  height: 12px;
-  /* Vertical scrollbar height */
-}
-
-.css-qvtrhg-MuiDataGrid-virtualScroller::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
-  /* Track color */
-  border-radius: 10px;
-}
-
-.css-qvtrhg-MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb {
-  background-color: #74b0ce;
-  /* Thumb color */
-  border-radius: 10px;
-}
-
-.css-qvtrhg-MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
-  /* Thumb hover color */
-}
 
 .MuiDataGrid-cell {
   overflow: hidden;
@@ -355,12 +325,12 @@
   overflow: hidden;
 } */
 
-.createForm .MuiFormControl-root,
+/* .createForm .MuiFormControl-root,
 .createForm .css-1ualgfl-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root,
 .css-1ualgfl-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root,
 .css-wb57ya-MuiFormControl-root-MuiTextField-root {
   background-color: #fff !important;
-}
+} */
 
 /* .css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
   padding: 6.5px 14px !important;
@@ -447,3 +417,80 @@
   
 }
 
+/* Added On 21-01-25 START */
+.dynamicCreateForm .MuiFormControl-root,
+.dynamicCreateForm .dropdown-css-change,
+.dynamicEditForm .dropdown-css-change,
+/* .createForm .css-1ualgfl-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root, */
+/* .css-1ualgfl-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root, */
+.css-wb57ya-MuiFormControl-root-MuiTextField-root {
+  background-color: #fff !important;
+}
+
+.dynamic-field-two-btns{
+  padding: 23px 25px 25px 54px !important;
+}
+
+.contact-label{
+  text-align: right;
+}
+
+.contact-val{
+  text-align: left;
+}
+
+.card-header{
+  padding: 1rem 1rem 3rem 1rem;
+}
+
+.css-e1ihxc-MuiDataGrid-root .MuiDataGrid-columnHeaders, .css-tfcyzz-MuiDataGrid-root .MuiDataGrid-columnHeaders, .css-tfcyzz-MuiDataGrid-root .MuiDataGrid-columnHeaders {
+  background-color: #113b4f !important;
+  color: white;
+}
+
+.MuiDataGrid-virtualScroller {
+  width: 100%;
+  height: 200px;
+  /* Set height to enable scrolling */
+  overflow: auto;
+}
+
+/* Styling the scrollbar */
+.MuiDataGrid-virtualScroller::-webkit-scrollbar {
+  width: 12px;
+  /* Horizontal scrollbar width */
+  height: 12px;
+  /* Vertical scrollbar height */
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  /* Track color */
+  border-radius: 10px;
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb {
+  background-color: #113b4f;
+  /* Thumb color */
+  border-radius: 10px;
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+  /* Thumb hover color */
+}
+
+/* .css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input { */
+  .filter_dropdown_of_main_page div{
+    /* background-color: red; */
+  padding: 6.5px 14px !important;
+}
+.post-add-btn{
+  margin-top: 0rem !important;
+  margin-left: 1rem !important;
+}
+.dynamic-post-add-btn{
+  margin-top: 6px !important;
+    margin-left: 2px !important;
+}
+/* Added On 21-01-25 START */
