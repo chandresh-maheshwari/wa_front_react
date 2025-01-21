@@ -109,6 +109,7 @@ export default {
     postDynamicUpdate: 'api/post-data-update/',
     postDynamicDelete: 'api/post-data-delete/',
     postDynamicActive: 'api/post-data-active/',
+    imgdelete: 'api/post-img-delete/', //New added
 
 
     pageStore: 'api/page-store',
@@ -117,6 +118,8 @@ export default {
     pageUpdate: 'api/page-update/',
     pageDelele: 'api/page-delete/',
     pageActie: 'api/page-active/',
+    imgdeletepage: 'api/page-image-delete/', //New added
+
 
     pageActive1: 'api/page-status/',
 
@@ -124,7 +127,6 @@ export default {
     contactdelete: 'api/contact-page-delete/',
     // contactView: 'api/Contact-view/',
 
-    imgdelete: 'api/post-img-delete/',
 
 
     notfoundpageget: 'api/page/Page Not Found',

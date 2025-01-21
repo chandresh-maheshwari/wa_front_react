@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, MenuItem, Select, InputLabel, FormControl, Grid, Typography } from '@mui/material';
+import { TextField, IconButton, Tooltip, Button, Container, MenuItem, Select, InputLabel, FormControl, Grid, Typography } from '@mui/material';
 import { MdDelete } from "react-icons/md";
 import { FaCirclePlus } from "react-icons/fa6";
 import Swal from 'sweetalert2';
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Authapi from '../Authapi';
 import Expired from '../Login/ExpiredToken';
 import "../Custom.css";
+import Link from '@mui/material';
 
 const DynamicForm = () => {
     const [fields, setFields] = useState([{
@@ -114,7 +115,7 @@ const DynamicForm = () => {
                     </div>
                     <div className="card-body">
                         <Container>
-                            <form onSubmit={handleSubmit} encType="multipart/form-data" className='createForm'>
+                            <form onSubmit={handleSubmit} encType="multipart/form-data" className='dynamicCreateForm'>
                                 <Grid container spacing={3}>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
@@ -152,6 +153,7 @@ const DynamicForm = () => {
                                             <InputLabel>Post Type</InputLabel>
                                             <Select
                                                 label="Post Type"
+                                                className='dropdown-css-change'
                                                 name="post_type"
                                                 value={formData.post_type}
                                                 onChange={handleTitleChange}
@@ -171,7 +173,7 @@ const DynamicForm = () => {
                                 {fields.map((field) => (
                                     <div key={field.id} style={{ marginBottom: '30px' }}>
                                         <Grid container spacing={3}>
-                                            <Grid item xs={12} sm={4}>
+                                            <Grid item xs={12} sm={5}>
                                                 <TextField
                                                     label="Label"
                                                     name="label"
@@ -186,11 +188,12 @@ const DynamicForm = () => {
                                                 />
                                             </Grid>
 
-                                            <Grid item xs={12} sm={4}>
+                                            <Grid item xs={12} sm={5}>
                                                 <FormControl fullWidth style={{ marginBottom: '15px' }}>
                                                     <InputLabel>Field Type</InputLabel>
                                                     <Select
                                                         label="Field Type"
+                                                        className='dropdown-css-change'
                                                         name="type"
                                                         value={field.type}
                                                         onChange={(e) => handleTypeChange(e, field.id)}
@@ -217,8 +220,8 @@ const DynamicForm = () => {
                                                 </FormControl>
                                             </Grid>
 
-                                            <Grid item xs={12} sm={2}>
-                                                <Button
+                                            <Grid item xs={12} sm={2} className='dynamic-field-two-btns'>
+                                                {/* <Button
                                                     variant="contained"
                                                     color="error"
                                                     onClick={() => handleRemoveField(field.id)}
@@ -232,11 +235,18 @@ const DynamicForm = () => {
                                                     }}
                                                 >
                                                     <MdDelete />
-                                                </Button>
-                                            </Grid>
+                                                </Button> */}
 
-                                            <Grid item xs={12} sm={2}>
-                                                <Button
+                                                <Tooltip title="Delete" className='dynamic-field-delete-btn mt-2'>
+                                                    <IconButton aria-label="delete" color='primary'>
+                                                        <MdDelete onClick={() => handleRemoveField(field.id)} />
+                                                    </IconButton>
+                                                </Tooltip>
+
+                                                {/* </Grid> */}
+
+                                                {/* <Grid item xs={12} sm={1}> */}
+                                                {/* <Button
                                                     variant="contained"
                                                     onClick={() => handleAddFieldAfter(field.id)}
                                                     style={{
@@ -249,7 +259,13 @@ const DynamicForm = () => {
                                                     }}
                                                 >
                                                     <FaCirclePlus />
-                                                </Button>
+                                                </Button> */}
+
+                                                <Tooltip title="Add New Field" className='dynamic-field-add-btn mt-2'>
+                                                    <IconButton aria-label="add" color='primary'>
+                                                        <FaCirclePlus onClick={() => handleAddFieldAfter(field.id)} />
+                                                    </IconButton>
+                                                </Tooltip>
                                             </Grid>
                                         </Grid>
 
@@ -271,7 +287,9 @@ const DynamicForm = () => {
                                     </div>
                                 ))}
 
-                                <Button
+
+                                {/*  Working code for add field btn 21-01-25 START  */}
+                                {/* <Button
                                     variant="contained"
                                     onClick={handleAddField}
                                     style={{
@@ -284,7 +302,8 @@ const DynamicForm = () => {
                                     }}
                                 >
                                     <FaCirclePlus />
-                                </Button>
+                                </Button> */}
+                                  {/*  Working code for add field btn 21-01-25 END  */}
 
                                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
                                     <Grid item>

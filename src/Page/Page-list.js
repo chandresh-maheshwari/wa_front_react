@@ -578,7 +578,7 @@ const PageList = () => {
 
                     <div className="card-header col-6 page-title-section">
                         <h5 className="title">Page</h5>
-                        <IconButton className="page-add-btn" aria-label="add" color="primary" onClick={handleAddNavigate}>
+                        <IconButton className="page-add-btn mt-1" aria-label="add" color="primary" onClick={handleAddNavigate}>
                             <MdAdd />
                         </IconButton>
                     </div>
@@ -586,6 +586,7 @@ const PageList = () => {
                         <FormControl fullWidth>
                             <InputLabel>Status Filter</InputLabel>
                             <Select
+                                className='filter_dropdown_of_main_page'
                                 value={statusFilter}
                                 onChange={handleStatusFilterChange}
                                 label="Status Filter"

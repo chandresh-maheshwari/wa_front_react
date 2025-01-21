@@ -255,7 +255,7 @@ const Sidebar = () => {
             </Link>
           </li>
 
-          <li className="logout">
+          <li className="logout nav-item nav-dropdown mt-2">
             <Link
               className="nav-link logout"
               onClick={logoutData} 
