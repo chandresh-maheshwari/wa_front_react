@@ -107,7 +107,9 @@ const DynamicList = () => {
             }
         }
     };
-
+    const handleEdit = async (id) => {
+        navigate(`/dynamic-edit/${id}`);
+    }
     // single Delelete Data
     const handleDelete1 = async (id) => {
         const confirmDelete = await Swal.fire({
@@ -285,11 +287,17 @@ const DynamicList = () => {
             renderCell: (params) => (
                 <strong onClick={(e) => e.stopPropagation()}>
                     <Tooltip title="Update">
-                        <IconButton aria-label="Update" color='primary' className='Edit-list action-button'>
+                        {/* <IconButton aria-label="Update" color='primary' className='Edit-list action-button'>
                             <Link to={`/dynamic-edit/${params.row.id}`} id="edit"   >
                                 <FaEdit />
                             </Link>
-                        </IconButton>
+                        </IconButton> */}
+                         <IconButton aria-label="Update"  onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
+                                                   
+                                                   <FaEdit />
+                                              
+                                           </IconButton>
+
                     </Tooltip>
                     <Tooltip title="Delete">
                         <IconButton aria-label="delete" color='primary' className='action-button'>

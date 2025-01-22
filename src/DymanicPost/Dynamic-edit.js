@@ -146,7 +146,7 @@ const DynamicEditForm = ({ existingData }) => {
         <>
             <Expired />
             <div className="col-md-12">
-                <div className="row card" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px", marginTop: "10%" }}>
+            <div className="row card mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
                     <div className="card-header">
                         <Typography variant="h5" className="title" align="center">Post Dynamic Form</Typography>
                     </div>

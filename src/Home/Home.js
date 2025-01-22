@@ -12,8 +12,20 @@ const Home = () => {
     const [homeDescription, setHomeDescription] = useState('');
     const [homeButtonName, setHomeButtonName] = useState('');
     const [homeButtonUrl, setHomeButtonUrl] = useState('');
+    const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
+    // Example topbardata structure
+    const topbardata = [
+        { data: { Label: "Tell us what you need", type: "text" } },
+        { data: { Label: "Phone Number", type: "tel" } },
+        // Add more items as needed
+    ];
+
+    const handleInputChange = (e, index) => {
+        // Handle input changes and update state as needed
+        console.log(`Field ${index} changed:`, e.target.value);
+    };
 
     // console.log(homeImage);
     // console.log(homeTitle);
@@ -154,6 +166,38 @@ const Home = () => {
                         </Container>
                     </div>
                 </div>
+            </div>
+            <div className="row">
+                {topbardata.map((item, index) => (
+                    <div className='col-md-6' key={index}>
+                        <div className="inputgroup">
+                            <label>{item.data.Label}</label>
+                            {item.data.label === "Tell us what you need" ? (
+                                <textarea
+                                    className='form-control'
+                                    name={`field${index}`}
+                                    rows="4"
+                                    onChange={(e) => handleInputChange(e, index)}
+                                />
+                            ) : item.data.type === "tel" ? (
+                                <input
+                                    className='form-control'
+                                    name={`field${index}`}
+                                    type="tel"
+                                    onChange={(e) => handleInputChange(e, index)}
+                                />
+                            ) : (
+                                <input
+                                    className='form-control'
+                                    name={`field${index}`}
+                                    type={item.data.type}
+                                    onChange={(e) => handleInputChange(e, index)}
+                                />
+                            )}
+                            {errors[`label${index}`] && <span style={{ color: 'red' }}>{errors[`label${index}`]}</span>}
+                        </div>
+                    </div>
+                ))}
             </div>
         </>
     );

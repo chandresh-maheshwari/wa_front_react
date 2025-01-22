@@ -145,7 +145,7 @@ const PostDynamicList = () => {
             renderCell: (params) => (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Tooltip title="Update">
-                        <IconButton aria-label="Update" className="Edit-list" style={{ margin: '1px' }}>
+                        {/* <IconButton aria-label="Update" color="primary" className="Edit-list" style={{ margin: '1px' }}>
                             <Link
                                 to={{
                                     pathname: `/post-edit/${params.row.id}`,
@@ -154,6 +154,11 @@ const PostDynamicList = () => {
                             >
                                 <FaEdit />
                             </Link>
+                        </IconButton> */}
+                            <IconButton aria-label="Update"  onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
+                           
+                                <FaEdit />
+                           
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
@@ -383,8 +388,9 @@ const PostDynamicList = () => {
             }
         }
     };
-
-
+    const handleEdit = async (id) => {
+        navigate(`/post-edit/${id}`, { state: { post_title } });
+    }
     const handleDelete1 = async (id) => {
         const confirmDelete = await Swal.fire({
             title: 'Are you sure?',

@@ -116,7 +116,9 @@ const PageList = () => {
             }
         }
     };
-
+    const handleEdit = async (id) => {
+        navigate(`/Page-edit/${id}`);
+    }
     // single deleted data
     const handleDelete1 = async (id) => {
         const confirmDelete = await Swal.fire({
@@ -507,15 +509,21 @@ const PageList = () => {
             renderCell: (params) => (
                 <strong onClick={(e) => e.stopPropagation()}>
                     <Tooltip title="Update">
-                        <IconButton aria-label="Update" color='primary' className='Edit-list'>
+                        {/* <IconButton aria-label="Update" color='primary' className='Edit-list'>
                             <Link
                                 to={`/Page-edit/${params.row.id}`}
                                 id="edit"
-                                className='m-3'
+                               
                             >
                                 <FaEdit />
                             </Link>
-                        </IconButton>
+                        </IconButton> */}
+                        <IconButton aria-label="Update"  onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
+                           
+                           <FaEdit />
+                      
+                   </IconButton>
+                        
                     </Tooltip>
                     <Tooltip title="Delete">
                         <IconButton aria-label="delete" color='primary'>

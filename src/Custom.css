@@ -379,43 +379,7 @@
 .css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root{padding: 9px;} */
 
 
-/* ==================== */
 
-/* .Edit-list {
-  transition: background-color 0.3s ease, transform 0.3s ease; 
-  padding: 4px;
-  border-radius: 50%;
-}
-
-
-.Edit-list .m-3 {
-  display: inline-flex; 
-  transition: transform 0.3s ease; 
-}
-
-.Edit-list:hover .m-3 {
-  transform: none; 
-}
-
-.IconButton:hover {
-  background-color: #f50057; 
-} */
-
-
-/* Custom.css */
-.Edit-list {
-  display: inline-flex; 
-  align-items: center; 
-  justify-content: center; 
-  transition: background-color 0.3s, border-radius 0.3s; 
-  padding: 0.5px; 
-  border-radius: 50%px; }
-
-.Edit-list:hover {
-  background-color: rgba(44, 157, 212, 0.3); 
-  border-radius: 50%px; 
-  
-}
 
 /* Added On 21-01-25 START */
 .dynamicCreateForm .MuiFormControl-root,
@@ -440,7 +404,7 @@
 }
 
 .card-header{
-  padding: 1rem 1rem 3rem 1rem;
+  padding: 1rem 1rem 3rem 1rem;  
 }
 
 .css-e1ihxc-MuiDataGrid-root .MuiDataGrid-columnHeaders, .css-tfcyzz-MuiDataGrid-root .MuiDataGrid-columnHeaders, .css-tfcyzz-MuiDataGrid-root .MuiDataGrid-columnHeaders {
