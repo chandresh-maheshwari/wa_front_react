@@ -175,17 +175,20 @@ const Page = () => {
         <>
             <Expired />
             <div className="col-md-12">
-        <div
-          className="row "
-          style={{
-            marginLeft: "20%",
-            width: "80%",
-            marginBottom: "20px",
-            marginTop: "1%",
-          }}
-        >  
-                    <div className="card-header">
-                        <h5 className="title">Page</h5>
+                <div
+                    className="row "
+                    style={{
+                        marginLeft: "20%",
+                        width: "80%",
+                        marginBottom: "20px",
+                        marginTop: "1%",
+                    }}
+                >
+                    <div className="card-header Form-main-title">
+                        {/* <h5 className="title">Page</h5> */}
+                        <Typography variant="h6" className="title" align="center">
+                            Add Page
+                        </Typography>
                     </div>
                     <div className="card-body">
                         <Container>
@@ -293,7 +296,7 @@ const Page = () => {
                                         </Button>
                                     </Grid>
                                     <Grid item>
-                                        <Button  className='cancel-btn' style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
+                                        <Button className='cancel-btn' style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
                                             onClick={() => navigate('/page-list')}>
                                             Cancel
                                         </Button>

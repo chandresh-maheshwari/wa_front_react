@@ -234,17 +234,20 @@ const PostFormDynamic = () => {
         <>
             <Expired />
             <div className="col-md-12">
-        <div
-          className="row "
-          style={{
-            marginLeft: "20%",
-            width: "80%",
-            marginBottom: "20px",
-            marginTop: "1%",
-          }}
-        >
-                    <div className="card-header">
-                        <Typography variant="h5" className="title" align="center">Post</Typography>
+                <div
+                    className="row "
+                    style={{
+                        marginLeft: "20%",
+                        width: "80%",
+                        marginBottom: "20px",
+                        marginTop: "1%",
+                    }}
+                >
+                    <div className="card-header Form-main-title">
+                        {/* <Typography variant="h5" className="title" align="center">Post</Typography> */}
+                        <Typography variant="h6" className="title" align="center">
+                            Add Post
+                        </Typography>
                     </div>
                     <div className="card-body">
                         <Container>
@@ -261,7 +264,7 @@ const PostFormDynamic = () => {
                                                     >
                                                         {field.options && field.options.map((option, idx) => (
                                                             <MenuItem key={idx} value={option.trim()}>
-                                                                {option.trim()} 
+                                                                {option.trim()}
                                                             </MenuItem>
                                                         ))}
                                                     </Select>

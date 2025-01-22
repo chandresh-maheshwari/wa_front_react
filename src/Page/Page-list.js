@@ -98,8 +98,8 @@ const PageList = () => {
             text: 'This will mark the selected items as deleted!',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
+            confirmButtonColor: "#48AD3B",
+            cancelButtonColor: "#87888a",
             confirmButtonText: 'Yes, mark them!',
         });
 
@@ -124,8 +124,8 @@ const PageList = () => {
             text: "This will mark the item as deleted!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
+            confirmButtonColor: "#48AD3B",
+            cancelButtonColor: "#87888a",
             confirmButtonText: 'Yes, mark it!'
         });
 
@@ -507,7 +507,7 @@ const PageList = () => {
             renderCell: (params) => (
                 <strong onClick={(e) => e.stopPropagation()}>
                     <Tooltip title="Update">
-                        <IconButton aria-label="Update" color='primary' className='Edit-list'>
+                        <IconButton aria-label="Update" color='primary' className='Edit-list action-button'>
                             <Link
                                 to={`/Page-edit/${params.row.id}`}
                                 id="edit"
@@ -518,7 +518,7 @@ const PageList = () => {
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton aria-label="delete" color='primary'>
+                        <IconButton aria-label="delete" color='primary' className='action-button'>
                             <MdDelete onClick={() => handleDelete1(params.row.id)} />
                         </IconButton>
                     </Tooltip>
@@ -533,8 +533,8 @@ const PageList = () => {
                                     text: 'Do you want to change the page active status?',
                                     icon: 'warning',
                                     showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
+                                    confirmButtonColor: "#48AD3B",
+                                    cancelButtonColor: "#87888a",
                                     confirmButtonText: 'Yes, change it!'
                                 });
 
@@ -556,8 +556,8 @@ const PageList = () => {
                                     text: 'Do you want to change the inner page active status?',
                                     icon: 'warning',
                                     showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
+                                    confirmButtonColor: "#48AD3B",
+                                    cancelButtonColor: "#87888a",
                                     confirmButtonText: 'Yes, change it!'
                                 });
 
@@ -655,7 +655,7 @@ const PageList = () => {
                                         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                                         sx={{
                                             '& .MuiDataGrid-columnHeaders': {
-                                                backgroundColor: '#2c9dd4',
+                                                backgroundColor: '#113b4f',
                                                 color: 'white',
                                             },
                                         }}

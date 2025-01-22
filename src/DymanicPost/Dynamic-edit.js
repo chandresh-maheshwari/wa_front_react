@@ -146,9 +146,9 @@ const DynamicEditForm = ({ existingData }) => {
         <>
             <Expired />
             <div className="col-md-12">
-                <div className="row card" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px", marginTop: "10%" }}>
-                    <div className="card-header">
-                        <Typography variant="h5" className="title" align="center">Post Dynamic Form</Typography>
+                <div className="row" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px", marginTop: "10%" }}>
+                    <div className="card-header Form-main-title">
+                        <Typography variant="h6" className="title" align="center">Update Dynamic Post</Typography>
                     </div>
                     <div className="card-body">
                         <Container>
@@ -158,6 +158,7 @@ const DynamicEditForm = ({ existingData }) => {
                                         <TextField
                                             label="Post Title"
                                             name="post_title"
+                                            className='field-of-dynamic-from'
                                             fullWidth
                                             value={formData.post_title}
                                             onChange={handleTitleChange}
@@ -172,6 +173,7 @@ const DynamicEditForm = ({ existingData }) => {
                                         <TextField
                                             label="Ordering"
                                             name="ordering"
+                                            className='field-of-dynamic-from'
                                             fullWidth
                                             min="0"
                                             onKeyPress={preventTextAndMinus}
@@ -189,7 +191,7 @@ const DynamicEditForm = ({ existingData }) => {
                                             <InputLabel>Post Type</InputLabel>
                                             <Select
                                                 label="Post Type"
-                                                className='dropdown-css-change'
+                                                className='dropdown-css-change field-of-dynamic-from'
                                                 name="post_type"
                                                 value={formData.post_type}
                                                 onChange={handleTitleChange}
@@ -214,6 +216,7 @@ const DynamicEditForm = ({ existingData }) => {
                                                 <TextField
                                                     label="Label"
                                                     name="label"
+                                                    className='field-of-dynamic-from'
                                                     fullWidth
                                                     value={field.label}
                                                     onChange={(e) => handleInputChange(e, field.id)}
@@ -230,7 +233,7 @@ const DynamicEditForm = ({ existingData }) => {
                                                     <InputLabel>Field Type</InputLabel>
                                                     <Select
                                                         label="Field Type"
-                                                        className='dropdown-css-change'
+                                                        className='dropdown-css-change field-of-dynamic-from'
                                                         name="type"
                                                         value={field.type}
                                                         onChange={(e) => handleTypeChange(e, field.id)}
@@ -308,6 +311,7 @@ const DynamicEditForm = ({ existingData }) => {
                                                     label={`${field.type.charAt(0).toUpperCase() + field.type.slice(1)} Options (comma-separated)`}
                                                     value={field.options.join(',')}
                                                     onChange={(e) => handleOptionChange(e, field.id)}
+                                                    className='field-of-dynamic-from'
                                                     fullWidth
                                                     style={{
                                                         marginBottom: '15px',

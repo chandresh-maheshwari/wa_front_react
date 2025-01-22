@@ -199,11 +199,11 @@ function Testimonial_List() {
 
                             {/* <h5 className="title">Testimonial List</h5> */}
                             <div class="dt-buttons" id="action_filter1">
-                                <button class="dt-button buttons-html5btn btn btn-primary btnhardik btnkkk" onClick={handleBulkDelete} >
+                                <button class="dt-button buttons-html5btn btn btn-primary bulkdeletebtn btnkkk" onClick={handleBulkDelete} >
                                     <BsTrash3 />
                                 </button>
 
-                                <Link to="/Testimonial" class="dt-button buttons-html5btn btn btn-primary btnhardik btnkkk" >
+                                <Link to="/Testimonial" class="dt-button buttons-html5btn btn btn-primary bulkdeletebtn btnkkk" >
                                     <i class="fa fa-plus"><AiOutlinePlusCircle /> </i>
 
                                 </Link>
