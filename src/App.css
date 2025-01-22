@@ -1282,13 +1282,13 @@ a.text-warning:hover {
   text-transform: capitalize !important;
 }
 
-.css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root{
+/* .css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root{
   color: #113B4F !important;
-}
+} */
 .css-jsexje-MuiSwitch-thumb{
   background-color: #113B4F !important
 }
 
-.contact-us p{
+.contact-us p, .logout p{
   margin-bottom: 0 !important;
 }

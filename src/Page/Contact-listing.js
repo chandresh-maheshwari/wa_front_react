@@ -83,8 +83,10 @@ const Contact = () => {
             text: "This will mark the selected items as deleted!",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
+            // confirmButtonColor: "#d33",
+            // cancelButtonColor: "#3085d6",
+            confirmButtonColor: "#48AD3B",
+            cancelButtonColor: "#87888a",
             confirmButtonText: "Yes, mark them!",
         });
 
@@ -115,8 +117,8 @@ const Contact = () => {
             text: "This will mark the item as deleted!",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
+            confirmButtonColor: "#48AD3B",
+            cancelButtonColor: "#87888a",
             confirmButtonText: "Yes, mark it!",
         });
 
@@ -155,35 +157,93 @@ const Contact = () => {
     //       });
     // };
 
+    // const handleView = async (row) => {
+    //     Swal.fire({
+    //         title: '', // Remove the default title
+    //         html: `
+    //         <div class="d-flex justify-content-between align-items-center mb-3 title-section-contact-view">
+    //             <h5 style="margin: 0;">Details</h5>
+    //             <button class="btn btn-danger" onclick="Swal.close()" style="font-size: 14px;">×</button>
+    //         </div>
+    //             <div style="max-width: 600px; padding: 20px;">
+    //                 <!-- Custom Title and Close Button Section -->
+    
+    //                 <!-- Content Section -->
+    //                 <div class="row mb-2">
+    //                     <div class="col-sm-6 contact-label"><strong>Name:</strong></div>
+    //                     <div class="col-sm-6 contact-val">${row.name}</div>
+    //                 </div>
+    //                 <div class="row mb-2">
+    //                     <div class="col-sm-6 contact-label"><strong>Email:</strong></div>
+    //                     <div class="col-sm-6 contact-val">${row.email}</div>
+    //                 </div>
+    //                 <div class="row mb-2">
+    //                     <div class="col-sm-6 contact-label"><strong>Contact Number:</strong></div>
+    //                     <div class="col-sm-6 contact-val">${row.contact_number}</div>
+    //                 </div>
+    //                 <div class="row mb-2">
+    //                     <div class="col-sm-6 contact-label"><strong>Description:</strong></div>
+    //                     <div class="col-sm-6 contact-val">${row.description}</div>
+    //                 </div>
+    //             </div>
+    //         `,
+    //         width: '600px',
+    //         padding: '20px',
+    //         backdrop: true,
+    //         showConfirmButton: false, // Hide default confirm button    
+    //         showCloseButton: false,  // Remove Swal's close button
+    //     });
+    //     document.getElementById('close-button').addEventListener('click', () => {
+    //         Swal.close();
+    //     });
+    // };
+    // };
+
+
+
     const handleView = async (row) => {
         Swal.fire({
-          title: `Details`,
-          html: `
-            <div class="container">
-              <div class="row text-center mb-3">
-              </div>
-              <div class="row">
-                <div class="col-sm-6 contact-label"><strong>Name:</strong></div>
-                <div class="col-sm-6 contact-val">${row.name}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6  contact-label"><strong>Email:</strong></div>
-                <div class="col-sm-6 contact-val">${row.email}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6  contact-label"><strong>Contact Number:</strong></div>
-                <div class="col-sm-6 contact-val">${row.contact_number}</div>
-              </div>
-              <div class="row">
-                <div class="col-sm-6  contact-label"><strong>Description:</strong></div>
-                <div class="col-sm-6  contact-val">${row.description}</div>
-              </div>
+            title: '', // Remove the default title
+            html: `
+            <div class="title-section-contact-view">
+                <h5 style="margin: 0;">Contact Detail</h5>
+                <button class="btn btn-danger" id="close-button" style="font-size: 14px; border: none; background: none; color: white;">&times;</button>
             </div>
-          `,
-          confirmButtonText: 'Close',
+            <div style="max-width: 600px; padding: 20px;">
+                <!-- Content Section -->
+                <div class="row mb-2">
+                    <div class="col-sm-6 contact-label"><strong>Name:</strong></div>
+                    <div class="col-sm-6 contact-val">${row.name}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-6 contact-label"><strong>Email:</strong></div>
+                    <div class="col-sm-6 contact-val">${row.email}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-6 contact-label"><strong>Contact Number:</strong></div>
+                    <div class="col-sm-6 contact-val">${row.contact_number}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-sm-6 contact-label"><strong>Description:</strong></div>
+                    <div class="col-sm-6 contact-val">${row.description}</div>
+                </div>
+            </div>
+            `,
+            width: '600px',
+            padding: '0', // Remove padding to align with the header
+            backdrop: true,
+            showConfirmButton: false, // Hide default confirm button
+            showCloseButton: false,  // Remove Swal's close button
         });
-      };
-      
+    
+        // Add event listener to the close button
+        document.getElementById('close-button').addEventListener('click', () => {
+            Swal.close();
+        });
+    };
+    
+    
+
 
     const handleStatusFilterChange = (event) => {
         const filterValue = event.target.value;
@@ -230,7 +290,7 @@ const Contact = () => {
             width: 90,
             flex: 1,
         },
-        { field: "description", headerName: "Description", width: 90, flex: 1 },
+        // { field: "description", headerName: "Description", width: 90, flex: 1 },
         {
             field: "actions",
             headerName: "Actions",
@@ -239,12 +299,12 @@ const Contact = () => {
             renderCell: (params) => (
                 <strong onClick={(e) => e.stopPropagation()}>
                     <Tooltip title="View">
-                        <IconButton aria-label="view" color="primary" onClick={() => handleView(params.row)}>
+                        <IconButton aria-label="view" color="primary" onClick={() => handleView(params.row)} className='action-button'>
                             <MdVisibility />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton aria-label="delete" color="primary">
+                        <IconButton aria-label="delete" color="primary" className='action-button'>
                             <MdDelete onClick={() => handleDelete1(params.row.id)} />
                         </IconButton>
                     </Tooltip>
@@ -344,7 +404,7 @@ const Contact = () => {
                                         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                                         sx={{
                                             "& .MuiDataGrid-columnHeaders": {
-                                                backgroundColor: "#2c9dd4",
+                                                backgroundColor: "#113b4f",
                                                 color: "white",
                                             },
                                         }}

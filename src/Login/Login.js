@@ -115,7 +115,8 @@ function Login() {
                             <div className="col-md-12 col-lg-10">
                                 <div className="row wrap d-md-flex">
                                     <div className="col-6 img bg-dark hardik"></div>
-                                    <div className="col-6 login-wrap p-4 p-md-5">
+                                    {/* <div className="col-6 login-wrap p-4 p-md-5"> */}
+                                    <div className="col-6 login-wrap px-5">
                                         <div className="d-flex">
                                             <div className="w-100">
                                                 <h3 className="mb-4">Sign In</h3>
@@ -153,6 +154,18 @@ function Login() {
                                                     )}
                                                 </div>
 
+                                                
+
+
+                                                <div className="form-group">
+                                                    <Button
+                                                        type="submit"
+                                                        className="btn bg-primary rounded submit w-100"
+                                                    >
+                                                        Sign In
+                                                    </Button>
+                                                </div>
+
                                                 <div className="form-group d-md-flex">
                                                     <input
                                                         className="form-check-input mx-2"
@@ -168,16 +181,6 @@ function Login() {
                                                         Remember Me
                                                     </label>
                                                 </div>
-
-                                                <div className="form-group">
-                                                    <Button
-                                                        type="submit"
-                                                        className="btn bg-primary rounded submit w-100"
-                                                    >
-                                                        Sign In
-                                                    </Button>
-                                                </div>
-
                                                 <div className="form-group d-md-flex">
                                                     <Link to="/ForgetPassword" className='text-center mx-2'>Forgot Password</Link>
                                                 </div>

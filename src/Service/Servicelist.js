@@ -217,12 +217,12 @@ function Servicelist() {
                             {/* <h5 className="title">Services list</h5> */}
                             <div class="dt-buttons" id="action_filter1">
                                 <button
-                                    className="dt-button buttons-html5btn btn btn-primary btnhardik btnkkk"
+                                    className="dt-button buttons-html5btn btn btn-primary bulkdeletebtn btnkkk"
                                     onClick={handleBulkDelete}
                                 >
                                     <BsTrash3 />
                                 </button>
-                                <Link to="/Addrvices" class="dt-button buttons-html5btn btn btn-primary btnhardik btnkkk" >
+                                <Link to="/Addrvices" class="dt-button buttons-html5btn btn btn-primary bulkdeletebtn btnkkk" >
                                     <i class="fa fa-plus"><AiOutlinePlusCircle /> </i>
                                 </Link>
                             </div>

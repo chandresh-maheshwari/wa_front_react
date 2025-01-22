@@ -91,8 +91,8 @@ const DynamicList = () => {
             text: 'This will mark the selected items as deleted!',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
+            confirmButtonColor: "#48AD3B",
+            cancelButtonColor: "#87888a",
             confirmButtonText: 'Yes, mark them!',
         });
 
@@ -117,8 +117,8 @@ const DynamicList = () => {
             text: "This will mark the item as deleted!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
+            confirmButtonColor: "#48AD3B",
+            cancelButtonColor: "#87888a",
             confirmButtonText: 'Yes, mark it!'
         });
 
@@ -315,8 +315,8 @@ const DynamicList = () => {
                                     text: 'Do you want to change the active status?',
                                     icon: 'warning',
                                     showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
+                                    confirmButtonColor: "#48AD3B",
+                                    cancelButtonColor: "#87888a",
                                     confirmButtonText: 'Yes, change it!'
                                 });
 
@@ -411,7 +411,7 @@ const DynamicList = () => {
                                 onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
                                 sx={{
                                     '& .MuiDataGrid-columnHeaders': {
-                                        backgroundColor: '#2c9dd4',
+                                        backgroundColor: '#113b4f',
                                         color: 'white',
                                     },
                                 }}

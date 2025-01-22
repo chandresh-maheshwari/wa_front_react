@@ -145,9 +145,9 @@ const DynamicForm = () => {
             marginTop: "1%",
           }}
         >
-          <div className="card-header">
-            <Typography variant="h5" className="title" align="center">
-              Post
+          <div className="card-header Form-main-title">
+            <Typography variant="h6" className="title" align="center">
+              Add Dynamic Post
             </Typography>
           </div>
           <div
@@ -165,6 +165,7 @@ const DynamicForm = () => {
                     <TextField
                       label="Post Title"
                       name="post_title"
+                      className='field-of-dynamic-from'
                       value={formData.post_title}
                       onChange={handleTitleChange}
                       fullWidth
@@ -180,6 +181,7 @@ const DynamicForm = () => {
                       label="Ordering"
                       name="ordering"
                       // type='number'
+                      className='field-of-dynamic-from'
                       value={formData.ordering}
                       min="0"
                       onKeyPress={preventTextAndMinus}
@@ -198,6 +200,7 @@ const DynamicForm = () => {
                       <Select
                         label="Post Type"
                         name="post_type"
+                        className='field-of-dynamic-from'
                         value={formData.post_type}
                         onChange={handleTitleChange}
                         fullWidth
@@ -214,127 +217,141 @@ const DynamicForm = () => {
                 </Grid>
 
                 {fields.map((field) => (
-                  <div key={field.id} style={{ marginBottom: "30px" }}>
-                    <Grid container spacing={3}>
-                      <Grid item xs={12} sm={4}>
-                        <TextField
-                          label="Label"
-                          name="label"
-                          value={field.label}
-                          onChange={(e) => handleInputChange(e, field.id)}
-                          fullWidth
-                          style={{
-                            marginBottom: "15px",
-                            backgroundColor: "#f4f6f8",
-                            borderRadius: "5px",
-                          }}
-                        />
-                      </Grid>
+                                    <div key={field.id} style={{ marginBottom: '30px' }}>
+                                        <Grid container spacing={3}>
+                                            <Grid item xs={12} sm={5}>
+                                                <TextField
+                                                    label="Label"
+                                                    name="label"
+                                                    className='field-of-dynamic-from'
+                                                    value={field.label}
+                                                    onChange={(e) => handleInputChange(e, field.id)}
+                                                    fullWidth
+                                                    style={{
+                                                        marginBottom: '15px',
+                                                        backgroundColor: '#f4f6f8',
+                                                        borderRadius: '5px'
+                                                    }}
+                                                />
+                                            </Grid>
 
-                      <Grid item xs={12} sm={4}>
-                        <FormControl fullWidth style={{ marginBottom: "15px" }}>
-                          <InputLabel>Field Type</InputLabel>
-                          <Select
-                            label="Field Type"
-                            name="type"
-                            value={field.type}
-                            onChange={(e) => handleTypeChange(e, field.id)}
-                            fullWidth
-                            style={{
-                              backgroundColor: "#f4f6f8",
-                              borderRadius: "5px",
-                            }}
-                          >
-                            <MenuItem value="text">Text</MenuItem>
-                            <MenuItem value="file">File</MenuItem>
-                            <MenuItem value="textarea">Textarea</MenuItem>
-                            <MenuItem value="number">Number</MenuItem>
-                            <MenuItem value="checkbox">Checkbox</MenuItem>
-                            <MenuItem value="radio">Radio</MenuItem>
-                            <MenuItem value="date">Date</MenuItem>
-                            <MenuItem value="button">Button</MenuItem>
-                            <MenuItem value="email">Email</MenuItem>
-                            <MenuItem value="password">Password</MenuItem>
-                            <MenuItem value="url">Url</MenuItem>
-                            <MenuItem value="dropdown">Dropdown</MenuItem>
-                            <MenuItem value="color">Color</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Grid>
+                                            <Grid item xs={12} sm={5}>
+                                                <FormControl fullWidth style={{ marginBottom: '15px' }}>
+                                                    <InputLabel>Field Type</InputLabel>
+                                                    <Select
+                                                        label="Field Type"
+                                                        className='dropdown-css-change field-of-dynamic-from'
+                                                        name="type"
+                                                        value={field.type}
+                                                        onChange={(e) => handleTypeChange(e, field.id)}
+                                                        fullWidth
+                                                        style={{
+                                                            backgroundColor: '#f4f6f8',
+                                                            borderRadius: '5px'
+                                                        }}
+                                                    >
+                                                        <MenuItem value="text">Text</MenuItem>
+                                                        <MenuItem value="file">File</MenuItem>
+                                                        <MenuItem value="textarea">Textarea</MenuItem>
+                                                        <MenuItem value="number">Number</MenuItem>
+                                                        <MenuItem value="checkbox">Checkbox</MenuItem>
+                                                        <MenuItem value="radio">Radio</MenuItem>
+                                                        <MenuItem value="date">Date</MenuItem>
+                                                        <MenuItem value="button">Button</MenuItem>
+                                                        <MenuItem value="email">Email</MenuItem>
+                                                        <MenuItem value="password">Password</MenuItem>
+                                                        <MenuItem value="url">Url</MenuItem>
+                                                        <MenuItem value="dropdown">Dropdown</MenuItem>
+                                                        <MenuItem value="color">Color</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+                                            </Grid>
 
-                      <Grid item xs={12} sm={2}>
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => handleRemoveField(field.id)}
-                          style={{
-                            marginTop: "15px",
-                            fontSize: "larger",
-                            backgroundColor: "#d32f2f",
-                            "&:hover": {
-                              backgroundColor: "#c62828",
-                            },
-                          }}
-                        >
-                          <MdDelete />
-                        </Button>
-                      </Grid>
+                                            <Grid item xs={12} sm={2} className='dynamic-field-two-btns'>
+                                                {/* <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    onClick={() => handleRemoveField(field.id)}
+                                                    style={{
+                                                        marginTop: '15px',
+                                                        fontSize: "larger",
+                                                        backgroundColor: '#d32f2f',
+                                                        '&:hover': {
+                                                            backgroundColor: '#c62828'
+                                                        }
+                                                    }}
+                                                >
+                                                    <MdDelete />
+                                                </Button> */}
 
-                      <Grid item xs={12} sm={2}>
-                        <Button
-                          variant="contained"
-                          onClick={() => handleAddFieldAfter(field.id)}
-                          style={{
-                            marginTop: "15px",
-                            fontSize: "larger",
-                            backgroundColor: "#2c9dd4",
-                            "&:hover": {
-                              backgroundColor: "#1565c0",
-                            },
-                          }}
-                        >
-                          <FaCirclePlus />
-                        </Button>
-                      </Grid>
-                    </Grid>
+                                                <Tooltip title="Delete Field" className='dynamic-field-delete-btn mt-2'>
+                                                    <IconButton aria-label="delete" color='primary'>
+                                                        <MdDelete onClick={() => handleRemoveField(field.id)} />
+                                                    </IconButton>
+                                                </Tooltip>
 
-                    {(field.type === "dropdown" ||
-                      field.type === "checkbox" ||
-                      field.type === "radio") && (
-                      <Grid item xs={12} sm={4}>
-                        <TextField
-                          label={`${
-                            field.type.charAt(0).toUpperCase() +
-                            field.type.slice(1)
-                          } Options (comma-separated)`}
-                          value={field.options.join(",")}
-                          onChange={(e) => handleOptionChange(e, field.id)}
-                          fullWidth
-                          style={{
-                            marginBottom: "15px",
-                            backgroundColor: "#f4f6f8",
-                            borderRadius: "5px",
-                          }}
-                        />
-                      </Grid>
-                    )}
-                  </div>
-                ))}
+                                                {/* </Grid> */}
 
-                <Button
-                  variant="contained"
-                  onClick={handleAddField}
-                  style={{
-                    marginLeft: "40%",
-                    fontSize: "larger",
-                    backgroundColor: "#2c9dd4",
-                    "&:hover": {
-                      backgroundColor: "#1565c0",
-                    },
-                  }}
-                >
-                  <FaCirclePlus />
-                </Button>
+                                                {/* <Grid item xs={12} sm={1}> */}
+                                                {/* <Button
+                                                    variant="contained"
+                                                    onClick={() => handleAddFieldAfter(field.id)}
+                                                    style={{
+                                                        marginTop: '15px',
+                                                        fontSize: "larger",
+                                                        backgroundColor: '#2c9dd4',
+                                                        '&:hover': {
+                                                            backgroundColor: '#1565c0'
+                                                        }
+                                                    }}
+                                                >
+                                                    <FaCirclePlus />
+                                                </Button> */}
+
+                                                <Tooltip title="Add New Field" className='dynamic-field-add-btn mt-2'>
+                                                    <IconButton aria-label="add" color='primary'>
+                                                        <FaCirclePlus onClick={() => handleAddFieldAfter(field.id)} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Grid>
+                                        </Grid>
+
+                                        {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
+                                            <Grid item xs={12} sm={4}>
+                                                <TextField
+                                                    label={`${field.type.charAt(0).toUpperCase() + field.type.slice(1)} Options (comma-separated)`}
+                                                    value={field.options.join(',')}
+                                                    className='field-of-dynamic-from'
+                                                    onChange={(e) => handleOptionChange(e, field.id)}
+                                                    fullWidth
+                                                    style={{
+                                                        marginBottom: '15px',
+                                                        backgroundColor: '#f4f6f8',
+                                                        borderRadius: '5px'
+                                                    }}
+                                                />
+                                            </Grid>
+                                        )}
+                                    </div>
+                                ))}
+
+
+                                {/*  Working code for add field btn 21-01-25 START  */}
+                                {/* <Button
+                                    variant="contained"
+                                    onClick={handleAddField}
+                                    style={{
+                                        marginLeft: '40%',
+                                        fontSize: 'larger',
+                                        backgroundColor: '#2c9dd4',
+                                        '&:hover': {
+                                            backgroundColor: '#1565c0'
+                                        }
+                                    }}
+                                >
+                                    <FaCirclePlus />
+                                </Button> */}
+                                  {/*  Working code for add field btn 21-01-25 END  */}
 
                 <Grid
                   container

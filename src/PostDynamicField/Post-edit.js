@@ -242,9 +242,9 @@ const PostDynamicEdit = () => {
         <>
             <Expired />
             <div className="col-md-12">
-            <div className="row card mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
-                    <div className="card-header">
-                        <Typography variant="h5" className="title" align="center">Post</Typography>
+            <div className="row mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
+                    <div className="card-header Form-main-title">
+                        <Typography variant="h6" className="title" align="center">Update Post</Typography>
                     </div>
                     <div className="card-body">
                         <Container>

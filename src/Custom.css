@@ -280,10 +280,6 @@
   text-transform: capitalize !important;
 }
 
-.css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root {
-  color: #113B4F !important;
-}
-
 .css-jsexje-MuiSwitch-thumb {
   background-color: #113B4F !important
 }
@@ -382,35 +378,26 @@
 
 
 /* Added On 21-01-25 START */
-.dynamicCreateForm .MuiFormControl-root,
-.dynamicCreateForm .dropdown-css-change,
-.dynamicEditForm .dropdown-css-change,
-/* .createForm .css-1ualgfl-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root, */
-/* .css-1ualgfl-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root, */
-.css-wb57ya-MuiFormControl-root-MuiTextField-root {
-  background-color: #fff !important;
-}
+
 
 .dynamic-field-two-btns{
   padding: 23px 25px 25px 54px !important;
 }
 
 .contact-label{
-  text-align: right;
+  text-align: left;
 }
 
 .contact-val{
   text-align: left;
+  padding-left: 0px;
 }
 
 .card-header{
   padding: 1rem 1rem 3rem 1rem;  
 }
 
-.css-e1ihxc-MuiDataGrid-root .MuiDataGrid-columnHeaders, .css-tfcyzz-MuiDataGrid-root .MuiDataGrid-columnHeaders, .css-tfcyzz-MuiDataGrid-root .MuiDataGrid-columnHeaders {
-  background-color: #113b4f !important;
-  color: white;
-}
+
 
 .MuiDataGrid-virtualScroller {
   width: 100%;
@@ -458,3 +445,50 @@
     margin-left: 2px !important;
 }
 /* Added On 21-01-25 START */
+
+
+/* Added on 22-01-25 START */
+/* .css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root {
+  color: #113B4F !important;
+} */
+
+.dynamic-field-delete-btn, .dynamic-field-add-btn, .action-button{
+  color: #113B4F !important;
+}
+
+.dynamicCreateForm .MuiFormControl-root,
+.dynamicCreateForm .dropdown-css-change,
+.dynamicEditForm .dropdown-css-change,
+/* .createForm .css-1ualgfl-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root, */
+/* .css-1ualgfl-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root, */
+/* .css-wb57ya-MuiFormControl-root-MuiTextField-root  */
+.field-of-dynamic-from
+{
+  background-color: #fff !important;
+}
+/* .css-e1ihxc-MuiDataGrid-root .MuiDataGrid-columnHeaders, .css-tfcyzz-MuiDataGrid-root .MuiDataGrid-columnHeaders, .css-tfcyzz-MuiDataGrid-root .MuiDataGrid-columnHeaders 
+{
+  background-color: #113b4f !important;
+  color: white;
+} */
+.Form-main-title{
+border-radius: 10px !important;
+background-color: #113b4f !important;
+color: white;
+}
+
+.div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){
+  background-color: #113b4f !important;
+}
+
+.title-section-contact-view{
+  background-color: #113b4f;
+  padding: 8px 20px;
+   color: white; 
+   padding: 10px 20px; 
+   display: flex; 
+   justify-content: space-between; 
+  align-items: center;
+
+}
+/* Added on 22-01-25 END */
