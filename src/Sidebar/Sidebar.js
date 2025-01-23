@@ -83,12 +83,17 @@ const Sidebar = () => {
 
   const toggle = (id) => {
     setOpenItems(prevState => {
-      const newState = Object.keys(prevState).reduce((acc, key) => {
-        acc[key] = false; // Close all items
-        return acc;
-      }, {});
-      newState[id] = !prevState[id]; // Toggle the current item
-      // console.log('Toggling:', id, 'New State:', newState); // Debugging log
+      const newState = { ...prevState };
+      if (id === 'Dynamic_POSTS') {
+        newState[id] = !prevState[id]; // Toggle the main dropdown
+      } else {
+        Object.keys(newState).forEach(key => {
+          if (key !== 'Dynamic_POSTS') {
+            newState[key] = false; // Close all post items
+          }
+        });
+        newState[id] = !prevState[id]; // Toggle the current post item
+      }
       return newState;
     });
   };
@@ -175,42 +180,65 @@ const Sidebar = () => {
             </ul>
           )}
 
-          {postTitles.length > 0 && postTitles.map((post) => (
-            <li key={post.id}>
-              <Link
-                id={`dynamic_page_${post.id}`}
-                to="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  toggle(post.id);
-                }}
-                className={`nav-link nav-dropdown-toggle dynamic-page-link nav-item ${isActive(post.id) ? 'active-sidebar-item' : ''}`}
-                style={{ ...isActive(post.id) ? activeStyle : {}, display: 'flex', alignItems: 'center' }}
-              >
-                <span>{post.post_title}</span>
-                {openItems[post.id] ? (
-                  <IoIosArrowUp className="Arrow-icon-Sidebar" />
-                ) : (
-                  <IoIosArrowDown className="Arrow-icon-Sidebar" />
-                )}
-              </Link>
-              {openItems[post.id] && (
-                <ul className={`nav-dropdown-items-dynamic_page-${post.id}`} id="nav-dropdown-items-dynamic_page">
-                  <li className="nav-item">
-                    {console.log(post.post_title)}
-                    <Link className="nav-link" to="/post-form" state={{ post_title: post.post_title }}>
-                      <span>Add New</span>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link className="nav-link " id="listing" to="/post-list" state={{ post_title: post.post_title }}>
-                      <span>Post List</span>
-                    </Link>
-                  </li>
-                </ul>
+          <li>
+            <Link
+              id="Dynamic_POSTS"
+              className={`nav-link nav-dropdown-toggle nav-item nav-dropdown mb-2 ${isActive('Dynamic_POSTS') ? 'active-sidebar-item' : ''}`}
+              style={{ ...isActive('Dynamic_POSTS') ? activeStyle : {}, display: 'flex', alignItems: 'center' }}
+              to="#"
+              onClick={(e) => {
+                e.preventDefault();
+                toggle('Dynamic_POSTS');
+              }}
+            >
+              All Posts
+              {openItems['Dynamic_POSTS'] ? (
+                <IoIosArrowUp className="Arrow-icon-Sidebar" />
+              ) : (
+                <IoIosArrowDown className="Arrow-icon-Sidebar" />
               )}
-            </li>
-          ))}
+            </Link>
+          </li>
+
+          {openItems['Dynamic_POSTS'] && (
+            <ul className="nav-dropdown-items-Dynamic_POSTS">
+              {postTitles.length > 0 && postTitles.map((post) => (
+                <li key={post.id}>
+                  <Link
+                    id={`dynamic_page_${post.id}`}
+                    to="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggle(post.id);
+                    }}
+                    className={`nav-link nav-dropdown-toggle dynamic-page-link nav-item ${isActive(post.id) ? 'active-sidebar-item' : ''}`}
+                    style={{ ...isActive(post.id) ? activeStyle : {}, display: 'flex', alignItems: 'center' }}
+                  >
+                    <span>{post.post_title}</span>
+                    {openItems[post.id] ? (
+                      <IoIosArrowUp className="Arrow-icon-Sidebar" />
+                    ) : (
+                      <IoIosArrowDown className="Arrow-icon-Sidebar" />
+                    )}
+                  </Link>
+                  {openItems[post.id] && (
+                    <ul className={`nav-dropdown-items-dynamic_page-${post.id}`} id="nav-dropdown-items-dynamic_page">
+                      <li className="nav-item">
+                        <Link className="nav-link" to="/post-form" state={{ post_title: post.post_title }}>
+                          <span>Add New</span>
+                        </Link>
+                      </li>
+                      <li className="nav-item">
+                        <Link className="nav-link " id="listing" to="/post-list" state={{ post_title: post.post_title }}>
+                          <span>Post List</span>
+                        </Link>
+                      </li>
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
 
           <li>
             <Link
