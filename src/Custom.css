@@ -491,4 +491,8 @@ color: white;
   align-items: center;
 
 }
-/* Added on 22-01-25 END */
+.popuptable, td {
+  border: 0px solid black;
+}
+/* Added on
+ 22-01-25 END */

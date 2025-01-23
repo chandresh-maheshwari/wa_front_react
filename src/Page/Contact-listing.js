@@ -7,6 +7,8 @@ import Authapi from '../Authapi';
 import Expired from '../Login/ExpiredToken';
 import '../Custom.css'
 import { Link } from 'react-router-dom';
+import { Dialog, DialogTitle, DialogContent } from '@mui/material';
+// import CloseIcon from '@mui/icons-material/Close';
 
 
 const Contact = () => {
@@ -22,6 +24,9 @@ const Contact = () => {
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(5);
     const [statusFilter, setStatusFilter] = useState("all");
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedTimeEntry, setSelectedTimeEntry] = useState(null);
+    const [isReasonExpanded, setIsReasonExpanded] = useState(false);
 
     useEffect(() => {
         fetchData();
@@ -143,107 +148,10 @@ const Contact = () => {
         }
     };
 
-    // const handleView = async (row) => {
-    //     Swal.fire({
-    //         title: `Details`,
-    //         html: `
-    //           <p><strong>Name:</strong> ${row.name}</p>
-    //           <p><strong>Email:</strong> ${row.email}</p>
-    //           <p><strong>Contact Number:</strong> ${row.contact_number}</p>
-    //           <p><strong>Description:</strong> ${row.description}</p>
-    //         `,
-    //         // icon: 'info',
-    //         confirmButtonText: 'Close',
-    //       });
-    // };
-
-    // const handleView = async (row) => {
-    //     Swal.fire({
-    //         title: '', // Remove the default title
-    //         html: `
-    //         <div class="d-flex justify-content-between align-items-center mb-3 title-section-contact-view">
-    //             <h5 style="margin: 0;">Details</h5>
-    //             <button class="btn btn-danger" onclick="Swal.close()" style="font-size: 14px;">×</button>
-    //         </div>
-    //             <div style="max-width: 600px; padding: 20px;">
-    //                 <!-- Custom Title and Close Button Section -->
-    
-    //                 <!-- Content Section -->
-    //                 <div class="row mb-2">
-    //                     <div class="col-sm-6 contact-label"><strong>Name:</strong></div>
-    //                     <div class="col-sm-6 contact-val">${row.name}</div>
-    //                 </div>
-    //                 <div class="row mb-2">
-    //                     <div class="col-sm-6 contact-label"><strong>Email:</strong></div>
-    //                     <div class="col-sm-6 contact-val">${row.email}</div>
-    //                 </div>
-    //                 <div class="row mb-2">
-    //                     <div class="col-sm-6 contact-label"><strong>Contact Number:</strong></div>
-    //                     <div class="col-sm-6 contact-val">${row.contact_number}</div>
-    //                 </div>
-    //                 <div class="row mb-2">
-    //                     <div class="col-sm-6 contact-label"><strong>Description:</strong></div>
-    //                     <div class="col-sm-6 contact-val">${row.description}</div>
-    //                 </div>
-    //             </div>
-    //         `,
-    //         width: '600px',
-    //         padding: '20px',
-    //         backdrop: true,
-    //         showConfirmButton: false, // Hide default confirm button    
-    //         showCloseButton: false,  // Remove Swal's close button
-    //     });
-    //     document.getElementById('close-button').addEventListener('click', () => {
-    //         Swal.close();
-    //     });
-    // };
-    // };
-
-
-
-    const handleView = async (row) => {
-        Swal.fire({
-            title: '', // Remove the default title
-            html: `
-            <div class="title-section-contact-view">
-                <h5 style="margin: 0;">Contact Detail</h5>
-                <button class="btn btn-danger" id="close-button" style="font-size: 14px; border: none; background: none; color: white;">&times;</button>
-            </div>
-            <div style="max-width: 600px; padding: 20px;">
-                <!-- Content Section -->
-                <div class="row mb-2">
-                    <div class="col-sm-6 contact-label"><strong>Name:</strong></div>
-                    <div class="col-sm-6 contact-val">${row.name}</div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-6 contact-label"><strong>Email:</strong></div>
-                    <div class="col-sm-6 contact-val">${row.email}</div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-6 contact-label"><strong>Contact Number:</strong></div>
-                    <div class="col-sm-6 contact-val">${row.contact_number}</div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-sm-6 contact-label"><strong>Description:</strong></div>
-                    <div class="col-sm-6 contact-val">${row.description}</div>
-                </div>
-            </div>
-            `,
-            width: '600px',
-            padding: '0', // Remove padding to align with the header
-            backdrop: true,
-            showConfirmButton: false, // Hide default confirm button
-            showCloseButton: false,  // Remove Swal's close button
-        });
-    
-        // Add event listener to the close button
-        document.getElementById('close-button').addEventListener('click', () => {
-            Swal.close();
-        });
+    const handleView = (row) => {
+        setSelectedTimeEntry(row);
+        setOpenDialog(true);
     };
-    
-    
-
 
     const handleStatusFilterChange = (event) => {
         const filterValue = event.target.value;
@@ -331,6 +239,11 @@ const Contact = () => {
 
     // pagination perpage
     const paginationModel = { page: 0, pageSize: 10 };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
     return (
         <>
             <Expired />
@@ -423,6 +336,88 @@ const Contact = () => {
                     </div>
                 </div>
             </div>
+
+            <Dialog open={openDialog} onClose={handleCloseDialog}>
+                <DialogTitle
+                    sx={{
+                        backgroundColor: "#113b4f",
+                        color: "white",
+                        textAlign: "center",
+                        padding: "6px",
+                    }}
+                >
+                    Contact Details
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleCloseDialog}
+                        sx={{
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        {/* Add a close icon here */}
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent style={{ padding: "10px" }}>
+                    <div>
+                        <table className='popuptable' style={{ width: "550px", borderCollapse: "collapse", border: "0px solid #000" }}>
+                            <tbody>
+                                <tr>
+                                    <td style={{  textAlign: "right" }}><b>Name</b></td>
+                                    <td style={{ padding: "8px", textAlign: "center" }}>:</td>
+                                    <td style={{  textAlign: "left" }}>{selectedTimeEntry?.name}</td>
+                                </tr>
+                                <tr>
+                                    <td style={{  textAlign: "right" }}><b>Email</b></td>
+                                    <td style={{ padding: "8px", textAlign: "center" }}>:</td>
+                                    <td style={{  textAlign: "left" }}>{selectedTimeEntry?.email}</td>
+                                </tr>
+                                <tr>
+                                    <td style={{  textAlign: "right" }}><b>Contact Number</b></td>
+                                    <td style={{ padding: "8px", textAlign: "center" }}>:</td>
+                                    <td style={{  textAlign: "left" }}>{selectedTimeEntry?.contact_number}</td>
+                                </tr>
+                                <tr>
+                                    <td style={{  textAlign: "right" }}><b>Description</b></td>
+                                    <td style={{ padding: "8px", textAlign: "center" }}>:</td>
+                                    <td style={{ textAlign: "left" }}>
+  <>
+    {isReasonExpanded || selectedTimeEntry?.description.length <= 50
+      ? selectedTimeEntry?.description
+      : `${selectedTimeEntry?.description.substring(0, 50)}...`}
+    {selectedTimeEntry?.description.length > 50 && (
+      <span
+        onClick={() => setIsReasonExpanded(!isReasonExpanded)}
+        style={{ color: '#1b6e95', cursor: 'pointer', marginLeft: '5px', display: 'inline-block' }}
+      >
+        {isReasonExpanded ? 'Read Less' : 'Read More'}
+      </span>
+    )}
+  </>
+</td>
+                                </tr>
+                                {/* <tr>
+                                    <td style={{ padding: "8px", textAlign: "center" }}><b>Date Range</b></td>
+                                    <td style={{ padding: "8px", textAlign: "center" }}>:</td>
+                                    <td style={{ padding: "8px", textAlign: "center" }}>{selectedTimeEntry?.dateRange}</td>
+                                </tr>
+                                <tr>
+                                    <td style={{ padding: "8px", textAlign: "center" }}><b>No Of Days</b></td>
+                                    <td style={{ padding: "8px", textAlign: "center" }}>:</td>
+                                    <td style={{ padding: "8px", textAlign: "center" }}>{selectedTimeEntry?.noOfDays}</td>
+                                </tr>
+                                <tr>
+                                    <td style={{ padding: "8px", textAlign: "center" }}><b>Status</b></td>
+                                    <td style={{ padding: "8px", textAlign: "center" }}>:</td>
+                                    <td style={{ padding: "8px", textAlign: "center" }}>{selectedTimeEntry?.status}</td>
+                                </tr> */}
+                            </tbody>
+                        </table>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </>
     );
 };
