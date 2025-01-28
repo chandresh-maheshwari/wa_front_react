@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
-import { MdDelete, MdAdd, MdOutlineCancel } from 'react-icons/md';
+import { MdDelete, MdAdd, MdRestore, MdOutlineCancel } from 'react-icons/md';
 import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
 import { useLocation } from 'react-router-dom';
@@ -31,6 +31,7 @@ const PostDynamicList = () => {
     const [expandedEmails, setExpandedEmails] = useState({});
     const [abc, setAbc] = useState();
     const [statusFilter, setStatusFilter] = useState('all');
+     const [actionFilter, setActionFilter] = useState("all");
 
     useEffect(() => {
         setTimeout(() => {
@@ -52,17 +53,16 @@ const PostDynamicList = () => {
                     return {
                         id: item.id,
                         status: item.status,
+                        deleted_at: item.deleted_at,
                         "Sr No": index + 1,
                         ...filteredData,
                     };
                 });
 
-                // const sortedData = formattedRows.sort((a, b) => b.id - a.id);
-                // const dataWithSrNo = sortedData.map((item, index) => ({
-                //     ...item,
-                //     sr_no: index + 1,
-                // }));
+                // Filter out deleted items by default
+                const nonDeletedRows = formattedRows.filter(row => row.deleted_at !== 1);
                 setRows(formattedRows);
+                setFilteredRows(nonDeletedRows); 
             } else {
                 console.error('Invalid response structure:', response);
             }
@@ -72,6 +72,9 @@ const PostDynamicList = () => {
             setLoading(false);
         }
     };
+
+
+    
 
     // console.log(selectedRows.length === rows.length);
     const dynamicColumns = [
@@ -142,56 +145,55 @@ const PostDynamicList = () => {
             field: 'actions',
             headerName: 'Actions',
             width: 150,
-            renderCell: (params) => (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Tooltip title="Update">
-                        {/* <IconButton aria-label="Update" color="primary" className="Edit-list" style={{ margin: '1px' }}>
-                            <Link
-                                to={{
-                                    pathname: `/post-edit/${params.row.id}`,
-                                }}
-                                state={{ post_title }}
-                            >
+            renderCell: (params) => {
+                if (statusFilter === 'deleted' && params.row.deleted_at === 1) {
+                    return (
+                        <Tooltip title="Restore">
+                            <IconButton aria-label="restore" color="primary" style={{ margin: '1px' }} onClick={() => handleRestore(params.row.id)}>
+                                <MdRestore />
+                            </IconButton>
+                        </Tooltip>
+                    );
+                }
+                return (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Tooltip title="Update">
+                            <IconButton aria-label="Update" onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
                                 <FaEdit />
-                            </Link>
-                        </IconButton> */}
-                            <IconButton aria-label="Update"  onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
-                           
-                                <FaEdit />
-                           
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                        <IconButton aria-label="delete" color="primary" style={{ margin: '1px' }} className='action-button'>
-                            <MdDelete onClick={() => handleDelete1(params.row.id)} />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Active">
-                        <Switch
-                            key={params.row.id}
-                            checked={params.row.status}
-                            size="xs"
-                            onChange={async () => {
-                                const confirmToggle = await Swal.fire({
-                                    title: 'Are you sure?',
-                                    text: 'Do you want to change the active status?',
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: "#48AD3B",
-                                    cancelButtonColor: "#87888a",
-                                    confirmButtonText: 'Yes, change it!'
-                                });
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                            <IconButton aria-label="delete" color="primary" style={{ margin: '1px' }} className='action-button'>
+                                <MdDelete onClick={() => handleDelete1(params.row.id)} />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Active">
+                            <Switch
+                                key={params.row.id}
+                                checked={params.row.status}
+                                size="xs"
+                                onChange={async () => {
+                                    const confirmToggle = await Swal.fire({
+                                        title: 'Are you sure?',
+                                        text: 'Do you want to change the active status?',
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#48AD3B",
+                                        cancelButtonColor: "#87888a",
+                                        confirmButtonText: 'Yes, change it!'
+                                    });
 
-                                if (confirmToggle.isConfirmed) {
-                                    await getActive1(params.row.id, params.row.status);
-                                    Swal.fire('Success!', 'Active status changed successfully.', 'success');
-                                }
-                            }}
-                            style={{ margin: '1px' }}
-                        />
-                    </Tooltip>
-                </div>
-            ),
+                                    if (confirmToggle.isConfirmed) {
+                                        await getActive1(params.row.id, params.row.status);
+                                        Swal.fire('Success!', 'Active status changed successfully.', 'success');
+                                    }
+                                }}
+                                style={{ margin: '1px' }}
+                            />
+                        </Tooltip>
+                    </div>
+                );
+            },
         },
     ];
 
@@ -216,22 +218,52 @@ const PostDynamicList = () => {
         });
     };
 
+    // const handleSearch = (event) => {
+    //     const query = event.target.value.trim();
+    //     setSearchQuery(query);
+
+    //     if (query) {
+    //         const filtered = rows.filter((row) => {
+    //             return Object.values(row).some((value) =>
+    //                 String(value).toLowerCase().includes(query.toLowerCase())
+    //             );
+    //         });
+    //         setFilteredRows(filtered);
+    //     } else {
+    //         setFilteredRows(rows);
+    //     }
+    // };
     const handleSearch = (event) => {
         const query = event.target.value.trim();
         setSearchQuery(query);
-
+    
         if (query) {
-            const filtered = rows.filter((row) => {
-                return Object.values(row).some((value) =>
-                    String(value).toLowerCase().includes(query.toLowerCase())
-                );
-            });
+            // Determine the filter based on the statusFilter
+            const filtered = rows
+                .filter((row) => {
+                    if (statusFilter === "all") {
+                        return row.deleted_at === 0;
+                    } else if (statusFilter === "deleted") {
+                        return row.deleted_at === 1;
+                    }
+                    return false;
+                })
+                .filter((row) => {
+                    return Object.values(row).some((value) =>
+                        String(value).toLowerCase().includes(query.toLowerCase())
+                    );
+                });
             setFilteredRows(filtered);
         } else {
-            setFilteredRows(rows);
+            // Apply the current status filter when the search query is cleared
+            if (statusFilter === "all") {
+                setFilteredRows(rows.filter((row) => row.deleted_at === 0));
+            } else if (statusFilter === "deleted") {
+                setFilteredRows(rows.filter((row) => row.deleted_at === 1));
+            }
         }
     };
-
+    
 
     const handlesearchCancel = () => {
         setSearchQuery('');
@@ -239,36 +271,41 @@ const PostDynamicList = () => {
     };
 
 
-    // const handleStatusFilterChange = (event) => {
-    //     const filterValue = event.target.value;
-    //     setStatusFilter(filterValue);
+   
+    const handleActionFilterChange = (event) => {
+        const filterValue = event.target.value;
+        setActionFilter(filterValue);
+        setSelectedRows([]);
+        setFilteredRows(rows.filter((row) => row.deleted_at === 0));
+      };
+      
+    const applyFilter = (data, filterValue) => {
+        console.log("Applying filter:", filterValue); 
+        let filteredData;
+        switch (filterValue) {
+            case "active":
+                filteredData = data.filter((row) => row.status === 1 && row.deleted_at === 0);
+                break;
+            case "inactive":
+                filteredData = data.filter((row) => row.status === 0 && row.deleted_at === 0);
+                break;
+            case "deleted":
+                filteredData = data.filter((row) => row.deleted_at === 1);
+                break;
+            default: // "all" case
+                filteredData = data.filter((row) => row.deleted_at !== 1); // Exclude deleted items
+        }
+        setFilteredRows(filteredData);
+        console.log("Filtered Rows:", filteredData); 
+    };
 
-    //     if (filterValue === 'all') {
-    //         setRows(rows);
-    //     } else if (filterValue === 'active') {
-    //         setRows(rows.filter((row) => row.status === 1));
-    //     } else if (filterValue === 'inactive') {
-    //         setRows(rows.filter((row) => row.status === 0));
-    //     } else if (filterValue === 'deleted') {
-    //         setRows(rows.filter((row) => row.status === -1));
-    //     }
-    // };
     const handleStatusFilterChange = (event) => {
         const filterValue = event.target.value;
+        console.log("Filter Changed:", filterValue); 
         setStatusFilter(filterValue);
-        if (filterValue === 'all') {
-            setFilteredRows(rows);
-        } else if (filterValue === 'active') {
-            setFilteredRows(rows.filter(row => row.status === 1));
-            setSelectedRows([]);
-        } else if (filterValue === 'inactive') {
-            setFilteredRows(rows.filter(row => row.status === 0));
-            setSelectedRows([]);
-        } else if (filterValue === 'deleted') {
-            setFilteredRows(rows.filter(row => row.status === -1));
-            setSelectedRows([]);
-        }
+        applyFilter(rows, filterValue);
     };
+
 
     const getActive1 = async (id, currentStatus) => {
 
@@ -388,6 +425,33 @@ const PostDynamicList = () => {
             }
         }
     };
+
+
+const handleRestore = async (id) => {
+    try {
+      const response = await Authapi.restorePostDeletedData(id);
+      if (response) {
+        Swal.fire("Success!", "Item restored successfully.", "success");
+        setStatusFilter("all");
+        fetchData();
+      } else {
+        throw new Error(response?.message || "Failed to restore item");
+      }
+    } catch (error) {
+      Swal.fire(
+        "Error!",
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to restore item",
+        "error"
+      );
+    }
+  };
+
+
+
+
+
     const handleEdit = async (id) => {
         navigate(`/post-edit/${id}`, { state: { post_title } });
     }
@@ -440,9 +504,9 @@ const PostDynamicList = () => {
                         </Link>
                     </div>
 
-                    <div className="card-header col-3">
+                    {/* <div className="card-header col-3">
                         <FormControl fullWidth>
-                            <InputLabel>Status Filter</InputLabel>
+                            <InputLabel>Action Filter</InputLabel>
                             <Select
                                 value={statusFilter}
                                 className='filter_dropdown_of_main_page'
@@ -455,7 +519,23 @@ const PostDynamicList = () => {
                                 <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
                             </Select>
                         </FormControl>
-                    </div>
+                    </div> */}
+                     <div className="card-header col-3">
+                                <FormControl fullWidth>
+                                  <InputLabel>Status Filter</InputLabel>
+                                  <Select
+                                  className="filter_dropdown_of_main_page"
+                                    value={statusFilter}
+                                    onChange={handleStatusFilterChange}
+                                    label="Status Filter"
+                                  >
+                                    <MenuItem value="all">All</MenuItem>
+                                    <MenuItem value="active">Active</MenuItem>
+                                    <MenuItem value="inactive">Inactive</MenuItem>                                   
+                                    <MenuItem value="deleted">Deleted</MenuItem>
+                                  </Select>
+                                </FormControl>
+                              </div>
                     <div className="card-header col-3">
                         <input
                             type="search"
@@ -474,7 +554,7 @@ const PostDynamicList = () => {
                             
                                                             <div style={{ width: '100%', height: '500px', overflowY: 'auto' }}>
                                 <DataGrid
-                                    rows={searchQuery ? filteredRows : rows}
+                                    rows={filteredRows}
                                     columns={dynamicColumns}
                                     initialState={{ pagination: { paginationModel } }}
                                     pageSizeOptions={[5, 10, 20, { value: rows.length, label: 'All' }]}
@@ -513,6 +593,29 @@ const PostDynamicList = () => {
                                         event.stopPropagation();
                                     }}
                                 />
+                                 <div className="card-header col-3">
+                                 <FormControl
+                      fullWidth 
+                      sx={{
+                        maxWidth: "100%",
+                        marginTop: "-60px",
+                        marginBottom: "46px",
+                      }}
+                    >
+                            <InputLabel>Action Filter</InputLabel>
+                            <Select
+                                value={actionFilter}
+                                className='filter_dropdown_of_main_page'
+                                onChange={handleActionFilterChange}
+                                label="Action Filter"
+                            >
+                                <MenuItem value="all" disabled>All</MenuItem>
+                                <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
+                                <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
+                                <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
                             </div>
                             </div>
                         </Container>

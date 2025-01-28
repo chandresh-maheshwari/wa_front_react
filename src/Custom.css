@@ -494,5 +494,14 @@ color: white;
 .popuptable, td {
   border: 0px solid black;
 }
-/* Added on
- 22-01-25 END */
+
+.nav-dropdown-items-Dynamic_POSTS,
+.nav-dropdown-items-Dynamic_POSTS li {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.nav-dropdown-items-dynamic_page- {
+  list-style-type: none;
+  padding-left: 0;
+}

@@ -130,7 +130,10 @@ export default {
 
 
     notfoundpageget: 'api/page/Page Not Found',
-
+    contactrestore: 'api/contact-page/restore/',
+    pagerestore:'api/page/restore/',
+    dynamicpostrestore: 'api/dynamic-post/restore/',
+    postrestore: 'api/post-store/restore/'
 
 
   },

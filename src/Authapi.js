@@ -285,6 +285,103 @@ export default new (class AuthApi {
     }
   }
 
+  async restoreContactDeletedData(id) {
+    try {
+      const url = Config.apiurl + Config.apis.contactrestore + id;
+      const token = ls('Token');
+  
+      if (!token) {
+        throw new Error("Token is missing. Please log in again.");
+      }
+  
+      console.log("Token:", token); 
+      this.setHeaders("put");
+      const response = await axios.put(url, null, { 
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in restoreContactDeletedData:", error); 
+      throw error;
+    }
+  }
+
+
+  async restorePageDeletedData(id) {
+    try {
+      const url = Config.apiurl + Config.apis.pagerestore + id;
+      const token = ls('Token');
+  
+      if (!token) {
+        throw new Error("Token is missing. Please log in again.");
+      }
+  
+      console.log("Token:", token); 
+      this.setHeaders("put");
+      const response = await axios.put(url, null, { 
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in restoreContactDeletedData:", error); 
+      throw error;
+    }
+  }
+
+  async restorePostDeletedData(id) {
+    try {
+      const url = Config.apiurl + Config.apis.postrestore + id;
+      const token = ls('Token');
+  
+      if (!token) {
+        throw new Error("Token is missing. Please log in again.");
+      }
+  
+      console.log("Token:", token); 
+      this.setHeaders("put");
+      const response = await axios.put(url, null, { 
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in restoreContactDeletedData:", error); 
+      throw error;
+    }
+  }
+ 
+
+  async restoreDynamicPostDeletedData(id) {
+    try {
+      const url = Config.apiurl + Config.apis.dynamicpostrestore + id;
+      const token = ls('Token');
+  
+      if (!token) {
+        throw new Error("Token is missing. Please log in again.");
+      }
+  
+      console.log("Token:", token); 
+      this.setHeaders("put");
+      const response = await axios.put(url, null, { 
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error in restoreContactDeletedData:", error); 
+      throw error;
+    }
+  }
 
   async navbarstore(formData) {
     try {
