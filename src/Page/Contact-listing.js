@@ -54,7 +54,12 @@ const Contact = () => {
           deleted_at: item.deleted_at,
         }));
         setRows(formattedData);
-        setFilteredRows(formattedData.filter((row) => row.deleted_at === 0));
+        const initialFilteredRows = formattedData.filter((row) => row.deleted_at === 0).map((row, index) => ({
+          ...row,
+          sr_no: index + 1,
+        }));
+        setFilteredRows(initialFilteredRows);
+        // setFilteredRows(formattedData.filter((row) => row.deleted_at === 0));
       } else {
         console.error("Unexpected response format", response.results);
       }
@@ -187,11 +192,20 @@ const handleDelete = async (ids) => {
     const filterValue = event.target.value;
     setStatusFilter(filterValue);
 
+    let filtered;
     if (filterValue === "all") {
-        setFilteredRows(rows.filter((row) => row.deleted_at === 0));
+      filtered = rows.filter((row) => row.deleted_at === 0);
     } else if (filterValue === "deleted") {
-        setFilteredRows(rows.filter((row) => row.deleted_at === 1));
+      filtered = rows.filter((row) => row.deleted_at === 1);
     }
+
+    // Recalculate sr_no for filtered rows
+    const updatedFilteredRows = filtered.map((row, index) => ({
+      ...row,
+      sr_no: index + 1,
+    }));
+
+    setFilteredRows(updatedFilteredRows);
   };
 
   const handleActionFilterChange = (event) => {

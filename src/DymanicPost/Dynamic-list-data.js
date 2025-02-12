@@ -84,6 +84,13 @@ const DynamicList = () => {
       default: // "all" case
         filteredData = data.filter((row) => row.deleted_at === 0);
     }
+
+    // Reassign sr_no based on the filtered data
+    filteredData = filteredData.map((row, index) => ({
+      ...row,
+      sr_no: index + 1,
+    }));
+
     setFilteredRows(filteredData);
     console.log("Filtered Rows:", filteredData);
   };
@@ -386,6 +393,7 @@ const DynamicList = () => {
                   aria-label="Update"
                   onClick={() => handleEdit(params.row.id)}
                   color="primary"
+                    className="action-button"
                   style={{ margin: "1px" }}
                 >
                   <FaEdit />
@@ -437,6 +445,7 @@ const DynamicList = () => {
               <IconButton
                 aria-label="restore"
                 color="primary"
+                  className="action-button"
                 onClick={() => handleRestore(params.row.id)}
               >
                 <MdRestore />

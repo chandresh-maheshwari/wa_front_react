@@ -178,7 +178,6 @@ const PostFormDynamic = () => {
             }
             return;
         }
-
         setFormData({
             ...formData,
             [fieldLabel]: value,

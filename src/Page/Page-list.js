@@ -48,7 +48,7 @@ const PageList = () => {
       if (Array.isArray(response.results)) {
         const formattedData = response.results.map((item, index) => ({
           id: item.id,
-          sr_no: index + 1,
+          sr_no: index , // Ensure sr_no starts from 1
           status: item.status,
           page_status: item.page_status,
           page_name: item.page_name,
@@ -95,10 +95,17 @@ const PageList = () => {
         filteredData = data.filter((row) => row.deleted_at === 1);
         break;
       default: // "all" case
-      filteredData = data.filter((row) => row.deleted_at === 0); 
+        filteredData = data; // No filter, show all data
     }
+
+    // Reassign serial numbers starting from 1
+    filteredData = filteredData.map((row, index) => ({
+      ...row,
+      sr_no: index + 1, // Ensure sr_no starts from 1
+    }));
+
     setFilteredRows(filteredData);
-    console.log("Filtered Rows:", filteredData); 
+    console.log("Filtered Rows:", filteredData);
   };
 
   // const handleSearch = (event) => {
@@ -552,6 +559,7 @@ const PageList = () => {
                   <IconButton
                     aria-label="restore"
                     color="primary"
+                      className="action-button"
                     onClick={() => handleRestore(params.row.id)}
                   >
                     <MdRestore />
@@ -567,6 +575,7 @@ const PageList = () => {
             <Tooltip title="Update">
               <IconButton
                 aria-label="Update"
+                  className="action-button"
                 onClick={() => handleEdit(params.row.id)}
                 color="primary"
                 style={{ margin: "1px" }}

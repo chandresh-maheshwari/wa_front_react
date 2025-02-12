@@ -85,7 +85,6 @@ const PostDynamicList = () => {
             renderHeader: () => (
                 <input
                     type="checkbox"
-                    // checked={selectedRows.length === rows.length}
                     checked={rows.length > 0 && selectedRows.length === rows.length}
                     onChange={handleSelectAllRows}
                 />
@@ -100,45 +99,30 @@ const PostDynamicList = () => {
         },
 
         ...Object.keys(rows[0] || {}).map((key) => {
-            if (key === 'id' || key === 'status') return null;
+            if (key === 'id' || key === 'status' || key === 'deleted_at') return null;
             return {
                 field: key,
                 headerName: key.charAt(0).toUpperCase() + key.slice(1),
-                // width: 100,
                 width: key === 'quote_section_image' ? 150 : 200,
                 cellClassName: 'wrap-text',
-                // flex:1,
-
                 renderCell: (params) => {
                     const value = params.row[key];
-                    // console.log("prms", params)
                     const isExpanded = expandedEmails[params.row.id];
-                    // console.log('testngs');
-                    // console.log(value);
                     const displayValue = typeof value === 'string' ? value : (value !== undefined && value !== null ? String(value) : "-");
-                    // console.log(displayValue)
                     const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
-                    // console.log(safeValue)
-
                     const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
-                    // console.log(isImage)
                     return (
                         <div style={{ whiteSpace: 'normal', }}>
                             {isImage ? (
-
                                 <img src={value} alt={displayValue} style={{ width: '50%', height: 'auto' }} />
                             ) : (
                                 <span className={`email-display-${safeValue}`}>
-                                    {/* {isExpanded ? displayValue : `${displayValue.substring(0, 10)}`} */}
                                     {displayValue}
                                 </span>
                             )}
-                            {/* {console.log(formattedRows)} */}
-
                         </div>
                     );
                 }
-
             };
         }).filter(Boolean),
         {
@@ -149,7 +133,7 @@ const PostDynamicList = () => {
                 if (statusFilter === 'deleted' && params.row.deleted_at === 1) {
                     return (
                         <Tooltip title="Restore">
-                            <IconButton aria-label="restore" color="primary" style={{ margin: '1px' }} onClick={() => handleRestore(params.row.id)}>
+                            <IconButton aria-label="restore" color="primary" className="action-button" style={{ margin: '1px' }} onClick={() => handleRestore(params.row.id)}>
                                 <MdRestore />
                             </IconButton>
                         </Tooltip>
@@ -158,7 +142,7 @@ const PostDynamicList = () => {
                 return (
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <Tooltip title="Update">
-                            <IconButton aria-label="Update" onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
+                            <IconButton aria-label="Update" className="action-button" onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
                                 <FaEdit />
                             </IconButton>
                         </Tooltip>
@@ -276,8 +260,8 @@ const PostDynamicList = () => {
         const filterValue = event.target.value;
         setActionFilter(filterValue);
         setSelectedRows([]);
-        setFilteredRows(rows.filter((row) => row.deleted_at === 0));
-      };
+        applyFilter(rows, filterValue);
+    };
       
     const applyFilter = (data, filterValue) => {
         console.log("Applying filter:", filterValue); 
@@ -295,7 +279,7 @@ const PostDynamicList = () => {
             default: // "all" case
                 filteredData = data.filter((row) => row.deleted_at !== 1); // Exclude deleted items
         }
-        setFilteredRows(filteredData);
+        setFilteredRows(filteredData.map((row, index) => ({ ...row, "Sr No": index + 1 })));
         console.log("Filtered Rows:", filteredData); 
     };
 
@@ -447,10 +431,6 @@ const handleRestore = async (id) => {
       );
     }
   };
-
-
-
-
 
     const handleEdit = async (id) => {
         navigate(`/post-edit/${id}`, { state: { post_title } });
