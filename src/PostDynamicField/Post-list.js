@@ -126,6 +126,7 @@ const PostDynamicList = () => {
                                 <img src={value} alt={displayValue} style={{ width: '50%', height: 'auto' }} />
                             ) : (
                                 <span className={`email-display-${safeValue}`}>
+                                    {/* {console.log(safeValue)} */}
                                     {/* {isExpanded ? displayValue : `${displayValue.substring(0, 10)}`} */}
                                     {displayValue}
                                 </span>
@@ -155,7 +156,7 @@ const PostDynamicList = () => {
                                 <FaEdit />
                             </Link>
                         </IconButton> */}
-                            <IconButton aria-label="Update"  onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
+                            <IconButton aria-label="Update" className='action-button' onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
                            
                                 <FaEdit />
                            

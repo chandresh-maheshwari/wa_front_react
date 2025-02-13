@@ -518,7 +518,7 @@ const PageList = () => {
                                 <FaEdit />
                             </Link>
                         </IconButton> */}
-                        <IconButton aria-label="Update"  onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
+                        <IconButton aria-label="Update" className='action-button' onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
                            
                            <FaEdit />
                       
