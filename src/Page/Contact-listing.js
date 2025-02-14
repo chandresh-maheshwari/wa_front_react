@@ -563,3 +563,4 @@ const handleDelete = async (ids) => {
 };
 
 export default Contact;
+

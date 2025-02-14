@@ -72,69 +72,15 @@ const PostFormDynamic = () => {
             [fieldLabel]: '',
         }));
 
-        if (fieldType === 'file') {
-            const file = event.target.files[0];
-            if (file) {
-                const fileType = file.type;
-                const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg', 'image/svg', 'image/webp'];
-                if (!allowedImageTypes.includes(fileType)) {
-                    setErrors(prevErrors => ({
-                        ...prevErrors,
-                        [fieldLabel]: 'Please upload a valid image file (JPEG, PNG, GIF).'
-                    }));
-                    return;
-                }
-                const img = new Image();
-                const reader = new FileReader();
-                reader.onload = () => {
-                    img.src = reader.result;
-                    img.onload = () => {
-                        const { width, height } = img;
-                        if (width >= 40 && height >= 40 && width <= 1700 && height <= 1700) {
-                            setErrors(prevErrors => ({
-                                ...prevErrors,
-                                [fieldLabel]: ''
-                            }));
-                            setFormData({
-                                ...formData,
-                                [fieldLabel]: file
-                            });
-                        } else {
-                            setErrors(prevErrors => ({
-                                ...prevErrors,
-                                [fieldLabel]: 'Image must be between 40px and 1700px in both width and height.'
-                            }));
-                        }
-                    };
-                };
-                reader.readAsDataURL(file);
-            } else {
-                setErrors(prevErrors => ({
-                    ...prevErrors,
-                    [fieldLabel]: 'Please select a valid image file.',
-                }));
-            }
-        } else if (fieldType === 'dropdown') {
-            value = value.toLowerCase();
-        } else if (fieldType === 'checkbox') {
-            const currentValues = formData[fieldLabel] || [];
-            if (currentValues.includes(option)) {
-                setFormData({
-                    ...formData,
-                    [fieldLabel]: currentValues.filter(item => item !== option),
-                });
-            } else {
-                setFormData({
-                    ...formData,
-                    [fieldLabel]: [...currentValues, option],
-                });
-            }
-            return;
-        }
-        setFormData({
-            ...formData,
-            [fieldLabel]: value,
-        });
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [sectionTitle]: {
+                ...prevFormData[sectionTitle],
+                [fieldLabel]: value,
+            },
+        }));
+        // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+        // console.log(formData);
     };
 
     const validate = () => {
@@ -589,3 +535,4 @@ const PostFormDynamic = () => {
 };
 
 export default PostFormDynamic;
+
