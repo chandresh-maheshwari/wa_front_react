@@ -10,7 +10,8 @@ const PostFormDynamic = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({});
-    const [fields, setFields] = useState([]);
+    const [standaloneFields, setStandaloneFields] = useState([]);
+    const [sections, setSections] = useState([]);
     const [errors, setErrors] = useState({});
     const post_title = location.state?.post_title;
 
@@ -23,97 +24,49 @@ const PostFormDynamic = () => {
     const fetchData = async () => {
         try {
             const response = await Authapi.dynamifieldfetchdata(post_title);
-            setFields(response.data?.post_description || []);
+            const postDescription = response.data?.post_description || {};
+
+            const standalone = [];
+            const sectioned = [];
+
+            Object.entries(postDescription).forEach(([key, value]) => {
+                if (isNaN(key)) {
+                    // This is a section
+                    if (value.enabled) {
+                        const fields = Object.values(value).filter(field => field.label);
+                        sectioned.push({ title: key, fields });
+                    }
+                } else {
+                    // This is a standalone field
+                    standalone.push(value);
+                }
+            });
+
+            setStandaloneFields(standalone);
+            setSections(sectioned);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-    useEffect(() => {
-        if (fields.length > 0) {
-            const initialFormData = fields.reduce((acc, field) => {
-                acc[field.label] = field.value || '';
-                return acc;
-            }, {});
-            setFormData(initialFormData);
+    const handleInputChange = (fieldLabel, fieldType, sectionTitle = '') => (event, option) => {
+        let value;
+
+        // console.log('sss');
+        // console.log(formData);
+        if (fieldType === 'checkbox') {
+            const currentValues = formData[sectionTitle]?.[fieldLabel] || [];
+            value = currentValues.includes(option)
+                ? currentValues.filter(item => item !== option)
+                : [...currentValues, option];
+        } else if (fieldType === 'radio' || fieldType === 'dropdown') {
+            value = event.target.value;
+        } else if (fieldType === 'file') {
+            value = event.target.files[0];
+        } else {
+            value = event.target.value;
         }
-    }, [fields]);
 
-    // const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
-    //     let value = event.target.value;
-
-    //     if (fieldType === 'file') {
-    //         const file = event.target.files[0];
-    //         if (file) {
-    //             const fileType = file.type;
-    //             const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg', 'image/svg', 'image/webp'];
-    //             if (!allowedImageTypes.includes(fileType)) {
-    //                 setErrors(prevErrors => ({
-    //                     ...prevErrors,
-    //                     [fieldLabel]: 'Please upload a valid image file (JPEG, PNG, GIF).'
-    //                 }));
-    //                 return;
-    //             }
-    //             const img = new Image();
-    //             const reader = new FileReader();
-    //             reader.onload = () => {
-    //                 img.src = reader.result;
-    //                 img.onload = () => {
-    //                     const { width, height } = img;
-    //                     console.log(width)
-    //                     console.log(height)
-
-    //                     if (width >= 40 && height >= 40 && width <= 1700 && height <= 1700) {
-    //                         setErrors(prevErrors => ({
-    //                             ...prevErrors,
-    //                             [fieldLabel]: ''
-    //                         }));
-    //                         setFormData({
-    //                             ...formData,
-    //                             [fieldLabel]: file
-    //                         });
-    //                     } else {
-    //                         setErrors(prevErrors => ({
-    //                             ...prevErrors,
-    //                             [fieldLabel]: 'Image must be between 40px and 1700px in both width and height.'
-    //                         }));
-    //                     }
-    //                 };
-    //             };
-    //             reader.readAsDataURL(file);
-    //         } else {
-    //             setErrors(prevErrors => ({
-    //                 ...prevErrors,
-    //                 [fieldLabel]: 'Please select a valid image file.',
-    //             }));
-    //         }
-    //     } else if (fieldType === 'dropdown') {
-    //         value = value.toLowerCase();
-    //     } else if (fieldType === 'checkbox') {
-    //         const currentValues = formData[fieldLabel] || [];
-    //         if (currentValues.includes(option)) {
-    //             setFormData({
-    //                 ...formData,
-    //                 [fieldLabel]: currentValues.filter(item => item !== option),
-    //             });
-    //         } else {
-    //             setFormData({
-    //                 ...formData,
-    //                 [fieldLabel]: [...currentValues, option],
-    //             });
-    //         }
-    //         return;
-    //     }
-
-    //     setFormData({
-    //         ...formData,
-    //         [fieldLabel]: value,
-    //     });
-    // };
-    const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
-        let value = event.target.value;
-
-        // Clear error when the input changes
         setErrors(prevErrors => ({
             ...prevErrors,
             [fieldLabel]: '',
@@ -184,39 +137,134 @@ const PostFormDynamic = () => {
         });
     };
 
-
-    // Validation function
     const validate = () => {
-        const newErrors = {};
-        fields.forEach((field) => {
-            const value = formData[field.label] || '';
-            if (field.label && !value) {
-                newErrors[field.label] = 'This field is required';
-            } else if (field.type === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
-                newErrors[field.label] = 'Please enter a valid email address';
-            }
-        });
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        // Always return true to bypass validation
+        return true;
     };
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     console.log('Form data on submit:', formData);
+    //     if (!validate()) {
+    //         console.log('Validation failed');
+    //         return;
+    //     }
+
+    //     const submitFormData = new FormData();
+
+    //     // Handle standalone fields
+    //     standaloneFields.forEach(field => {
+    //         let value = formData['']?.[field.label] || '';
+    //         if (field.type === 'file' && value instanceof File) {
+    //             // Extract the file name
+    //             value = value.name;
+    //         }
+    //         submitFormData.append(field.label, value);
+    //     });
+
+    //     // Handle section fields
+    //     sections.forEach(section => {
+    //         const sectionData = {};
+    //         section.fields.forEach(field => {
+    //             let value = formData[section.title]?.[field.label] || '';
+    //             if (field.type === 'file' && value instanceof File) {
+    //                 // Extract the file name
+    //                 value = value.name;
+    //             }
+    //             sectionData[field.label] = value;
+    //         });
+    //         // Debugging: Log section data to ensure it's structured correctly
+    //         console.log(`Section: ${section.title}`, sectionData);
+    //         // Append the section data as a JSON object
+    //         submitFormData.append(section.title, JSON.stringify(sectionData));
+    //     });
+
+    //     try {
+    //         const response = await Authapi.postDynamicstoredata(submitFormData, post_title);
+    //         if (response.status === true) {
+    //             Swal.fire('Success', 'Data submitted successfully!', 'success');
+    //             setFormData({});
+    //             navigate('/post-list', { state: { post_title } });
+    //         } else {
+    //             Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
+    //         }
+    //     } catch (error) {
+    //         Swal.fire('Error', 'There was an issue with your submission.', 'error');
+    //         console.error('Error submitting data:', error);
+    //     }
+    // };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Remove validation call
+        // console.log('Form data on submit:', formData); // Add this log for debugging
+
         if (!validate()) {
+            console.log('Validation failed');
             return;
         }
+
         const submitFormData = new FormData();
-        Object.keys(formData).forEach(key => {
-            submitFormData.append(key, formData[key]);
+
+        // Handle standalone fields
+        standaloneFields.forEach(field => {
+            let value = formData['']?.[field.label] || '';
+            if (field.type === 'file' && value instanceof File) {
+                // Extract the file name
+                // value = value.name;
+            }
+            submitFormData.append(field.label, value);
         });
+
+        // Handle section fields
+        sections.forEach(section => {
+            const sectionData = {};
+
+            // Ensure section data is properly set
+            const sectionFields = formData[section.title] || {};
+            // console.log(`Section ${section.title} fields before processing:`, sectionFields);
+
+            section.fields.forEach(field => {
+                let value = sectionFields[field.label] || '';  // Get field value from formData
+
+                // Debugging: Check if values are being correctly fetched
+                // console.log(`Field ${field.label} value before processing:`, value);
+
+                if (field.type === 'file' && value instanceof File) {
+                    value = value.name;  // For file inputs, extract file name
+                }
+
+                sectionData[field.label] = value; // Set the field value in section data
+            });
+
+            // console.log(`Final Section Data for ${section.title}:`, sectionData);
+            submitFormData.append(section.title, JSON.stringify(sectionData));  // Append as JSON
+        });
+
+            sections.forEach(section => {
+                // const sectionData = {};
+                const sectionFields = formData[section.title] || {};
+
+                section.fields.forEach(field => {
+                    let value = sectionFields[field.label] || '';
+
+                    if (field.type === 'file' && value instanceof File) {
+                        submitFormData.append(`Section_image_${section.title}_${field.label}`, value); // Append file directly with section prefix
+                    }
+                });
+
+                // Append section data to form data as JSON string
+                // submitFormData.append(section.title, JSON.stringify(sectionData));
+            });
 
         try {
             const response = await Authapi.postDynamicstoredata(submitFormData, post_title);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
-                setFormData({});
+                // setFormData({});
                 navigate('/post-list', { state: { post_title } });
+            } else {
+                Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
             }
         } catch (error) {
             Swal.fire('Error', 'There was an issue with your submission.', 'error');
@@ -224,42 +272,27 @@ const PostFormDynamic = () => {
         }
     };
 
-    const handleCancel = () => {
-        setFormData({});
-        setErrors({});
-    };
 
     return (
         <>
             <Expired />
             <div className="col-md-12">
-                <div
-                    className="row "
-                    style={{
-                        marginLeft: "20%",
-                        width: "80%",
-                        marginBottom: "20px",
-                        marginTop: "1%",
-                    }}
-                >
+                <div className="row" style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: "1%" }}>
                     <div className="card-header Form-main-title">
-                        {/* <Typography variant="h5" className="title" align="center">Post</Typography> */}
-                        <Typography variant="h6" className="title" align="center">
-                            Add Post
-                        </Typography>
+                        <Typography variant="h6" className="title" align="center">Add Post</Typography>
                     </div>
                     <div className="card-body">
                         <Container>
                             <form onSubmit={handleSubmit}>
                                 <Grid container spacing={3}>
-                                    {fields.map((field, index) => (
-                                        <Grid item xs={12} sm={field.column || 6} key={index}>
+                                    {standaloneFields.map((field, index) => (
+                                        <Grid item xs={12} sm={6} key={index}>
                                             {field.type === 'dropdown' ? (
                                                 <FormControl fullWidth margin="normal">
                                                     <InputLabel>{field.label}</InputLabel>
                                                     <Select
-                                                        value={formData[field.label] || ''}
-                                                        onChange={handleInputChange(field.label, field.type)}
+                                                        value={formData['']?.[field.label] || ''}
+                                                        onChange={handleInputChange(field.label, field.type, '')}
                                                     >
                                                         {field.options && field.options.map((option, idx) => (
                                                             <MenuItem key={idx} value={option.trim()}>
@@ -277,8 +310,8 @@ const PostFormDynamic = () => {
                                                             key={idx}
                                                             control={
                                                                 <Checkbox
-                                                                    checked={formData[field.label]?.includes(option)}
-                                                                    onChange={(e) => handleInputChange(field.label, field.type)(e, option)}
+                                                                    checked={formData['']?.[field.label]?.includes(option)}
+                                                                    onChange={(e) => handleInputChange(field.label, field.type, '')(e, option)}
                                                                     value={option}
                                                                 />
                                                             }
@@ -291,8 +324,8 @@ const PostFormDynamic = () => {
                                                 <div>
                                                     <Typography variant="body1">{field.label}</Typography>
                                                     <RadioGroup
-                                                        value={formData[field.label] || ''}
-                                                        onChange={handleInputChange(field.label, field.type)}
+                                                        value={formData['']?.[field.label] || ''}
+                                                        onChange={handleInputChange(field.label, field.type, '')}
                                                     >
                                                         {field.options && field.options.map((option, idx) => (
                                                             <FormControlLabel
@@ -309,8 +342,8 @@ const PostFormDynamic = () => {
                                                     <TextField
                                                         label={field.label}
                                                         type="text"
-                                                        value={formData[field.label] || '#000000'}
-                                                        onChange={handleInputChange(field.label, field.type)}
+                                                        value={formData['']?.[field.label] || '#000000'}
+                                                        onChange={handleInputChange(field.label, field.type, '')}
                                                         margin="normal"
                                                         error={!!errors[field.label]}
                                                         helperText={errors[field.label] || ''}
@@ -318,7 +351,7 @@ const PostFormDynamic = () => {
                                                     />
                                                     <TextField
                                                         type="color"
-                                                        value={formData[field.label] || '#000000'}
+                                                        value={formData['']?.[field.label] || '#000000'}
                                                         onChange={handleInputChange(field.label, field.type)}
                                                         style={{
                                                             width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
@@ -331,7 +364,7 @@ const PostFormDynamic = () => {
                                                     <TextField
                                                         label={field.label}
                                                         type="file"
-                                                        onChange={handleInputChange(field.label, field.type)}
+                                                        onChange={handleInputChange(field.label, field.type, '')}
                                                         fullWidth
                                                         className='mt-5'
                                                         InputLabelProps={{ shrink: true }}
@@ -342,8 +375,8 @@ const PostFormDynamic = () => {
                                             ) : field.type === 'textarea' ? (
                                                 <TextField
                                                     label={field.label}
-                                                    value={formData[field.label] || ''}
-                                                    onChange={handleInputChange(field.label, field.type)}
+                                                    value={formData['']?.[field.label] || ''}
+                                                    onChange={handleInputChange(field.label, field.type, '')}
                                                     multiline
                                                     rows={4}
                                                     fullWidth
@@ -356,8 +389,8 @@ const PostFormDynamic = () => {
                                                 <TextField
                                                     label={field.label}
                                                     type='date'
-                                                    value={formData[field.label] || ''}
-                                                    onChange={handleInputChange(field.label, field.type)}
+                                                    value={formData['']?.[field.label] || ''}
+                                                    onChange={handleInputChange(field.label, field.type, '')}
                                                     fullWidth
                                                     InputLabelProps={{ shrink: true }}
                                                     variant="outlined"
@@ -372,13 +405,153 @@ const PostFormDynamic = () => {
                                                         label={field.label}
                                                         type={field.type}
                                                         variant="outlined"
-                                                        value={formData[field.label] || ''}
-                                                        onChange={handleInputChange(field.label, field.type)}
+                                                        value={formData['']?.[field.label] || ''}
+                                                        onChange={handleInputChange(field.label, field.type, '')}
                                                         margin="normal"
                                                         error={!!errors[field.label]}
                                                         helperText={errors[field.label] || ''}
                                                     />
                                                 )}
+                                        </Grid>
+                                    ))}
+                                    {sections.map((section, sectionIndex) => (
+                                        <Grid item xs={12} key={sectionIndex}>
+                                            <div style={{ border: "1px solid #ccc", borderRadius: "8px", padding: "10px" }}>
+                                                <Typography variant="h6" style={{ backgroundColor: "#f4f6f8", padding: "10px", borderRadius: "8px" }}>
+                                                    {section.title}
+                                                </Typography>
+                                                <Grid container spacing={3}>
+                                                    {section.fields.map((field, index) => (
+                                                        <Grid item xs={12} sm={6} key={index}>
+                                                            {field.type === 'dropdown' ? (
+                                                                <FormControl fullWidth margin="normal">
+                                                                    <InputLabel>{field.label}</InputLabel>
+                                                                    <Select
+                                                                        value={formData[section.title]?.[field.label] || ''}
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    >
+                                                                        {field.options && field.options.map((option, idx) => (
+                                                                            <MenuItem key={idx} value={option.trim()}>
+                                                                                {option.trim()}
+                                                                            </MenuItem>
+                                                                        ))}
+                                                                    </Select>
+                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                </FormControl>
+                                                            ) : field.type === 'checkbox' ? (
+                                                                <div>
+                                                                    <Typography variant="body1">{field.label}</Typography>
+                                                                    {field.options && field.options.map((option, idx) => (
+                                                                        <FormControlLabel
+                                                                            key={idx}
+                                                                            control={
+                                                                                <Checkbox
+                                                                                    checked={formData[section.title]?.[field.label]?.includes(option)}
+                                                                                    onChange={(e) => handleInputChange(field.label, field.type, section.title)(e, option)}
+                                                                                    value={option}
+                                                                                />
+                                                                            }
+                                                                            label={option}
+                                                                        />
+                                                                    ))}
+                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                </div>
+                                                            ) : field.type === 'radio' ? (
+                                                                <div>
+                                                                    <Typography variant="body1">{field.label}</Typography>
+                                                                    <RadioGroup
+                                                                        value={formData[section.title]?.[field.label] || ''}
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    >
+                                                                        {field.options && field.options.map((option, idx) => (
+                                                                            <FormControlLabel
+                                                                                key={idx}
+                                                                                control={<Radio value={option} />}
+                                                                                label={option}
+                                                                            />
+                                                                        ))}
+                                                                    </RadioGroup>
+                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                </div>
+                                                            ) : (field.type === 'color') ? (
+                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                    <TextField
+                                                                        label={field.label}
+                                                                        type="text"
+                                                                        value={formData[section.title]?.[field.label] || '#000000'}
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                        margin="normal"
+                                                                        error={!!errors[field.label]}
+                                                                        helperText={errors[field.label] || ''}
+                                                                        style={{ width: '100%', marginRight: '10px' }}
+                                                                    />
+                                                                    <TextField
+                                                                        type="color"
+                                                                        value={formData[section.title]?.[field.label] || '#000000'}
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                        style={{
+                                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
+                                                                        }}
+                                                                        className='color-code'
+                                                                    />
+                                                                </div>
+                                                            ) : field.type === 'file' ? (
+                                                                <div>
+                                                                    <TextField
+                                                                        label={field.label}
+                                                                        type="file"
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                        fullWidth
+                                                                        className='mt-5'
+                                                                        InputLabelProps={{ shrink: true }}
+                                                                        error={!!errors[field.label]}
+                                                                    />
+                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                </div>
+                                                            ) : field.type === 'textarea' ? (
+                                                                <TextField
+                                                                    label={field.label}
+                                                                    value={formData[section.title]?.[field.label] || ''}
+                                                                    onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    multiline
+                                                                    rows={4}
+                                                                    fullWidth
+                                                                    variant="outlined"
+                                                                    margin="normal"
+                                                                    error={!!errors[field.label]}
+                                                                    helperText={errors[field.label] || ''}
+                                                                />
+                                                            ) : field.type === 'date' ? (
+                                                                <TextField
+                                                                    label={field.label}
+                                                                    type='date'
+                                                                    value={formData[section.title]?.[field.label] || ''}
+                                                                    onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    fullWidth
+                                                                    InputLabelProps={{ shrink: true }}
+                                                                    variant="outlined"
+                                                                    margin="normal"
+                                                                    error={!!errors[field.label]}
+                                                                    helperText={errors[field.label] || ''}
+                                                                />
+                                                            )
+                                                                : (
+                                                                    <TextField
+                                                                        fullWidth
+                                                                        label={field.label}
+                                                                        type={field.type}
+                                                                        variant="outlined"
+                                                                        value={formData[section.title]?.[field.label] || ''}
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                        margin="normal"
+                                                                        error={!!errors[field.label]}
+                                                                        helperText={errors[field.label] || ''}
+                                                                    />
+                                                                )}
+                                                        </Grid>
+                                                    ))}
+                                                </Grid>
+                                            </div>
                                         </Grid>
                                     ))}
                                 </Grid>

@@ -12,45 +12,82 @@ const PostDynamicEdit = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const [formData, setFormData] = useState({});
-    const [fields, setFields] = useState([]);
+    const [standaloneFields, setStandaloneFields] = useState([]);
+    const [sections, setSections] = useState([]);
     const [errors, setErrors] = useState({});
     const post_title = location.state?.post_title;
-    const [isModified, setIsModified] = useState(false);
 
     useEffect(() => {
         fetchData();
     }, [post_title]);
-    
+
     useEffect(() => {
         fetchEditData(id);
     }, [id]);
 
-
     const fetchData = async () => {
         try {
             const response = await Authapi.dynamifieldfetchdata(post_title);
-            setFields(response.data?.post_description || []);
+            const postDescription = response.data?.post_description || {};
+
+            const standalone = [];
+            const sectioned = [];
+
+            Object.entries(postDescription).forEach(([key, value]) => {
+                if (isNaN(key)) {
+                    if (value.enabled) {
+                        const fields = Object.values(value).filter(field => field.label);
+                        const modifiedTitle = key.replace(/\s+/g, '_');
+                        sectioned.push({ title: modifiedTitle, fields });
+                    }
+                } else {
+                    standalone.push(value);
+                }
+            });
+
+            setStandaloneFields(standalone);
+            setSections(sectioned);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
     const fetchEditData = async (id) => {
-        // console.log("Fetching edit data for ID:", id);
         try {
             const response = await Authapi.postdynamicEditData(id);
-            // console.log(response.data.data)
-            setTimeout(() => {
-                setFormData(response.data.data || {});
-            }, 500);
+            const data = response.data.data || {};
+
+            if (!data || typeof data !== 'object') {
+                console.error('Invalid data format:', data);
+                return;
+            }
+
+            const standaloneData = {};
+            const sectionsData = {};
+
+            Object.entries(data).forEach(([key, value]) => {
+                if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
+                    const modifiedKey = key.replace(/\s+/g, '_');
+                    sectionsData[modifiedKey] = value;
+                } else {
+                    standaloneData[key] = value;
+                }
+            });
+
+            console.log('Standalone Data:', standaloneData);
+            console.log('Sections Data:', sectionsData);
+
+            setFormData({
+                ...standaloneData,
+                ...sectionsData,
+            });
+
         } catch (error) {
             console.error('Error fetching edit data:', error);
         }
-    }
+    };
 
     const handleDelete1 = async (id, name) => {
-       
-        
         const confirmDelete = await Swal.fire({
             title: 'Are you sure?',
             text: "This will mark the item as deleted!",
@@ -60,181 +97,143 @@ const PostDynamicEdit = () => {
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, mark it!'
         });
-    
+
         if (confirmDelete.isConfirmed) {
             try {
                 const response = await Authapi.imgdelete(id, name);
-                console.log("Delete response:", response); // Log the response for debugging
-    
+
                 if (response && response.status) {
                     Swal.fire('Success!', 'Item marked as deleted.', 'success').then(() => {
-                        // Fetch updated data to ensure state is in sync with backend
-                        fetchData(); // Fetch data again to ensure state is updated
-                        window.location.reload(); // Reload the page (optional based on your state management)
+                        fetchData();
+                        window.location.reload();
                     });
                 } else {
                     throw new Error(response?.message || 'Failed to delete item');
                 }
             } catch (error) {
-                console.error("Error deleting item:", error); // Log the error for debugging
+                console.error("Error deleting item:", error);
                 Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete item', 'error');
             }
         }
     };
 
+    const handleInputChange = (fieldLabel, fieldType, sectionTitle = '') => (event, option) => {
+        let value;
 
-    useEffect(() => {
-        if (fields.length > 0) {
-            const initialFormData = fields.reduce((acc, field) => {
-                acc[field.label] = field.value || '';
-                return acc;
-            }, {});
-            setFormData(initialFormData);
+        if (fieldType === 'checkbox') {
+            const currentValues = sectionTitle
+                ? formData[sectionTitle]?.[fieldLabel] || []
+                : formData[fieldLabel] || [];
+            value = currentValues.includes(option)
+                ? currentValues.filter(item => item !== option)
+                : [...currentValues, option];
+        } else if (fieldType === 'radio' || fieldType === 'dropdown') {
+            value = event.target.value;
+        } else if (fieldType === 'file') {
+            value = event.target.files[0];
+        } else {
+            value = event.target.value;
         }
-    }, [fields]);
-    // const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
-    //     let value = event.target.value;
 
-    //     if (fieldType === 'file') {
-    //         value = event.target.files[0];
-    //     }
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            [fieldLabel]: '',
+        }));
 
-    //     if (fieldType === 'dropdown') {
-    //         value = event.target.value.toLowerCase();
-    //     }
-
-    //     if (fieldType === 'checkbox') {
-    //         const currentValues = formData[fieldLabel] || [];
-    //         if (currentValues.includes(option)) {
-    //             value = currentValues.filter(item => item !== option);
-    //         } else {
-    //             value = [...currentValues, option];
-    //         }
-    //     }
-
-    //     setFormData(prevData => ({
-    //         ...prevData,
-    //         [fieldLabel]: value,
-    //     }));
-    // };
-    const handleInputChange = (fieldLabel, fieldType) => (event, option) => {
-        let value = event.target.value;
-
-        // Update the isModified state to true when any field changes
-        setIsModified(true);
-
-        if (fieldType === 'file') {
-            const file = event.target.files[0];
-            if (file) {
-                const fileType = file.type;
-                const allowedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg', 'image/svg', 'image/webp'];
-
-                if (!allowedImageTypes.includes(fileType)) {
-                    // Check if the file is not an image (for example, PDF or video)
-                    setErrors(prevErrors => ({
-                        ...prevErrors,
-                        [fieldLabel]: 'Please upload a valid image file (JPEG, PNG, GIF).'
-                    }));
-                    return;
-                }
-
-
-                const img = new Image();
-                const reader = new FileReader();
-                reader.onload = () => {
-                    img.src = reader.result;
-                    img.onload = () => {
-                        const { width, height } = img;
-                        console.log(width)
-                        console.log(height)
-
-                        if (width >= 40 && height >= 40 && width <= 1700 && height <= 1700) {
-                            setErrors(prevErrors => ({
-                                ...prevErrors,
-                                [fieldLabel]: ''
-                            }));
-                            setFormData({
-                                ...formData,
-                                [fieldLabel]: file
-                            });
-                        } else {
-                            setErrors(prevErrors => ({
-                                ...prevErrors,
-                                [fieldLabel]: 'Image must be between 40px and 1700px in both width and height.'
-                            }));
-                        }
-                    };
+        if (sectionTitle) {
+            setFormData(prevFormData => {
+                const updatedSection = {
+                    ...prevFormData[sectionTitle],
+                    [fieldLabel]: value,
                 };
-                reader.readAsDataURL(file);
-            } else {
-                setErrors(prevErrors => ({
-                    ...prevErrors,
-                    [fieldLabel]: 'Please select a valid image file.',
-                }));
-            }
-        } else if (fieldType === 'dropdown') {
-            value = value.toLowerCase();
-        } else if (fieldType === 'checkbox') {
-            const currentValues = formData[fieldLabel] || [];
-            if (currentValues.includes(option)) {
-                setFormData({
-                    ...formData,
-                    [fieldLabel]: currentValues.filter(item => item !== option),
-                });
-            } else {
-                setFormData({
-                    ...formData,
-                    [fieldLabel]: [...currentValues, option],
-                });
-            }
-            return;
+                return {
+                    ...prevFormData,
+                    [sectionTitle]: updatedSection,
+                };
+            });
+        } else {
+            setFormData(prevFormData => {
+                const updatedData = {
+                    ...prevFormData,
+                    [fieldLabel]: value,
+                };
+                return updatedData;
+            });
         }
-
-        setFormData({
-            ...formData,
-            [fieldLabel]: value,
-        });
     };
 
-
+    const validate = () => {
+        return true;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!validate()) {
+            console.log('Validation failed');
+            return;
+        }
+
         const submitFormData = new FormData();
-        // Create a new object to hold only modified fields
-        const modifiedData = {};
 
-        Object.keys(formData).forEach(key => {
-            // Check if the field has been modified
-            if (isModified) {
-                const value = Array.isArray(formData[key]) ? [...new Set(formData[key])] : formData[key];
-                modifiedData[key] = value; // Store only modified fields
-            }
-        });
-
-        // Append only modified fields to FormData
-        Object.keys(modifiedData).forEach(key => {
-            submitFormData.append(key, modifiedData[key]);
-        });
-
-        // Only submit if there are modifications
-        if (isModified) {
-            try {
-                const response = await Authapi.postdynamicupdatedata(id, submitFormData);
-                if (response.status === true) {
-                    Swal.fire('Success', 'Data submitted successfully!', 'success');
-                    setFormData({});
-                    setIsModified(false); // Reset the modified state
-                    navigate('/post-list', { state: { post_title } });
+        standaloneFields.forEach(field => {
+            let value = formData[field.label] || '';
+            if (field.type === 'file') {
+                if (value instanceof File) {
+                    // value = value.name;
+                } else if (typeof value === 'string') {
+                    value = value.split('/').pop();
                 }
-            } catch (error) {
-                Swal.fire('Error', 'There was an issue with your submission.', 'error');
-                console.error('Error submitting data:', error);
             }
-        } else {
-            Swal.fire('Success', 'Data submitted successfully!', 'success');
-            navigate('/post-list', { state: { post_title } });
+            submitFormData.append(field.label, value);
+        });
+
+        sections.forEach(section => {
+            const sectionData = {};
+            const sectionFields = formData[section.title] || {};
+
+            section.fields.forEach(field => {
+                let value = sectionFields[field.label] || '';
+                if (field.type === 'file') {
+                    if (value instanceof File) {
+                        value = value.name;
+                    } else if (typeof value === 'string') {
+                        value = value.split('/').pop();
+                    }
+                }
+                sectionData[field.label] = value;
+            });
+
+            submitFormData.append(section.title, JSON.stringify(sectionData));
+        });
+
+        sections.forEach(section => {
+            // const sectionData = {};
+            const sectionFields = formData[section.title] || {};
+
+            section.fields.forEach(field => {
+                let value = sectionFields[field.label] || '';
+
+                if (field.type === 'file' && value instanceof File) {
+                    submitFormData.append(`Section_image_${section.title}_${field.label}`, value); // Append file directly with section prefix
+                }
+            });
+
+            // Append section data to form data as JSON string
+            // submitFormData.append(section.title, JSON.stringify(sectionData));
+        });
+
+        try {
+            const response = await Authapi.postdynamicupdatedata(id, submitFormData);
+            if (response.status === true) {
+                Swal.fire('Success', 'Data submitted successfully!', 'success');
+                navigate('/post-list', { state: { post_title } });
+            } else {
+                Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
+            }
+        } catch (error) {
+            Swal.fire('Error', 'There was an issue with your submission.', 'error');
+            console.error('Error submitting data:', error);
         }
     };
 
@@ -242,24 +241,22 @@ const PostDynamicEdit = () => {
         <>
             <Expired />
             <div className="col-md-12">
-            <div className="row mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
+                <div className="row" style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: "1%" }}>
                     <div className="card-header Form-main-title">
-                        <Typography variant="h6" className="title" align="center">Update Post</Typography>
+                        <Typography variant="h6" className="title" align="center">Edit Post</Typography>
                     </div>
                     <div className="card-body">
                         <Container>
                             <form onSubmit={handleSubmit}>
                                 <Grid container spacing={3}>
-                                    {fields.map((field, index) => (
-                                        <Grid item xs={12} sm={field.column || 6} key={index}>
+                                    {standaloneFields.map((field, index) => (
+                                        <Grid item xs={12} sm={6} key={index}>
                                             {field.type === 'dropdown' ? (
-                                                <FormControl fullWidth margin="normal" >
+                                                <FormControl fullWidth margin="normal">
                                                     <InputLabel>{field.label}</InputLabel>
                                                     <Select
                                                         value={formData[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type)}
-                                                        variant="outlined"
-
                                                     >
                                                         {field.options && field.options.map((option, idx) => (
                                                             <MenuItem key={idx} value={option.trim()}>
@@ -267,6 +264,7 @@ const PostDynamicEdit = () => {
                                                             </MenuItem>
                                                         ))}
                                                     </Select>
+                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                 </FormControl>
                                             ) : field.type === 'checkbox' ? (
                                                 <div>
@@ -276,7 +274,7 @@ const PostDynamicEdit = () => {
                                                             key={idx}
                                                             control={
                                                                 <Checkbox
-                                                                    checked={formData[field.label]?.includes(option) || false}
+                                                                    checked={formData[field.label]?.includes(option)}
                                                                     onChange={(e) => handleInputChange(field.label, field.type)(e, option)}
                                                                     value={option}
                                                                 />
@@ -284,6 +282,7 @@ const PostDynamicEdit = () => {
                                                             label={option}
                                                         />
                                                     ))}
+                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                 </div>
                                             ) : field.type === 'radio' ? (
                                                 <div>
@@ -300,57 +299,31 @@ const PostDynamicEdit = () => {
                                                             />
                                                         ))}
                                                     </RadioGroup>
+                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                 </div>
-                                            ) : field.type === 'textarea' ? (
-                                                <TextField
-                                                    label={field.label}
-                                                    value={formData[field.label] || ''}
-                                                    onChange={handleInputChange(field.label, field.type)}
-                                                    multiline
-                                                    rows={4}
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    margin="normal"
-                                                />
-                                            ) : field.type === 'date' ? (
-                                                <TextField
-                                                    label={field.label}
-                                                    type='date'
-                                                    value={formData[field.label] || ''}
-                                                    onChange={handleInputChange(field.label, field.type)}
-                                                    fullWidth
-                                                    InputLabelProps={{ shrink: true }}
-                                                    variant="outlined"
-                                                    margin="normal"
-
-                                                />
+                                            ) : (field.type === 'color') ? (
+                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <TextField
+                                                        label={field.label}
+                                                        type="text"
+                                                        value={formData[field.label] || '#000000'}
+                                                        onChange={handleInputChange(field.label, field.type)}
+                                                        margin="normal"
+                                                        error={!!errors[field.label]}
+                                                        helperText={errors[field.label] || ''}
+                                                        style={{ width: '100%', marginRight: '10px' }}
+                                                    />
+                                                    <TextField
+                                                        type="color"
+                                                        value={formData[field.label] || '#000000'}
+                                                        onChange={handleInputChange(field.label, field.type)}
+                                                        style={{
+                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
+                                                        }}
+                                                        className='color-code'
+                                                    />
+                                                </div>
                                             ) : field.type === 'file' ? (
-                                                // <div>
-                                                //     <TextField
-                                                //         label={field.label}
-                                                //         type="file"
-                                                //         onChange={handleInputChange(field.label, field.type)}
-                                                //         fullWidth
-                                                //         className='mt-5'
-                                                //         InputLabelProps={{ shrink: true }}
-                                                //     />
-                                                //     {formData[field.label] instanceof File ? (
-                                                //         <img
-                                                //             src={URL.createObjectURL(formData[field.label])}
-                                                //             alt="Preview"
-                                                //             width="100"
-                                                //         />
-                                                //     ) : formData[field.label] ? (
-                                                //         <>
-                                                //             <p>Current image: {formData[field.label].split('/').pop()} </p>
-                                                //             <img
-                                                //                 src={formData[field.label]}
-                                                //                 alt="Current Image"
-                                                //                 width="100"
-                                                //             />
-                                                //         </>
-                                                //     ) : null}
-                                                // </div>
                                                 <div>
                                                     <TextField
                                                         label={field.label}
@@ -363,53 +336,59 @@ const PostDynamicEdit = () => {
                                                     />
                                                     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                     {formData[field.label] instanceof File ? (
-                                                        <img
-                                                            src={URL.createObjectURL(formData[field.label])}
-                                                            alt="Preview"
-                                                            width="100"
-                                                        />
+                                                        <>
+                                                            <p>New Selected image: {formData[field.label].name} </p>
+                                                            <img
+                                                                src={URL.createObjectURL(formData[field.label])}
+                                                                alt="Preview"
+                                                                width="100"
+                                                            />
+                                                        </>
                                                     ) : formData[field.label] ? (
                                                         <>
-
-                                                     
-                                                            <p>Current image: {formData[field.label].split('/').pop()} </p>
+                                                            <p>Old image: {formData[field.label]?.split('/').pop()} </p>
                                                             <img
                                                                 src={formData[field.label]}
                                                                 alt="Current Image"
                                                                 width="100"
-                                                                style={{ marginRight: '10px' }} 
+                                                                style={{ marginRight: '10px' }}
                                                             />
-                                                             <Tooltip title="Delete">
-                                                                      <IconButton aria-label="delete" color="primary" onClick={() => handleDelete1(id, formData[field.label].split('/').pop())}>
-                                                                        <MdDelete />
-                                                                      </IconButton>
-                                                                    </Tooltip>
+                                                            <Tooltip title="Delete">
+                                                                <IconButton aria-label="delete" className='action-button' color="primary" onClick={() => handleDelete1(id, formData[field.label]?.split('/').pop())}>
+                                                                    <MdDelete />
+                                                                </IconButton>
+                                                            </Tooltip>
                                                         </>
                                                     ) : null}
                                                 </div>
-                                            ) : field.type === 'color' ? (
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                    <TextField
-                                                        label={field.label}
-                                                        type="text"
-                                                        value={formData[field.label] || '#000000'}
-                                                        onChange={handleInputChange(field.label, field.type)}
-                                                        margin="normal"
-                                                        style={{ width: '100%', marginRight: '10px' }}
-                                                    />
-                                                    <TextField
-                                                        type="color"
-                                                        value={formData[field.label] || '#000000'}
-                                                        onChange={handleInputChange(field.label, field.type)}
-                                                        style={{
-                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px"
-                                                        }}
-                                                        className='color-code'
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <>
-
+                                            ) : field.type === 'textarea' ? (
+                                                <TextField
+                                                    label={field.label}
+                                                    value={formData[field.label] || ''}
+                                                    onChange={handleInputChange(field.label, field.type)}
+                                                    multiline
+                                                    rows={4}
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    margin="normal"
+                                                    error={!!errors[field.label]}
+                                                    helperText={errors[field.label] || ''}
+                                                />
+                                            ) : field.type === 'date' ? (
+                                                <TextField
+                                                    label={field.label}
+                                                    type='date'
+                                                    value={formData[field.label] || ''}
+                                                    onChange={handleInputChange(field.label, field.type)}
+                                                    fullWidth
+                                                    InputLabelProps={{ shrink: true }}
+                                                    variant="outlined"
+                                                    margin="normal"
+                                                    error={!!errors[field.label]}
+                                                    helperText={errors[field.label] || ''}
+                                                />
+                                            )
+                                                : (
                                                     <TextField
                                                         fullWidth
                                                         label={field.label}
@@ -418,10 +397,180 @@ const PostDynamicEdit = () => {
                                                         value={formData[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type)}
                                                         margin="normal"
-
+                                                        error={!!errors[field.label]}
+                                                        helperText={errors[field.label] || ''}
                                                     />
-                                                </>
-                                            )}
+                                                )}
+                                        </Grid>
+                                    ))}
+                                    
+                                    {sections.map((section, sectionIndex) => (
+                                        <Grid item xs={12} key={sectionIndex}>
+                                            <div style={{ border: "1px solid #ccc", borderRadius: "8px", padding: "10px" }}>
+                                                <Typography variant="h6" style={{ backgroundColor: "#f4f6f8", padding: "10px", borderRadius: "8px" }}>
+                                                    {/* {section.title} */}
+                                                    {section.title.replace(/_/g, ' ')}
+
+                                                </Typography>
+                                                <Grid container spacing={3}>
+                                                    {section.fields.map((field, index) => (
+                                                        <Grid item xs={12} sm={6} key={index}>
+                                                            {/* {console.log(section)} */}
+                                                            {field.type === 'dropdown' ? (
+                                                                <FormControl fullWidth margin="normal">
+                                                                    <InputLabel>{field.label}</InputLabel>
+                                                                    <Select
+                                                                        value={formData[section.title]?.[field.label] || ''}
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    >
+                                                                        {field.options && field.options.map((option, idx) => (
+                                                                            <MenuItem key={idx} value={option.trim()}>
+                                                                                {option.trim()}
+                                                                            </MenuItem>
+                                                                        ))}
+                                                                    </Select>
+                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                </FormControl>
+                                                            ) : field.type === 'checkbox' ? (
+                                                                <div>
+                                                                    <Typography variant="body1">{field.label}</Typography>
+                                                                    {field.options && field.options.map((option, idx) => (
+                                                                        <FormControlLabel
+                                                                            key={idx}
+                                                                            control={
+                                                                                <Checkbox
+                                                                                    checked={formData[section.title]?.[field.label]?.includes(option)}
+                                                                                    onChange={(e) => handleInputChange(field.label, field.type, section.title)(e, option)}
+                                                                                    value={option}
+                                                                                />
+                                                                            }
+                                                                            label={option}
+                                                                        />
+                                                                    ))}
+                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                </div>
+                                                            ) : field.type === 'radio' ? (
+                                                                <div>
+                                                                    <Typography variant="body1">{field.label}</Typography>
+                                                                    <RadioGroup
+                                                                        value={formData[section.title]?.[field.label] || ''}
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    >
+                                                                        {field.options && field.options.map((option, idx) => (
+                                                                            <FormControlLabel
+                                                                                key={idx}
+                                                                                control={<Radio value={option} />}
+                                                                                label={option}
+                                                                            />
+                                                                        ))}
+                                                                    </RadioGroup>
+                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                </div>
+                                                            ) : field.type === 'color' ? (
+                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                   
+                                                                    <TextField
+                                                                        label={field.label}
+                                                                        type="text"
+                                                                        value={formData[section.title]?.[field.label] || '#000000'}
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                        margin="normal"
+                                                                        error={!!errors[field.label]}
+                                                                        helperText={errors[field.label] || ''}
+                                                                        style={{ width: '100%', marginRight: '10px' }}
+                                                                    />
+                                                                    <TextField
+                                                                        type="color"
+                                                                        value={formData[section.title]?.[field.label] || '#000000'}
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                        style={{
+                                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
+                                                                        }}
+                                                                        className='color-code'
+                                                                    />
+                                                                </div>
+                                                            ) : field.type === 'file' ? (
+                                                                <div>
+                                                                     {console.log(section.title.replace(/\s+/g, '_'))}
+                                                                    <TextField
+                                                                        label={field.label}
+                                                                        type="file"
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                        fullWidth
+                                                                        className='mt-5'
+                                                                        InputLabelProps={{ shrink: true }}
+                                                                        error={!!errors[field.label]}
+                                                                    />
+                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                    {formData[section.title]?.[field.label] instanceof File ? (
+                                                                        <>
+                                                                            <p>New Selected image: {formData[section.title][field.label].name} </p>
+                                                                            <img
+                                                                                src={URL.createObjectURL(formData[section.title][field.label])}
+                                                                                alt="Preview"
+                                                                                width="100"
+                                                                            />
+                                                                        </>
+                                                                    ) : formData[section.title]?.[field.label] ? (
+                                                                        <>
+                                                                            <p>Old image: {formData[section.title][field.label]?.split('/').pop()} </p>
+                                                                            <img
+                                                                                src={formData[section.title][field.label]}
+                                                                                alt="Current Image"
+                                                                                width="100"
+                                                                                style={{ marginRight: '10px' }}
+                                                                            />
+                                                                            <Tooltip title="Delete">
+                                                                                <IconButton aria-label="delete" className='action-button' color="primary" onClick={() => handleDelete1(id, formData[section.title][field.label]?.split('/').pop())}>
+                                                                                    <MdDelete />
+                                                                                </IconButton>
+                                                                            </Tooltip>
+                                                                        </>
+                                                                    ) : null}
+                                                                </div>
+                                                            ) : field.type === 'textarea' ? (
+                                                                <TextField
+                                                                    label={field.label}
+                                                                    value={formData[section.title]?.[field.label] || ''}
+                                                                    onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    multiline
+                                                                    rows={4}
+                                                                    fullWidth
+                                                                    variant="outlined"
+                                                                    margin="normal"
+                                                                    error={!!errors[field.label]}
+                                                                    helperText={errors[field.label] || ''}
+                                                                />
+                                                            ) : field.type === 'date' ? (
+                                                                <TextField
+                                                                    label={field.label}
+                                                                    type='date'
+                                                                    value={formData[section.title]?.[field.label] || ''}
+                                                                    onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    fullWidth
+                                                                    InputLabelProps={{ shrink: true }}
+                                                                    variant="outlined"
+                                                                    margin="normal"
+                                                                    error={!!errors[field.label]}
+                                                                    helperText={errors[field.label] || ''}
+                                                                />
+                                                            ) : (
+                                                                <TextField
+                                                                    fullWidth
+                                                                    label={field.label}
+                                                                    type={field.type}
+                                                                    variant="outlined"
+                                                                    value={formData[section.title]?.[field.label] || ''}
+                                                                    onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    margin="normal"
+                                                                    error={!!errors[field.label]}
+                                                                    helperText={errors[field.label] || ''}
+                                                                />
+                                                            )}
+                                                        </Grid>
+                                                    ))}
+                                                </Grid>
+                                            </div>
                                         </Grid>
                                     ))}
                                 </Grid>
@@ -429,7 +578,7 @@ const PostDynamicEdit = () => {
                                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
                                     <Grid item>
                                         <Button
-                                        className='submit-btn'
+                                            className='submit-btn'
                                             variant="contained"
                                             color="primary"
                                             style={{ backgroundColor: "#2c9dd4" }}

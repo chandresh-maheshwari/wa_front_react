@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, IconButton, Tooltip, Container, MenuItem, Select, InputLabel, FormControl, Grid, Typography } from '@mui/material';
+import { TextField, Button, IconButton, Tooltip, Container, MenuItem, Select, InputLabel, FormControl, Grid, Typography, Collapse, Switch } from '@mui/material';
 import Expired from '../Login/ExpiredToken';
+import { FaPlusCircle, FaCheckCircle, FaEdit, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import Authapi from '../Authapi';
 import Swal from 'sweetalert2';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,47 +11,27 @@ import "../Custom.css";
 
 const DynamicEditForm = ({ existingData }) => {
     const { id } = useParams();
-    const [fields, setFields] = useState([{
-        id: Date.now(),
-        label: '',
-        type: '',
-        value: '',
-        options: []
-    }]);
     const navigate = useNavigate();
+    const [standaloneFields, setStandaloneFields] = useState([]);
+
     const [formData, setFormData] = useState({
         post_title: '',
         post_type: '',
         ordering: '',
-    })
+    });
 
+    const [sections, setSections] = useState([]);
 
     useEffect(() => {
-
         if (existingData) {
             setFormData(existingData.formData);
-            setFields(existingData.post_description.map((desc, index) => ({
-                id: index,
-                label: desc.label,
-                type: desc.type,
-                value: desc.value || '',
-                options: desc.options
-
-
-            })));
+            transformSections(existingData.post_description);
         } else if (id) {
-
             const fetchData = async () => {
                 try {
                     const response = await Authapi.dynamicEditData(id);
                     setFormData(response);
-                    setFields(response.post_description.map((desc, index) => ({
-                        id: index,
-                        label: desc.label,
-                        type: desc.type,
-                        value: desc.value || '',
-                        options: desc.options
-                    })));
+                    transformSections(response.post_description);
                 } catch (error) {
                     console.log('Error fetching data:', error);
                 }
@@ -59,94 +40,339 @@ const DynamicEditForm = ({ existingData }) => {
         }
     }, [id, existingData]);
 
-    const handleAddField = () => {
-        setFields([...fields, { id: Date.now(), label: '', type: '', value: '', options: [] }]);
+    const transformSections = (postDescription) => {
+        const standaloneFields = [];
+        const sections = [];
+
+        Object.entries(postDescription).forEach(([key, value], index) => {
+            if (isNaN(key)) {
+                // This is a section
+                const fields = Array.isArray(value) ? value : Object.values(value).filter(v => typeof v === 'object');
+                sections.push({
+                    id: Date.now() + index,
+                    isOpen: true,
+                    title: key, // Use the key as title
+                    enabled: value.enabled || false, // Use the enabled state from the data
+                    fields: fields.map((field, fieldIndex) => ({
+                        id: Date.now() + fieldIndex,
+                        label: field.label || '',
+                        type: field.type || 'text',
+                        value: field.value || '',
+                        options: field.options || []
+                    })),
+                    isEditing: false
+                });
+            } else {
+                // This is a standalone field
+                standaloneFields.push({
+                    id: Date.now() + index,
+                    label: value.label || '',
+                    type: value.type || 'text',
+                    value: value.value || '',
+                    options: value.options || []
+                });
+            }
+        });
+
+        setStandaloneFields(standaloneFields);
+        setSections(sections);
     };
 
+    // const handleAddField = (sectionId) => {
+    //     const newField = { id: Date.now(), label: '', type: '', value: '', options: [] };
+    //     setSections(sections.map(section =>
+    //         section.id === sectionId
+    //             ? { ...section, fields: [...section.fields, newField] }
+    //             : section
+    //     ));
+    // };
 
-    const handleAddFieldAfter = (id) => {
-        const newField = { id: Date.now(), label: '', type: '', value: '', options: [] };
-        const index = fields.findIndex(field => field.id === id);
-        setFields([
-            ...fields.slice(0, index + 1),
-            newField,
-            ...fields.slice(index + 1)
-        ]);
+    const handleAddField = (sectionId, fieldId) => {
+        setSections(
+            sections.map((section) => {
+                if (section.id === sectionId) {
+                    const newField = { id: Date.now(), label: "", type: "text", value: "", options: [] };
+                    const fieldIndex = section.fields.findIndex((field) => field.id === fieldId);
+                    const updatedFields = [
+                        ...section.fields.slice(0, fieldIndex + 1),
+                        newField,
+                        ...section.fields.slice(fieldIndex + 1),
+                    ];
+                    return { ...section, fields: updatedFields };
+                }
+                return section;
+            })
+        );
     };
 
-    const handleInputChange = (e, id) => {
+    const handleInputChange = (e, sectionId, fieldId) => {
         const { name, value } = e.target;
-        setFields(fields.map(field => (field.id === id ? { ...field, [name]: value } : field)));
+        setSections(sections.map(section =>
+            section.id === sectionId
+                ? {
+                    ...section,
+                    fields: section.fields.map(field =>
+                        field.id === fieldId ? { ...field, [name]: value } : field
+                    )
+                }
+                : section
+        ));
     };
 
-    const handleTypeChange = (e, id) => {
+    const handleTypeChange = (e, sectionId, fieldId) => {
         const { value } = e.target;
-        setFields(fields.map(field => (field.id === id ? { ...field, type: value, value: '', options: [] } : field)));
+        setSections(sections.map(section =>
+            section.id === sectionId
+                ? {
+                    ...section,
+                    fields: section.fields.map(field =>
+                        field.id === fieldId ? { ...field, type: value, value: '', options: [] } : field
+                    )
+                }
+                : section
+        ));
     };
 
-    const handleRemoveField = (id) => {
-        setFields(fields.filter(field => field.id !== id));
+    const handleRemoveField = (sectionId, fieldId) => {
+        // setSections(sections.map(section =>
+        //     section.id === sectionId
+        //         ? { ...section, fields: section.fields.filter(field => field.id !== fieldId) }
+        //         : section
+        // ));
+        if (sectionId === null) {
+            // Handle standalone fields
+            setStandaloneFields((prevFields) => prevFields.filter((field) => field.id !== fieldId));
+        } else {
+            // Handle fields within sections
+            setSections(
+                sections.map((section) =>
+                    section.id === sectionId
+                        ? { ...section, fields: section.fields.filter((field) => field.id !== fieldId) }
+                        : section
+                )
+            );
+        }
     };
 
-    const handleTitleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    const handleOptionChange = (e, id) => {
+    const handleTitleChange = (e, sectionId) => {
         const { value } = e.target;
-        setFields(fields.map(field => (field.id === id ? { ...field, options: value.split(',') } : field)));
+        setSections(sections.map(section =>
+            section.id === sectionId ? { ...section, title: value } : section
+        ));
     };
 
+    // const handleOptionChange = (e, sectionId, fieldId) => {
+    //     const { value } = e.target;
+    //     setSections(sections.map(section =>
+    //         section.id === sectionId
+    //             ? {
+    //                 ...section,
+    //                 fields: section.fields.map(field =>
+    //                     field.id === fieldId ? { ...field, options: value.split(',') } : field
+    //                 )
+    //             }
+    //             : section
+    //     ));
+    // };
+    
+    const handleOptionChange = (e, sectionId, fieldId) => {
+        const { value } = e.target;
+      
+        // console.log("Field options before update:", value);
+      
+        if (sectionId === null) {
+          // Update standalone fields
+          setStandaloneFields((prevFields) =>
+            prevFields.map((field) =>
+              field.id === fieldId ? { ...field, options: value.split(",") } : field
+            )
+          );
+        } else {
+          // Update fields within sections
+          setSections(
+            sections.map((section) =>
+              section.id === sectionId
+                ? {
+                    ...section,
+                    fields: section.fields.map((field) =>
+                      field.id === fieldId ? { ...field, options: value.split(",") } : field
+                    ),
+                  }
+                : section
+            )
+          );
+        }
+      };
+
+    const handleToggleSection = (sectionId) => {
+        setSections(sections.map(section =>
+            section.id === sectionId ? { ...section, isOpen: !section.isOpen } : section
+        ));
+    };
+
+    const handleRemoveSection = (sectionId) => {
+        setSections(sections.filter(section => section.id !== sectionId));
+    };
+
+    // const handleAddSection = () => {
+    //     const newSection = {
+    //         id: Date.now(),
+    //         isOpen: true,
+    //         title: `Section ${sections.length + 1}`,
+    //         fields: [
+    //             {
+    //                 id: Date.now(),
+    //                 label: '',
+    //                 type: 'text',
+    //                 value: '',
+    //                 options: []
+    //             }
+    //         ],
+    //         isEditing: false
+    //     };
+    //     setSections([...sections, newSection]);
+    // };
 
 
+    const handleAddSection = (currentSectionId) => {
+        setSections((prevSections) => {
+            const newSection = {
+                id: Date.now(),
+                isOpen: true,
+                title: `Section ${prevSections.length + 1}`,
+                isEditing: false,
+                isOpen: true,  // New section starts open by default
+                fields: [
+                    {
+                        id: Date.now(),
+                        label: "",
+                        type: "text",
+                        value: "",
+                        options: [],
+                    },
+                ],
+            };
+
+            const currentIndex = prevSections.findIndex(section => section.id === currentSectionId);
+            const updatedSections = [
+                ...prevSections.slice(0, currentIndex + 1),
+                newSection,
+                ...prevSections.slice(currentIndex + 1),
+            ];
+
+            return updatedSections;
+        });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const submitformData = {
+
+        // Prepare standalone fields
+        const standaloneFieldsData = standaloneFields.map((field) => ({
+            label: field.label,
+            type: field.type,
+            value: field.value,
+            options: field.options,
+        }));
+
+        // Prepare section fields
+        const sectionFields = sections.reduce((acc, section, index) => {
+            const sectionTitle = section.title || `Section ${index + 1}`;
+            // acc[sectionTitle] = section.fields.map((field) => ({
+            //     label: field.label,
+            //     type: field.type,
+            //     value: field.value,
+            //     options: field.options,
+            // }));
+            acc[sectionTitle] = {
+                enabled: section.enabled,  // Include switch value
+                ...section.fields.map((field) => ({
+                  label: field.label,
+                  type: field.type,
+                  value: field.value,
+                  options: field.options,
+                })),
+              };
+            return acc;
+        }, {});
+
+        // Combine standalone fields directly with section fields
+        const postDescription = {
+            ...sectionFields,
+            ...standaloneFieldsData,
+        };
+
+        const submitFormData = {
             post_title: formData.post_title,
             post_type: formData.post_type,
             ordering: formData.ordering,
-
-            post_description: fields.map(field => ({
-                label: field.label,
-                type: field.type,
-                value: field.value,
-                options: field.options
-
-            }))
+            post_description: postDescription,
         };
 
         try {
-            const response = await Authapi.dynamicupdatedata(id, submitformData);
+            let response;
+            if (id) {
+                // If an ID exists, update the existing entry
+                response = await Authapi.dynamicupdatedata(id, submitFormData);
+            } else {
+                // Otherwise, create a new entry
+                response = await Authapi.Dynamicstoredata(submitFormData);
+            }
+
             if (response) {
-                Swal.fire('Success', 'Data submitted successfully!', 'success');
-                navigate('/dynamic-list-data');
-                // fetchData();
+                Swal.fire("Success", "Data submitted successfully!", "success");
+                navigate("/dynamic-list-data");
             }
         } catch (error) {
-            console.log('Error submitting data:', error);
-            Swal.fire('Error', 'There was an issue with your submission.', 'error');
+            console.log("Error submitting data:", error);
+            Swal.fire("Error", "There was an issue with your submission.", "error");
         }
     };
 
-    const preventTextAndMinus = (e) => {
+    const handleEditSection = (sectionId) => {
+        setSections(sections.map(section =>
+            section.id === sectionId ? { ...section, isEditing: !section.isEditing } : section
+        ));
+    };
 
-        const allowedKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Enter', 'NumpadAdd', 'NumpadSubtract'];
+    const handleSwitchChange = (sectionId) => {
+        setSections(sections.map(section =>
+            section.id === sectionId ? { ...section, enabled: !section.enabled } : section
+        ));
+    };
 
-        if (
-            !/^[0-9]$/.test(e.key) &&
-            !allowedKeys.includes(e.key)
-        ) {
-            e.preventDefault();
-        }
+    // Add this new handler for form data changes
+    const handleFormDataChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
+
+
+    const handleAddStandaloneField = () => {
+        const newField = { id: Date.now(), label: "", type: "text", value: "", options: [] };
+        setStandaloneFields([...standaloneFields, newField]);
+    };
+
+    const handleAddFieldAfter = (fieldId) => {
+        const newField = { id: Date.now(), label: "", type: "text", value: "", options: [] };
+        setStandaloneFields((prevFields) => {
+            const index = prevFields.findIndex((f) => f.id === fieldId);
+            return [
+                ...prevFields.slice(0, index + 1),
+                newField,
+                ...prevFields.slice(index + 1),
+            ];
+        });
     };
 
     return (
         <>
             <Expired />
             <div className="col-md-12">
-            <div className="row mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
+                <div className="row mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
                     <div className="card-header Form-main-title">
                         <Typography variant="h6" className="title" align="center">Update Dynamic Post</Typography>
                     </div>
@@ -161,7 +387,7 @@ const DynamicEditForm = ({ existingData }) => {
                                             className='field-of-dynamic-from'
                                             fullWidth
                                             value={formData.post_title}
-                                            onChange={handleTitleChange}
+                                            onChange={handleFormDataChange}
                                             style={{
                                                 marginBottom: '15px',
                                                 backgroundColor: '#f4f6f8',
@@ -176,9 +402,8 @@ const DynamicEditForm = ({ existingData }) => {
                                             className='field-of-dynamic-from'
                                             fullWidth
                                             min="0"
-                                            onKeyPress={preventTextAndMinus}
                                             value={formData.ordering}
-                                            onChange={handleTitleChange}
+                                            onChange={handleFormDataChange}
                                             style={{
                                                 marginBottom: '15px',
                                                 backgroundColor: '#f4f6f8',
@@ -194,7 +419,7 @@ const DynamicEditForm = ({ existingData }) => {
                                                 className='dropdown-css-change field-of-dynamic-from'
                                                 name="post_type"
                                                 value={formData.post_type}
-                                                onChange={handleTitleChange}
+                                                onChange={handleFormDataChange}
                                                 fullWidth
                                                 style={{
                                                     backgroundColor: '#f4f6f8',
@@ -203,115 +428,114 @@ const DynamicEditForm = ({ existingData }) => {
                                             >
                                                 <MenuItem value="custom_post">Custom Post</MenuItem>
                                                 <MenuItem value="normal_post">Normal Post</MenuItem>
-
                                             </Select>
                                         </FormControl>
                                     </Grid>
                                 </Grid>
 
-                                {fields.map((field) => (
-                                    <div key={field.id} style={{ marginBottom: '30px', marginTop: '30px' }}>
-                                        <Grid container spacing={3}>
-                                            <Grid item xs={12} sm={5}>
-                                                <TextField
-                                                    label="Label"
-                                                    name="label"
-                                                    className='field-of-dynamic-from'
-                                                    fullWidth
-                                                    value={field.label}
-                                                    onChange={(e) => handleInputChange(e, field.id)}
-                                                    style={{
-                                                        marginBottom: '15px',
-                                                        backgroundColor: '#f4f6f8',
-                                                        borderRadius: '5px'
+                                <Grid container justifyContent="flex-end" style={{ marginBottom: "40px" }}>
+                                    <Grid item>
+                                        <Tooltip title="Add New Field">
+                                            <IconButton
+                                                aria-label="add-new-field"
+                                                color="primary"
+                                                className='action-button'
+                                                onClick={handleAddStandaloneField}
+                                                style={{ marginBottom: "15px" }}
+                                            >
+                                                <FaCirclePlus />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Grid>
+                                </Grid>
+                                {standaloneFields.map((field) => (
+                                    <Grid container spacing={3} key={field.id} style={{ marginTop: "10px", marginBottom: "20px" }}>
+                                        <Grid item xs={12} sm={5}>
+                                            <TextField
+                                                label="Label"
+                                                name="label"
+                                                value={field.label}
+                                                onChange={(e) => {
+                                                    const { name, value } = e.target;
+                                                    setStandaloneFields((prevFields) =>
+                                                        prevFields.map((f) => (f.id === field.id ? { ...f, [name]: value } : f))
+                                                    );
+                                                }}
+                                                fullWidth
+                                                style={{
+                                                    marginBottom: "15px",
+                                                    backgroundColor: "#f4f6f8",
+                                                    borderRadius: "5px",
+                                                }}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} sm={5}>
+                                            <FormControl fullWidth style={{ marginBottom: "15px" }}>
+                                                <InputLabel>Field Type</InputLabel>
+                                                <Select
+                                                    label="Field Type"
+                                                    name="type"
+                                                    value={field.type}
+                                                    onChange={(e) => {
+                                                        const { value } = e.target;
+                                                        setStandaloneFields((prevFields) =>
+                                                            prevFields.map((f) => (f.id === field.id ? { ...f, type: value } : f))
+                                                        );
                                                     }}
-                                                />
-                                            </Grid>
-
-                                            <Grid item xs={12} sm={5}>
-                                                <FormControl fullWidth style={{ marginBottom: '15px' }}>
-                                                    <InputLabel>Field Type</InputLabel>
-                                                    <Select
-                                                        label="Field Type"
-                                                        className='dropdown-css-change field-of-dynamic-from'
-                                                        name="type"
-                                                        value={field.type}
-                                                        onChange={(e) => handleTypeChange(e, field.id)}
-                                                        fullWidth
-                                                        style={{
-                                                            backgroundColor: '#f4f6f8',
-                                                            borderRadius: '5px'
-                                                        }}
-                                                    >
-                                                        <MenuItem value="text">Text</MenuItem>
-                                                        <MenuItem value="file">File</MenuItem>
-                                                        <MenuItem value="textarea">Textarea</MenuItem>
-                                                        <MenuItem value="number">Number</MenuItem>
-                                                        <MenuItem value="checkbox">Checkbox</MenuItem>
-                                                        <MenuItem value="radio">Radio</MenuItem>
-                                                        <MenuItem value="date">Date</MenuItem>
-                                                        <MenuItem value="button">Button</MenuItem>
-                                                        <MenuItem value="email">Email</MenuItem>
-                                                        <MenuItem value="password">Password</MenuItem>
-                                                        <MenuItem value="url">Url</MenuItem>
-                                                        <MenuItem value="dropdown">Dropdown</MenuItem>
-                                                        <MenuItem value="color">Color</MenuItem>
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-
-                                            <Grid item xs={12} sm={2} className='dynamic-field-two-btns'>
-                                                {/* <Button
-                                                    variant="contained"
-                                                    color="error"
-                                                    onClick={() => handleRemoveField(field.id)}
+                                                    fullWidth
                                                     style={{
-                                                        marginTop: '15px',
-                                                        fontSize: "larger",
-                                                        backgroundColor: '#d32f2f',
-                                                        '&:hover': {
-                                                            backgroundColor: '#c62828'
-                                                        }
+                                                        backgroundColor: "#f4f6f8",
+                                                        borderRadius: "5px",
                                                     }}
                                                 >
-                                                    <MdDelete />
-                                                </Button> */}
-                                                <Tooltip title="Delete" className='dynamic-field-delete-btn mt-2'>
-                                                    <IconButton aria-label="delete" color='primary'>
-                                                        <MdDelete onClick={() => handleRemoveField(field.id)} />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                {/* </Grid> */}
-                                                {/* <Grid item xs={12} sm={2}> */}
-                                                {/* <Button
-                                                    variant="contained"
+                                                    <MenuItem value="text">Text</MenuItem>
+                                                    <MenuItem value="file">File</MenuItem>
+                                                    <MenuItem value="textarea">Textarea</MenuItem>
+                                                    <MenuItem value="number">Number</MenuItem>
+                                                    <MenuItem value="checkbox">Checkbox</MenuItem>
+                                                    <MenuItem value="radio">Radio</MenuItem>
+                                                    <MenuItem value="date">Date</MenuItem>
+                                                    <MenuItem value="button">Button</MenuItem>
+                                                    <MenuItem value="email">Email</MenuItem>
+                                                    <MenuItem value="password">Password</MenuItem>
+                                                    <MenuItem value="url">Url</MenuItem>
+                                                    <MenuItem value="dropdown">Dropdown</MenuItem>
+                                                    <MenuItem value="color">Color</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+
+                                        <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
+                                            <Tooltip title="Add New Field">
+                                                <IconButton
+                                                    aria-label="add-field"
+                                                    color="primary"
+                                                    className='action-button'
                                                     onClick={() => handleAddFieldAfter(field.id)}
-                                                    style={{
-                                                        marginTop: '15px',
-                                                        fontSize: "larger",
-                                                        backgroundColor: '#2c9dd4',
-                                                        '&:hover': {
-                                                            backgroundColor: '#1565c0'
-                                                        }
-                                                    }}
+                                                    style={{ marginRight: "10px" }}
                                                 >
                                                     <FaCirclePlus />
-                                                </Button> */}
-                                                <Tooltip title="Add New Field" className='dynamic-field-add-btn mt-2'>
-                                                    <IconButton aria-label="add" color='primary'>
-                                                        <FaCirclePlus onClick={() => handleAddFieldAfter(field.id)} />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </Grid>
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Delete Field">
+                                                <IconButton
+                                                    aria-label="delete-field"
+                                                    color="primary"
+                                                    className='action-button'
+                                                    onClick={() => handleRemoveField(null, field.id)}
+                                                >
+                                                    <MdDelete />
+                                                </IconButton>
+                                            </Tooltip>
                                         </Grid>
-                                        {/* Handle Dropdown, Checkbox, Radio options */}
                                         {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
-                                            <Grid item xs={12} sm={4}>
+                                            <Grid item xs={12} sm={10}>
                                                 <TextField
                                                     label={`${field.type.charAt(0).toUpperCase() + field.type.slice(1)} Options (comma-separated)`}
                                                     value={field.options.join(',')}
-                                                    onChange={(e) => handleOptionChange(e, field.id)}
                                                     className='field-of-dynamic-from'
+                                                    onChange={(e) => handleOptionChange(e, null, field.id)}
                                                     fullWidth
                                                     style={{
                                                         marginBottom: '15px',
@@ -321,25 +545,186 @@ const DynamicEditForm = ({ existingData }) => {
                                                 />
                                             </Grid>
                                         )}
+                                    </Grid>
+                                ))}
+                                {sections.map((section, index) => (
+                                    <div key={section.id} style={{ marginBottom: "20px", border: "1px solid #ccc", borderRadius: "8px", padding: "10px" }} className="section-part">
+                                        <div className="section-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 10px", backgroundColor: "#f4f6f8", borderRadius: "8px" }}>
+                                            {section.isEditing ? (
+                                                <TextField
+                                                    label="Section Title"
+                                                    value={section.title}
+                                                    onChange={(e) => handleTitleChange(e, section.id)}
+                                                    style={{ width: "200px", marginRight: "10px" }}
+                                                />
+                                            ) : (
+                                                <Typography variant="h6" style={{ margin: "0" }}>{section.title}</Typography>
+                                            )}
+                                            <div>
+                                                <Switch
+                                                    checked={section.enabled === true}
+                                                    onChange={() => handleSwitchChange(section.id)}
+                                                    color="primary"
+                                                    className="section-switch"
+                                                />
+                                                <Tooltip title={section.isEditing ? "Save Title" : "Edit Section"}>
+                                                    <IconButton
+                                                        aria-label="edit-section"
+                                                        color="primary"
+                                                        className="action-button"
+                                                        onClick={() => handleEditSection(section.id)}
+                                                    >
+                                                        {section.isEditing ? <FaCheckCircle /> : <FaEdit />}
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title={section.isOpen ? "Collapse Section" : "Expand Section"}>
+                                                    <IconButton
+                                                        aria-label="toggle-section"
+                                                        color="primary"
+                                                        className="action-button"
+                                                        onClick={() => handleToggleSection(section.id)}
+                                                    >
+                                                        {section.isOpen ? <FaChevronUp /> : <FaChevronDown />}
+                                                    </IconButton>
+                                                </Tooltip>
+                                                {/* <Tooltip title="Add Section">
+                                                    <IconButton
+                                                        aria-label="add-section"
+                                                        color="primary"
+                                                        className="action-button"
+                                                        onClick={handleAddSection}
+                                                        style={{ marginLeft: "10px" }}
+                                                    >
+                                                        <FaPlusCircle />
+                                                    </IconButton>
+                                                </Tooltip> */}
+                                                <Tooltip title="Add New Section">
+                                                    <IconButton
+                                                        aria-label="add-section"
+                                                        color="primary"
+                                                        className='action-button'
+                                                        onClick={() => handleAddSection(section.id)}
+                                                    >
+                                                        <FaPlusCircle />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                {/* Conditionally render the Delete Section button for all sections except the first one */}
+                                                {index !== 0 && (
+                                                    <Tooltip title="Delete Section">
+                                                        <IconButton
+                                                            aria-label="delete-section"
+                                                            color="primary"
+                                                            className="action-button"
+                                                            onClick={() => handleRemoveSection(section.id)}
+                                                            style={{ marginLeft: "10px" }}
+                                                        >
+                                                            <MdDelete />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <Collapse in={section.isOpen}>
+                                            <div style={{ padding: "10px" }}>
+                                                {section.fields.map((field, fieldIndex) => (
+                                                    <Grid container spacing={3} key={field.id} style={{ marginTop: "10px" }}>
+                                                        <Grid item xs={12} sm={5}>
+                                                            <TextField
+                                                                label="Label"
+                                                                name="label"
+                                                                className="field-of-dynamic-from"
+                                                                value={field.label}
+                                                                onChange={(e) => handleInputChange(e, section.id, field.id)}
+                                                                fullWidth
+                                                                style={{
+                                                                    marginBottom: "15px",
+                                                                    backgroundColor: "#f4f6f8",
+                                                                    borderRadius: "5px",
+                                                                }}
+                                                            />
+                                                        </Grid>
+
+                                                        <Grid item xs={12} sm={5}>
+                                                            <FormControl fullWidth style={{ marginBottom: "15px" }}>
+                                                                <InputLabel>Field Type</InputLabel>
+                                                                <Select
+                                                                    label="Field Type"
+                                                                    name="type"
+                                                                    className="field-of-dynamic-from"
+                                                                    value={field.type}
+                                                                    onChange={(e) => handleTypeChange(e, section.id, field.id)}
+                                                                    fullWidth
+                                                                    style={{
+                                                                        backgroundColor: "#f4f6f8",
+                                                                        borderRadius: "5px",
+                                                                    }}
+                                                                >
+                                                                    <MenuItem value="text">Text</MenuItem>
+                                                                    <MenuItem value="file">File</MenuItem>
+                                                                    <MenuItem value="textarea">Textarea</MenuItem>
+                                                                    <MenuItem value="number">Number</MenuItem>
+                                                                    <MenuItem value="checkbox">Checkbox</MenuItem>
+                                                                    <MenuItem value="radio">Radio</MenuItem>
+                                                                    <MenuItem value="date">Date</MenuItem>
+                                                                    <MenuItem value="button">Button</MenuItem>
+                                                                    <MenuItem value="email">Email</MenuItem>
+                                                                    <MenuItem value="password">Password</MenuItem>
+                                                                    <MenuItem value="url">Url</MenuItem>
+                                                                    <MenuItem value="dropdown">Dropdown</MenuItem>
+                                                                    <MenuItem value="color">Color</MenuItem>
+                                                                </Select>
+                                                            </FormControl>
+                                                        </Grid>
+
+                                                        <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
+                                                            <Tooltip title="Add New Field">
+                                                                <IconButton
+                                                                    aria-label="add-field"
+                                                                    color="primary"
+                                                                    className="action-button"
+                                                                    onClick={() => handleAddField(section.id, field.id)}
+                                                                    style={{ marginRight: "10px" }}
+                                                                >
+                                                                    <FaCirclePlus />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                            {fieldIndex !== 0 && (
+                                                                <Tooltip title="Delete Field">
+                                                                    <IconButton
+                                                                        aria-label="delete"
+                                                                        color="primary"
+                                                                        className="action-button"
+                                                                        onClick={() => handleRemoveField(section.id, field.id)}
+                                                                    >
+                                                                        <MdDelete />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            )}
+                                                        </Grid>
+                                                        {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
+                                                            <Grid item xs={12} sm={10}>
+                                                                <TextField
+                                                                    label={`${field.type.charAt(0).toUpperCase() + field.type.slice(1)} Options (comma-separated)`}
+                                                                    value={field.options.join(',')}
+                                                                    className='field-of-dynamic-from'
+                                                                    onChange={(e) => handleOptionChange(e, section.id, field.id)}
+                                                                    fullWidth
+                                                                    style={{
+                                                                        marginBottom: '15px',
+                                                                        backgroundColor: '#f4f6f8',
+                                                                        borderRadius: '5px'
+                                                                    }}
+                                                                />
+                                                            </Grid>
+                                                        )}
+                                                    </Grid>
+                                                ))}
+                                            </div>
+                                        </Collapse>
                                     </div>
                                 ))}
 
-                                 {/*  Working code for add field btn 21-01-25 START  */}
-                                {/* <Button
-                                    variant="contained"
-                                    onClick={handleAddField}
-                                    style={{
-                                        marginLeft: '40%',
-                                        fontSize: 'larger',
-                                        backgroundColor: '#2c9dd4',
-                                        '&:hover': {
-                                            backgroundColor: '#1565c0'
-                                        }
-                                    }}
-                                >
-                                    <FaCirclePlus />
-                                </Button> */}
-                                {/*  Working code for add field btn 21-01-25 END  */}
 
                                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
                                     <Grid item>
@@ -363,4 +748,4 @@ const DynamicEditForm = ({ existingData }) => {
     );
 };
 
-export default DynamicEditForm
+export default DynamicEditForm;
