@@ -408,9 +408,9 @@ import {
                     <MdDelete onClick={() => handleDelete1(params.row.id)} />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Active">
+                <Tooltip title={params.row.status ? 'Inactive' : 'Active'}>
                   <Switch
-                    className="action-button"
+                    className="action-button switch-class"
                     key={params.row.id}
                     checked={params.row.status}
                     size="xs"
@@ -494,12 +494,13 @@ import {
             }}
           >
             <div className="card-header col-6 dynamic-post-section">
-              <h5 className="title ">Post</h5>
+              <h5 className="title">Post</h5>
               <IconButton
                 className="dynamic-post-add-btn"
                 aria-label="add"
                 color="primary"
                 onClick={handleAddNavigate}
+                title="Add New Post"
               >
                 <MdAdd />
               </IconButton>

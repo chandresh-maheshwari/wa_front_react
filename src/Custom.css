@@ -281,9 +281,7 @@
   text-transform: capitalize !important;
 }
 
-.css-jsexje-MuiSwitch-thumb {
-  background-color: #113B4F !important
-}
+
 
 .sidebar .nav li>a {
   text-transform: capitalize;
@@ -367,14 +365,6 @@
 }
 
 
-.page-add-btn svg,
-.dynamic-post-add-btn svg,
-.post-add-btn svg {
-  background-color: rgb(15, 50, 67);
-  color: #fff;
-  border-radius: 50%;
-  font-size: 22px;
-}
 
 /* css for table dropdown size date-20-01-25 */
 /* .MuiInputBase-root.MuiOutlinedInput-root .MuiInputBase-colorPrimary .MuiInputBase-formControl   
@@ -413,24 +403,48 @@
 /* Styling the scrollbar */
 .MuiDataGrid-virtualScroller::-webkit-scrollbar {
   width: 12px;
-  /* Horizontal scrollbar width */
   height: 12px;
-  /* Vertical scrollbar height */
 }
 
 .MuiDataGrid-virtualScroller::-webkit-scrollbar-track {
   background-color: #f1f1f1;
-  /* Track color */
   border-radius: 10px;
 }
 
 .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb {
   background-color: #113b4f;
-  /* Thumb color */
   border-radius: 10px;
 }
 
 .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+
+
+/* Styling the scrollbar */
+.MuiDataGrid-virtualScroller::-webkit-scrollbar, .sidebar-wrapper::-webkit-scrollbar {
+  width: 12px;
+  /* Horizontal scrollbar width */
+  height: 12px;
+  /* Vertical scrollbar height */
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-track, .sidebar-wrapper::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  /* Track color */
+  border-radius: 10px;
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb, .sidebar-wrapper::-webkit-scrollbar-thumb {
+  background-color: #325566;
+  /* background-color: #113b4f; */
+  /* background-color: #8bb4dd; */
+  /* Thumb color */
+  border-radius: 10px;
+}
+
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover, .sidebar-wrapper::-webkit-scrollbar-thumb:hover {
   background-color: #555;
   /* Thumb hover color */
 }
@@ -734,3 +748,26 @@ td {
 }
 
 /* Added on 24-01-25 END */
+
+
+/* .css-jsexje-MuiSwitch-thumb { */
+.switch-class span .MuiSwitch-thumb  {
+  background-color: #113B4F !important
+}
+
+.action-filter-div{
+  background-color: #ffffff;
+}
+
+.page-add-btn svg,
+.dynamic-post-add-btn svg,
+.post-add-btn svg {
+  background-color: rgb(15, 50, 67);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 22px;
+}
+
+/* .sidebar-wrapper{
+
+} */

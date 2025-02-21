@@ -551,7 +551,7 @@ const DynamicForm = () => {
                           <MenuItem value="checkbox">Checkbox</MenuItem>
                           <MenuItem value="radio">Radio</MenuItem>
                           <MenuItem value="date">Date</MenuItem>
-                          <MenuItem value="button">Button</MenuItem>
+                          {/* <MenuItem value="button">Button</MenuItem> */}
                           <MenuItem value="email">Email</MenuItem>
                           <MenuItem value="password">Password</MenuItem>
                           <MenuItem value="url">Url</MenuItem>
@@ -633,6 +633,7 @@ const DynamicForm = () => {
                           onChange={() => handleSwitchChange(section.id)}
                           className='action-button'
                           color="primary"
+                          title={section.switchEnabled ? "Hide Section" : "Show Section"}
                         />
                         <Tooltip title={section.isEditingTitle ? "Save Title" : "Edit Section"}>
                           <IconButton
@@ -748,7 +749,7 @@ const DynamicForm = () => {
                                   <MenuItem value="checkbox">Checkbox</MenuItem>
                                   <MenuItem value="radio">Radio</MenuItem>
                                   <MenuItem value="date">Date</MenuItem>
-                                  <MenuItem value="button">Button</MenuItem>
+                                  {/* <MenuItem value="button">Button</MenuItem> */}
                                   <MenuItem value="email">Email</MenuItem>
                                   <MenuItem value="password">Password</MenuItem>
                                   <MenuItem value="url">Url</MenuItem>

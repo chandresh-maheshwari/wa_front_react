@@ -117,16 +117,67 @@ const PostDynamicEdit = () => {
         }
     };
 
+    // const handleInputChange = (fieldLabel, fieldType, sectionTitle = '') => (event, option) => {
+    //     let value;
+
+    //     if (fieldType === 'checkbox') {
+    //         const currentValues = sectionTitle
+    //             ? formData[sectionTitle]?.[fieldLabel] || []
+    //             : formData[fieldLabel] || [];
+    //         value = currentValues.includes(option)
+    //             ? currentValues.filter(item => item !== option)
+    //             : [...currentValues, option];
+    //     } else if (fieldType === 'radio' || fieldType === 'dropdown') {
+    //         value = event.target.value;
+    //     } else if (fieldType === 'file') {
+    //         value = event.target.files[0];
+    //     } else {
+    //         value = event.target.value;
+    //     }
+
+    //     setErrors(prevErrors => ({
+    //         ...prevErrors,
+    //         [fieldLabel]: '',
+    //     }));
+
+    //     if (sectionTitle) {
+    //         setFormData(prevFormData => {
+    //             const updatedSection = {
+    //                 ...prevFormData[sectionTitle],
+    //                 [fieldLabel]: value,
+    //             };
+    //             return {
+    //                 ...prevFormData,
+    //                 [sectionTitle]: updatedSection,
+    //             };
+    //         });
+    //     } else {
+    //         setFormData(prevFormData => {
+    //             const updatedData = {
+    //                 ...prevFormData,
+    //                 [fieldLabel]: value,
+    //             };
+    //             return updatedData;
+    //         });
+    //     }
+    // };
     const handleInputChange = (fieldLabel, fieldType, sectionTitle = '') => (event, option) => {
         let value;
 
         if (fieldType === 'checkbox') {
-            const currentValues = sectionTitle
-                ? formData[sectionTitle]?.[fieldLabel] || []
-                : formData[fieldLabel] || [];
-            value = currentValues.includes(option)
-                ? currentValues.filter(item => item !== option)
-                : [...currentValues, option];
+            console.log(formData[fieldLabel]);
+            const currentValues = Array.isArray(sectionTitle ? formData[sectionTitle]?.[fieldLabel] : formData[fieldLabel])
+                ? sectionTitle ? formData[sectionTitle]?.[fieldLabel] : formData[fieldLabel]
+                : [];
+
+            console.log(currentValues);
+
+            if (currentValues.includes(option)) {
+                value = currentValues.filter(item => item !== option);
+            } else {
+                value = [...currentValues, option];
+            }
+            console.log(value);
         } else if (fieldType === 'radio' || fieldType === 'dropdown') {
             value = event.target.value;
         } else if (fieldType === 'file') {
@@ -144,23 +195,24 @@ const PostDynamicEdit = () => {
             setFormData(prevFormData => {
                 const updatedSection = {
                     ...prevFormData[sectionTitle],
-                    [fieldLabel]: value,
+                    [fieldLabel]: value, 
                 };
                 return {
                     ...prevFormData,
-                    [sectionTitle]: updatedSection,
+                    [sectionTitle]: updatedSection, 
                 };
             });
         } else {
-            setFormData(prevFormData => {
-                const updatedData = {
-                    ...prevFormData,
-                    [fieldLabel]: value,
-                };
-                return updatedData;
-            });
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                [fieldLabel]: value,
+            }));
         }
     };
+
+
+
+
 
     const validate = () => {
         return true;
@@ -227,7 +279,7 @@ const PostDynamicEdit = () => {
             const response = await Authapi.postdynamicupdatedata(id, submitFormData);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
-                navigate('/post-list', { state: { post_title } });
+                // navigate('/post-list', { state: { post_title } });
             } else {
                 Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
             }
@@ -267,6 +319,40 @@ const PostDynamicEdit = () => {
                                                     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                 </FormControl>
                                             ) : field.type === 'checkbox' ? (
+                                                // <div>
+                                                //     <Typography variant="body1">{field.label}</Typography>
+                                                //     {field.options && field.options.map((option, idx) => (
+                                                //         <FormControlLabel
+                                                //             key={idx}
+                                                //             control={
+                                                //                 <Checkbox
+                                                //                     checked={formData[field.label]?.includes(option)}
+                                                //                     onChange={(e) => handleInputChange(field.label, field.type)(e, option)}
+                                                //                     value={option}
+                                                //                 />
+                                                //             }
+                                                //             label={option}
+                                                //         />
+                                                //     ))}
+                                                //     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                // </div>
+                                                // <div>
+                                                //     <Typography variant="body1">{field.label}</Typography>
+                                                //     {field.options && field.options.map((option, idx) => (
+                                                //         <FormControlLabel
+                                                //             key={idx}
+                                                //             control={
+                                                //                 <Checkbox
+                                                //                     checked={formData[field.label]?.includes(option)}
+                                                //                     onChange={(e) => handleInputChange(field.label, field.type, '')(e, option)}
+                                                //                     value={option}
+                                                //                 />
+                                                //             }
+                                                //             label={option}
+                                                //         />
+                                                //     ))}
+                                                //     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                // </div>
                                                 <div>
                                                     <Typography variant="body1">{field.label}</Typography>
                                                     {field.options && field.options.map((option, idx) => (
@@ -274,16 +360,19 @@ const PostDynamicEdit = () => {
                                                             key={idx}
                                                             control={
                                                                 <Checkbox
-                                                                    checked={formData[field.label]?.includes(option)}
-                                                                    onChange={(e) => handleInputChange(field.label, field.type)(e, option)}
-                                                                    value={option}
+                                                                    checked={formData[field.label]?.includes(option)}  
+                                                                    onChange={(e) => handleInputChange(field.label, field.type, '')(e, option)}  
+                                                                    value={option}  
                                                                 />
                                                             }
-                                                            label={option}
+                                                            label={option}  
                                                         />
                                                     ))}
                                                     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                 </div>
+
+
+
                                             ) : field.type === 'radio' ? (
                                                 <div>
                                                     <Typography variant="body1">{field.label}</Typography>
@@ -403,7 +492,7 @@ const PostDynamicEdit = () => {
                                                 )}
                                         </Grid>
                                     ))}
-                                    
+
                                     {sections.map((section, sectionIndex) => (
                                         <Grid item xs={12} key={sectionIndex}>
                                             <div style={{ border: "1px solid #ccc", borderRadius: "8px", padding: "10px" }}>
@@ -468,7 +557,7 @@ const PostDynamicEdit = () => {
                                                                 </div>
                                                             ) : field.type === 'color' ? (
                                                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                   
+
                                                                     <TextField
                                                                         label={field.label}
                                                                         type="text"
@@ -491,7 +580,7 @@ const PostDynamicEdit = () => {
                                                                 </div>
                                                             ) : field.type === 'file' ? (
                                                                 <div>
-                                                                     {console.log(section.title.replace(/\s+/g, '_'))}
+                                                                    {console.log(section.title.replace(/\s+/g, '_'))}
                                                                     <TextField
                                                                         label={field.label}
                                                                         type="file"

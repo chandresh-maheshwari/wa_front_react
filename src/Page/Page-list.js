@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import Swal from "sweetalert2";
 import { FaEdit } from "react-icons/fa";
-import { MdDelete, MdAdd,MdRestore } from "react-icons/md";
+import { MdDelete, MdAdd, MdRestore } from "react-icons/md";
 import {
   Container,
   IconButton,
@@ -44,11 +44,11 @@ const PageList = () => {
     try {
       const response = await Authapi.pageListData();
       console.log("API Response:", response); // Log the API response
-  
+
       if (Array.isArray(response.results)) {
         const formattedData = response.results.map((item, index) => ({
           id: item.id,
-          sr_no: index , // Ensure sr_no starts from 1
+          sr_no: index, // Ensure sr_no starts from 1
           status: item.status,
           page_status: item.page_status,
           page_name: item.page_name,
@@ -57,9 +57,9 @@ const PageList = () => {
           ordering: item.ordering,
           deleted_at: item.deleted_at,
         }));
-  
+
         console.log("Formatted Data:", formattedData); // Log the formatted data
-  
+
         setRows(formattedData); // Set all data, including deleted
         applyFilter(formattedData, statusFilter);
         setFilteredRows(formattedData.filter((row) => row.deleted_at === 0));
@@ -128,31 +128,31 @@ const PageList = () => {
     setSearchQuery(query);
 
     if (query) {
-        // Determine the filter based on the statusFilter
-        const filtered = rows
-            .filter((row) => {
-                if (statusFilter === "all") {
-                    return row.deleted_at === 0;
-                } else if (statusFilter === "deleted") {
-                    return row.deleted_at === 1;
-                }
-                return false;
-            })
-            .filter((row) => {
-                return Object.values(row).some((value) =>
-                    String(value).toLowerCase().includes(query.toLowerCase())
-                );
-            });
-        setFilteredRows(filtered);
+      // Determine the filter based on the statusFilter
+      const filtered = rows
+        .filter((row) => {
+          if (statusFilter === "all") {
+            return row.deleted_at === 0;
+          } else if (statusFilter === "deleted") {
+            return row.deleted_at === 1;
+          }
+          return false;
+        })
+        .filter((row) => {
+          return Object.values(row).some((value) =>
+            String(value).toLowerCase().includes(query.toLowerCase())
+          );
+        });
+      setFilteredRows(filtered);
     } else {
-        // Apply the current status filter when the search query is cleared
-        if (statusFilter === "all") {
-            setFilteredRows(rows.filter((row) => row.deleted_at === 0));
-        } else if (statusFilter === "deleted") {
-            setFilteredRows(rows.filter((row) => row.deleted_at === 1));
-        }
+      // Apply the current status filter when the search query is cleared
+      if (statusFilter === "all") {
+        setFilteredRows(rows.filter((row) => row.deleted_at === 0));
+      } else if (statusFilter === "deleted") {
+        setFilteredRows(rows.filter((row) => row.deleted_at === 1));
+      }
     }
-};
+  };
   // multi delete data
   const handleDelete = async (ids) => {
     if (selectedRows.length === 0) {
@@ -189,14 +189,14 @@ const PageList = () => {
         Swal.fire(
           "Error!",
           error.response?.data?.message ||
-            error.message ||
-            "Failed to delete items",
+          error.message ||
+          "Failed to delete items",
           "error"
         );
       }
     }
   };
- const handleRestore = async (id) => {
+  const handleRestore = async (id) => {
     try {
       const response = await Authapi.restorePageDeletedData(id);
       if (response) {
@@ -210,8 +210,8 @@ const PageList = () => {
       Swal.fire(
         "Error!",
         error.response?.data?.message ||
-          error.message ||
-          "Failed to restore item",
+        error.message ||
+        "Failed to restore item",
         "error"
       );
     }
@@ -246,8 +246,8 @@ const PageList = () => {
         Swal.fire(
           "Error!",
           error.response?.data?.message ||
-            error.message ||
-            "Failed to delete item",
+          error.message ||
+          "Failed to delete item",
           "error"
         );
       }
@@ -396,11 +396,11 @@ const PageList = () => {
   //     Swal.fire("Error", "Failed to load data.", "error");
   //   }
   // };
-  
+
   // useEffect(() => {
   //   fetchAndSortData();
   // }, []);
- 
+
 
 
 
@@ -478,7 +478,7 @@ const PageList = () => {
       }
     }
   };
- 
+
   const columns = [
     {
       field: "checkboxSelection",
@@ -559,7 +559,7 @@ const PageList = () => {
                   <IconButton
                     aria-label="restore"
                     color="primary"
-                      className="action-button"
+                    className="action-button"
                     onClick={() => handleRestore(params.row.id)}
                   >
                     <MdRestore />
@@ -575,7 +575,7 @@ const PageList = () => {
             <Tooltip title="Update">
               <IconButton
                 aria-label="Update"
-                  className="action-button"
+                className="action-button"
                 onClick={() => handleEdit(params.row.id)}
                 color="primary"
                 style={{ margin: "1px" }}
@@ -594,6 +594,7 @@ const PageList = () => {
             </Tooltip>
             <Tooltip title="Page Active">
               <Switch
+                className="switch-class"
                 key={params.row.id}
                 checked={params.row.status}
                 size="xs"
@@ -621,6 +622,7 @@ const PageList = () => {
             </Tooltip>
             <Tooltip title="Inner Page Active">
               <Switch
+                className="switch-class"
                 key={params.row.id}
                 checked={params.row.page_status}
                 size="xs"
@@ -702,6 +704,7 @@ const PageList = () => {
               className="page-add-btn mt-1"
               aria-label="add"
               color="primary"
+              title="Add New Page"
               onClick={handleAddNavigate}
             >
               <MdAdd />
@@ -711,7 +714,7 @@ const PageList = () => {
             <FormControl fullWidth>
               <InputLabel>Status Filter</InputLabel>
               <Select
-              className="filter_dropdown_of_main_page"
+                className="filter_dropdown_of_main_page"
                 value={statusFilter}
                 onChange={handleStatusFilterChange}
                 label="Status Filter"
@@ -734,7 +737,7 @@ const PageList = () => {
               onChange={handleSearch}
             />
           </div>
-   
+
           <div
             className="card-body"
             style={{ height: "calc(115vh - 200px)", width: "80%" }}
@@ -742,7 +745,7 @@ const PageList = () => {
             <Container style={{ height: "100%" }}>
               <div style={{ width: "100%", marginBottom: "45px" }}>
                 <div
-                  style={{ width: "100%", height: "500px", overflowY: "auto" }}
+                  style={{ width: "100%", height: "500px", overflowY: "hidden" }}
                 >
                   <DataGrid
                     rows={filteredRows}
@@ -774,56 +777,56 @@ const PageList = () => {
                     }}
                   />
                   {/* <div className="card-header col-3"> */}
-                    <FormControl
-                      fullWidth
-                      sx={{
-                        width: "20%",
-                        marginTop: "-44px",
-                        marginLeft: "10px",
-                      }}
+                  <FormControl
+                    fullWidth
+                    sx={{
+                      width: "20%",
+                      marginTop: "-44px",
+                      marginLeft: "10px",
+                    }}
+                  >
+                    <InputLabel>Action Filter</InputLabel>
+                    <Select
+                      className="filter_dropdown_of_main_page"
+                      value={actionFilter}
+                      onChange={handleActionFilterChange}
+                      label="Action Filter"
                     >
-                      <InputLabel>Action Filter</InputLabel>
-                      <Select
-                        className="filter_dropdown_of_main_page"
-                        value={actionFilter}
-                        onChange={handleActionFilterChange}
-                        label="Action Filter"
+                      <MenuItem value="all" disabled>
+                        All
+                      </MenuItem>
+                      <MenuItem
+                        value="page active"
+                        onClick={() => getActive(selectedRows)}
                       >
-                        <MenuItem value="all" disabled>
-                          All
-                        </MenuItem>
-                        <MenuItem
-                          value="page active"
-                          onClick={() => getActive(selectedRows)}
-                        >
-                          Page Active
-                        </MenuItem>
-                        <MenuItem
-                          value="page inactive"
-                          onClick={() => getInactive(selectedRows)}
-                        >
-                          Page Inactive
-                        </MenuItem>
-                        <MenuItem
-                          value="deleted"
-                          onClick={() => handleDelete(selectedRows)}
-                        >
-                          Deleted
-                        </MenuItem>
-                        <MenuItem
-                          value="inner page active"
-                          onClick={() => getMultiActive(selectedRows)}
-                        >
-                          Inner Page Active
-                        </MenuItem>
-                        <MenuItem
-                          value="inner page inactive"
-                          onClick={() => getmultiInactive(selectedRows)}
-                        >
-                          Inner Page Inactive
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
+                        Page Active
+                      </MenuItem>
+                      <MenuItem
+                        value="page inactive"
+                        onClick={() => getInactive(selectedRows)}
+                      >
+                        Page Inactive
+                      </MenuItem>
+                      <MenuItem
+                        value="deleted"
+                        onClick={() => handleDelete(selectedRows)}
+                      >
+                        Deleted
+                      </MenuItem>
+                      <MenuItem
+                        value="inner page active"
+                        onClick={() => getMultiActive(selectedRows)}
+                      >
+                        Inner Page Active
+                      </MenuItem>
+                      <MenuItem
+                        value="inner page inactive"
+                        onClick={() => getmultiInactive(selectedRows)}
+                      >
+                        Inner Page Inactive
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
                   {/* </div> */}
                 </div>
               </div>

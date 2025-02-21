@@ -259,7 +259,7 @@ const PageEdit = () => {
                                                         width="100"
                                                     />
                                                     <Tooltip title="Delete">
-                                                        <IconButton aria-label="delete" color="primary" onClick={() => handleDelete1(id, formData.image.split('/').pop())}>
+                                                        <IconButton aria-label="delete" className='action-button' color="primary" onClick={() => handleDelete1(id, formData.image.split('/').pop())}>
                                                             <MdDelete />
                                                         </IconButton>
                                                     </Tooltip>

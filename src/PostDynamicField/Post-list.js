@@ -31,7 +31,7 @@ const PostDynamicList = () => {
     const [expandedEmails, setExpandedEmails] = useState({});
     const [abc, setAbc] = useState();
     const [statusFilter, setStatusFilter] = useState('all');
-     const [actionFilter, setActionFilter] = useState("all");
+    const [actionFilter, setActionFilter] = useState("all");
 
     useEffect(() => {
         setTimeout(() => {
@@ -62,7 +62,7 @@ const PostDynamicList = () => {
                 // Filter out deleted items by default
                 const nonDeletedRows = formattedRows.filter(row => row.deleted_at !== 1);
                 setRows(formattedRows);
-                setFilteredRows(nonDeletedRows); 
+                setFilteredRows(nonDeletedRows);
             } else {
                 console.error('Invalid response structure:', response);
             }
@@ -74,7 +74,7 @@ const PostDynamicList = () => {
     };
 
 
-    
+
 
     // console.log(selectedRows.length === rows.length);
     const dynamicColumns = [
@@ -151,11 +151,12 @@ const PostDynamicList = () => {
                                 <MdDelete onClick={() => handleDelete1(params.row.id)} />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Active">
+                        <Tooltip title={params.row.status ? 'Inactive' : 'Active'}>
                             <Switch
                                 key={params.row.id}
                                 checked={params.row.status}
                                 size="xs"
+                                className='switch-class'
                                 onChange={async () => {
                                     const confirmToggle = await Swal.fire({
                                         title: 'Are you sure?',
@@ -220,7 +221,7 @@ const PostDynamicList = () => {
     const handleSearch = (event) => {
         const query = event.target.value.trim();
         setSearchQuery(query);
-    
+
         if (query) {
             // Determine the filter based on the statusFilter
             const filtered = rows
@@ -247,7 +248,7 @@ const PostDynamicList = () => {
             }
         }
     };
-    
+
 
     const handlesearchCancel = () => {
         setSearchQuery('');
@@ -255,16 +256,16 @@ const PostDynamicList = () => {
     };
 
 
-   
+
     const handleActionFilterChange = (event) => {
         const filterValue = event.target.value;
         setActionFilter(filterValue);
         setSelectedRows([]);
         applyFilter(rows, filterValue);
     };
-      
+
     const applyFilter = (data, filterValue) => {
-        console.log("Applying filter:", filterValue); 
+        console.log("Applying filter:", filterValue);
         let filteredData;
         switch (filterValue) {
             case "active":
@@ -280,12 +281,12 @@ const PostDynamicList = () => {
                 filteredData = data.filter((row) => row.deleted_at !== 1); // Exclude deleted items
         }
         setFilteredRows(filteredData.map((row, index) => ({ ...row, "Sr No": index + 1 })));
-        console.log("Filtered Rows:", filteredData); 
+        console.log("Filtered Rows:", filteredData);
     };
 
     const handleStatusFilterChange = (event) => {
         const filterValue = event.target.value;
-        console.log("Filter Changed:", filterValue); 
+        console.log("Filter Changed:", filterValue);
         setStatusFilter(filterValue);
         applyFilter(rows, filterValue);
     };
@@ -411,26 +412,26 @@ const PostDynamicList = () => {
     };
 
 
-const handleRestore = async (id) => {
-    try {
-      const response = await Authapi.restorePostDeletedData(id);
-      if (response) {
-        Swal.fire("Success!", "Item restored successfully.", "success");
-        setStatusFilter("all");
-        fetchData();
-      } else {
-        throw new Error(response?.message || "Failed to restore item");
-      }
-    } catch (error) {
-      Swal.fire(
-        "Error!",
-        error.response?.data?.message ||
-          error.message ||
-          "Failed to restore item",
-        "error"
-      );
-    }
-  };
+    const handleRestore = async (id) => {
+        try {
+            const response = await Authapi.restorePostDeletedData(id);
+            if (response) {
+                Swal.fire("Success!", "Item restored successfully.", "success");
+                setStatusFilter("all");
+                fetchData();
+            } else {
+                throw new Error(response?.message || "Failed to restore item");
+            }
+        } catch (error) {
+            Swal.fire(
+                "Error!",
+                error.response?.data?.message ||
+                error.message ||
+                "Failed to restore item",
+                "error"
+            );
+        }
+    };
 
     const handleEdit = async (id) => {
         navigate(`/post-edit/${id}`, { state: { post_title } });
@@ -480,7 +481,7 @@ const handleRestore = async (id) => {
                             <MdAdd />
                         </IconButton> */}
                         <Link className="post-add-btn " title={`Add ${post_title}`} id="listing" to="/post-form" state={{ post_title }}>
-                        <MdAdd />
+                            <MdAdd />
                         </Link>
                     </div>
 
@@ -500,22 +501,22 @@ const handleRestore = async (id) => {
                             </Select>
                         </FormControl>
                     </div> */}
-                     <div className="card-header col-3">
-                                <FormControl fullWidth>
-                                  <InputLabel>Status Filter</InputLabel>
-                                  <Select
-                                  className="filter_dropdown_of_main_page"
-                                    value={statusFilter}
-                                    onChange={handleStatusFilterChange}
-                                    label="Status Filter"
-                                  >
-                                    <MenuItem value="all">All</MenuItem>
-                                    <MenuItem value="active">Active</MenuItem>
-                                    <MenuItem value="inactive">Inactive</MenuItem>                                   
-                                    <MenuItem value="deleted">Deleted</MenuItem>
-                                  </Select>
-                                </FormControl>
-                              </div>
+                    <div className="card-header col-3">
+                        <FormControl fullWidth>
+                            <InputLabel>Status Filter</InputLabel>
+                            <Select
+                                className="filter_dropdown_of_main_page"
+                                value={statusFilter}
+                                onChange={handleStatusFilterChange}
+                                label="Status Filter"
+                            >
+                                <MenuItem value="all">All</MenuItem>
+                                <MenuItem value="active">Active</MenuItem>
+                                <MenuItem value="inactive">Inactive</MenuItem>
+                                <MenuItem value="deleted">Deleted</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
                     <div className="card-header col-3">
                         <input
                             type="search"
@@ -528,75 +529,75 @@ const handleRestore = async (id) => {
                     {/* <div className="card-body">
                         <Container>
                             <div style={{ overflowX: 'auto' }}> */}
-                            <div className="card-body" style={{ height: 'calc(115vh - 200px)', width: '80%' }}>
-                                                <Container style={{ height: '100%' }}>
-                                                        <div style={{ width: '100%', marginBottom: "45px" }}>
-                            
-                                                            <div style={{ width: '100%', height: '500px', overflowY: 'auto' }}>
-                                <DataGrid
-                                    rows={filteredRows}
-                                    columns={dynamicColumns}
-                                    initialState={{ pagination: { paginationModel } }}
-                                    pageSizeOptions={[5, 10, 20, { value: rows.length, label: 'All' }]}
-                                    loading={loading}
-                                    autoHeight={false}
-                                    onPageChange={(newPage) => setPage(newPage)}
-                                    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                                    sx={{
-                                        height: '100%',
-                                        overflow: 'hidden',
-                                        '& .MuiDataGrid-columnHeaders': {
-                                            backgroundColor: '#113b4f',
-                                            color: 'white',
-                                        },
-                                        '& .MuiDataGrid-cell': {
-                                            padding: '10px',
-                                            borderBottom: '1px solid #e0e0e0',
+                    <div className="card-body" style={{ height: 'calc(115vh - 200px)', width: '80%' }}>
+                        <Container style={{ height: '100%' }}>
+                            <div style={{ width: '100%', marginBottom: "45px" }}>
+
+                                <div style={{ width: '100%', height: '500px', overflowY: 'hidden' }}>
+                                    <DataGrid
+                                        rows={filteredRows}
+                                        columns={dynamicColumns}
+                                        initialState={{ pagination: { paginationModel } }}
+                                        pageSizeOptions={[5, 10, 20, { value: rows.length, label: 'All' }]}
+                                        loading={loading}
+                                        autoHeight={false}
+                                        onPageChange={(newPage) => setPage(newPage)}
+                                        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                                        sx={{
+                                            height: '100%',
                                             overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
-                                        },
-                                        '& .MuiDataGrid-row:hover': {
-                                            backgroundColor: '#f5f5f5',
-                                        },
-                                        // '& .MuiDataGrid-footerContainer': {
-                                        //     backgroundColor: '#2c9dd4',
-                                        //     color: 'white',
-                                        // },
-                                    }}
-                                    selectionModel={selectedRows}
-                                    onSelectionModelChange={handleSelectionChange}
-                                    onCellClick={(params, event) => {
-                                        if (event.target.closest('.MuiCheckbox-root')) {
-                                            return;
-                                        }
-                                        event.stopPropagation();
-                                    }}
-                                />
-                                 <div className="card-header col-3">
-                                 <FormControl
-                      fullWidth 
-                      sx={{
-                        maxWidth: "100%",
-                        marginTop: "-60px",
-                        marginBottom: "46px",
-                      }}
-                    >
-                            <InputLabel>Action Filter</InputLabel>
-                            <Select
-                                value={actionFilter}
-                                className='filter_dropdown_of_main_page'
-                                onChange={handleActionFilterChange}
-                                label="Action Filter"
-                            >
-                                <MenuItem value="all" disabled>All</MenuItem>
-                                <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
-                                <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
-                                <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </div>
-                            </div>
+                                            '& .MuiDataGrid-columnHeaders': {
+                                                backgroundColor: '#113b4f',
+                                                color: 'white',
+                                            },
+                                            '& .MuiDataGrid-cell': {
+                                                padding: '10px',
+                                                borderBottom: '1px solid #e0e0e0',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                whiteSpace: 'nowrap',
+                                            },
+                                            '& .MuiDataGrid-row:hover': {
+                                                backgroundColor: '#f5f5f5',
+                                            },
+                                            // '& .MuiDataGrid-footerContainer': {
+                                            //     backgroundColor: '#2c9dd4',
+                                            //     color: 'white',
+                                            // },
+                                        }}
+                                        selectionModel={selectedRows}
+                                        onSelectionModelChange={handleSelectionChange}
+                                        onCellClick={(params, event) => {
+                                            if (event.target.closest('.MuiCheckbox-root')) {
+                                                return;
+                                            }
+                                            event.stopPropagation();
+                                        }}
+                                    />
+                                    <div className="card-header col-3 action-filter-div">
+                                        <FormControl
+                                            fullWidth
+                                            sx={{
+                                                maxWidth: "100%",
+                                                marginTop: "-60px",
+                                                marginBottom: "46px",
+                                            }}
+                                        >
+                                            <InputLabel>Action Filter</InputLabel>
+                                            <Select
+                                                value={actionFilter}
+                                                className='filter_dropdown_of_main_page'
+                                                onChange={handleActionFilterChange}
+                                                label="Action Filter"
+                                            >
+                                                <MenuItem value="all" disabled>All</MenuItem>
+                                                <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
+                                                <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
+                                                <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </div>
+                                </div>
                             </div>
                         </Container>
                     </div>

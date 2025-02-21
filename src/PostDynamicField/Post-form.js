@@ -59,13 +59,15 @@ const PostFormDynamic = () => {
             value = currentValues.includes(option)
                 ? currentValues.filter(item => item !== option)
                 : [...currentValues, option];
-        } else if (fieldType === 'radio' || fieldType === 'dropdown') {
+        } else if (fieldType === 'radio' || fieldType === 'dropdown' || fieldType === 'number') {
             value = event.target.value;
         } else if (fieldType === 'file') {
             value = event.target.files[0];
         } else {
+
             value = event.target.value;
         }
+        console.log(value);
 
         setErrors(prevErrors => ({
             ...prevErrors,
@@ -208,7 +210,7 @@ const PostFormDynamic = () => {
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
                 // setFormData({});
-                navigate('/post-list', { state: { post_title } });
+                // navigate('/post-list', { state: { post_title } });
             } else {
                 Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
             }
@@ -345,7 +347,20 @@ const PostFormDynamic = () => {
                                                     helperText={errors[field.label] || ''}
                                                 />
                                             )
-                                                : (
+                                                : field.type === 'number' ? (
+                                                    <TextField
+                                                        label={field.label}
+                                                        type='number'
+                                                        value={formData['']?.[field.label] || ''}
+                                                        onChange={handleInputChange(field.label, field.type, '')}
+                                                        fullWidth
+                                                        InputLabelProps={{ shrink: true }}
+                                                        variant="outlined"
+                                                        margin="normal"
+                                                        error={!!errors[field.label]}
+                                                        helperText={errors[field.label] || ''}
+                                                    />
+                                                ) : (
                                                     <TextField
                                                         fullWidth
                                                         label={field.label}

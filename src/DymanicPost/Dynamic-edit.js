@@ -496,7 +496,7 @@ const DynamicEditForm = ({ existingData }) => {
                                                     <MenuItem value="checkbox">Checkbox</MenuItem>
                                                     <MenuItem value="radio">Radio</MenuItem>
                                                     <MenuItem value="date">Date</MenuItem>
-                                                    <MenuItem value="button">Button</MenuItem>
+                                                    {/* <MenuItem value="button">Button</MenuItem> */}
                                                     <MenuItem value="email">Email</MenuItem>
                                                     <MenuItem value="password">Password</MenuItem>
                                                     <MenuItem value="url">Url</MenuItem>
@@ -566,6 +566,8 @@ const DynamicEditForm = ({ existingData }) => {
                                                     onChange={() => handleSwitchChange(section.id)}
                                                     color="primary"
                                                     className="section-switch"
+                                                    title={section.enabled === true ? "Hide Section" : "Show Section"}
+
                                                 />
                                                 <Tooltip title={section.isEditing ? "Save Title" : "Edit Section"}>
                                                     <IconButton
@@ -667,7 +669,7 @@ const DynamicEditForm = ({ existingData }) => {
                                                                     <MenuItem value="checkbox">Checkbox</MenuItem>
                                                                     <MenuItem value="radio">Radio</MenuItem>
                                                                     <MenuItem value="date">Date</MenuItem>
-                                                                    <MenuItem value="button">Button</MenuItem>
+                                                                    {/* <MenuItem value="button">Button</MenuItem> */}
                                                                     <MenuItem value="email">Email</MenuItem>
                                                                     <MenuItem value="password">Password</MenuItem>
                                                                     <MenuItem value="url">Url</MenuItem>
