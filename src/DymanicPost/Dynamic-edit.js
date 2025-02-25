@@ -395,7 +395,7 @@ const DynamicEditForm = ({ existingData }) => {
                                             }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    {/* <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Ordering"
                                             name="ordering"
@@ -409,6 +409,23 @@ const DynamicEditForm = ({ existingData }) => {
                                                 backgroundColor: '#f4f6f8',
                                                 borderRadius: '5px'
                                             }}
+                                        />
+                                    </Grid> */}
+                                     <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            label="Ordering"
+                                            name="ordering"
+                                            className="field-of-dynamic-from"
+                                            fullWidth
+                                            value={formData.ordering}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                // Allow only positive numbers or empty string
+                                                if (value === '' || /^[+]?\d+(\.\d+)?$/.test(value)) {
+                                                    handleFormDataChange(e);
+                                                }
+                                            }}
+
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
