@@ -54,7 +54,7 @@ const PostDynamicList = () => {
                         id: item.id,
                         status: item.status,
                         deleted_at: item.deleted_at,
-                        "Sr No": index + 1,
+                        "Sr.No": index + 1,
                         ...filteredData,
                     };
                 });
@@ -280,7 +280,7 @@ const PostDynamicList = () => {
             default: // "all" case
                 filteredData = data.filter((row) => row.deleted_at !== 1); // Exclude deleted items
         }
-        setFilteredRows(filteredData.map((row, index) => ({ ...row, "Sr No": index + 1 })));
+        setFilteredRows(filteredData.map((row, index) => ({ ...row, "Sr.No": index + 1 })));
         console.log("Filtered Rows:", filteredData);
     };
 

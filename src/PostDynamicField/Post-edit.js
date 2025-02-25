@@ -426,7 +426,8 @@ const PostDynamicEdit = () => {
                                                     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                     {formData[field.label] instanceof File ? (
                                                         <>
-                                                            <p>New Selected image: {formData[field.label].name} </p>
+                                                            <p>New image</p>
+                                                            {/* <p>New Selected image: {formData[field.label].name} </p> */}
                                                             <img
                                                                 src={URL.createObjectURL(formData[field.label])}
                                                                 alt="Preview"
@@ -435,7 +436,8 @@ const PostDynamicEdit = () => {
                                                         </>
                                                     ) : formData[field.label] ? (
                                                         <>
-                                                            <p>Old image: {formData[field.label]?.split('/').pop()} </p>
+                                                            <p>Current image</p>
+                                                            {/* <p>Old image: {formData[field.label]?.split('/').pop()} </p> */}
                                                             <img
                                                                 src={formData[field.label]}
                                                                 alt="Current Image"
@@ -593,7 +595,8 @@ const PostDynamicEdit = () => {
                                                                     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                                     {formData[section.title]?.[field.label] instanceof File ? (
                                                                         <>
-                                                                            <p>New Selected image: {formData[section.title][field.label].name} </p>
+                                                                            {/* <p>New Selected image: {formData[section.title][field.label].name} </p> */}
+                                                                            <p>New image</p>
                                                                             <img
                                                                                 src={URL.createObjectURL(formData[section.title][field.label])}
                                                                                 alt="Preview"
@@ -602,7 +605,8 @@ const PostDynamicEdit = () => {
                                                                         </>
                                                                     ) : formData[section.title]?.[field.label] ? (
                                                                         <>
-                                                                            <p>Old image: {formData[section.title][field.label]?.split('/').pop()} </p>
+                                                                            {/* <p>Old image: {formData[section.title][field.label]?.split('/').pop()} </p> */}
+                                                                            <p>Current image</p>
                                                                             <img
                                                                                 src={formData[section.title][field.label]}
                                                                                 alt="Current Image"

@@ -52,7 +52,7 @@ const PageList = () => {
           status: item.status,
           page_status: item.page_status,
           page_name: item.page_name,
-          page_description: item.page_description,
+          // page_description: item.page_description,
           image_url: item.image_url,
           ordering: item.ordering,
           deleted_at: item.deleted_at,
@@ -502,7 +502,7 @@ const PageList = () => {
     },
     {
       field: "sr_no",
-      headerName: "Sr No",
+      headerName: "Sr.No",
       width: 90,
       flex: 1,
     },
@@ -513,13 +513,13 @@ const PageList = () => {
       flex: 1,
       renderCell: (params) => params.row.page_name || "-",
     },
-    {
-      field: "page_description",
-      headerName: "Page Description",
-      width: 200,
-      flex: 1,
-      renderCell: (params) => params.row.page_description || "-",
-    },
+    // {
+    //   field: "page_description",
+    //   headerName: "Page Description",
+    //   width: 200,
+    //   flex: 1,
+    //   renderCell: (params) => params.row.page_description || "-",
+    // },
     {
       field: "image",
       headerName: "Image",

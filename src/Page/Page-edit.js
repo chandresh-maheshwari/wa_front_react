@@ -243,7 +243,8 @@ const PageEdit = () => {
                                         {formData.image ? (
                                             formData.image instanceof File ? (
                                                 <div>
-                                                    <p>Image: {formData.image.name}</p>
+                                                    {/* <p>Image: {formData.image.name}</p> */}
+                                                    <p>New Image</p>
                                                     <img
                                                         src={URL.createObjectURL(formData.image)}
                                                         alt="Preview"
@@ -252,7 +253,8 @@ const PageEdit = () => {
                                                 </div>
                                             ) : (
                                                 <div>
-                                                    <p>{formData.image.split('/').pop()}</p>
+                                                    <p>Current Image</p>
+                                                    {/* <p>{formData.image.split('/').pop()}</p> */}
                                                     <img
                                                         src={formData.image}
                                                         alt="Current image preview"
@@ -284,7 +286,7 @@ const PageEdit = () => {
                                             >
                                                 {postTitles.length > 0 ? (
                                                     postTitles
-                                                        .filter((title) => title.post_type === 'custom_post' && title.status === 1)
+                                                        .filter((title) => title.post_type === 'custom_post' && title.status === 1  && title.deleted_at === 0)
                                                         .map((title) => (
                                                             <MenuItem key={title.id} value={title.id}>
                                                                 {title.post_title}

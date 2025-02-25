@@ -258,7 +258,7 @@ const Page = () => {
                                             >
                                                 {postTitles.length > 0 ? (
                                                     postTitles
-                                                        .filter((title) => title.post_type === 'custom_post' && title.status === 1)
+                                                        .filter((title) => title.post_type === 'custom_post' && title.status === 1 && title.deleted_at === 0)
                                                         .map((title) => (
                                                             <MenuItem key={title.id} value={title.id}>
                                                                 {title.post_title}
