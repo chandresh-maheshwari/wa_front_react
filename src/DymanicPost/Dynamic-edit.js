@@ -174,35 +174,35 @@ const DynamicEditForm = ({ existingData }) => {
     //             : section
     //     ));
     // };
-    
+
     const handleOptionChange = (e, sectionId, fieldId) => {
         const { value } = e.target;
-      
+
         // console.log("Field options before update:", value);
-      
+
         if (sectionId === null) {
-          // Update standalone fields
-          setStandaloneFields((prevFields) =>
-            prevFields.map((field) =>
-              field.id === fieldId ? { ...field, options: value.split(",") } : field
-            )
-          );
+            // Update standalone fields
+            setStandaloneFields((prevFields) =>
+                prevFields.map((field) =>
+                    field.id === fieldId ? { ...field, options: value.split(",") } : field
+                )
+            );
         } else {
-          // Update fields within sections
-          setSections(
-            sections.map((section) =>
-              section.id === sectionId
-                ? {
-                    ...section,
-                    fields: section.fields.map((field) =>
-                      field.id === fieldId ? { ...field, options: value.split(",") } : field
-                    ),
-                  }
-                : section
-            )
-          );
+            // Update fields within sections
+            setSections(
+                sections.map((section) =>
+                    section.id === sectionId
+                        ? {
+                            ...section,
+                            fields: section.fields.map((field) =>
+                                field.id === fieldId ? { ...field, options: value.split(",") } : field
+                            ),
+                        }
+                        : section
+                )
+            );
         }
-      };
+    };
 
     const handleToggleSection = (sectionId) => {
         setSections(sections.map(section =>
@@ -287,12 +287,12 @@ const DynamicEditForm = ({ existingData }) => {
             acc[sectionTitle] = {
                 enabled: section.enabled,  // Include switch value
                 ...section.fields.map((field) => ({
-                  label: field.label,
-                  type: field.type,
-                  value: field.value,
-                  options: field.options,
+                    label: field.label,
+                    type: field.type,
+                    value: field.value,
+                    options: field.options,
                 })),
-              };
+            };
             return acc;
         }, {});
 
@@ -399,18 +399,20 @@ const DynamicEditForm = ({ existingData }) => {
                                         <TextField
                                             label="Ordering"
                                             name="ordering"
-                                            className='field-of-dynamic-from'
+                                            className="field-of-dynamic-from"
                                             fullWidth
-                                            min="0"
                                             value={formData.ordering}
-                                            onChange={handleFormDataChange}
-                                            style={{
-                                                marginBottom: '15px',
-                                                backgroundColor: '#f4f6f8',
-                                                borderRadius: '5px'
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                // Allow only positive numbers or empty string
+                                                if (value === '' || /^[+]?\d+(\.\d+)?$/.test(value)) {
+                                                    handleFormDataChange(e);
+                                                }
                                             }}
+
                                         />
                                     </Grid>
+
                                     <Grid item xs={12}>
                                         <FormControl fullWidth style={{ marginTop: '15px' }}>
                                             <InputLabel>Post Type</InputLabel>

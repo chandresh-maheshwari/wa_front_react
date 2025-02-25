@@ -199,9 +199,9 @@ const DynamicForm = () => {
 
   const handleOptionChange = (e, sectionId, fieldId) => {
     const { value } = e.target;
-  
+
     // console.log("Field options before update:", value);
-  
+
     if (sectionId === null) {
       // Update standalone fields
       setStandaloneFields((prevFields) =>
@@ -215,20 +215,20 @@ const DynamicForm = () => {
         sections.map((section) =>
           section.id === sectionId
             ? {
-                ...section,
-                fields: section.fields.map((field) =>
-                  field.id === fieldId ? { ...field, options: value.split(",") } : field
-                ),
-              }
+              ...section,
+              fields: section.fields.map((field) =>
+                field.id === fieldId ? { ...field, options: value.split(",") } : field
+              ),
+            }
             : section
         )
       );
     }
   };
-  
-  
-  
-  
+
+
+
+
 
   const handleTitleChange = (e) => {
     const { name, value } = e.target;
@@ -434,18 +434,19 @@ const DynamicForm = () => {
                     <TextField
                       label="Ordering"
                       name="ordering"
-                      className='field-of-dynamic-from'
+                      className="field-of-dynamic-from"
                       fullWidth
-                      min="0"
                       value={formData.ordering}
-                      onChange={(e) => handleTitleChange(e, null)}
-                      style={{
-                        marginBottom: '15px',
-                        backgroundColor: '#f4f6f8',
-                        borderRadius: '5px'
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Allow only positive numbers or empty string
+                        if (value === '' || /^[+]?\d+(\.\d+)?$/.test(value)) {
+                          handleTitleChange(e, null);
+                        }
                       }}
                     />
                   </Grid>
+
                   <Grid item xs={12}>
                     <FormControl fullWidth style={{ marginTop: '15px' }}>
                       <InputLabel>Post Type</InputLabel>
