@@ -423,20 +423,23 @@
 
 
 /* Styling the scrollbar */
-.MuiDataGrid-virtualScroller::-webkit-scrollbar, .sidebar-wrapper::-webkit-scrollbar {
+.MuiDataGrid-virtualScroller::-webkit-scrollbar,
+.sidebar-wrapper::-webkit-scrollbar {
   width: 12px;
   /* Horizontal scrollbar width */
   height: 12px;
   /* Vertical scrollbar height */
 }
 
-.MuiDataGrid-virtualScroller::-webkit-scrollbar-track, .sidebar-wrapper::-webkit-scrollbar-track {
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-track,
+.sidebar-wrapper::-webkit-scrollbar-track {
   background-color: #f1f1f1;
   /* Track color */
   border-radius: 10px;
 }
 
-.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb, .sidebar-wrapper::-webkit-scrollbar-thumb {
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb,
+.sidebar-wrapper::-webkit-scrollbar-thumb {
   background-color: #325566;
   /* background-color: #113b4f; */
   /* background-color: #8bb4dd; */
@@ -444,7 +447,8 @@
   border-radius: 10px;
 }
 
-.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover, .sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+.MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover,
+.sidebar-wrapper::-webkit-scrollbar-thumb:hover {
   background-color: #555;
   /* Thumb hover color */
 }
@@ -530,6 +534,7 @@ td {
   list-style-type: none;
   padding-left: 0;
 }
+
 /* Added on
  22-01-25 END */
 
@@ -744,18 +749,18 @@ td {
   position: absolute !important;  */
 
   right: 45px;
-    position: absolute !important;
+  position: absolute !important;
 }
 
 /* Added on 24-01-25 END */
 
 
 /* .css-jsexje-MuiSwitch-thumb { */
-.switch-class span .MuiSwitch-thumb  {
+.switch-class span .MuiSwitch-thumb {
   background-color: #113B4F !important
 }
 
-.action-filter-div{
+.action-filter-div {
   background-color: #ffffff;
 }
 
@@ -771,3 +776,22 @@ td {
 /* .sidebar-wrapper{
 
 } */
+.MuiDataGrid-cell {
+  justify-content: center !important;
+}
+
+.table-card-body {
+  padding: 1rem 0rem 1rem 0rem !important;
+}
+
+.table-container {
+  padding: 1rem 0rem 1rem 0rem !important;
+  max-width: 100%;
+}
+
+.table-card-body div{
+  max-width: 100%;
+}
+.MuiSwitch-thumb {
+  background-color: #113B4F !important;;
+}

@@ -487,12 +487,7 @@ import {
         <div className="col-md-12">
           <div
             className="row"
-            style={{
-              marginTop: "10px",
-              marginBottom: "20px",
-              marginLeft: "262px",
-            }}
-          >
+            style={{ marginLeft: '20%', width: '80%', marginBottom: '20px', marginTop: '1%' }}>
             <div className="card-header col-6 dynamic-post-section">
               <h5 className="title">Post</h5>
               <IconButton
@@ -533,11 +528,9 @@ import {
               />
             </div>
             <div
-              className="card-body"
-              style={{ height: "calc(115vh - 200px)", width: "100%" }}
-            >
-              <Container style={{ height: "100%" }}>
-                <div style={{ height: "100%" }}>
+              className="card-body table-card-body">
+              <Container style={{ height: '500px' }}  className='table-container'>
+                <div style={{ width: '100%', height: '100%' }}>
                   <DataGrid
                     rows={filteredRows}
                     columns={columns}

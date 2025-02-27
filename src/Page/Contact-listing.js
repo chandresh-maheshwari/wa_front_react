@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { MdDelete, MdVisibility, MdRestore } from "react-icons/md";
+import { FaRegEye, FaEyeSlash, FaTimes } from "react-icons/fa";
+
 import {
   Container,
   IconButton,
@@ -376,10 +378,10 @@ const handleDelete = async (ids) => {
         
 
           <div
-            className="card-body"
+            className="card-body table-card-body"
             style={{ height: "calc(115vh - 200px)", width: "80%" }}
           >
-            <Container style={{ height: "100%" }}>
+            <Container style={{ height: "100%" }} className='table-container'>
               <div style={{ width: "100%", marginBottom: "45px" }}>
                 <div
                   style={{ width: "100%", height: "500px", overflow: "hidden" }}
@@ -453,7 +455,7 @@ const handleDelete = async (ids) => {
             backgroundColor: "#113b4f",
             color: "white",
             textAlign: "center",
-            padding: "6px",
+            padding: "10px",
           }}
         >
           Contact Details
@@ -468,6 +470,7 @@ const handleDelete = async (ids) => {
             }}
           >
             {/* Add a close icon here */}
+            <FaTimes />
           </IconButton>
         </DialogTitle>
         <DialogContent style={{ padding: "10px" }}>

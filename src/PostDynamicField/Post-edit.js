@@ -279,7 +279,7 @@ const PostDynamicEdit = () => {
             const response = await Authapi.postdynamicupdatedata(id, submitFormData);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
-                // navigate('/post-list', { state: { post_title } });
+                navigate('/post-list', { state: { post_title } });
             } else {
                 Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
             }

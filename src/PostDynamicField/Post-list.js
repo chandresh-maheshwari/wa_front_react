@@ -529,8 +529,9 @@ const PostDynamicList = () => {
                     {/* <div className="card-body">
                         <Container>
                             <div style={{ overflowX: 'auto' }}> */}
-                    <div className="card-body" style={{ height: 'calc(115vh - 200px)', width: '80%' }}>
-                        <Container style={{ height: '100%' }}>
+                    <div className="card-body table-card-body">
+                    {/* <div className="card-body table-card-body" style={{ height: 'calc(115vh - 200px)', width: '80%' }}> */}
+                        <Container style={{ height: '100%' }} className='table-container'>
                             <div style={{ width: '100%', marginBottom: "45px" }}>
 
                                 <div style={{ width: '100%', height: '500px', overflowY: 'hidden' }}>
