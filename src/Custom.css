@@ -795,3 +795,7 @@ td {
 .MuiSwitch-thumb {
   background-color: #113B4F !important;;
 }
+
+.MuiDataGrid-columnHeaderTitleContainer{
+  justify-content: center;
+}
