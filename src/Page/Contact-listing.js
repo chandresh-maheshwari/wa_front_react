@@ -39,6 +39,11 @@ const Contact = () => {
   const [actionFilter, setActionFilter] = useState("all");
 
   useEffect(() => {
+    // Check localStorage for saved status filter
+    const savedStatusFilter = localStorage.getItem("statusFilter");
+    if (savedStatusFilter) {
+      setStatusFilter(savedStatusFilter);
+    }
     fetchData();
   }, []);
 
@@ -56,12 +61,22 @@ const Contact = () => {
           deleted_at: item.deleted_at,
         }));
         setRows(formattedData);
-        const initialFilteredRows = formattedData.filter((row) => row.deleted_at === 0).map((row, index) => ({
+
+        // Apply the current status filter
+        let filtered;
+        if (statusFilter === "all") {
+          filtered = formattedData.filter((row) => row.deleted_at === 0);
+        } else if (statusFilter === "deleted") {
+          filtered = formattedData.filter((row) => row.deleted_at === 1);
+        }
+
+        // Recalculate sr_no for filtered rows
+        const updatedFilteredRows = filtered.map((row, index) => ({
           ...row,
           sr_no: index + 1,
         }));
-        setFilteredRows(initialFilteredRows);
-        // setFilteredRows(formattedData.filter((row) => row.deleted_at === 0));
+
+        setFilteredRows(updatedFilteredRows);
       } else {
         console.error("Unexpected response format", response.results);
       }
@@ -194,6 +209,9 @@ const handleDelete = async (ids) => {
     const filterValue = event.target.value;
     setStatusFilter(filterValue);
 
+    // Save the status filter to localStorage
+    localStorage.setItem("statusFilter", filterValue);
+
     let filtered;
     if (filterValue === "all") {
       filtered = rows.filter((row) => row.deleted_at === 0);
@@ -214,6 +232,7 @@ const handleDelete = async (ids) => {
     const filterValue = event.target.value;
     setActionFilter(filterValue);
     setSelectedRows([]);
+    // Reset to show active records when changing action filter
     setFilteredRows(rows.filter((row) => row.deleted_at === 0));
   };
 
@@ -222,8 +241,7 @@ const handleDelete = async (ids) => {
       const response = await Authapi.restoreContactDeletedData(id);
       if (response) {
         Swal.fire("Success!", "Item restored successfully.", "success");
-        setStatusFilter("all");
-        fetchData();
+        fetchData(); // Fetch data again to update the list
       } else {
         throw new Error(response?.message || "Failed to restore item");
       }
@@ -235,6 +253,44 @@ const handleDelete = async (ids) => {
           "Failed to restore item",
         "error"
       );
+    }
+  };
+
+  // Add this new function for handling multiple restores
+  const handleMultiRestore = async (ids) => {
+    if (selectedRows.length === 0) {
+      Swal.fire('Warning', 'Please select at least one item to restore.', 'warning');
+      return;
+    }
+
+    const confirmRestore = await Swal.fire({
+      title: "Are you sure?",
+      text: "This will restore the selected items!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#48AD3B",
+      cancelButtonColor: "#87888a",
+      confirmButtonText: "Yes, restore them!",
+    });
+
+    if (confirmRestore.isConfirmed) {
+      try {
+        const promises = ids.map((id) => Authapi.restoreContactDeletedData(id));
+        await Promise.all(promises);
+        
+        Swal.fire("Success!", "Selected items have been restored.", "success");
+        await fetchData();
+        setFilteredRows((prevRows) => prevRows.filter(row => !ids.includes(row.id)));
+
+      } catch (error) {
+        Swal.fire(
+          "Error!",
+          error.response?.data?.message ||
+            error.message ||
+            "Failed to restore items",
+          "error"
+        );
+      }
     }
   };
 
@@ -433,13 +489,21 @@ const handleDelete = async (ids) => {
                       <MenuItem value="all" disabled>
                         All
                       </MenuItem>
-                      <MenuItem
-                        value="delete"
-                        onClick={() => handleDelete(selectedRows)}
-                      >
-                        Delete
-                      </MenuItem>
-                      {/* Add more action items as needed */}
+                      {statusFilter === "deleted" ? (
+                        <MenuItem
+                          value="restore"
+                          onClick={() => handleMultiRestore(selectedRows)}
+                        >
+                          Restore
+                        </MenuItem>
+                      ) : (
+                        <MenuItem
+                          value="delete"
+                          onClick={() => handleDelete(selectedRows)}
+                        >
+                          Delete
+                        </MenuItem>
+                      )}
                     </Select>
                   </FormControl>
                 </div>
