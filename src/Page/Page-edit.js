@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
 import Swal from 'sweetalert2';
-import { Typography, Container, IconButton, Tooltip, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, FormControlLabel, Checkbox, Radio, RadioGroup } from '@mui/material';
+import { Typography, Container, IconButton, Tooltip, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, FormControlLabel, Checkbox, Radio, RadioGroup, Collapse } from '@mui/material';
 import Authapi from '../Authapi';
 
 import Expired from '../Login/ExpiredToken';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
+import { FaChevronUp, FaChevronDown } from 'react-icons/fa';
 
 
 
@@ -18,6 +19,7 @@ const PageEdit = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [errors, setErrors] = useState({})
+    const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
 
 
     useEffect(() => {
@@ -57,7 +59,12 @@ const PageEdit = () => {
                     image: event.image || '',
                     ordering: event.ordering || '',
                     post_type: event.post_type || '',
+                    button_name: event.button_name || '',
+                    button_link: event.button_link || '',
                 });
+                
+                // Set isSettingsExpanded to true only if button_name or button_link has data
+                setIsSettingsExpanded(!!(event.button_name || event.button_link));
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -74,6 +81,8 @@ const PageEdit = () => {
         form.append('image', formData.image);
         form.append('ordering', formData.ordering);
         form.append('post_type', formData.post_type);
+        form.append('button_name', formData.button_name);
+        form.append('button_link', formData.button_link);
         try {
             const response = await Authapi.pageupdatedata(id, form);
             if (response) {
@@ -313,6 +322,105 @@ const PageEdit = () => {
                                         />
                                     </Grid>
                                 </Grid>
+
+                                {/* Page Settings Section */}
+                                <div style={{ 
+                                    marginTop: '20px',
+                                    border: '1px solid #ddd',
+                                    borderRadius: '4px',
+                                    padding: '15px',
+                                }}>
+                                    <div style={{ 
+                                        display: 'flex', 
+                                        justifyContent: 'space-between', 
+                                        alignItems: 'center',
+                                        backgroundColor: '#f4f4f4',
+                                        padding: '15px',
+                                        borderRadius: '4px',
+                                    }}>
+                                        <Typography 
+                                            variant="h6" 
+                                            style={{ 
+                                                color: '#333',
+                                                fontSize: '16px',
+                                                fontWeight: '500'
+                                            }}
+                                        >
+                                            Page Settings
+                                        </Typography>
+                                        <Tooltip title={isSettingsExpanded ? "Collapse Section" : "Expand Section"}>
+                                            <IconButton
+                                                aria-label="toggle-section"
+                                                onClick={() => setIsSettingsExpanded(!isSettingsExpanded)}
+                                                size="small"
+                                                style={{ color: '#0f4c75' }}
+                                            >
+                                                {isSettingsExpanded ? <FaChevronUp /> : <FaChevronDown />}
+                                            </IconButton>
+                                        </Tooltip>
+                                    </div>
+                                    
+                                    <Collapse in={isSettingsExpanded}>
+                                        <div style={{ padding: '15px', marginTop: '20px' }}>
+                                            <Grid container spacing={3}>
+                                                <Grid item xs={12} sm={6}>
+                                                    <TextField
+                                                        label="Button Name"
+                                                        name="button_name"
+                                                        type="text"
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        onChange={handleChange}
+                                                        value={formData.button_name || ''}
+                                                        InputProps={{
+                                                            style: { 
+                                                                backgroundColor: 'white',
+                                                                border: '1px solid #ddd'
+                                                            }
+                                                        }}
+                                                        sx={{
+                                                            '& .MuiOutlinedInput-root': {
+                                                                '& fieldset': {
+                                                                    borderColor: '#ddd',
+                                                                },
+                                                                '&:hover fieldset': {
+                                                                    borderColor: '#bbb',
+                                                                }
+                                                            }
+                                                        }}
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={12} sm={6}>
+                                                    <TextField
+                                                        label="Button Link"
+                                                        name="button_link"
+                                                        type="url"
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        onChange={handleChange}
+                                                        value={formData.button_link || ''}
+                                                        InputProps={{
+                                                            style: { 
+                                                                backgroundColor: 'white',
+                                                                border: '1px solid #ddd'
+                                                            }
+                                                        }}
+                                                        sx={{
+                                                            '& .MuiOutlinedInput-root': {
+                                                                '& fieldset': {
+                                                                    borderColor: '#ddd',
+                                                                },
+                                                                '&:hover fieldset': {
+                                                                    borderColor: '#bbb',
+                                                                }
+                                                            }
+                                                        }}
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                        </div>
+                                    </Collapse>
+                                </div>
 
                                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
                                     <Grid item>

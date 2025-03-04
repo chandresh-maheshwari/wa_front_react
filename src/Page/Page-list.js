@@ -479,6 +479,47 @@ const PageList = () => {
     }
   };
 
+  // Add this new function for multi-restore
+  const handleMultiRestore = async (ids) => {
+    if (selectedRows.length === 0) {
+      Swal.fire(
+        "Warning",
+        "Please select at least one item to restore.",
+        "warning"
+      );
+      return;
+    }
+
+    const confirmRestore = await Swal.fire({
+      title: "Are you sure?",
+      text: "This will restore the selected items!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#48AD3B",
+      cancelButtonColor: "#87888a",
+      confirmButtonText: "Yes, restore them!",
+    });
+
+    if (confirmRestore.isConfirmed) {
+      try {
+        const promises = ids.map((id) => Authapi.restorePageDeletedData(id));
+        await Promise.all(promises);
+
+        Swal.fire("Success!", "Selected items have been restored.", "success");
+        setStatusFilter("all");
+        fetchData();
+      } catch (error) {
+        Swal.fire(
+          "Error!",
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to restore items",
+          "error"
+        );
+      }
+    }
+  };
+
   const columns = [
     {
       field: "checkboxSelection",
@@ -812,6 +853,12 @@ const PageList = () => {
                         onClick={() => handleDelete(selectedRows)}
                       >
                         Deleted
+                      </MenuItem>
+                      <MenuItem
+                        value="restore"
+                        onClick={() => handleMultiRestore(selectedRows)}
+                      >
+                        Restore
                       </MenuItem>
                       <MenuItem
                         value="inner page active"

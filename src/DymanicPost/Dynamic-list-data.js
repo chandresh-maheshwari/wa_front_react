@@ -181,7 +181,6 @@ import {
         const response = await Authapi.restoreDynamicPostDeletedData(id);
         if (response) {
           Swal.fire("Success!", "Item restored successfully.", "success");
-          setStatusFilter("all");
           fetchData();
         } else {
           throw new Error(response?.message || "Failed to restore item");
@@ -481,6 +480,46 @@ import {
       navigate("/dynamic-form");
     };
   
+    // Add this new function for multi-restore
+    const handleMultiRestore = async (ids) => {
+      // Check if at least one checkbox is selected
+      if (selectedRows.length === 0) {
+        Swal.fire(
+          "Warning",
+          "Please select at least one item to restore.",
+          "warning"
+        );
+        return;
+      }
+  
+      const confirmRestore = await Swal.fire({
+        title: "Are you sure?",
+        text: "This will restore the selected items!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#48AD3B",
+        cancelButtonColor: "#87888a",
+        confirmButtonText: "Yes, restore them!",
+      });
+  
+      if (confirmRestore.isConfirmed) {
+        try {
+          const promises = ids.map((id) => Authapi.restoreDynamicPostDeletedData(id));
+          await Promise.all(promises);
+          Swal.fire("Success!", "Selected items have been restored.", "success");
+          fetchData();
+        } catch (error) {
+          Swal.fire(
+            "Error!",
+            error.response?.data?.message ||
+              error.message ||
+              "Failed to restore items",
+            "error"
+          );
+        }
+      }
+    };
+  
     return (
       <>
         <Expired />
@@ -603,6 +642,12 @@ import {
                           onClick={() => handleDelete(selectedRows)}
                         >
                           Deleted
+                        </MenuItem>
+                        <MenuItem
+                          value="restore"
+                          onClick={() => handleMultiRestore(selectedRows)}
+                        >
+                          Restore
                         </MenuItem>
                       </Select>
                     </FormControl>

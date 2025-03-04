@@ -260,7 +260,6 @@ const PostDynamicList = () => {
     const handleActionFilterChange = (event) => {
         const filterValue = event.target.value;
         setActionFilter(filterValue);
-        setSelectedRows([]);
         applyFilter(rows, filterValue);
     };
 
@@ -417,8 +416,8 @@ const PostDynamicList = () => {
             const response = await Authapi.restorePostDeletedData(id);
             if (response) {
                 Swal.fire("Success!", "Item restored successfully.", "success");
-                setStatusFilter("all");
-                fetchData();
+                await fetchData();
+                setFilteredRows((prevRows) => prevRows.filter(row => row.id !== id));
             } else {
                 throw new Error(response?.message || "Failed to restore item");
             }
@@ -467,6 +466,37 @@ const PostDynamicList = () => {
 
     const handleAddNavigate = () => {
         navigate('/dynamic-form'); // Navigate to the /page route
+    };
+
+    const handleMultiRestore = async (ids) => {
+        if (selectedRows.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to restore.', 'warning');
+            return;
+        }
+        if (Array.isArray(ids) && ids.length > 0) {
+            const confirmRestore = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'This will restore the selected items!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: "#48AD3B",
+                cancelButtonColor: "#87888a",
+                confirmButtonText: 'Yes, restore them!',
+            });
+
+            if (confirmRestore.isConfirmed) {
+                try {
+                    const promises = ids.map(id => Authapi.restorePostDeletedData(id));
+                    await Promise.all(promises);
+
+                    Swal.fire('Success!', 'Selected items restored.', 'success');
+                    await fetchData();
+                    setFilteredRows((prevRows) => prevRows.filter(row => !ids.includes(row.id)));
+                } catch (error) {
+                    Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to restore items', 'error');
+                }
+            }
+        }
     };
 
     const paginationModel = { page: 0, pageSize: 10 };
@@ -594,6 +624,7 @@ const PostDynamicList = () => {
                                                 <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
                                                 <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
                                                 <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
+                                                <MenuItem value="restore" onClick={() => handleMultiRestore(selectedRows)}>Restore</MenuItem>
                                             </Select>
                                         </FormControl>
                                     </div>
