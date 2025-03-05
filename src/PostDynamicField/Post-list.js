@@ -342,6 +342,7 @@ const PostDynamicList = () => {
             try {
                 if (ids.length > 0) {
                     const promises = ids.map(id => Authapi.postdynamicstatus(id, newStatus));
+                    
                     await Promise.all(promises);
 
                     setActiveStates(prevStates => {
