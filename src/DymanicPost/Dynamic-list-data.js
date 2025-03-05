@@ -224,8 +224,20 @@ const DynamicList = () => {
   };
 
   // Function to handle single restore
-  const handleSingleRestore = (id) => {
-    handleRestore([id]); // Wrap the single ID in an array
+  const handleSingleRestore = async (id) => {
+    try {
+      await Authapi.restoreDynamicPostDeletedData(id); // Directly call the API for single restore
+      Swal.fire("Success!", "Item restored successfully.", "success");
+      fetchData(); // Refresh data
+    } catch (error) {
+      Swal.fire(
+        "Error!",
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to restore item",
+        "error"
+      );
+    }
   };
 
   // Example of calling handleRestore with multiple IDs
@@ -525,7 +537,7 @@ const DynamicList = () => {
                 aria-label="restore"
                 color="primary"
                 className="action-button"
-                onClick={() => handleMultiRestore()}
+                onClick={() => handleSingleRestore(params.row.id)}
               >
                 <MdRestore />
               </IconButton>
