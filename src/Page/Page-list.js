@@ -155,6 +155,15 @@ const PageList = () => {
   };
   // multi delete data
   const handleDelete = async (ids) => {
+    if (statusFilter !== "deleted") {
+      Swal.fire(
+        "Warning",
+        "You can only delete items in the 'Deleted' state.",
+        "warning"
+      );
+      return;
+    }
+
     if (selectedRows.length === 0) {
       Swal.fire(
         "Warning",
@@ -162,9 +171,6 @@ const PageList = () => {
         "warning"
       );
       return;
-    }
-    if (Array.isArray(ids)) {
-      ids = [ids];
     }
 
     const confirmDelete = await Swal.fire({
@@ -181,37 +187,72 @@ const PageList = () => {
       try {
         const promises = ids.map((id) => Authapi.pageDeleteData(id));
         await Promise.all(promises);
-        // console.log(ids);
-
         Swal.fire("Success!", "Selected items marked as deleted.", "success");
-        fetchData();
+        fetchData(); // Re-fetch to apply the "deleted" filter
       } catch (error) {
         Swal.fire(
           "Error!",
           error.response?.data?.message ||
-          error.message ||
-          "Failed to delete items",
+            error.message ||
+            "Failed to delete items",
           "error"
         );
       }
     }
   };
-  const handleRestore = async (id) => {
+  const handleRestore = async (ids) => {
+    if (!Array.isArray(ids)) {
+      ids = [ids]; // Ensure ids is an array
+    }
+
+    if (statusFilter !== "deleted") {
+      Swal.fire(
+        "Warning",
+        "You can only restore items in the 'Deleted' state.",
+        "warning"
+      );
+      return;
+    }
+
+    if (ids.length === 0) {
+      Swal.fire(
+        "Warning",
+        "Please select at least one item to restore.",
+        "warning"
+      );
+      return;
+    }
+
     try {
-      const response = await Authapi.restorePageDeletedData(id);
-      if (response) {
-        Swal.fire("Success!", "Item restored successfully.", "success");
-        setStatusFilter("all");
-        fetchData();
+      const promises = ids.map((id) => Authapi.restorePageDeletedData(id));
+      const results = await Promise.all(promises);
+
+      if (results.every(result => result.status)) {
+        Swal.fire("Success!", "Selected items restored successfully.", "success");
+
+        // Update the state directly instead of re-fetching
+        const updatedRows = rows.map((row) => {
+          if (ids.includes(row.id)) {
+            return { ...row, deleted_at: 0 }; // Update the deleted_at status
+          }
+          return row;
+        });
+
+        setRows(updatedRows);
+        applyFilter(updatedRows, statusFilter); // Reapply the current filter
       } else {
-        throw new Error(response?.message || "Failed to restore item");
+        Swal.fire(
+          "Error!",
+          "Some items could not be restored.",
+          "error"
+        );
       }
     } catch (error) {
       Swal.fire(
         "Error!",
         error.response?.data?.message ||
         error.message ||
-        "Failed to restore item",
+        "Failed to restore items",
         "error"
       );
     }
@@ -375,8 +416,16 @@ const PageList = () => {
   const handleActionFilterChange = (event) => {
     const filterValue = event.target.value;
     setActionFilter(filterValue);
-    setSelectedRows([]);
-    setFilteredRows(rows.filter((row) => row.deleted_at === 0));
+
+    if (statusFilter === "deleted") {
+      if (filterValue === "deleted") {
+        handleDelete(selectedRows);
+      } else if (filterValue === "restore") {
+        handleMultiRestore();
+      }
+    } else {
+      setSelectedRows([]);
+    }
   };
 
   // const fetchAndSortData = async () => {
@@ -480,8 +529,23 @@ const PageList = () => {
   };
 
   // Add this new function for multi-restore
-  const handleMultiRestore = async (ids) => {
-    if (selectedRows.length === 0) {
+  const handleMultiRestore = async () => {
+    // Ensure selectedRows is an array
+    if (!Array.isArray(selectedRows)) {
+      Swal.fire(
+        "Warning",
+        "Please select at least one item to restore.",
+        "warning"
+      );
+      return;
+    }
+
+    // Filter selected rows to include only those currently displayed and eligible for restoration
+    const eligibleForRestore = selectedRows.filter((id) =>
+      filteredRows.some((row) => row.id === id && row.deleted_at === 1)
+    );
+
+    if (eligibleForRestore.length === 0) {
       Swal.fire(
         "Warning",
         "Please select at least one item to restore.",
@@ -502,12 +566,20 @@ const PageList = () => {
 
     if (confirmRestore.isConfirmed) {
       try {
-        const promises = ids.map((id) => Authapi.restorePageDeletedData(id));
+        const promises = eligibleForRestore.map((id) => Authapi.restorePageDeletedData(id));
         await Promise.all(promises);
-
         Swal.fire("Success!", "Selected items have been restored.", "success");
-        setStatusFilter("all");
-        fetchData();
+
+        // Update the state directly instead of re-fetching
+        const updatedRows = rows.map((row) => {
+          if (eligibleForRestore.includes(row.id)) {
+            return { ...row, deleted_at: 0 }; // Update the deleted_at status
+          }
+          return row;
+        });
+
+        setRows(updatedRows);
+        applyFilter(updatedRows, statusFilter); // Reapply the current filter
       } catch (error) {
         Swal.fire(
           "Error!",
@@ -856,7 +928,7 @@ const PageList = () => {
                       </MenuItem>
                       <MenuItem
                         value="restore"
-                        onClick={() => handleMultiRestore(selectedRows)}
+                        onClick={() => handleMultiRestore()}
                       >
                         Restore
                       </MenuItem>

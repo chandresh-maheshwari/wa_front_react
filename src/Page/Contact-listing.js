@@ -126,44 +126,51 @@ const handleSearch = (event) => {
 
   // multi Delete Data
 const handleDelete = async (ids) => {
-        if (selectedRows.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
-            return;
-        }
-        if (Array.isArray(ids)) {
-            ids = [ids];
-        }
-    const confirmDelete = await Swal.fire({
-      title: "Are you sure?",
-      text: "This will mark the selected items as deleted!",
-      icon: "warning",
-      showCancelButton: true,
-      // confirmButtonColor: "#d33",
-      // cancelButtonColor: "#3085d6",
-      confirmButtonColor: "#48AD3B",
-      cancelButtonColor: "#87888a",
-      confirmButtonText: "Yes, mark them!",
-    });
+  if (statusFilter !== "deleted") {
+    Swal.fire(
+      "Warning",
+      "You can only delete items in the 'Deleted' state.",
+      "warning"
+    );
+    return;
+  }
 
-    if (confirmDelete.isConfirmed) {
-      try {
-        const promises = ids.map((id) => Authapi.contactdelete(id));
-        await Promise.all(promises);
-        // console.log(ids);
+  if (selectedRows.length === 0) {
+    Swal.fire(
+      "Warning",
+      "Please select at least one item to delete.",
+      "warning"
+    );
+    return;
+  }
 
-        Swal.fire("Success!", "Selected items marked as deleted.", "success");
-        fetchData();
-      } catch (error) {
-        Swal.fire(
-          "Error!",
-          error.response?.data?.message ||
-            error.message ||
-            "Failed to delete items",
-          "error"
-        );
-      }
+  const confirmDelete = await Swal.fire({
+    title: "Are you sure?",
+    text: "This will mark the selected items as deleted!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#48AD3B",
+    cancelButtonColor: "#87888a",
+    confirmButtonText: "Yes, mark them!",
+  });
+
+  if (confirmDelete.isConfirmed) {
+    try {
+      const promises = ids.map((id) => Authapi.contactdelete(id));
+      await Promise.all(promises);
+      Swal.fire("Success!", "Selected items marked as deleted.", "success");
+      fetchData(); // Re-fetch to apply the "deleted" filter
+    } catch (error) {
+      Swal.fire(
+        "Error!",
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to delete items",
+        "error"
+      );
     }
-  };
+  }
+};
 
   // Single Delete Data
   const handleDelete1 = async (id) => {
@@ -229,35 +236,78 @@ const handleDelete = async (ids) => {
   const handleActionFilterChange = (event) => {
     const filterValue = event.target.value;
     setActionFilter(filterValue);
-    setSelectedRows([]);
-    // Reset to show active records when changing action filter
-    setFilteredRows(rows.filter((row) => row.deleted_at === 0));
+
+    if (statusFilter === "deleted") {
+      if (filterValue === "deleted") {
+        handleDelete(selectedRows);
+      } else if (filterValue === "restore") {
+        handleMultiRestore();
+      }
+    } else {
+      setSelectedRows([]);
+    }
   };
 
-  const handleRestore = async (id) => {
+  const handleRestore = async (ids) => {
+    if (!Array.isArray(ids)) {
+      ids = [ids]; // Ensure ids is an array
+    }
+
+    if (statusFilter !== "deleted") {
+      Swal.fire(
+        "Warning",
+        "You can only restore items in the 'Deleted' state.",
+        "warning"
+      );
+      return;
+    }
+
+    if (ids.length === 0) {
+      Swal.fire(
+        "Warning",
+        "Please select at least one item to restore.",
+        "warning"
+      );
+      return;
+    }
+
     try {
-      const response = await Authapi.restoreContactDeletedData(id);
-      if (response) {
-        Swal.fire("Success!", "Item restored successfully.", "success");
-        fetchData(); // Fetch data again to update the list
+      const promises = ids.map((id) => Authapi.restoreContactDeletedData(id));
+      const results = await Promise.all(promises);
+
+      if (results.every(result => result.status)) {
+        Swal.fire("Success!", "Selected items restored successfully.", "success");
+        fetchData(); // Re-fetch to apply the "deleted" filter
       } else {
-        throw new Error(response?.message || "Failed to restore item");
+        Swal.fire(
+          "Error!",
+          "Some items could not be restored.",
+          "error"
+        );
       }
     } catch (error) {
       Swal.fire(
         "Error!",
         error.response?.data?.message ||
-          error.message ||
-          "Failed to restore item",
+        error.message ||
+        "Failed to restore items",
         "error"
       );
     }
   };
 
-  // Add this new function for handling multiple restores
-  const handleMultiRestore = async (ids) => {
-    if (selectedRows.length === 0) {
-      Swal.fire('Warning', 'Please select at least one item to restore.', 'warning');
+  const handleMultiRestore = async () => {
+    // Filter selected rows to include only those currently displayed and eligible for restoration
+    const eligibleForRestore = selectedRows.filter((id) =>
+      filteredRows.some((row) => row.id === id && row.deleted_at === 1)
+    );
+
+    if (eligibleForRestore.length === 0) {
+      Swal.fire(
+        "Warning",
+        "Please select at least one item to restore.",
+        "warning"
+      );
       return;
     }
 
@@ -273,19 +323,16 @@ const handleDelete = async (ids) => {
 
     if (confirmRestore.isConfirmed) {
       try {
-        const promises = ids.map((id) => Authapi.restoreContactDeletedData(id));
+        const promises = eligibleForRestore.map((id) => Authapi.restoreContactDeletedData(id));
         await Promise.all(promises);
-        
         Swal.fire("Success!", "Selected items have been restored.", "success");
-        await fetchData();
-        setFilteredRows((prevRows) => prevRows.filter(row => !ids.includes(row.id)));
-
+        fetchData(); // Re-fetch to apply the "deleted" filter
       } catch (error) {
         Swal.fire(
           "Error!",
           error.response?.data?.message ||
-            error.message ||
-            "Failed to restore items",
+          error.message ||
+          "Failed to restore items",
           "error"
         );
       }
@@ -490,7 +537,7 @@ const handleDelete = async (ids) => {
                       {statusFilter === "deleted" ? (
                         <MenuItem
                           value="restore"
-                          onClick={() => handleMultiRestore(selectedRows)}
+                          onClick={handleMultiRestore}
                         >
                           Restore
                         </MenuItem>
