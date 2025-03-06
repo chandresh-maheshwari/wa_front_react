@@ -35,6 +35,11 @@ const DynamicList = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    setSelectedRows([]); // Clear selected rows when statusFilter changes
+  }, [statusFilter]);
+  
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -135,7 +140,6 @@ const DynamicList = () => {
 
   // multi deleted DAta
   const handleDelete = async (ids) => {
-    // Only delete records that are currently shown based on statusFilter (i.e., deleted)
     if (statusFilter !== "deleted") {
       Swal.fire(
         "Warning",
@@ -144,7 +148,7 @@ const DynamicList = () => {
       );
       return;
     }
-  
+
     if (selectedRows.length === 0) {
       Swal.fire(
         "Warning",
@@ -153,7 +157,7 @@ const DynamicList = () => {
       );
       return;
     }
-  
+
     const confirmDelete = await Swal.fire({
       title: "Are you sure?",
       text: "This will mark the selected items as deleted!",
@@ -163,19 +167,20 @@ const DynamicList = () => {
       cancelButtonColor: "#87888a",
       confirmButtonText: "Yes, mark them!",
     });
-  
+
     if (confirmDelete.isConfirmed) {
       try {
         const promises = ids.map((id) => Authapi.dynamicDeleteData(id));
         await Promise.all(promises);
         Swal.fire("Success!", "Selected items marked as deleted.", "success");
-        fetchData(); // Re-fetch to apply the "deleted" filter
+        fetchData();
+        setSelectedRows([]); // Clear selected rows after action
       } catch (error) {
         Swal.fire(
           "Error!",
           error.response?.data?.message ||
-            error.message ||
-            "Failed to delete items",
+          error.message ||
+          "Failed to delete items",
           "error"
         );
       }
@@ -242,7 +247,6 @@ const DynamicList = () => {
 
   // Example of calling handleRestore with multiple IDs
   const handleMultiRestore = async () => {
-    // Filter selected rows to include only those currently displayed and eligible for restoration
     const eligibleForRestore = selectedRows.filter((id) =>
       filteredRows.some((row) => row.id === id && row.deleted_at === 1)
     );
@@ -256,8 +260,6 @@ const DynamicList = () => {
       return;
     }
 
-    console.log("Eligible Rows for Restore:", eligibleForRestore);
-
     const confirmRestore = await Swal.fire({
       title: "Are you sure?",
       text: "This will restore the selected items!",
@@ -270,7 +272,8 @@ const DynamicList = () => {
 
     if (confirmRestore.isConfirmed) {
       try {
-        handleRestore(eligibleForRestore); // Pass the filtered array of eligible rows
+        await handleRestore(eligibleForRestore);
+        setSelectedRows([]); // Clear selected rows after action
       } catch (error) {
         Swal.fire(
           "Error!",

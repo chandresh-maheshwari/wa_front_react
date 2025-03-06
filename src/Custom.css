@@ -788,10 +788,10 @@ td {
   padding: 1rem 0rem 1rem 0rem !important;
   max-width: 100%;
 }
-
+/* 
 .table-card-body div{
-  max-width: 100%;
-}
+  max-width: 500%;
+} */
 .MuiSwitch-thumb {
   background-color: #113B4F !important;;
 }
@@ -799,3 +799,4 @@ td {
 .MuiDataGrid-columnHeaderTitleContainer{
   justify-content: center;
 }
+

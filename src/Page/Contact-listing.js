@@ -37,15 +37,18 @@ const Contact = () => {
   const [selectedTimeEntry, setSelectedTimeEntry] = useState(null);
   const [isReasonExpanded, setIsReasonExpanded] = useState(false);
   const [actionFilter, setActionFilter] = useState("all");
+  
 
   useEffect(() => {
-    // Check localStorage for saved status filter
-    const savedStatusFilter = localStorage.getItem("statusFilter");
-    if (savedStatusFilter) {
-      setStatusFilter(savedStatusFilter);
-    }
+    // Remove localStorage check
+    setStatusFilter("all");
     fetchData();
+    setSelectedRows([]); // Clear selected rows when data is fetched
   }, []);
+
+  useEffect(() => {
+    setSelectedRows([]); // Clear selected rows when statusFilter changes
+  }, [statusFilter]);
 
   const fetchData = async () => {
     try {
@@ -162,6 +165,7 @@ const handleDelete = async (ids) => {
       await Promise.all(promises);
       Swal.fire("Success!", "Selected items marked as deleted.", "success");
       fetchData(); // Re-fetch to apply the "deleted" filter
+      setSelectedRows([]); // Clear selected rows after action
     } catch (error) {
       Swal.fire(
         "Error!",
@@ -216,8 +220,8 @@ const handleDelete = async (ids) => {
     const filterValue = event.target.value;
     setStatusFilter(filterValue);
 
-    // Save the status filter to localStorage
-    localStorage.setItem("statusFilter", filterValue);
+    // Remove localStorage set
+    // localStorage.setItem("statusFilter", filterValue);
 
     let filtered;
     if (filterValue === "all") {
@@ -330,6 +334,7 @@ const handleDelete = async (ids) => {
         await Promise.all(promises);
         Swal.fire("Success!", "Selected items have been restored.", "success");
         fetchData(); // Re-fetch to apply the "deleted" filter
+        setSelectedRows([]); // Clear selected rows after action
       } catch (error) {
         Swal.fire(
           "Error!",

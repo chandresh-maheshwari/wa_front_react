@@ -37,7 +37,12 @@ const PostDynamicList = () => {
         setTimeout(() => {
             fetchData(page, pageSize);
         }, 100);
+        setSelectedRows([]);
     }, [post_title]);
+
+    useEffect(() => {
+        setSelectedRows([]);
+    }, [statusFilter]);
 
     const fetchData = async (currentPage, currentPageSize) => {
         try {
@@ -387,6 +392,7 @@ const PostDynamicList = () => {
                 await Promise.all(promises);
                 Swal.fire('Success!', 'Selected items marked as deleted.', 'success');
                 fetchData(page, pageSize);
+                setSelectedRows([]);
             } catch (error) {
                 Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete items', 'error');
             }
@@ -456,33 +462,66 @@ const PostDynamicList = () => {
         navigate('/dynamic-form');
     };
 
-    const handleMultiRestore = async (ids) => {
-        if (selectedRows.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to restore.', 'warning');
+    const handleMultiRestore = async () => {
+        if (!Array.isArray(selectedRows)) {
+            Swal.fire(
+                "Warning",
+                "Please select at least one item to restore.",
+                "warning"
+            );
             return;
         }
-        if (Array.isArray(ids) && ids.length > 0) {
-            const confirmRestore = await Swal.fire({
-                title: 'Are you sure?',
-                text: 'This will restore the selected items!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: "#48AD3B",
-                cancelButtonColor: "#87888a",
-                confirmButtonText: 'Yes, restore them!',
-            });
 
-            if (confirmRestore.isConfirmed) {
-                try {
-                    const promises = ids.map(id => Authapi.restorePostDeletedData(id));
-                    await Promise.all(promises);
+        const eligibleForRestore = selectedRows.filter((id) =>
+            rows.some((row) => row.id === id && row.deleted_at === 1)
+        );
 
-                    Swal.fire('Success!', 'Selected items restored.', 'success');
-                    fetchData(page, pageSize);
-                    setFilteredRows((prevRows) => prevRows.filter(row => !ids.includes(row.id)));
-                } catch (error) {
-                    Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to restore items', 'error');
-                }
+        console.log("Selected Rows:", selectedRows);
+        console.log("Eligible for Restore:", eligibleForRestore);
+
+        if (eligibleForRestore.length === 0) {
+            Swal.fire(
+                "Warning",
+                "Please select at least one item to restore.",
+                "warning"
+            );
+            return;
+        }
+
+        const confirmRestore = await Swal.fire({
+            title: "Are you sure?",
+            text: "This will restore the selected items!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#48AD3B",
+            cancelButtonColor: "#87888a",
+            confirmButtonText: "Yes, restore them!",
+        });
+
+        if (confirmRestore.isConfirmed) {
+            try {
+                const promises = eligibleForRestore.map((id) => Authapi.restorePostDeletedData(id));
+                await Promise.all(promises);
+                Swal.fire("Success!", "Selected items have been restored.", "success");
+
+                const updatedRows = rows.map((row) => {
+                    if (eligibleForRestore.includes(row.id)) {
+                        return { ...row, deleted_at: 0 };
+                    }
+                    return row;
+                });
+
+                setRows(updatedRows);
+                applyFilter(updatedRows, statusFilter);
+                setSelectedRows([]);
+            } catch (error) {
+                Swal.fire(
+                    "Error!",
+                    error.response?.data?.message ||
+                    error.message ||
+                    "Failed to restore items",
+                    "error"
+                );
             }
         }
     };

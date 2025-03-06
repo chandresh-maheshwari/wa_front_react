@@ -40,6 +40,10 @@ const PageList = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    setSelectedRows([]); // Clear selected rows when statusFilter changes
+  }, [statusFilter]);
+
   const fetchData = async () => {
     try {
       const response = await Authapi.pageListData();
@@ -189,6 +193,7 @@ const PageList = () => {
         await Promise.all(promises);
         Swal.fire("Success!", "Selected items marked as deleted.", "success");
         fetchData(); // Re-fetch to apply the "deleted" filter
+        setSelectedRows([]); // Clear selected rows after action
       } catch (error) {
         Swal.fire(
           "Error!",
@@ -581,6 +586,7 @@ const PageList = () => {
 
         setRows(updatedRows);
         applyFilter(updatedRows, statusFilter); // Reapply the current filter
+        setSelectedRows([]); // Clear selected rows after action
       } catch (error) {
         Swal.fire(
           "Error!",
