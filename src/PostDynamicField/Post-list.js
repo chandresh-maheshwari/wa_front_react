@@ -35,11 +35,11 @@ const PostDynamicList = () => {
 
     useEffect(() => {
         setTimeout(() => {
-            fetchData();
+            fetchData(page, pageSize);
         }, 100);
     }, [post_title]);
 
-    const fetchData = async () => {
+    const fetchData = async (currentPage, currentPageSize) => {
         try {
             const response = await Authapi.postdynamicListData(post_title);
             if (response.status === true) {
@@ -63,6 +63,13 @@ const PostDynamicList = () => {
                 const nonDeletedRows = formattedRows.filter(row => row.deleted_at !== 1);
                 setRows(formattedRows);
                 setFilteredRows(nonDeletedRows);
+
+                // Apply the current status filter
+                applyFilter(formattedRows, statusFilter);
+
+                // Restore the current page and page size
+                setPage(currentPage);
+                setPageSize(currentPageSize);
             } else {
                 console.error('Invalid response structure:', response);
             }
@@ -73,10 +80,6 @@ const PostDynamicList = () => {
         }
     };
 
-
-
-
-    // console.log(selectedRows.length === rows.length);
     const dynamicColumns = [
         {
             field: 'checkboxSelection',
@@ -182,7 +185,6 @@ const PostDynamicList = () => {
         },
     ];
 
-
     const handleSelectAllRows = (e) => {
         const isChecked = e.target.checked;
         if (isChecked) {
@@ -191,7 +193,6 @@ const PostDynamicList = () => {
             setSelectedRows([]);
         }
     };
-
 
     const handleCheckboxChange = (id) => {
         setSelectedRows((prevSelectedRows) => {
@@ -203,21 +204,6 @@ const PostDynamicList = () => {
         });
     };
 
-    // const handleSearch = (event) => {
-    //     const query = event.target.value.trim();
-    //     setSearchQuery(query);
-
-    //     if (query) {
-    //         const filtered = rows.filter((row) => {
-    //             return Object.values(row).some((value) =>
-    //                 String(value).toLowerCase().includes(query.toLowerCase())
-    //             );
-    //         });
-    //         setFilteredRows(filtered);
-    //     } else {
-    //         setFilteredRows(rows);
-    //     }
-    // };
     const handleSearch = (event) => {
         const query = event.target.value.trim();
         setSearchQuery(query);
@@ -249,18 +235,24 @@ const PostDynamicList = () => {
         }
     };
 
-
     const handlesearchCancel = () => {
         setSearchQuery('');
         setFilteredRows([]);
     };
 
-
-
     const handleActionFilterChange = (event) => {
         const filterValue = event.target.value;
         setActionFilter(filterValue);
-        applyFilter(rows, filterValue);
+
+        if (statusFilter === "deleted") {
+            if (filterValue === "deleted") {
+                handleDelete(selectedRows);
+            } else if (filterValue === "restore") {
+                handleMultiRestore(selectedRows);
+            }
+        } else {
+            setSelectedRows([]);
+        }
     };
 
     const applyFilter = (data, filterValue) => {
@@ -290,19 +282,16 @@ const PostDynamicList = () => {
         applyFilter(rows, filterValue);
     };
 
-
     const getActive1 = async (id, currentStatus) => {
-
         try {
             const newStatus = currentStatus === 1 ? 0 : 1;
             const response = await Authapi.postdynamicstatus(id, newStatus);
             if (response) {
-
                 setActiveStates((prevStates) => ({
                     ...prevStates,
                     [id]: newStatus === 1,
                 }));
-                fetchData()
+                fetchData(page, pageSize);
             } else {
                 throw new Error('Failed to update status');
             }
@@ -312,7 +301,6 @@ const PostDynamicList = () => {
         }
     };
 
-    // multi inactive data 
     const getInactive = async (ids) => {
         if (selectedRows.length === 0) {
             Swal.fire('Warning', 'Please select at least one item to Inactive.', 'warning');
@@ -321,7 +309,6 @@ const PostDynamicList = () => {
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 0;
             try {
-                // const idsToDeactivate = ids.filter(id => activeStates[id] !== false);
                 if (ids.length > 0) {
                     const promises = ids.map(id => Authapi.postdynamicstatus(id, newStatus));
                     await Promise.all(promises);
@@ -334,7 +321,7 @@ const PostDynamicList = () => {
                         return newStates;
                     });
 
-                    fetchData();
+                    fetchData(page, pageSize);
                     Swal.fire('Success!', 'Selected items are now inactive.', 'success');
                 } else {
                     Swal.fire('Info', 'All selected items are already inactive.', 'info');
@@ -345,8 +332,8 @@ const PostDynamicList = () => {
         }
     };
 
-    // multi page active data 
     const getActive = async (ids) => {
+        
         if (selectedRows.length === 0) {
             Swal.fire('Warning', 'Please select at least one item to Active.', 'warning');
             return;
@@ -354,9 +341,9 @@ const PostDynamicList = () => {
         if (Array.isArray(ids) && ids.length > 0) {
             const newStatus = 1;
             try {
-                // const idsToActivate = ids.filter(id => activeStates[id] !== true);
                 if (ids.length > 0) {
                     const promises = ids.map(id => Authapi.postdynamicstatus(id, newStatus));
+                    
                     await Promise.all(promises);
 
                     setActiveStates(prevStates => {
@@ -367,7 +354,7 @@ const PostDynamicList = () => {
                         return newStates;
                     });
 
-                    fetchData();
+                    fetchData(page, pageSize);
                     Swal.fire('Success!', 'Selected items are now active.', 'success');
                 } else {
                     Swal.fire('Info', 'All selected items are already active.', 'info');
@@ -377,14 +364,11 @@ const PostDynamicList = () => {
             }
         }
     };
-    // multi Delete Data 
+
     const handleDelete = async (ids) => {
         if (selectedRows.length === 0) {
             Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
             return;
-        }
-        if (Array.isArray(ids)) {
-            ids = [ids];
         }
 
         const confirmDelete = await Swal.fire({
@@ -401,40 +385,43 @@ const PostDynamicList = () => {
             try {
                 const promises = ids.map(id => Authapi.postdynamicDeleteData(id));
                 await Promise.all(promises);
-
                 Swal.fire('Success!', 'Selected items marked as deleted.', 'success');
-                fetchData();
+                fetchData(page, pageSize);
             } catch (error) {
                 Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete items', 'error');
             }
         }
     };
 
+    const handleRestore = async (ids) => {
+        if (!Array.isArray(ids)) {
+            ids = [ids];
+        }
 
-    const handleRestore = async (id) => {
+        if (statusFilter !== "deleted") {
+            Swal.fire('Warning', 'You can only restore items in the "Deleted" state.', 'warning');
+            return;
+        }
+
+        if (ids.length === 0) {
+            Swal.fire('Warning', 'Please select at least one item to restore.', 'warning');
+            return;
+        }
+
         try {
-            const response = await Authapi.restorePostDeletedData(id);
-            if (response) {
-                Swal.fire("Success!", "Item restored successfully.", "success");
-                await fetchData();
-                setFilteredRows((prevRows) => prevRows.filter(row => row.id !== id));
-            } else {
-                throw new Error(response?.message || "Failed to restore item");
-            }
+            const promises = ids.map(id => Authapi.restorePostDeletedData(id));
+            await Promise.all(promises);
+            Swal.fire('Success!', 'Selected items restored successfully.', 'success');
+            fetchData(page, pageSize);
         } catch (error) {
-            Swal.fire(
-                "Error!",
-                error.response?.data?.message ||
-                error.message ||
-                "Failed to restore item",
-                "error"
-            );
+            Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to restore items', 'error');
         }
     };
 
     const handleEdit = async (id) => {
         navigate(`/post-edit/${id}`, { state: { post_title } });
     }
+
     const handleDelete1 = async (id) => {
         const confirmDelete = await Swal.fire({
             title: 'Are you sure?',
@@ -451,7 +438,7 @@ const PostDynamicList = () => {
                 const response = await Authapi.postdynamicDeleteData(id);
                 if (response) {
                     Swal.fire('Success!', 'Item marked as deleted.', 'success');
-                    fetchData();
+                    fetchData(page, pageSize);
                 } else {
                     throw new Error(response?.message || 'Failed to delete item');
                 }
@@ -460,12 +447,13 @@ const PostDynamicList = () => {
             }
         }
     };
+
     const handleSelectionChange = (newSelection) => {
         setSelectedRows(newSelection);
     };
 
     const handleAddNavigate = () => {
-        navigate('/dynamic-form'); // Navigate to the /page route
+        navigate('/dynamic-form');
     };
 
     const handleMultiRestore = async (ids) => {
@@ -490,7 +478,7 @@ const PostDynamicList = () => {
                     await Promise.all(promises);
 
                     Swal.fire('Success!', 'Selected items restored.', 'success');
-                    await fetchData();
+                    fetchData(page, pageSize);
                     setFilteredRows((prevRows) => prevRows.filter(row => !ids.includes(row.id)));
                 } catch (error) {
                     Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to restore items', 'error');
@@ -507,30 +495,10 @@ const PostDynamicList = () => {
                 <div className="row " style={{ marginLeft: '20%', width: '80%', marginBottom: '20px', marginTop: '1%' }}>
                     <div className="card-header col-6 post-section">
                         <h5 className="title">{post_title}</h5>
-                        {/* <IconButton className="post-add-btn" aria-label="add" color="primary" state={{ post_title }} onClick={handleAddNavigate}>
-                            <MdAdd />
-                        </IconButton> */}
                         <Link className="post-add-btn " title={`Add ${post_title}`} id="listing" to="/post-form" state={{ post_title }}>
                             <MdAdd />
                         </Link>
                     </div>
-
-                    {/* <div className="card-header col-3">
-                        <FormControl fullWidth>
-                            <InputLabel>Action Filter</InputLabel>
-                            <Select
-                                value={statusFilter}
-                                className='filter_dropdown_of_main_page'
-                                onChange={handleStatusFilterChange}
-                                label="Status Filter"
-                            >
-                                <MenuItem value="all" disabled>All</MenuItem>
-                                <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
-                                <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
-                                <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </div> */}
                     <div className="card-header col-3">
                         <FormControl fullWidth>
                             <InputLabel>Status Filter</InputLabel>
@@ -556,14 +524,9 @@ const PostDynamicList = () => {
                             onChange={handleSearch}
                         />
                     </div>
-                    {/* <div className="card-body">
-                        <Container>
-                            <div style={{ overflowX: 'auto' }}> */}
-                    <div className="card-body table-card-body">
-                    {/* <div className="card-body table-card-body" style={{ height: 'calc(115vh - 200px)', width: '80%' }}> */}
-                        <Container style={{ height: '100%' }} className='table-container'>
+                    <div className="card-body" style={{ height: 'calc(115vh - 200px)', width: '80%' }}>
+                        <Container style={{ height: '100%' }}>
                             <div style={{ width: '100%', marginBottom: "45px" }}>
-
                                 <div style={{ width: '100%', height: '500px', overflowY: 'hidden' }}>
                                     <DataGrid
                                         rows={filteredRows}
@@ -591,10 +554,6 @@ const PostDynamicList = () => {
                                             '& .MuiDataGrid-row:hover': {
                                                 backgroundColor: '#f5f5f5',
                                             },
-                                            // '& .MuiDataGrid-footerContainer': {
-                                            //     backgroundColor: '#2c9dd4',
-                                            //     color: 'white',
-                                            // },
                                         }}
                                         selectionModel={selectedRows}
                                         onSelectionModelChange={handleSelectionChange}
