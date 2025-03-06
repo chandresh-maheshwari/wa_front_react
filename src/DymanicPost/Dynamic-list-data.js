@@ -563,8 +563,11 @@ const DynamicList = () => {
   const handleSelectAllRows = () => {
     if (selectedRows.length === rows.length) {
       setSelectedRows([]);
+
+      
     } else {
       setSelectedRows(rows.map((row) => row.id));
+      
     }
   };
 

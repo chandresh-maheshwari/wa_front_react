@@ -263,6 +263,7 @@ const handleDelete = async (ids) => {
     }
 
     if (ids.length === 0) {
+      
       Swal.fire(
         "Warning",
         "Please select at least one item to restore.",
