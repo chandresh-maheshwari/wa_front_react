@@ -331,12 +331,12 @@ const PageEdit = () => {
                                     padding: '15px',
                                 }}>
                                     <div style={{ 
-                                        display: 'flex', 
-                                        justifyContent: 'space-between', 
-                                        alignItems: 'center',
-                                        backgroundColor: '#f4f4f4',
-                                        padding: '15px',
-                                        borderRadius: '4px',
+                                       display: 'flex', 
+                                       justifyContent: 'space-between', 
+                                       alignItems: 'center',
+                                       backgroundColor: 'rgb(244, 246, 248)',
+                                       padding: '15px',
+                                       borderRadius: '8px'
                                     }}>
                                         <Typography 
                                             variant="h6" 

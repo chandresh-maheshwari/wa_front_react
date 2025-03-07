@@ -84,11 +84,25 @@ const Sidebar = () => {
   const toggle = (id) => {
     setOpenItems(prevState => {
       const newState = { ...prevState };
+
+      // Close the other dropdown when one is opened
       if (id === 'Dynamic_POSTS') {
+        newState['Dynamic_POST'] = false;
+         // Close Dynamic_POST when Dynamic_POSTS is toggled
+      } else if (id === 'Dynamic_POST') {
+        newState['Dynamic_POSTS'] = false; 
+        newState['page'] = false; 
+          // Close Dynamic_POSTS when Dynamic_POST is toggled
+      } else if (id === 'page') {
+        newState['Dynamic_POSTS'] = false; // Close Dynamic_POSTS when Dynamic_POST is toggled
+        newState['Dynamic_POST'] = false; // Close Dynamic_POST when Dynamic_POST is toggled
+      }
+
+      if (id === 'Dynamic_POSTS' || id === 'Dynamic_POST' || id === 'Page') {
         newState[id] = !prevState[id]; // Toggle the main dropdown
       } else {
         Object.keys(newState).forEach(key => {
-          if (key !== 'Dynamic_POSTS') {
+          if (key !== 'Dynamic_POSTS' && key !== 'Dynamic_POST') {
             newState[key] = false; // Close all post items
           }
         });
