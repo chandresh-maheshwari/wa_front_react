@@ -304,9 +304,9 @@ const Page = () => {
                                         display: 'flex', 
                                         justifyContent: 'space-between', 
                                         alignItems: 'center',
-                                        backgroundColor: '#f4f4f4',
+                                        backgroundColor: 'rgb(244, 246, 248)',
                                         padding: '15px',
-                                        borderRadius: '4px'
+                                        borderRadius: '8px'
                                     }}>
                                         <Typography 
                                             variant="h6" 
