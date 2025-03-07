@@ -563,8 +563,8 @@ const PostDynamicList = () => {
                             onChange={handleSearch}
                         />
                     </div>
-                    <div className="card-body" style={{ height: 'calc(115vh - 200px)', width: '80%' }}>
-                        <Container style={{ height: '100%' }}>
+                    <div className="card-body table-card-body" style={{ height: 'calc(115vh - 200px)', width: '80%' }}>
+                        <Container className="table-container" style={{ height: '100%' }}>
                             <div style={{ width: '100%', marginBottom: "45px" }}>
                                 <div style={{ width: '100%', height: '500px', overflowY: 'hidden' }}>
                                     <DataGrid

@@ -630,10 +630,10 @@ const DynamicList = () => {
             />
           </div>
           <div
-            className="card-body"
+            className="card-body table-card-body"
             style={{ height: "calc(115vh - 200px)", width: "100%" }}
           >
-            <Container style={{ height: "100%" }}>
+            <Container className="table-container" style={{ height: "100%" }}>
               <div style={{ height: "100%" }}>
                 <DataGrid
                   rows={filteredRows}

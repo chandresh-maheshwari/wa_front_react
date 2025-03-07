@@ -800,3 +800,6 @@ td {
   justify-content: center;
 }
 
+.MuiContainer-root {
+  max-width: 100% !important;
+}
