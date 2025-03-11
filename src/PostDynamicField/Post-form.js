@@ -52,8 +52,6 @@ const PostFormDynamic = () => {
     const handleInputChange = (fieldLabel, fieldType, sectionTitle = '') => (event, option) => {
         let value;
 
-        // console.log('sss');
-        // console.log(formData);
         if (fieldType === 'checkbox') {
             const currentValues = formData[sectionTitle]?.[fieldLabel] || [];
             value = currentValues.includes(option)
@@ -61,10 +59,16 @@ const PostFormDynamic = () => {
                 : [...currentValues, option];
         } else if (fieldType === 'radio' || fieldType === 'dropdown' || fieldType === 'number') {
             value = event.target.value;
+            if (fieldType === 'number' && value < 0) {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    [fieldLabel]: 'Please enter a positive number.',
+                }));
+                return;
+            }
         } else if (fieldType === 'file') {
             value = event.target.files[0];
         } else {
-
             value = event.target.value;
         }
         console.log(value);
@@ -81,67 +85,12 @@ const PostFormDynamic = () => {
                 [fieldLabel]: value,
             },
         }));
-        // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-        // console.log(formData);
     };
 
     const validate = () => {
         // Always return true to bypass validation
         return true;
     };
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     console.log('Form data on submit:', formData);
-    //     if (!validate()) {
-    //         console.log('Validation failed');
-    //         return;
-    //     }
-
-    //     const submitFormData = new FormData();
-
-    //     // Handle standalone fields
-    //     standaloneFields.forEach(field => {
-    //         let value = formData['']?.[field.label] || '';
-    //         if (field.type === 'file' && value instanceof File) {
-    //             // Extract the file name
-    //             value = value.name;
-    //         }
-    //         submitFormData.append(field.label, value);
-    //     });
-
-    //     // Handle section fields
-    //     sections.forEach(section => {
-    //         const sectionData = {};
-    //         section.fields.forEach(field => {
-    //             let value = formData[section.title]?.[field.label] || '';
-    //             if (field.type === 'file' && value instanceof File) {
-    //                 // Extract the file name
-    //                 value = value.name;
-    //             }
-    //             sectionData[field.label] = value;
-    //         });
-    //         // Debugging: Log section data to ensure it's structured correctly
-    //         console.log(`Section: ${section.title}`, sectionData);
-    //         // Append the section data as a JSON object
-    //         submitFormData.append(section.title, JSON.stringify(sectionData));
-    //     });
-
-    //     try {
-    //         const response = await Authapi.postDynamicstoredata(submitFormData, post_title);
-    //         if (response.status === true) {
-    //             Swal.fire('Success', 'Data submitted successfully!', 'success');
-    //             setFormData({});
-    //             navigate('/post-list', { state: { post_title } });
-    //         } else {
-    //             Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
-    //         }
-    //     } catch (error) {
-    //         Swal.fire('Error', 'There was an issue with your submission.', 'error');
-    //         console.error('Error submitting data:', error);
-    //     }
-    // };
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();

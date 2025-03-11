@@ -673,7 +673,7 @@ const PageList = () => {
       renderCell: (params) => {
         if (statusFilter === "deleted") {
           return (
-            <strong onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", alignItems: "center" }}>
               {params.row.deleted_at === 1 && (
                 <Tooltip title="Restore">
                   <IconButton
@@ -686,12 +686,12 @@ const PageList = () => {
                   </IconButton>
                 </Tooltip>
               )}
-            </strong>
+            </div>
           );
         }
 
         return (
-          <strong onClick={(e) => e.stopPropagation()}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <Tooltip title="Update">
               <IconButton
                 aria-label="Update"
@@ -708,8 +708,9 @@ const PageList = () => {
                 aria-label="delete"
                 color="primary"
                 className="action-button"
+                onClick={() => handleDelete1(params.row.id)}
               >
-                <MdDelete onClick={() => handleDelete1(params.row.id)} />
+                <MdDelete />
               </IconButton>
             </Tooltip>
             <Tooltip title="Page Active">
@@ -768,7 +769,7 @@ const PageList = () => {
                 }}
               />
             </Tooltip>
-          </strong>
+          </div>
         );
       },
     },

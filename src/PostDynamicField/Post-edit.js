@@ -74,9 +74,6 @@ const PostDynamicEdit = () => {
                 }
             });
 
-            console.log('Standalone Data:', standaloneData);
-            console.log('Sections Data:', sectionsData);
-
             setFormData({
                 ...standaloneData,
                 ...sectionsData,
@@ -117,69 +114,26 @@ const PostDynamicEdit = () => {
         }
     };
 
-    // const handleInputChange = (fieldLabel, fieldType, sectionTitle = '') => (event, option) => {
-    //     let value;
-
-    //     if (fieldType === 'checkbox') {
-    //         const currentValues = sectionTitle
-    //             ? formData[sectionTitle]?.[fieldLabel] || []
-    //             : formData[fieldLabel] || [];
-    //         value = currentValues.includes(option)
-    //             ? currentValues.filter(item => item !== option)
-    //             : [...currentValues, option];
-    //     } else if (fieldType === 'radio' || fieldType === 'dropdown') {
-    //         value = event.target.value;
-    //     } else if (fieldType === 'file') {
-    //         value = event.target.files[0];
-    //     } else {
-    //         value = event.target.value;
-    //     }
-
-    //     setErrors(prevErrors => ({
-    //         ...prevErrors,
-    //         [fieldLabel]: '',
-    //     }));
-
-    //     if (sectionTitle) {
-    //         setFormData(prevFormData => {
-    //             const updatedSection = {
-    //                 ...prevFormData[sectionTitle],
-    //                 [fieldLabel]: value,
-    //             };
-    //             return {
-    //                 ...prevFormData,
-    //                 [sectionTitle]: updatedSection,
-    //             };
-    //         });
-    //     } else {
-    //         setFormData(prevFormData => {
-    //             const updatedData = {
-    //                 ...prevFormData,
-    //                 [fieldLabel]: value,
-    //             };
-    //             return updatedData;
-    //         });
-    //     }
-    // };
     const handleInputChange = (fieldLabel, fieldType, sectionTitle = '') => (event, option) => {
         let value;
 
         if (fieldType === 'checkbox') {
-            console.log(formData[fieldLabel]);
             const currentValues = Array.isArray(sectionTitle ? formData[sectionTitle]?.[fieldLabel] : formData[fieldLabel])
                 ? sectionTitle ? formData[sectionTitle]?.[fieldLabel] : formData[fieldLabel]
                 : [];
 
-            console.log(currentValues);
-
-            if (currentValues.includes(option)) {
-                value = currentValues.filter(item => item !== option);
-            } else {
-                value = [...currentValues, option];
-            }
-            console.log(value);
-        } else if (fieldType === 'radio' || fieldType === 'dropdown') {
+            value = currentValues.includes(option)
+                ? currentValues.filter(item => item !== option)
+                : [...currentValues, option];
+        } else if (fieldType === 'radio' || fieldType === 'dropdown' || fieldType === 'number') {
             value = event.target.value;
+            if (fieldType === 'number' && value < 0) {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    [fieldLabel]: 'Please enter a positive number.',
+                }));
+                return;
+            }
         } else if (fieldType === 'file') {
             value = event.target.files[0];
         } else {
@@ -192,16 +146,13 @@ const PostDynamicEdit = () => {
         }));
 
         if (sectionTitle) {
-            setFormData(prevFormData => {
-                const updatedSection = {
+            setFormData(prevFormData => ({
+                ...prevFormData,
+                [sectionTitle]: {
                     ...prevFormData[sectionTitle],
-                    [fieldLabel]: value, 
-                };
-                return {
-                    ...prevFormData,
-                    [sectionTitle]: updatedSection, 
-                };
-            });
+                    [fieldLabel]: value,
+                },
+            }));
         } else {
             setFormData(prevFormData => ({
                 ...prevFormData,
@@ -209,10 +160,6 @@ const PostDynamicEdit = () => {
             }));
         }
     };
-
-
-
-
 
     const validate = () => {
         return true;
@@ -319,40 +266,6 @@ const PostDynamicEdit = () => {
                                                     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                 </FormControl>
                                             ) : field.type === 'checkbox' ? (
-                                                // <div>
-                                                //     <Typography variant="body1">{field.label}</Typography>
-                                                //     {field.options && field.options.map((option, idx) => (
-                                                //         <FormControlLabel
-                                                //             key={idx}
-                                                //             control={
-                                                //                 <Checkbox
-                                                //                     checked={formData[field.label]?.includes(option)}
-                                                //                     onChange={(e) => handleInputChange(field.label, field.type)(e, option)}
-                                                //                     value={option}
-                                                //                 />
-                                                //             }
-                                                //             label={option}
-                                                //         />
-                                                //     ))}
-                                                //     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
-                                                // </div>
-                                                // <div>
-                                                //     <Typography variant="body1">{field.label}</Typography>
-                                                //     {field.options && field.options.map((option, idx) => (
-                                                //         <FormControlLabel
-                                                //             key={idx}
-                                                //             control={
-                                                //                 <Checkbox
-                                                //                     checked={formData[field.label]?.includes(option)}
-                                                //                     onChange={(e) => handleInputChange(field.label, field.type, '')(e, option)}
-                                                //                     value={option}
-                                                //                 />
-                                                //             }
-                                                //             label={option}
-                                                //         />
-                                                //     ))}
-                                                //     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
-                                                // </div>
                                                 <div>
                                                     <Typography variant="body1">{field.label}</Typography>
                                                     {field.options && field.options.map((option, idx) => (
@@ -370,9 +283,6 @@ const PostDynamicEdit = () => {
                                                     ))}
                                                     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
                                                 </div>
-
-
-
                                             ) : field.type === 'radio' ? (
                                                 <div>
                                                     <Typography variant="body1">{field.label}</Typography>
@@ -530,7 +440,7 @@ const PostDynamicEdit = () => {
                                                                             key={idx}
                                                                             control={
                                                                                 <Checkbox
-                                                                                    checked={formData[section.title]?.[field.label]?.includes(option)}
+                                                                                    checked={formData[section.title]?.[field.label]?.includes(option) || false}
                                                                                     onChange={(e) => handleInputChange(field.label, field.type, section.title)(e, option)}
                                                                                     value={option}
                                                                                 />

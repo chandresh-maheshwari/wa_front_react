@@ -38,6 +38,7 @@ const PostDynamicList = () => {
             fetchData(page, pageSize);
         }, 100);
         setSelectedRows([]);
+        setStatusFilter('all'); 
     }, [post_title]);
 
     useEffect(() => {
@@ -70,7 +71,8 @@ const PostDynamicList = () => {
                 setFilteredRows(nonDeletedRows);
 
                 // Apply the current status filter
-                applyFilter(formattedRows, statusFilter);
+                // applyFilter(formattedRows, statusFilter);
+                applyFilter(formattedRows, 'all');
 
                 // Restore the current page and page size
                 setPage(currentPage);

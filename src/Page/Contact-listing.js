@@ -131,23 +131,23 @@ const handleSearch = (event) => {
 
   // multi Delete Data
 const handleDelete = async (ids) => {
-  if (statusFilter !== "deleted") {
-    Swal.fire(
-      "Warning",
-      "You can only delete items in the 'Deleted' state.",
-      "warning"
-    );
-    return;
-  }
+  // if (statusFilter !== "deleted") {
+  //   Swal.fire(
+  //     "Warning",
+  //     "You can only delete items in the 'Deleted' state.",
+  //     "warning"
+  //   );
+  //   return;
+  // }
 
-  if (selectedRows.length === 0) {
-    Swal.fire(
-      "Warning",
-      "Please select at least one item to delete.",
-      "warning"
-    );
-    return;
-  }
+  // if (selectedRows.length === 0) {
+  //   Swal.fire(
+  //     "Warning",
+  //     "Please select at least one item to delete.",
+  //     "warning"
+  //   );
+  //   return;
+  // }
 
   const confirmDelete = await Swal.fire({
     title: "Are you sure?",
