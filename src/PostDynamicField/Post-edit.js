@@ -127,12 +127,21 @@ const PostDynamicEdit = () => {
                 : [...currentValues, option];
         } else if (fieldType === 'radio' || fieldType === 'dropdown' || fieldType === 'number') {
             value = event.target.value;
-            if (fieldType === 'number' && value < 0) {
-                setErrors(prevErrors => ({
-                    ...prevErrors,
-                    [fieldLabel]: 'Please enter a positive number.',
-                }));
-                return;
+            if (fieldType === 'number') {
+                if (value < 0) {
+                    setErrors(prevErrors => ({
+                        ...prevErrors,
+                        [fieldLabel]: 'Please enter a positive number.',
+                    }));
+                    return;
+                }
+                if (value.length > 11) {
+                    setErrors(prevErrors => ({
+                        ...prevErrors,
+                        [fieldLabel]: 'Number cannot exceed 11 characters.',
+                    }));
+                    return;
+                }
             }
         } else if (fieldType === 'file') {
             value = event.target.files[0];
