@@ -636,13 +636,13 @@ const handleDelete = async (ids) => {
                   <td style={{ textAlign: "left" }}>
                     <>
                       {isReasonExpanded ||
-                      selectedTimeEntry?.description.length <= 50
+                      selectedTimeEntry?.description.length <= 100
                         ? selectedTimeEntry?.description
                         : `${selectedTimeEntry?.description.substring(
                             0,
-                            50
+                            100
                           )}...`}
-                      {selectedTimeEntry?.description.length > 50 && (
+                      {selectedTimeEntry?.description.length > 100 && (
                         <span
                           onClick={() => setIsReasonExpanded(!isReasonExpanded)}
                           style={{
