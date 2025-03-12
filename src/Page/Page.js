@@ -310,11 +310,11 @@ const Page = () => {
                                     }}>
                                         <Typography 
                                             variant="h6" 
-                                            style={{ 
-                                                color: '#333',
-                                                fontSize: '16px',
-                                                fontWeight: '500'
-                                            }}
+                                            // style={{ 
+                                            //     color: '#333',
+                                            //     fontSize: '16px',
+                                            //     fontWeight: '500'
+                                            // }}
                                         >
                                             Page Settings
                                         </Typography>
@@ -322,8 +322,8 @@ const Page = () => {
                                             <IconButton
                                                 aria-label="toggle-section"
                                                 onClick={() => setIsSettingsExpanded(!isSettingsExpanded)}
-                                                size="small"
-                                                style={{ color: '#0f4c75' }}
+                                                // size="small"
+                                                style={{ color: '#113B4F' }}
                                             >
                                                 {isSettingsExpanded ? <FaChevronUp /> : <FaChevronDown />}
                                             </IconButton>
