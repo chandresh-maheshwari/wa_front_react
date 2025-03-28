@@ -1,82 +1,106 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, Navigate } from "react-router-dom";
-import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
-import { CiLogout } from "react-icons/ci";
-import Authapi from '../Authapi';
+import $ from "jquery";
+import { Link } from "react-router-dom";
 import '../App.css';
 import '../Custom.css';
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import Authapi from '../Authapi';
+import { useNavigate } from 'react-router-dom';
+import { CiLogout } from "react-icons/ci";
+// import img from './images/WasteAccountant_LOGO.png'
+// const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
+const img = `https://laravel.wasteaccountant.com/admin/images/WasteAccountant_LOGO.png`;
+
+// const img = `https://front.wasteaccountant.com/images/page/WasteAccountant_LOGO.png`;
+
+
 
 const Sidebar = () => {
   const [postTitles, setPostTitles] = useState([]);
   const [openItems, setOpenItems] = useState({});
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Track authentication state
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
+  const [, forceUpdate] = useState();
+
+    const navigate = useNavigate();
   useEffect(() => {
-    const checkAuthentication = () => {
-      const token = localStorage.getItem('Token');
-      setIsAuthenticated(!!token); // If there's a token, user is authenticated
+    const fetchPostTitles = async () => {
+      try {
+        setIsLoading(true);
+        const response = await Authapi.dynamicListData();
+
+        if (response && response.results) {
+          const activePosts = response.results.filter(post => post.status === 1);
+
+          activePosts.sort((a, b) => {
+            if (a.ordering === b.ordering) {
+              return b.id - a.id;
+            }
+            return a.ordering - b.ordering;
+          });
+
+          setPostTitles(activePosts);
+          forceUpdate({});
+        }
+      } catch (error) {
+        console.error('Error fetching post titles:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    checkAuthentication();
+
+    fetchPostTitles();
+
+    const handlePostStatusChange = async (event) => {
+      const { id, status } = event.detail;
+
+      try {
+        const response = await Authapi.dynamicListData();
+        if (response && response.results) {
+          const activePosts = response.results.filter(post => post.status === 1);
+
+          activePosts.sort((a, b) => {
+            if (a.ordering === b.ordering) {
+              return b.id - a.id;
+            }
+            return a.ordering - b.ordering;
+          });
+
+          setPostTitles(activePosts);
+        }
+      } catch (error) {
+        console.error('Error refetching post titles:', error);
+      }
+    };
+
+    window.addEventListener('dynamicPostStatusChanged', handlePostStatusChange);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('dynamicPostStatusChanged', handlePostStatusChange);
+    };
   }, []);
 
-  const logoutData = async () => {
-    try {
-      setIsLoggingOut(true); // Set loading state
-
-      const response = await Authapi.logoutData();
-      if (response.status === true) {
-        // Clear local storage and reset necessary states
-        localStorage.removeItem('Token');
-        localStorage.removeItem('user');
-
-        // Reset the state
-        setPostTitles([]);
-        setOpenItems({});
-        setIsAuthenticated(false); // Update auth state to false
-
-        // Delay navigation to avoid flickering
-        setTimeout(() => {
-          navigate('/', { replace: true }); // Using replace to avoid back button navigation to the previous state
-        }, 500); // Adding a small delay (500ms)
-      }
-    } catch (error) {
-      console.error("Logout Error:", error);
-    } finally {
-      setIsLoggingOut(false); // Reset loading state
-    }
-  };
-
-  // If the user is not authenticated, redirect immediately
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-
-  // Handle sidebar toggles
   const toggle = (id) => {
     setOpenItems(prevState => {
       const newState = { ...prevState };
-
-      // Close the other dropdowns when one is toggled
       if (id === 'Dynamic_POSTS') {
-        newState['Dynamic_POST'] = false;
-        newState['page'] = false;
-      } else if (id === 'Dynamic_POST') {
-        newState['Dynamic_POSTS'] = false;
-        newState['page'] = false;
-      } else if (id === 'page') {
-        newState['Dynamic_POSTS'] = false;
-        newState['Dynamic_POST'] = false;
+        newState[id] = !prevState[id]; // Toggle the main dropdown
+      } else {
+        Object.keys(newState).forEach(key => {
+          if (key !== 'Dynamic_POSTS') {
+            newState[key] = false; // Close all post items
+          }
+        });
+        newState[id] = !prevState[id]; // Toggle the current post item
       }
-
-      newState[id] = !prevState[id];
       return newState;
     });
   };
 
   const isActive = (id) => {
     const active = openItems[id];
+    // console.log('Checking active state for:', id, 'Active:', active);
     return active || window.location.pathname === id;
   };
 
@@ -85,11 +109,34 @@ const Sidebar = () => {
     color: '#333',
   };
 
+ const logoutData = async () => {
+        try {
+
+            // // const response = await Authapi.logoutData();
+            // // console.log(response)
+            // localStorage.removeItem('Token');
+            // localStorage.removeItem('user');
+
+            const response = await Authapi.logoutData();
+            // console.log(response)
+            if (response.status === true) {
+
+                localStorage.removeItem('Token');
+                localStorage.removeItem('user');
+                navigate('/');
+            }
+        } catch (error) {
+            console.error("Logout Error:", error);
+        }
+    };
+
+
+
+
   return (
     <div className="sidebar" data-color="orange">
-      {isLoggingOut && <div className="loading-spinner">Logging out...</div>}
       <div className="logo">
-        <img src="https://laravel.wasteaccountant.com/admin/images/WasteAccountant_LOGO.png" style={{ width: "100%" }} alt="img" />
+        <img src={img} style={{ width: "100%" }} alt="img" />
       </div>
       <div className="sidebar-wrapper" id="navigation">
         <ul className="nav">
@@ -98,10 +145,7 @@ const Sidebar = () => {
             <Link to="/Dashboard">
               <p>Dashboard</p>
             </Link>
-          </li>
-
-          {/* Dynamic POST dropdown */}
-          <li>
+          </li>          <li>
             <Link
               id="Dynamic_POST"
               className={`nav-link nav-dropdown-toggle nav-item nav-dropdown ${isActive('Dynamic_POST') ? 'active-sidebar-item' : ''}`}
@@ -112,7 +156,7 @@ const Sidebar = () => {
                 toggle('Dynamic_POST');
               }}
             >
-              Dynamic Post
+              Dynamic post
               {openItems['Dynamic_POST'] ? (
                 <IoIosArrowUp className="Arrow-icon-Sidebar" />
               ) : (
@@ -125,18 +169,17 @@ const Sidebar = () => {
             <ul className="nav-dropdown-items-Dynamic_POST">
               <li className="nav-item">
                 <Link className="nav-link" to="/dynamic-form">
-                  <span>Add New</span>
+                  <span>Add New </span>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" id="listing" to="/dynamic-list-data">
-                  <span>Dynamic Post List</span>
+                <Link className="nav-link " id="listing" to="/dynamic-list-data">
+                  <span>Dynamic post List</span>
                 </Link>
               </li>
             </ul>
           )}
 
-          {/* All Posts dropdown */}
           <li>
             <Link
               id="Dynamic_POSTS"
@@ -186,7 +229,7 @@ const Sidebar = () => {
                         </Link>
                       </li>
                       <li className="nav-item">
-                        <Link className="nav-link" id="listing" to="/post-list" state={{ post_title: post.post_title }}>
+                        <Link className="nav-link " id="listing" to="/post-list" state={{ post_title: post.post_title }}>
                           <span>Post List</span>
                         </Link>
                       </li>
@@ -197,7 +240,6 @@ const Sidebar = () => {
             </ul>
           )}
 
-          {/* Page dropdown */}
           <li>
             <Link
               id="Page"
@@ -217,7 +259,6 @@ const Sidebar = () => {
               )}
             </Link>
           </li>
-
           {openItems['page'] && (
             <ul className="nav-dropdown-items-Page">
               <li className="nav-item">
@@ -226,23 +267,28 @@ const Sidebar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" id="listing" to="/page-list">
+                <Link className="nav-link  " id="listing" to="/page-list">
                   <span>Page List</span>
                 </Link>
               </li>
             </ul>
           )}
 
-          {/* Contact List */}
           <li className="nav-item nav-dropdown mt-2">
-            <Link className="nav-link contact-us" id="listing" to="/Contact-listing">
+            <Link
+              className="nav-link contact-us"
+              id="listing"
+              to="/Contact-listing">
               <p>Contact List</p>
             </Link>
           </li>
 
-          {/* Logout */}
           <li className="logout nav-item nav-dropdown mt-2">
-            <Link className="nav-link logout" onClick={logoutData} to="#">
+            <Link
+              className="nav-link logout"
+              onClick={logoutData} 
+              to="/">                        
+              
               <p><CiLogout /> Logout</p>
             </Link>
           </li>
@@ -251,5 +297,6 @@ const Sidebar = () => {
     </div>
   );
 };
+
 
 export default Sidebar;
