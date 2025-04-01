@@ -165,68 +165,108 @@ const PostDynamicEdit = () => {
         return true;
     };
 
+    // const convertToBase64 = (file) => {
+    //     console.log("Converting file to base64");
+
+    //     return new Promise((resolve, reject) => {
+    //         const reader = new FileReader();
+    //         reader.readAsDataURL(file);
+
+    //         reader.onload = () => {
+    //             resolve(reader.result);
+    //         };
+
+    //         reader.onerror = (error) => {
+    //             reject(error);
+    //         };
+    //     });
+    // };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
+        // Ensure validation is successful before proceeding
         if (!validate()) {
             console.log('Validation failed');
             return;
         }
-
-        const submitFormData = new FormData();
-
-        standaloneFields.forEach(field => {
-            let value = formData[field.label] || '';
+    
+        const submitData = {};
+    
+        // Log the form data before submission for debugging
+        console.log("FormData before submission:", formData);
+    
+        // Loop over the standalone fields and gather data
+        for (const field of standaloneFields) {
+            let value = formData[field.label] || ''; // Get the value from formData
+    
+            // If the field is a file, check if it has been changed
             if (field.type === 'file') {
+                // Check if old image URL exists in formData directly under field.label
+                const oldImage = formData[field.label];  // Look for the old image URL directly in formData
+                console.log("Old Image URL for field:", oldImage); // Log to check the value of oldImage
+    
                 if (value instanceof File) {
-                    // value = value.name;
-                } else if (typeof value === 'string') {
-                    value = value.split('/').pop();
-                }
-            }
-            submitFormData.append(field.label, value);
-        });
-
-        sections.forEach(section => {
-            const sectionData = {};
-            const sectionFields = formData[section.title] || {};
-
-            section.fields.forEach(field => {
-                let value = sectionFields[field.label] || '';
-                if (field.type === 'file') {
-                    if (value instanceof File) {
-                        value = value.name;
-                    } else if (typeof value === 'string') {
-                        value = value.split('/').pop();
+                    // If a new file is selected, convert it to Base64
+                    try {
+                        value = await convertToBase64(value);
+                        console.log("New Base64 value for file:", value); // Log the Base64 value
+                    } catch (error) {
+                        console.error('Error converting image to base64', error);
+                        value = ''; // Handle error gracefully
                     }
+                } else if (!value && oldImage) {
+                    // If no new image is selected (value is empty), use the old image URL or file name
+                    value = extractBaseName(oldImage); // Ensure base name extraction here
+                    console.log("Using old image base name:", value); // Log the base name being used
                 }
-                sectionData[field.label] = value;
-            });
-
-            submitFormData.append(section.title, JSON.stringify(sectionData));
-        });
-
-        sections.forEach(section => {
-            // const sectionData = {};
-            const sectionFields = formData[section.title] || {};
-
-            section.fields.forEach(field => {
-                let value = sectionFields[field.label] || '';
-
+    
+                console.log("Sending image for", field.label, value); // Log final value being sent
+            }
+    
+            submitData[field.label] = value; // Add the field data to the submitData
+        }
+    
+        // Handle sections if any
+        for (const section of sections) {
+            const sectionData = {};
+            const sectionFields = formData[section.title] || {}; // Get the section fields
+    
+            // Loop through each field in the section
+            for (const field of section.fields) {
+                let value = sectionFields[field.label] || ''; // Get the value from section fields
+    
+                // If the field is a file, check if it has been changed
                 if (field.type === 'file' && value instanceof File) {
-                    submitFormData.append(`Section_image_${section.title}_${field.label}`, value); // Append file directly with section prefix
+                    console.log("Received file for field:", field.label);
+    
+                    try {
+                        value = await convertToBase64(value); // Convert the file to Base64
+                        console.log("Base64 value for file field:", value); // Log the Base64 value
+                    } catch (error) {
+                        console.error('Error converting file to base64', error);
+                        value = ''; // Handle error gracefully
+                    }
+                } else if (!value && formData[field.label]) {
+                    const oldImage = formData[field.label];  // Directly get the old image value from formData
+                    console.log("Old Image URL in section:", oldImage); // Log the old image URL in section
+                    value = extractBaseName(oldImage); // Extract the base name (not the full URL)
+                    console.log("Using old image for section field:", field.label, value); // Log the base name being used
                 }
-            });
-
-            // Append section data to form data as JSON string
-            // submitFormData.append(section.title, JSON.stringify(sectionData));
-        });
-
+    
+                sectionData[field.label] = value; // Add the section data to the sectionData object
+            }
+    
+            submitData[section.title] = sectionData; // Add the section data to the submitData
+        }
+    
+        console.log('Submitting JSON data:', submitData);
+    
         try {
-            const response = await Authapi.postdynamicupdatedata(id, submitFormData);
+            // Assuming `Authapi.postdynamicupdatedata` expects the `id` and `submitData` as arguments
+            const response = await Authapi.postdynamicupdatedata(id, submitData);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
-                navigate('/post-list', { state: { post_title } });
             } else {
                 Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
             }
@@ -235,6 +275,26 @@ const PostDynamicEdit = () => {
             console.error('Error submitting data:', error);
         }
     };
+    
+    // Function to convert a file to Base64 (assuming you're using this to handle image uploads)
+    async function convertToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+    
+    // Function to extract the base name from a URL or file path (for example, extract 'image.jpg' from a URL)
+    function extractBaseName(url) {
+        if (!url) return ''; // In case the URL is empty or undefined
+        const lastSlashIndex = url.lastIndexOf('/');
+        const fileName = url.slice(lastSlashIndex + 1); // Extracts the file name from URL or path
+        return fileName;
+    }
+    
+    
 
     return (
         <>
@@ -273,12 +333,12 @@ const PostDynamicEdit = () => {
                                                             key={idx}
                                                             control={
                                                                 <Checkbox
-                                                                    checked={formData[field.label]?.includes(option)}  
-                                                                    onChange={(e) => handleInputChange(field.label, field.type, '')(e, option)}  
-                                                                    value={option}  
+                                                                    checked={formData[field.label]?.includes(option)}
+                                                                    onChange={(e) => handleInputChange(field.label, field.type, '')(e, option)}
+                                                                    value={option}
                                                                 />
                                                             }
-                                                            label={option}  
+                                                            label={option}
                                                         />
                                                     ))}
                                                     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}

@@ -92,73 +92,76 @@ const PostFormDynamic = () => {
         return true;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // console.log('Form data on submit:', formData); // Add this log for debugging
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+      
+          reader.onload = () => {
+            resolve(reader.result); 
+          };
+      
+          reader.onerror = (error) => {
+            reject(error);  
+          };
+        });
+      };
 
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+    
         if (!validate()) {
             console.log('Validation failed');
             return;
         }
-
-        const submitFormData = new FormData();
-
-        // Handle standalone fields
-        standaloneFields.forEach(field => {
+    
+        const submitData = {};
+    
+        for (const field of standaloneFields) {
             let value = formData['']?.[field.label] || '';
+    
             if (field.type === 'file' && value instanceof File) {
-                // Extract the file name
-                // value = value.name;
-            }
-            submitFormData.append(field.label, value);
-        });
-
-        // Handle section fields
-        sections.forEach(section => {
-            const sectionData = {};
-
-            // Ensure section data is properly set
-            const sectionFields = formData[section.title] || {};
-            // console.log(`Section ${section.title} fields before processing:`, sectionFields);
-
-            section.fields.forEach(field => {
-                let value = sectionFields[field.label] || '';  // Get field value from formData
-
-                // Debugging: Check if values are being correctly fetched
-                // console.log(`Field ${field.label} value before processing:`, value);
-
-                if (field.type === 'file' && value instanceof File) {
-                    value = value.name;  // For file inputs, extract file name
+                try {
+                    value = await convertToBase64(value);
+                } catch (error) {
+                    console.error('Error converting file to base64', error);
+                    value = '';  
                 }
-
-                sectionData[field.label] = value; // Set the field value in section data
-            });
-
-            // console.log(`Final Section Data for ${section.title}:`, sectionData);
-            submitFormData.append(section.title, JSON.stringify(sectionData));  // Append as JSON
-        });
-
-            sections.forEach(section => {
-                // const sectionData = {};
-                const sectionFields = formData[section.title] || {};
-
-                section.fields.forEach(field => {
-                    let value = sectionFields[field.label] || '';
-
-                    if (field.type === 'file' && value instanceof File) {
-                        submitFormData.append(`Section_image_${section.title}_${field.label}`, value); // Append file directly with section prefix
+            }
+    
+            submitData[field.label] = value;
+        }
+    
+        for (const section of sections) {
+            const sectionData = {};
+            const sectionFields = formData[section.title] || {};
+    
+            for (const field of section.fields) {
+                let value = sectionFields[field.label] || '';  
+    
+                if (field.type === 'file' && value instanceof File) {
+                    try {
+                        value = await convertToBase64(value);
+                    } catch (error) {
+                        console.error('Error converting file to base64', error);
+                        value = ''; 
                     }
-                });
-
-                // Append section data to form data as JSON string
-                // submitFormData.append(section.title, JSON.stringify(sectionData));
-            });
-
+                }
+    
+                sectionData[field.label] = value;
+            }
+    
+            submitData[section.title] = sectionData;
+        }
+    
+        console.log('Submitting JSON data:', submitData);
+    
         try {
-            const response = await Authapi.postDynamicstoredata(submitFormData, post_title);
+            const response = await Authapi.postDynamicstoredata(submitData, post_title);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
-                // setFormData({});
+                // setFormData({});  // Optionally reset the form
                 navigate('/post-list', { state: { post_title } });
             } else {
                 Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
