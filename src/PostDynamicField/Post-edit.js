@@ -165,136 +165,108 @@ const PostDynamicEdit = () => {
         return true;
     };
 
-    // const convertToBase64 = (file) => {
-    //     console.log("Converting file to base64");
-
-    //     return new Promise((resolve, reject) => {
-    //         const reader = new FileReader();
-    //         reader.readAsDataURL(file);
-
-    //         reader.onload = () => {
-    //             resolve(reader.result);
-    //         };
-
-    //         reader.onerror = (error) => {
-    //             reject(error);
-    //         };
-    //     });
-    // };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const convertToBase64 = (file) => {
+        console.log("Converting file to base64");
     
-        // Ensure validation is successful before proceeding
-        if (!validate()) {
-            console.log('Validation failed');
-            return;
-        }
-    
-        const submitData = {};
-    
-        // Log the form data before submission for debugging
-        console.log("FormData before submission:", formData);
-    
-        // Loop over the standalone fields and gather data
-        for (const field of standaloneFields) {
-            let value = formData[field.label] || ''; // Get the value from formData
-    
-            // If the field is a file, check if it has been changed
-            if (field.type === 'file') {
-                // Check if old image URL exists in formData directly under field.label
-                const oldImage = formData[field.label];  // Look for the old image URL directly in formData
-                console.log("Old Image URL for field:", oldImage); // Log to check the value of oldImage
-    
-                if (value instanceof File) {
-                    // If a new file is selected, convert it to Base64
-                    try {
-                        value = await convertToBase64(value);
-                        console.log("New Base64 value for file:", value); // Log the Base64 value
-                    } catch (error) {
-                        console.error('Error converting image to base64', error);
-                        value = ''; // Handle error gracefully
-                    }
-                } else if (!value && oldImage) {
-                    // If no new image is selected (value is empty), use the old image URL or file name
-                    value = extractBaseName(oldImage); // Ensure base name extraction here
-                    console.log("Using old image base name:", value); // Log the base name being used
-                }
-    
-                console.log("Sending image for", field.label, value); // Log final value being sent
-            }
-    
-            submitData[field.label] = value; // Add the field data to the submitData
-        }
-    
-        // Handle sections if any
-        for (const section of sections) {
-            const sectionData = {};
-            const sectionFields = formData[section.title] || {}; // Get the section fields
-    
-            // Loop through each field in the section
-            for (const field of section.fields) {
-                let value = sectionFields[field.label] || ''; // Get the value from section fields
-    
-                // If the field is a file, check if it has been changed
-                if (field.type === 'file' && value instanceof File) {
-                    console.log("Received file for field:", field.label);
-    
-                    try {
-                        value = await convertToBase64(value); // Convert the file to Base64
-                        console.log("Base64 value for file field:", value); // Log the Base64 value
-                    } catch (error) {
-                        console.error('Error converting file to base64', error);
-                        value = ''; // Handle error gracefully
-                    }
-                } else if (!value && formData[field.label]) {
-                    const oldImage = formData[field.label];  // Directly get the old image value from formData
-                    console.log("Old Image URL in section:", oldImage); // Log the old image URL in section
-                    value = extractBaseName(oldImage); // Extract the base name (not the full URL)
-                    console.log("Using old image for section field:", field.label, value); // Log the base name being used
-                }
-    
-                sectionData[field.label] = value; // Add the section data to the sectionData object
-            }
-    
-            submitData[section.title] = sectionData; // Add the section data to the submitData
-        }
-    
-        console.log('Submitting JSON data:', submitData);
-    
-        try {
-            // Assuming `Authapi.postdynamicupdatedata` expects the `id` and `submitData` as arguments
-            const response = await Authapi.postdynamicupdatedata(id, submitData);
-            if (response.status === true) {
-                Swal.fire('Success', 'Data submitted successfully!', 'success');
-            } else {
-                Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
-            }
-        } catch (error) {
-            Swal.fire('Error', 'There was an issue with your submission.', 'error');
-            console.error('Error submitting data:', error);
-        }
-    };
-    
-    // Function to convert a file to Base64 (assuming you're using this to handle image uploads)
-    async function convertToBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
+    
+            reader.onload = () => {
+                resolve(reader.result); 
+            };
+    
+            reader.onerror = (error) => {
+                reject(error);  
+            };
         });
+    };
+    
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validate()) {
+        console.log('Validation failed');
+        return;
     }
-    
-    // Function to extract the base name from a URL or file path (for example, extract 'image.jpg' from a URL)
-    function extractBaseName(url) {
-        if (!url) return ''; // In case the URL is empty or undefined
-        const lastSlashIndex = url.lastIndexOf('/');
-        const fileName = url.slice(lastSlashIndex + 1); // Extracts the file name from URL or path
-        return fileName;
+
+    const submitData = {};
+
+    for (const field of standaloneFields) {
+        let value = formData[field.label] || ''; // Get the value from formData
+
+        // If the field is a file, check if it has been changed
+        if (field.type === 'file') {
+            // Assuming the old image URL or Base64 is stored as `old_<field.label>`
+            const oldImage = formData[`old_${field.label}`]; // Check if the old image URL exists
+
+            if (value instanceof File) {
+                // If a new file is selected, convert it to Base64
+                try {
+                    value = await convertToBase64(value);
+                    console.log("New Base64 value for file:", value);
+                } catch (error) {
+                    console.error('Error converting image to base64', error);
+                    value = ''; // Handle error gracefully
+                }
+            } else if (!value && oldImage) {
+                // If no new image is selected (value is empty), pass the old image URL or name
+                value = oldImage;
+                console.log("Using old image:", value);
+            }
+
+            console.log("Sending image for", field.label, value);
+        }
+
+        submitData[field.label] = value;
     }
-    
-    
+
+    // Handle sections
+    for (const section of sections) {
+        const sectionData = {};
+        const sectionFields = formData[section.title] || {};
+
+        for (const field of section.fields) {
+            let value = sectionFields[field.label] || '';
+
+            if (field.type === 'file' && value instanceof File) {
+                console.log("Received file for field:", field.label);
+
+                try {
+                    value = await convertToBase64(value);
+                    console.log("Base64 value for file field:", value);
+                } catch (error) {
+                    console.error('Error converting file to base64', error);
+                    value = ''; // Handle error gracefully
+                }
+            } else if (!value && formData[`old_${field.label}`]) {
+                // If no new file is selected and old file exists, use the old image name or URL
+                value = formData[`old_${field.label}`];
+                console.log("Using old image for section field:", field.label, value);
+            }
+
+            sectionData[field.label] = value;
+        }
+
+        submitData[section.title] = sectionData;
+    }
+
+    console.log('Submitting JSON data:', submitData);
+
+    try {
+        // Assuming `Authapi.postdynamicupdatedata` expects the `id` and `submitData` as arguments
+        const response = await Authapi.postdynamicupdatedata(id, submitData);
+        if (response.status === true) {
+            Swal.fire('Success', 'Data submitted successfully!', 'success');
+        } else {
+            Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
+        }
+    } catch (error) {
+        Swal.fire('Error', 'There was an issue with your submission.', 'error');
+        console.error('Error submitting data:', error);
+    }
+};
+
 
     return (
         <>
@@ -333,12 +305,12 @@ const PostDynamicEdit = () => {
                                                             key={idx}
                                                             control={
                                                                 <Checkbox
-                                                                    checked={formData[field.label]?.includes(option)}
-                                                                    onChange={(e) => handleInputChange(field.label, field.type, '')(e, option)}
-                                                                    value={option}
+                                                                    checked={formData[field.label]?.includes(option)}  
+                                                                    onChange={(e) => handleInputChange(field.label, field.type, '')(e, option)}  
+                                                                    value={option}  
                                                                 />
                                                             }
-                                                            label={option}
+                                                            label={option}  
                                                         />
                                                     ))}
                                                     {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
