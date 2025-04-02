@@ -51,7 +51,7 @@ const PostDynamicList = () => {
             if (response.status === true) {
                 const formattedRows = response.results.map((item, index) => {
                     const filteredData = Object.keys(item.data)
-                        .filter(key => !key.includes('_') && !key.includes('slug') && key !== 'id' && key !== 'status')
+                        .filter(key => !key.includes('slug') && key !== 'id' && key !== 'status' && typeof item.data[key] !== 'object')
                         .reduce((obj, key) => {
                             obj[key] = item.data[key];
                             return obj;

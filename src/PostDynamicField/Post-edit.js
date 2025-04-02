@@ -174,76 +174,109 @@ const PostDynamicEdit = () => {
         return true;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!validate()) {
-            console.log('Validation failed');
-            return;
-        }
-
-        const submitFormData = new FormData();
-
-        standaloneFields.forEach(field => {
-            let value = formData[field.label] || '';
-            if (field.type === 'file') {
-                if (value instanceof File) {
-                    // value = value.name;
-                } else if (typeof value === 'string') {
-                    value = value.split('/').pop();
-                }
-            }
-            submitFormData.append(field.label, value);
+    const convertToBase64 = (file) => {
+        console.log("Converting file to base64");
+    
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+    
+            reader.onload = () => {
+                resolve(reader.result); 
+            };
+    
+            reader.onerror = (error) => {
+                reject(error);  
+            };
         });
-
-        sections.forEach(section => {
-            const sectionData = {};
-            const sectionFields = formData[section.title] || {};
-
-            section.fields.forEach(field => {
-                let value = sectionFields[field.label] || '';
-                if (field.type === 'file') {
-                    if (value instanceof File) {
-                        value = value.name;
-                    } else if (typeof value === 'string') {
-                        value = value.split('/').pop();
-                    }
-                }
-                sectionData[field.label] = value;
-            });
-
-            submitFormData.append(section.title, JSON.stringify(sectionData));
-        });
-
-        sections.forEach(section => {
-            // const sectionData = {};
-            const sectionFields = formData[section.title] || {};
-
-            section.fields.forEach(field => {
-                let value = sectionFields[field.label] || '';
-
-                if (field.type === 'file' && value instanceof File) {
-                    submitFormData.append(`Section_image_${section.title}_${field.label}`, value); // Append file directly with section prefix
-                }
-            });
-
-            // Append section data to form data as JSON string
-            // submitFormData.append(section.title, JSON.stringify(sectionData));
-        });
-
-        try {
-            const response = await Authapi.postdynamicupdatedata(id, submitFormData);
-            if (response.status === true) {
-                Swal.fire('Success', 'Data submitted successfully!', 'success');
-                navigate('/post-list', { state: { post_title } });
-            } else {
-                Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
-            }
-        } catch (error) {
-            Swal.fire('Error', 'There was an issue with your submission.', 'error');
-            console.error('Error submitting data:', error);
-        }
     };
+    
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validate()) {
+        console.log('Validation failed');
+        return;
+    }
+
+    const submitData = {};
+
+    for (const field of standaloneFields) {
+        let value = formData[field.label] || ''; // Get the value from formData
+
+        // If the field is a file, check if it has been changed
+        if (field.type === 'file') {
+            // Assuming the old image URL or Base64 is stored as `old_<field.label>`
+            const oldImage = formData[`old_${field.label}`]; // Check if the old image URL exists
+
+            if (value instanceof File) {
+                // If a new file is selected, convert it to Base64
+                try {
+                    value = await convertToBase64(value);
+                    console.log("New Base64 value for file:", value);
+                } catch (error) {
+                    console.error('Error converting image to base64', error);
+                    value = ''; // Handle error gracefully
+                }
+            } else if (!value && oldImage) {
+                // If no new image is selected (value is empty), pass the old image URL or name
+                value = oldImage;
+                console.log("Using old image:", value);
+            }
+
+            console.log("Sending image for", field.label, value);
+        }
+
+        submitData[field.label] = value;
+    }
+
+    // Handle sections
+    for (const section of sections) {
+        const sectionData = {};
+        const sectionFields = formData[section.title] || {};
+
+        for (const field of section.fields) {
+            let value = sectionFields[field.label] || '';
+
+            if (field.type === 'file' && value instanceof File) {
+                console.log("Received file for field:", field.label);
+
+                try {
+                    value = await convertToBase64(value);
+                    console.log("Base64 value for file field:", value);
+                } catch (error) {
+                    console.error('Error converting file to base64', error);
+                    value = ''; // Handle error gracefully
+                }
+            } else if (!value && formData[`old_${field.label}`]) {
+                // If no new file is selected and old file exists, use the old image name or URL
+                value = formData[`old_${field.label}`];
+                console.log("Using old image for section field:", field.label, value);
+            }
+
+            sectionData[field.label] = value;
+        }
+
+        submitData[section.title] = sectionData;
+    }
+
+    console.log('Submitting JSON data:', submitData);
+
+    try {
+        // Assuming `Authapi.postdynamicupdatedata` expects the `id` and `submitData` as arguments
+        const response = await Authapi.postdynamicupdatedata(id, submitData);
+        if (response.status === true) {
+            Swal.fire('Success', 'Data submitted successfully!', 'success');
+            navigate('/post-list', { state: { post_title } });
+        } else {
+            Swal.fire('Error', response.message || 'Submission failed. Please try again.', 'error');
+        }
+    } catch (error) {
+        Swal.fire('Error', 'There was an issue with your submission.', 'error');
+        console.error('Error submitting data:', error);
+    }
+};
+
 
     return (
         <>
