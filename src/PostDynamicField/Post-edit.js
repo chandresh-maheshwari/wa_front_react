@@ -37,8 +37,9 @@ const PostDynamicEdit = () => {
                 if (isNaN(key)) {
                     if (value.enabled) {
                         const fields = Object.values(value).filter(field => field.label);
-                        const modifiedTitle = key.replace(/\s+/g, '_');
-                        sectioned.push({ title: modifiedTitle, fields });
+                        // const modifiedTitle = key.replace(/\s+/g, '_');
+                        console.error('modified title==:', key);
+                        sectioned.push({ title: key, fields });
                     }
                 } else {
                     standalone.push(value);
@@ -67,8 +68,8 @@ const PostDynamicEdit = () => {
 
             Object.entries(data).forEach(([key, value]) => {
                 if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
-                    const modifiedKey = key.replace(/\s+/g, '_');
-                    sectionsData[modifiedKey] = value;
+                    // const modifiedKey = key.replace(/\s+/g, '_');
+                    sectionsData[key] = value;
                 } else {
                     standaloneData[key] = value;
                 }
