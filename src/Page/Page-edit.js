@@ -394,7 +394,8 @@ const PageEdit = () => {
                                                     <TextField
                                                         label="Button Link"
                                                         name="button_link"
-                                                        type="url"
+                                                        type="text"
+                                                        // type="url"
                                                         fullWidth
                                                         variant="outlined"
                                                         onChange={handleChange}
