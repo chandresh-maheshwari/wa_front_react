@@ -109,7 +109,7 @@ const PostDynamicList = () => {
         },
 
         ...Object.keys(rows[0] || {}).map((key) => {
-            if (key === 'id' || key === 'status' || key === 'deleted_at') return null;
+            if (key === 'id' || key === 'status' || key === 'deleted_at' || key.toLowerCase().includes('slug')) return null;
             return {
                 field: key,
                 headerName: key.charAt(0).toUpperCase() + key.slice(1),

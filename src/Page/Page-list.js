@@ -52,7 +52,7 @@ const PageList = () => {
       if (Array.isArray(response.results)) {
         const formattedData = response.results.map((item, index) => ({
           id: item.id,
-          sr_no: index, // Ensure sr_no starts from 1
+          sr_no: index + 1, // Ensure sr_no starts from 1
           status: item.status,
           page_status: item.page_status,
           page_name: item.page_name,
