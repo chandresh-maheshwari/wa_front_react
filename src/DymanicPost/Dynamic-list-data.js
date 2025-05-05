@@ -138,8 +138,10 @@ const DynamicList = () => {
     }
   };
 
-  // multi deleted Data
   
+
+  // multi deleted Data
+
   const handleDelete = async (ids) => {
          if (selectedRows.length === 0) {
              Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');

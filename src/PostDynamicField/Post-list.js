@@ -416,6 +416,8 @@ const PostDynamicList = () => {
     //         return;
     //     }
 
+
+    
     //     try {
     //         const promises = ids.map(id => Authapi.restorePostDeletedData(id));
     //         await Promise.all(promises);
