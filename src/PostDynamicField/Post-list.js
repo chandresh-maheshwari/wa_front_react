@@ -401,30 +401,88 @@ const PostDynamicList = () => {
         }
     };
 
+    // const handleRestore = async (ids) => {
+    //     if (!Array.isArray(ids)) {
+    //         ids = [ids];
+    //     }
+
+    //     if (statusFilter !== "deleted") {
+    //         Swal.fire('Warning', 'You can only restore items in the "Deleted" state.', 'warning');
+    //         return;
+    //     }
+
+    //     if (ids.length === 0) {
+    //         Swal.fire('Warning', 'Please select at least one item to restore.', 'warning');
+    //         return;
+    //     }
+
+    //     try {
+    //         const promises = ids.map(id => Authapi.restorePostDeletedData(id));
+    //         await Promise.all(promises);
+    //         Swal.fire('Success!', 'Selected items restored successfully.', 'success');
+    //         fetchData(page, pageSize);
+    //     } catch (error) {
+    //         Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to restore items', 'error');
+    //     }
+    // };
+
     const handleRestore = async (ids) => {
         if (!Array.isArray(ids)) {
-            ids = [ids];
+          ids = [ids]; // Ensure ids is an array
         }
-
+    
         if (statusFilter !== "deleted") {
-            Swal.fire('Warning', 'You can only restore items in the "Deleted" state.', 'warning');
-            return;
+          Swal.fire(
+            "Warning",
+            "You can only restore items in the 'Deleted' state.",
+            "warning"
+          );
+          return;
         }
-
+    
         if (ids.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to restore.', 'warning');
-            return;
+          Swal.fire(
+            "Warning",
+            "Please select at least one item to restore.",
+            "warning"
+          );
+          return;
         }
-
-        try {
-            const promises = ids.map(id => Authapi.restorePostDeletedData(id));
-            await Promise.all(promises);
-            Swal.fire('Success!', 'Selected items restored successfully.', 'success');
-            fetchData(page, pageSize);
+    
+        try {  
+          const promises = ids.map((id) => Authapi.restorePostDeletedData(id));
+          const results = await Promise.all(promises);
+    
+          if (results.every(result => result.status)) {
+            Swal.fire("Success!", "Selected items restored successfully.", "success");
+    
+            // Update the state directly instead of re-fetching
+            const updatedRows = rows.map((row) => {
+              if (ids.includes(row.id)) {
+                return { ...row, deleted_at: 0 }; // Update the deleted_at status
+              }
+              return row;
+            });
+    
+            setRows(updatedRows);
+            applyFilter(updatedRows, statusFilter); // Reapply the current filter
+          } else {
+            Swal.fire(
+              "Error!",
+              "Some items could not be restored.",
+              "error"
+            );
+          }
         } catch (error) {
-            Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to restore items', 'error');
+          Swal.fire(
+            "Error!",
+            error.response?.data?.message ||
+            error.message ||
+            "Failed to restore items",
+            "error"
+          );
         }
-    };
+      };
 
     const handleEdit = async (id) => {
         navigate(`/post-edit/${id}`, { state: { post_title } });
