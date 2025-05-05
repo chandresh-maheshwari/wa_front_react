@@ -82,6 +82,7 @@ const PageList = () => {
   const applyFilter = (data, filterValue) => {
     console.log("Applying filter:", filterValue); // Log the filter being applied
     let filteredData;
+    // alert(filterValue);
     switch (filterValue) {
       case "page active":
         filteredData = data.filter((row) => row.status === 1);
@@ -303,17 +304,23 @@ const PageList = () => {
 
   // single page active
   const getSingleActive = async (id, currentStatus) => {
-    // console.log(currentStatus)
     try {
       const newStatus = currentStatus === 1 ? 0 : 1;
-      // console.log(newStatus)
       const response = await Authapi.pagestatus(id, newStatus);
       if (response.status === true) {
+        // Update the rows state first
+        const updatedRows = rows.map(row => 
+          row.id === id ? { ...row, status: newStatus } : row
+        );
+        setRows(updatedRows);
+        
+        // Then apply the current filter to the updated data
+        applyFilter(updatedRows, statusFilter);
+        
         setActiveStates((prevStates) => ({
           ...prevStates,
           [id]: newStatus === 1,
         }));
-        fetchData();
       } else {
         throw new Error("Failed to update status");
       }
@@ -336,24 +343,27 @@ const PageList = () => {
     if (Array.isArray(ids) && ids.length > 0) {
       const newStatus = 0;
       try {
-        // const idssToDeactivate = ids.filter(id => activeStates[id] !== false);
-        if (ids.length > 0) {
-          const promises = ids.map((id) => Authapi.pagestatus(id, newStatus));
-          await Promise.all(promises);
+        const promises = ids.map((id) => Authapi.pagestatus(id, newStatus));
+        await Promise.all(promises);
 
-          setActiveStates((prevStates) => {
-            const newStates = { ...prevStates };
-            ids.forEach((id) => {
-              newStates[id] = false;
-            });
-            return newStates;
+        // Update the rows state first
+        const updatedRows = rows.map(row => 
+          ids.includes(row.id) ? { ...row, status: newStatus } : row
+        );
+        setRows(updatedRows);
+        
+        // Then apply the current filter to the updated data
+        applyFilter(updatedRows, statusFilter);
+
+        setActiveStates((prevStates) => {
+          const newStates = { ...prevStates };
+          ids.forEach((id) => {
+            newStates[id] = false;
           });
+          return newStates;
+        });
 
-          fetchData();
-          Swal.fire("Success!", "Selected items are now inactive.", "success");
-        } else {
-          Swal.fire("Info", "All selected items are already inactive.", "info");
-        }
+        Swal.fire("Success!", "Selected items are now inactive.", "success");
       } catch (error) {
         Swal.fire("Error", "Failed to update status", "error");
       }
@@ -373,24 +383,27 @@ const PageList = () => {
     if (Array.isArray(ids) && ids.length > 0) {
       const newStatus = 1;
       try {
-        // const idsToActivate = ids.filter(id => activeStates[id] !== true);
-        if (ids.length > 0) {
-          const promises = ids.map((id) => Authapi.pagestatus(id, newStatus));
-          await Promise.all(promises);
+        const promises = ids.map((id) => Authapi.pagestatus(id, newStatus));
+        await Promise.all(promises);
 
-          setActiveStates((prevStates) => {
-            const newStates = { ...prevStates };
-            ids.forEach((id) => {
-              newStates[id] = true;
-            });
-            return newStates;
+        // Update the rows state first
+        const updatedRows = rows.map(row => 
+          ids.includes(row.id) ? { ...row, status: newStatus } : row
+        );
+        setRows(updatedRows);
+        
+        // Then apply the current filter to the updated data
+        applyFilter(updatedRows, statusFilter);
+
+        setActiveStates((prevStates) => {
+          const newStates = { ...prevStates };
+          ids.forEach((id) => {
+            newStates[id] = true;
           });
+          return newStates;
+        });
 
-          fetchData();
-          Swal.fire("Success!", "Selected items are now active.", "success");
-        } else {
-          Swal.fire("Info", "All selected items are already active.", "info");
-        }
+        Swal.fire("Success!", "Selected items are now active.", "success");
       } catch (error) {
         Swal.fire("Error", "Failed to update status", "error");
       }
@@ -403,11 +416,19 @@ const PageList = () => {
       const newStatus = currentStatus === 1 ? 0 : 1;
       const response = await Authapi.pageActive(id, newStatus);
       if (response) {
+        // Update the rows state first
+        const updatedRows = rows.map(row => 
+          row.id === id ? { ...row, page_status: newStatus } : row
+        );
+        setRows(updatedRows);
+        
+        // Then apply the current filter to the updated data
+        applyFilter(updatedRows, statusFilter);
+        
         setActiveStates((prevStates) => ({
           ...prevStates,
           [id]: newStatus === 1,
         }));
-        fetchData();
       } else {
         throw new Error("Failed to update status");
       }

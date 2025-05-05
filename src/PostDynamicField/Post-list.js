@@ -298,7 +298,18 @@ const PostDynamicList = () => {
                     ...prevStates,
                     [id]: newStatus === 1,
                 }));
-                fetchData(page, pageSize);
+                
+                // Update the rows state with the new status
+                const updatedRows = rows.map(row => {
+                    if (row.id === id) {
+                        return { ...row, status: newStatus };
+                    }
+                    return row;
+                });
+                setRows(updatedRows);
+                
+                // Reapply the current filter
+                applyFilter(updatedRows, statusFilter);
             } else {
                 throw new Error('Failed to update status');
             }
