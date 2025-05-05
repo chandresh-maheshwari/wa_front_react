@@ -426,6 +426,7 @@ const PostDynamicList = () => {
     //     }
     // };
 
+    // Restore function for individual items    
     const handleRestore = async (ids) => {
         if (!Array.isArray(ids)) {
           ids = [ids]; // Ensure ids is an array
