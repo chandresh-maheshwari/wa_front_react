@@ -140,14 +140,10 @@ const DynamicList = () => {
 
   // multi deleted DAta
   const handleDelete = async (ids) => {
-    if (statusFilter !== "deleted") {
-      Swal.fire(
-        "Warning",
-        "You can only delete items in the 'Deleted' state.",
-        "warning"
-      );
-      return;
-    }
+         if (selectedRows.length === 0) {
+             Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+             return;
+         }
 
     if (selectedRows.length === 0) {
       Swal.fire(
