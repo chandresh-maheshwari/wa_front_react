@@ -818,3 +818,7 @@ td {
   opacity: 0;
   transition: opacity 300ms;
 }
+
+.action-button[disabled] {
+    opacity: 0.5 !important;
+}

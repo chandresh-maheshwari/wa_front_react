@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, IconButton, Tooltip, Container, MenuItem, Select, InputLabel, FormControl, Grid, Typography, Collapse, Switch } from '@mui/material';
+import { TextField, Button, IconButton, Tooltip, Container, MenuItem, Select, InputLabel, FormControl, Grid, Typography, Collapse, Switch, Alert } from '@mui/material';
 import Expired from '../Login/ExpiredToken';
 import { FaPlusCircle, FaCheckCircle, FaEdit, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import Authapi from '../Authapi';
@@ -13,6 +13,7 @@ const DynamicEditForm = ({ existingData }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [standaloneFields, setStandaloneFields] = useState([]);
+    const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
     const [formData, setFormData] = useState({
         post_title: '',
@@ -23,22 +24,50 @@ const DynamicEditForm = ({ existingData }) => {
     const [sections, setSections] = useState([]);
 
     useEffect(() => {
-        if (existingData) {
-            setFormData(existingData.formData);
-            transformSections(existingData.post_description);
-        } else if (id) {
-            const fetchData = async () => {
-                try {
-                    const response = await Authapi.dynamicEditData(id);
-                    setFormData(response);
-                    transformSections(response.post_description);
-                } catch (error) {
-                    console.log('Error fetching data:', error);
-                }
-            };
-            fetchData();
-        }
+        const init = async () => {
+            if (existingData) {
+                setFormData(existingData.formData);
+                transformSections(existingData.post_description);
+                await checkExistingPosts(existingData.formData.post_title);
+            } else if (id) {
+                const response = await Authapi.dynamicEditData(id);
+                setFormData(response);
+                transformSections(response.post_description);
+                await checkExistingPosts(response.post_title);
+            }
+        };
+        init();
     }, [id, existingData]);
+
+    const checkExistingPosts = async (post_title) => {
+        try {
+            console.log("Checking posts for title:", post_title);
+            if (!post_title) {
+                console.log('No post_title available');
+                return;
+            }
+            const response = await Authapi.postdynamicListData(post_title);
+            console.log("API Response:", response);
+            if (response && response.status === true && Array.isArray(response.results)) {
+                // If we're editing an existing post (have an id), we should count other posts
+                const otherPosts = response.results.filter(post => post.id !== Number(id));
+                console.log("Other posts count:", otherPosts.length);
+                setButtonsDisabled(otherPosts.length > 0);
+            } else {
+                setButtonsDisabled(false);
+            }
+        } catch (error) {
+            console.log('Error checking posts:', error);
+            setButtonsDisabled(false);
+        }
+    };
+
+    // Add this effect to handle post_title changes
+    useEffect(() => {
+        if (formData.post_title) {
+            checkExistingPosts(formData.post_title);
+        }
+    }, [formData.post_title]);
 
     const transformSections = (postDescription) => {
         const standaloneFields = [];
@@ -77,15 +106,6 @@ const DynamicEditForm = ({ existingData }) => {
         setStandaloneFields(standaloneFields);
         setSections(sections);
     };
-
-    // const handleAddField = (sectionId) => {
-    //     const newField = { id: Date.now(), label: '', type: '', value: '', options: [] };
-    //     setSections(sections.map(section =>
-    //         section.id === sectionId
-    //             ? { ...section, fields: [...section.fields, newField] }
-    //             : section
-    //     ));
-    // };
 
     const handleAddField = (sectionId, fieldId) => {
         setSections(
@@ -134,11 +154,6 @@ const DynamicEditForm = ({ existingData }) => {
     };
 
     const handleRemoveField = (sectionId, fieldId) => {
-        // setSections(sections.map(section =>
-        //     section.id === sectionId
-        //         ? { ...section, fields: section.fields.filter(field => field.id !== fieldId) }
-        //         : section
-        // ));
         if (sectionId === null) {
             // Handle standalone fields
             setStandaloneFields((prevFields) => prevFields.filter((field) => field.id !== fieldId));
@@ -161,24 +176,8 @@ const DynamicEditForm = ({ existingData }) => {
         ));
     };
 
-    // const handleOptionChange = (e, sectionId, fieldId) => {
-    //     const { value } = e.target;
-    //     setSections(sections.map(section =>
-    //         section.id === sectionId
-    //             ? {
-    //                 ...section,
-    //                 fields: section.fields.map(field =>
-    //                     field.id === fieldId ? { ...field, options: value.split(',') } : field
-    //                 )
-    //             }
-    //             : section
-    //     ));
-    // };
-    
     const handleOptionChange = (e, sectionId, fieldId) => {
         const { value } = e.target;
-      
-        // console.log("Field options before update:", value);
       
         if (sectionId === null) {
           // Update standalone fields
@@ -213,26 +212,6 @@ const DynamicEditForm = ({ existingData }) => {
     const handleRemoveSection = (sectionId) => {
         setSections(sections.filter(section => section.id !== sectionId));
     };
-
-    // const handleAddSection = () => {
-    //     const newSection = {
-    //         id: Date.now(),
-    //         isOpen: true,
-    //         title: `Section ${sections.length + 1}`,
-    //         fields: [
-    //             {
-    //                 id: Date.now(),
-    //                 label: '',
-    //                 type: 'text',
-    //                 value: '',
-    //                 options: []
-    //             }
-    //         ],
-    //         isEditing: false
-    //     };
-    //     setSections([...sections, newSection]);
-    // };
-
 
     const handleAddSection = (currentSectionId) => {
         setSections((prevSections) => {
@@ -278,12 +257,6 @@ const DynamicEditForm = ({ existingData }) => {
         // Prepare section fields
         const sectionFields = sections.reduce((acc, section, index) => {
             const sectionTitle = section.title || `Section ${index + 1}`;
-            // acc[sectionTitle] = section.fields.map((field) => ({
-            //     label: field.label,
-            //     type: field.type,
-            //     value: field.value,
-            //     options: field.options,
-            // }));
             acc[sectionTitle] = {
                 enabled: section.enabled,  // Include switch value
                 ...section.fields.map((field) => ({
@@ -341,7 +314,6 @@ const DynamicEditForm = ({ existingData }) => {
         ));
     };
 
-    // Add this new handler for form data changes
     const handleFormDataChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevData => ({
@@ -349,7 +321,6 @@ const DynamicEditForm = ({ existingData }) => {
             [name]: value
         }));
     };
-
 
     const handleAddStandaloneField = () => {
         const newField = { id: Date.now(), label: "", type: "text", value: "", options: [] };
@@ -373,6 +344,11 @@ const DynamicEditForm = ({ existingData }) => {
             <Expired />
             <div className="col-md-12">
                 <div className="row mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
+                    {buttonsDisabled && (
+                        <Alert severity="info" sx={{ width: '100%', marginBottom: '20px' }}>
+                            This form's add/delete buttons are disabled because posts have already been created using this form structure. To maintain data consistency, structural modifications are not allowed.
+                        </Alert>
+                    )}
                     <div className="card-header Form-main-title">
                         <Typography variant="h6" className="title" align="center">Update Dynamic Post</Typography>
                     </div>
@@ -395,23 +371,7 @@ const DynamicEditForm = ({ existingData }) => {
                                             }}
                                         />
                                     </Grid>
-                                    {/* <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            label="Ordering"
-                                            name="ordering"
-                                            className='field-of-dynamic-from'
-                                            fullWidth
-                                            min="0"
-                                            value={formData.ordering}
-                                            onChange={handleFormDataChange}
-                                            style={{
-                                                marginBottom: '15px',
-                                                backgroundColor: '#f4f6f8',
-                                                borderRadius: '5px'
-                                            }}
-                                        />
-                                    </Grid> */}
-                                     <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Ordering"
                                             name="ordering"
@@ -425,7 +385,6 @@ const DynamicEditForm = ({ existingData }) => {
                                                     handleFormDataChange(e);
                                                 }
                                             }}
-
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
@@ -452,16 +411,19 @@ const DynamicEditForm = ({ existingData }) => {
 
                                 <Grid container justifyContent="flex-end" style={{ marginBottom: "40px" }}>
                                     <Grid item>
-                                        <Tooltip title="Add New Field">
-                                            <IconButton
-                                                aria-label="add-new-field"
-                                                color="primary"
-                                                className='action-button'
-                                                onClick={handleAddStandaloneField}
-                                                style={{ marginBottom: "15px" }}
-                                            >
-                                                <FaCirclePlus />
-                                            </IconButton>
+                                        <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Add New Field"}>
+                                            <span>
+                                                <IconButton
+                                                    aria-label="add-new-field"
+                                                    color="primary"
+                                                    className='action-button'
+                                                    onClick={handleAddStandaloneField}
+                                                    style={{ marginBottom: "15px", opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                    disabled={buttonsDisabled}
+                                                >
+                                                    <FaCirclePlus />
+                                                </IconButton>
+                                            </span>
                                         </Tooltip>
                                     </Grid>
                                 </Grid>
@@ -513,7 +475,6 @@ const DynamicEditForm = ({ existingData }) => {
                                                     <MenuItem value="checkbox">Checkbox</MenuItem>
                                                     <MenuItem value="radio">Radio</MenuItem>
                                                     <MenuItem value="date">Date</MenuItem>
-                                                    {/* <MenuItem value="button">Button</MenuItem> */}
                                                     <MenuItem value="email">Email</MenuItem>
                                                     <MenuItem value="password">Password</MenuItem>
                                                     <MenuItem value="url">Url</MenuItem>
@@ -524,26 +485,33 @@ const DynamicEditForm = ({ existingData }) => {
                                         </Grid>
 
                                         <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
-                                            <Tooltip title="Add New Field">
-                                                <IconButton
-                                                    aria-label="add-field"
-                                                    color="primary"
-                                                    className='action-button'
-                                                    onClick={() => handleAddFieldAfter(field.id)}
-                                                    style={{ marginRight: "10px" }}
-                                                >
-                                                    <FaCirclePlus />
-                                                </IconButton>
+                                            <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Add New Field"}>
+                                                <span>
+                                                    <IconButton
+                                                        aria-label="add-field"
+                                                        color="primary"
+                                                        className='action-button'
+                                                        onClick={() => handleAddFieldAfter(field.id)}
+                                                        style={{ marginRight: "10px", opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                        disabled={buttonsDisabled}
+                                                    >
+                                                        <FaCirclePlus />
+                                                    </IconButton>
+                                                </span>
                                             </Tooltip>
-                                            <Tooltip title="Delete Field">
-                                                <IconButton
-                                                    aria-label="delete-field"
-                                                    color="primary"
-                                                    className='action-button'
-                                                    onClick={() => handleRemoveField(null, field.id)}
-                                                >
-                                                    <MdDelete />
-                                                </IconButton>
+                                            <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Delete Field"}>
+                                                <span>
+                                                    <IconButton
+                                                        aria-label="delete-field"
+                                                        color="primary"
+                                                        className='action-button'
+                                                        onClick={() => handleRemoveField(null, field.id)}
+                                                        style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                        disabled={buttonsDisabled}
+                                                    >
+                                                        <MdDelete />
+                                                    </IconButton>
+                                                </span>
                                             </Tooltip>
                                         </Grid>
                                         {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
@@ -584,7 +552,6 @@ const DynamicEditForm = ({ existingData }) => {
                                                     color="primary"
                                                     className="section-switch"
                                                     title={section.enabled === true ? "Hide Section" : "Show Section"}
-
                                                 />
                                                 <Tooltip title={section.isEditing ? "Save Title" : "Edit Section"}>
                                                     <IconButton
@@ -606,39 +573,34 @@ const DynamicEditForm = ({ existingData }) => {
                                                         {section.isOpen ? <FaChevronUp /> : <FaChevronDown />}
                                                     </IconButton>
                                                 </Tooltip>
-                                                {/* <Tooltip title="Add Section">
-                                                    <IconButton
-                                                        aria-label="add-section"
-                                                        color="primary"
-                                                        className="action-button"
-                                                        onClick={handleAddSection}
-                                                        style={{ marginLeft: "10px" }}
-                                                    >
-                                                        <FaPlusCircle />
-                                                    </IconButton>
-                                                </Tooltip> */}
-                                                <Tooltip title="Add New Section">
-                                                    <IconButton
-                                                        aria-label="add-section"
-                                                        color="primary"
-                                                        className='action-button'
-                                                        onClick={() => handleAddSection(section.id)}
-                                                    >
-                                                        <FaPlusCircle />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                {/* Conditionally render the Delete Section button for all sections except the first one */}
-                                                {index !== 0 && (
-                                                    <Tooltip title="Delete Section">
+                                                <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Add New Section"}>
+                                                    <span>
                                                         <IconButton
-                                                            aria-label="delete-section"
+                                                            aria-label="add-section"
                                                             color="primary"
-                                                            className="action-button"
-                                                            onClick={() => handleRemoveSection(section.id)}
-                                                            style={{ marginLeft: "10px" }}
+                                                            className='action-button'
+                                                            onClick={() => handleAddSection(section.id)}
+                                                            style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                            disabled={buttonsDisabled}
                                                         >
-                                                            <MdDelete />
+                                                            <FaPlusCircle />
                                                         </IconButton>
+                                                    </span>
+                                                </Tooltip>
+                                                {index !== 0 && (
+                                                    <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Delete Section"}>
+                                                        <span>
+                                                            <IconButton
+                                                                aria-label="delete-section"
+                                                                color="primary"
+                                                                className="action-button"
+                                                                onClick={() => handleRemoveSection(section.id)}
+                                                                style={{ marginLeft: "10px", opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                                disabled={buttonsDisabled}
+                                                            >
+                                                                <MdDelete />
+                                                            </IconButton>
+                                                        </span>
                                                     </Tooltip>
                                                 )}
                                             </div>
@@ -686,7 +648,6 @@ const DynamicEditForm = ({ existingData }) => {
                                                                     <MenuItem value="checkbox">Checkbox</MenuItem>
                                                                     <MenuItem value="radio">Radio</MenuItem>
                                                                     <MenuItem value="date">Date</MenuItem>
-                                                                    {/* <MenuItem value="button">Button</MenuItem> */}
                                                                     <MenuItem value="email">Email</MenuItem>
                                                                     <MenuItem value="password">Password</MenuItem>
                                                                     <MenuItem value="url">Url</MenuItem>
@@ -697,27 +658,34 @@ const DynamicEditForm = ({ existingData }) => {
                                                         </Grid>
 
                                                         <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
-                                                            <Tooltip title="Add New Field">
-                                                                <IconButton
-                                                                    aria-label="add-field"
-                                                                    color="primary"
-                                                                    className="action-button"
-                                                                    onClick={() => handleAddField(section.id, field.id)}
-                                                                    style={{ marginRight: "10px" }}
-                                                                >
-                                                                    <FaCirclePlus />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                            {fieldIndex !== 0 && (
-                                                                <Tooltip title="Delete Field">
+                                                            <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Add New Field"}>
+                                                                <span>
                                                                     <IconButton
-                                                                        aria-label="delete"
+                                                                        aria-label="add-field"
                                                                         color="primary"
                                                                         className="action-button"
-                                                                        onClick={() => handleRemoveField(section.id, field.id)}
+                                                                        onClick={() => handleAddField(section.id, field.id)}
+                                                                        style={{ marginRight: "10px", opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                                        disabled={buttonsDisabled}
                                                                     >
-                                                                        <MdDelete />
+                                                                        <FaCirclePlus />
                                                                     </IconButton>
+                                                                </span>
+                                                            </Tooltip>
+                                                            {fieldIndex !== 0 && (
+                                                                <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Delete Field"}>
+                                                                    <span>
+                                                                        <IconButton
+                                                                            aria-label="delete"
+                                                                            color="primary"
+                                                                            className="action-button"
+                                                                            onClick={() => handleRemoveField(section.id, field.id)}
+                                                                            style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                                            disabled={buttonsDisabled}
+                                                                        >
+                                                                            <MdDelete />
+                                                                        </IconButton>
+                                                                    </span>
                                                                 </Tooltip>
                                                             )}
                                                         </Grid>
@@ -743,7 +711,6 @@ const DynamicEditForm = ({ existingData }) => {
                                         </Collapse>
                                     </div>
                                 ))}
-
 
                                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
                                     <Grid item>
