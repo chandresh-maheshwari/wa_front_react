@@ -28,25 +28,32 @@ const DynamicEditForm = ({ existingData }) => {
             if (existingData) {
                 setFormData(existingData.formData);
                 transformSections(existingData.post_description);
-                await checkExistingPosts(existingData.formData.post_title);
+                // console.log("IFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+                // console.log(existingData.formData);
+                // await checkExistingPosts(existingData.formData.post_title);
+                await checkExistingPosts(existingData.formData.id);
             } else if (id) {
                 const response = await Authapi.dynamicEditData(id);
                 setFormData(response);
+                // console.log("ELSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+                // console.log(response);
+
                 transformSections(response.post_description);
-                await checkExistingPosts(response.post_title);
+                // await checkExistingPosts(response.post_title);
+                await checkExistingPosts(response.id);
             }
         };
         init();
     }, [id, existingData]);
 
-    const checkExistingPosts = async (post_title) => {
+    const checkExistingPosts = async (post_id) => {
         try {
-            console.log("Checking posts for title:", post_title);
-            if (!post_title) {
-                console.log('No post_title available');
+            console.log("Checking posts for title:", post_id);
+            if (!post_id) {
+                console.log('No post_id available');
                 return;
             }
-            const response = await Authapi.postdynamicListData(post_title);
+            const response = await Authapi.postData(post_id);
             console.log("API Response:", response);
             if (response && response.status === true && Array.isArray(response.results)) {
                 // If we're editing an existing post (have an id), we should count other posts
@@ -63,11 +70,11 @@ const DynamicEditForm = ({ existingData }) => {
     };
 
     // Add this effect to handle post_title changes
-    useEffect(() => {
-        if (formData.post_title) {
-            checkExistingPosts(formData.post_title);
-        }
-    }, [formData.post_title]);
+    // useEffect(() => {
+    //     if (formData.post_title) {
+    //         checkExistingPosts(formData.post_title);
+    //     }
+    // }, [formData.post_title]);
 
     const transformSections = (postDescription) => {
         const standaloneFields = [];

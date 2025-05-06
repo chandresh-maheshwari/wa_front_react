@@ -1574,6 +1574,34 @@ export default new (class AuthApi {
 
 
 
+  async postData(post_id) {
+    console.log("AAAAAAAAAAAAAAAAAA");
+    console.log(post_id);
+    try {
+      const url = Config.apiurl + Config.apis.postData + post_id;
+      const token = ls('Token');
+      this.setHeaders("get");
+      let data = await axios
+        .get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        .then((res) => {
+          return res.data;
+        })
+        .catch((error) => {
+          return false;
+        });
+      return data;
+    } catch (error) {
+      return false;
+    }
+  }
+
+
+
   async postdynamicEditData(id) {
     try {
       const url = `${Config.apiurl}${Config.apis.postDynamicEdit}${id}`;

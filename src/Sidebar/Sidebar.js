@@ -30,7 +30,7 @@ const Sidebar = () => {
         const response = await Authapi.dynamicListData();
 
         if (response && response.results) {
-          const activePosts = response.results.filter(post => post.status === 1);
+          const activePosts = response.results.filter(post => post.status === 1 && post.deleted_at === 0);
 
           activePosts.sort((a, b) => {
             if (a.ordering === b.ordering) {

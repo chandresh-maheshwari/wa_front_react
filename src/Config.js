@@ -105,6 +105,7 @@ export default {
     dynamicFieldfetch: 'api/get-form-data/',
     postDynamicstore: 'api/post-data-store/',
     postDynamiclist: 'api/post-data-list/',
+    postData: 'api/post-data/',//Getting post for particular dynamic post 
     postDynamicEdit: 'api/post-data-edit/',
     postDynamicUpdate: 'api/post-data-update/',
     postDynamicDelete: 'api/post-data-delete/',
