@@ -8,6 +8,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
 import { FaCirclePlus } from "react-icons/fa6";
 import "../Custom.css";
+import { Checkbox, FormControlLabel } from '@mui/material';
+
 
 const DynamicEditForm = ({ existingData }) => {
     const { id } = useParams();
@@ -19,6 +21,7 @@ const DynamicEditForm = ({ existingData }) => {
         post_title: '',
         post_type: '',
         ordering: '',
+        slider_post: 'No',
     });
 
     const [sections, setSections] = useState([]);
@@ -287,6 +290,7 @@ const DynamicEditForm = ({ existingData }) => {
             post_type: formData.post_type,
             ordering: formData.ordering,
             post_description: postDescription,
+            slider_post : formData.slider_post,
         };
 
         try {
@@ -362,59 +366,81 @@ const DynamicEditForm = ({ existingData }) => {
                     <div className="card-body">
                         <Container>
                             <form encType="multipart/form-data" onSubmit={handleSubmit} className='dynamicEditForm'>
-                                <Grid container spacing={3}>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            label="Post Title"
-                                            name="post_title"
-                                            className='field-of-dynamic-from'
-                                            fullWidth
-                                            value={formData.post_title}
-                                            onChange={handleFormDataChange}
-                                            style={{
-                                                marginBottom: '15px',
-                                                backgroundColor: '#f4f6f8',
-                                                borderRadius: '5px'
-                                            }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            label="Ordering"
-                                            name="ordering"
-                                            className="field-of-dynamic-from"
-                                            fullWidth
-                                            value={formData.ordering}
-                                            onChange={(e) => {
-                                                const value = e.target.value;
-                                                // Allow only positive numbers or empty string
-                                                if (value === '' || /^[+]?\d+(\.\d+)?$/.test(value)) {
-                                                    handleFormDataChange(e);
-                                                }
-                                            }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <FormControl fullWidth style={{ marginTop: '15px' }}>
-                                            <InputLabel>Post Type</InputLabel>
-                                            <Select
-                                                label="Post Type"
-                                                className='dropdown-css-change field-of-dynamic-from'
-                                                name="post_type"
-                                                value={formData.post_type}
-                                                onChange={handleFormDataChange}
-                                                fullWidth
-                                                style={{
-                                                    backgroundColor: '#f4f6f8',
-                                                    borderRadius: '5px'
-                                                }}
-                                            >
-                                                <MenuItem value="custom_post">Custom Post</MenuItem>
-                                                <MenuItem value="normal_post">Normal Post</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </Grid>
-                                </Grid>
+                            <Grid container spacing={3}>
+    <Grid item xs={12} sm={6}>
+        <TextField
+            label="Post Title"
+            name="post_title"
+            className='field-of-dynamic-from'
+            fullWidth
+            value={formData.post_title}
+            onChange={handleFormDataChange}
+            style={{
+                marginBottom: '15px',
+                backgroundColor: '#f4f6f8',
+                borderRadius: '5px'
+            }}
+        />
+    </Grid>
+    <Grid item xs={12} sm={6}>
+        <TextField
+            label="Ordering"
+            name="ordering"
+            className="field-of-dynamic-from"
+            fullWidth
+            value={formData.ordering}
+            onChange={(e) => {
+                const value = e.target.value;
+                if (value === '' || /^[+]?\d+(\.\d+)?$/.test(value)) {
+                    handleFormDataChange(e);
+                }
+            }}
+        />
+    </Grid>
+
+    {/* ✅ New Checkbox Field */}
+
+
+    <Grid item xs={12}>
+        <FormControl fullWidth style={{ marginTop: '15px' }}>
+            <InputLabel>Post Type</InputLabel>
+            <Select
+                label="Post Type"
+                className='dropdown-css-change field-of-dynamic-from'
+                name="post_type"
+                value={formData.post_type}
+                onChange={handleFormDataChange}
+                fullWidth
+                style={{
+                    backgroundColor: '#f4f6f8',
+                    borderRadius: '5px'
+                }}
+            >
+                <MenuItem value="custom_post">Custom Post</MenuItem>
+                <MenuItem value="normal_post">Normal Post</MenuItem>
+            </Select>
+        </FormControl>
+    </Grid>
+    <Grid item xs={12}>
+    <FormControlLabel
+    control={
+        <Checkbox
+            name="slider_post"
+            checked={formData.slider_post === 'Yes'}
+            onChange={(e) => {
+                handleFormDataChange({
+                    target: {
+                        name: 'slider_post',
+                        value: e.target.checked ? 'Yes' : 'No', 
+                    }
+                });
+            }}
+        />
+    }
+    label="Slider Post"
+/>
+    </Grid>
+</Grid>
 
                                 <Grid container justifyContent="flex-end" style={{ marginBottom: "40px" }}>
                                     <Grid item>

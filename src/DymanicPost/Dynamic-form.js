@@ -8,6 +8,7 @@ import Authapi from "../Authapi";
 import Expired from "../Login/ExpiredToken";
 import { FaCirclePlus } from "react-icons/fa6";
 import "../Custom.css";
+import { Checkbox, FormControlLabel } from '@mui/material';
 
 const DynamicForm = () => {
   const [sections, setSections] = useState([
@@ -33,6 +34,7 @@ const DynamicForm = () => {
     post_title: "",
     post_type: "",
     ordering: "",
+    slider_post: 'No',
   });
 
   const navigate = useNavigate();
@@ -199,9 +201,9 @@ const DynamicForm = () => {
 
   const handleOptionChange = (e, sectionId, fieldId) => {
     const { value } = e.target;
-  
+
     // console.log("Field options before update:", value);
-  
+
     if (sectionId === null) {
       // Update standalone fields
       setStandaloneFields((prevFields) =>
@@ -215,20 +217,20 @@ const DynamicForm = () => {
         sections.map((section) =>
           section.id === sectionId
             ? {
-                ...section,
-                fields: section.fields.map((field) =>
-                  field.id === fieldId ? { ...field, options: value.split(",") } : field
-                ),
-              }
+              ...section,
+              fields: section.fields.map((field) =>
+                field.id === fieldId ? { ...field, options: value.split(",") } : field
+              ),
+            }
             : section
         )
       );
     }
   };
-  
-  
-  
-  
+
+
+
+
 
   const handleTitleChange = (e) => {
     const { name, value } = e.target;
@@ -366,6 +368,7 @@ const DynamicForm = () => {
       post_type: formData.post_type,
       ordering: formData.ordering,
       post_description: postDescription,
+      slider_post: formData.slider_post,
     };
 
     try {
@@ -430,22 +433,6 @@ const DynamicForm = () => {
                       }}
                     />
                   </Grid>
-                  {/* <Grid item xs={12} sm={6}>
-                    <TextField
-                      label="Ordering"
-                      name="ordering"
-                      className='field-of-dynamic-from'
-                      fullWidth
-                      min="0"
-                      value={formData.ordering}
-                      onChange={(e) => handleTitleChange(e, null)}
-                      style={{
-                        marginBottom: '15px',
-                        backgroundColor: '#f4f6f8',
-                        borderRadius: '5px'
-                      }}
-                    />
-                  </Grid> */}
                   <Grid item xs={12} sm={6}>
                     <TextField
                       label="Ordering"
@@ -482,6 +469,7 @@ const DynamicForm = () => {
                       </Select>
                     </FormControl>
                   </Grid>
+                  
                 </Grid>
 
                 {/* <TextField
@@ -838,7 +826,26 @@ const DynamicForm = () => {
                     <FaPlusCircle />
                   </IconButton>
                 </Tooltip> */}
+                
                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
+                <Grid item xs={12}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={formData.slider_post === 'Yes'}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            handleTitleChange(
+                              { target: { name: 'slider_post', value: checked ? 'Yes' : 'No' } },
+                              null
+                            );
+                          }}
+                          name="slider_post"
+                        />
+                      }
+                      label="Slider Post"
+                    />
+                  </Grid>
                   <Grid item>
                     <Button variant="contained" className='submit-btn' color="primary" style={{ backgroundColor: "#2c9dd4" }} type="submit">
                       Submit
