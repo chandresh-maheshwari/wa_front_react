@@ -359,27 +359,32 @@ const DynamicList = () => {
     if (Array.isArray(ids) && ids.length > 0) {
       const newStatus = 0;
       try {
-        // const idsToDeactivate = ids.filter(id => activeStates[id] !== false);
-        // if (idsToDeactivate.length > 0) {
-        const promises = ids.map((id) => Authapi.dynamicstatus(id, newStatus));
-        await Promise.all(promises);
+        // Filter out items that are already inactive
+        const idsToDeactivate = ids.filter(id => {
+          const row = filteredRows.find(row => row.id === id);
+          return row && row.status === 1;
+        });
 
-        setActiveStates((prevStates) => {
-          const newStates = { ...prevStates };
-          ids.forEach((id) => {
-            newStates[id] = false;
+        if (idsToDeactivate.length > 0) {
+          const promises = idsToDeactivate.map((id) => Authapi.dynamicstatus(id, newStatus));
+          await Promise.all(promises);
+
+          setActiveStates((prevStates) => {
+            const newStates = { ...prevStates };
+            idsToDeactivate.forEach((id) => {
+              newStates[id] = false;
+            });
+            return newStates;
           });
-          return newStates;
-        });
-        const event = new CustomEvent("dynamicPostStatusChanged", {
-          detail: { ids, status: newStatus },
-        });
-        window.dispatchEvent(event);
-        fetchData();
-        Swal.fire("Success!", "Selected items are now inactive.", "success");
-        // } else {
-        //     Swal.fire('Info', 'All selected items are already inactive.', 'info');
-        // }
+          const event = new CustomEvent("dynamicPostStatusChanged", {
+            detail: { ids: idsToDeactivate, status: newStatus },
+          });
+          window.dispatchEvent(event);
+          fetchData();
+          Swal.fire("Success!", "Selected items are now inactive.", "success");
+        } else {
+          Swal.fire("Info", "All selected items are already inactive.", "info");
+        }
       } catch (error) {
         Swal.fire("Error", "Failed to update status", "error");
       }
@@ -399,23 +404,30 @@ const DynamicList = () => {
     if (Array.isArray(ids) && ids.length > 0) {
       const newStatus = 1;
       try {
-        // const idsToActivate = ids.filter(id => activeStates[id] !== true);
-        // console.log(idsToActivate)
-        if (ids.length > 0) {
-          const promises = ids.map((id) =>
+        // Get all rows from the current filter
+        const currentRows = statusFilter === "all" ? rows.filter(row => row.deleted_at === 0) : filteredRows;
+        
+        // Filter out items that are already active
+        const idsToActivate = ids.filter(id => {
+          const row = currentRows.find(row => row.id === id);
+          return row && row.status === 0;
+        });
+
+        if (idsToActivate.length > 0) {
+          const promises = idsToActivate.map((id) =>
             Authapi.dynamicstatus(id, newStatus)
           );
           await Promise.all(promises);
 
           setActiveStates((prevStates) => {
             const newStates = { ...prevStates };
-            ids.forEach((id) => {
+            idsToActivate.forEach((id) => {
               newStates[id] = true;
             });
             return newStates;
           });
           const event = new CustomEvent("dynamicPostStatusChanged", {
-            detail: { ids, status: newStatus },
+            detail: { ids: idsToActivate, status: newStatus },
           });
           window.dispatchEvent(event);
           fetchData();
@@ -424,6 +436,7 @@ const DynamicList = () => {
           Swal.fire("Info", "All selected items are already active.", "info");
         }
       } catch (error) {
+        console.error("Error activating items:", error);
         Swal.fire("Error", "Failed to update status", "error");
       }
     }
