@@ -83,18 +83,27 @@ const DynamicEditForm = ({ existingData }) => {
         Object.entries(postDescription).forEach(([key, value], index) => {
             if (isNaN(key)) {
                 // This is a section
-                const fields = Array.isArray(value) ? value : Object.values(value).filter(v => typeof v === 'object');
+                let fields = [];
+                let enabled = false;
+                if (value && typeof value === 'object') {
+                    enabled = value.enabled || false;
+                    // Only collect numeric keys as fields
+                    fields = Object.entries(value)
+                        .filter(([k, v]) => !isNaN(k))
+                        .map(([k, v]) => v);
+                }
                 sections.push({
                     id: Date.now() + index,
                     isOpen: true,
-                    title: key, // Use the key as title
-                    enabled: value.enabled || false, // Use the enabled state from the data
+                    title: key,
+                    enabled: enabled,
                     fields: fields.map((field, fieldIndex) => ({
                         id: Date.now() + fieldIndex,
                         label: field.label || '',
                         type: field.type || 'text',
                         value: field.value || '',
-                        options: field.options || []
+                        options: field.options || [],
+                        required: field.required || false
                     })),
                     isEditing: false
                 });
@@ -105,7 +114,8 @@ const DynamicEditForm = ({ existingData }) => {
                     label: value.label || '',
                     type: value.type || 'text',
                     value: value.value || '',
-                    options: value.options || []
+                    options: value.options || [],
+                    required: value.required || false
                 });
             }
         });
@@ -118,7 +128,7 @@ const DynamicEditForm = ({ existingData }) => {
         setSections(
             sections.map((section) => {
                 if (section.id === sectionId) {
-                    const newField = { id: Date.now(), label: "", type: "text", value: "", options: [] };
+                    const newField = { id: Date.now(), label: "", type: "text", value: "", options: [], required: false };
                     const fieldIndex = section.fields.findIndex((field) => field.id === fieldId);
                     const updatedFields = [
                         ...section.fields.slice(0, fieldIndex + 1),
@@ -259,27 +269,39 @@ const DynamicEditForm = ({ existingData }) => {
             type: field.type,
             value: field.value,
             options: field.options,
+            required: field.required,
         }));
 
         // Prepare section fields
         const sectionFields = sections.reduce((acc, section, index) => {
             const sectionTitle = section.title || `Section ${index + 1}`;
-            acc[sectionTitle] = {
-                enabled: section.enabled,  // Include switch value
-                ...section.fields.map((field) => ({
-                  label: field.label,
-                  type: field.type,
-                  value: field.value,
-                  options: field.options,
-                })),
-              };
+            const sectionObj = { enabled: section.enabled };
+            section.fields.forEach((field, idx) => {
+                sectionObj[idx] = {
+                    label: field.label,
+                    type: field.type,
+                    value: field.value,
+                    options: field.options,
+                    required: field.required,
+                };
+            });
+            acc[sectionTitle] = sectionObj;
             return acc;
         }, {});
 
         // Combine standalone fields directly with section fields
         const postDescription = {
+            ...standaloneFields.reduce((acc, field, idx) => {
+                acc[idx] = {
+                    label: field.label,
+                    type: field.type,
+                    value: field.value,
+                    options: field.options,
+                    required: field.required,
+                };
+                return acc;
+            }, {}),
             ...sectionFields,
-            ...standaloneFieldsData,
         };
 
         const submitFormData = {
@@ -330,12 +352,12 @@ const DynamicEditForm = ({ existingData }) => {
     };
 
     const handleAddStandaloneField = () => {
-        const newField = { id: Date.now(), label: "", type: "text", value: "", options: [] };
+        const newField = { id: Date.now(), label: "", type: "text", value: "", options: [], required: false };
         setStandaloneFields([...standaloneFields, newField]);
     };
 
     const handleAddFieldAfter = (fieldId) => {
-        const newField = { id: Date.now(), label: "", type: "text", value: "", options: [] };
+        const newField = { id: Date.now(), label: "", type: "text", value: "", options: [], required: false };
         setStandaloneFields((prevFields) => {
             const index = prevFields.findIndex((f) => f.id === fieldId);
             return [
@@ -344,6 +366,29 @@ const DynamicEditForm = ({ existingData }) => {
                 ...prevFields.slice(index + 1),
             ];
         });
+    };
+
+    // Handler for required checkbox for standalone fields
+    const handleRequiredChangeStandalone = (fieldId) => {
+        setStandaloneFields((prevFields) =>
+            prevFields.map((f) => (f.id === fieldId ? { ...f, required: !f.required } : f))
+        );
+    };
+
+    // Handler for required checkbox for section fields
+    const handleRequiredChangeSection = (sectionId, fieldId) => {
+        setSections((prevSections) =>
+            prevSections.map((section) =>
+                section.id === sectionId
+                    ? {
+                        ...section,
+                        fields: section.fields.map((field) =>
+                            field.id === fieldId ? { ...field, required: !field.required } : field
+                        ),
+                    }
+                    : section
+            )
+        );
     };
 
     return (
@@ -491,34 +536,49 @@ const DynamicEditForm = ({ existingData }) => {
                                             </FormControl>
                                         </Grid>
 
+                                        {/* Required Checkbox */}
                                         <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
+                                            <Tooltip title="Make this field required">
+                                                <FormControl>
+                                                    <div className="checkbox-wrapper">
+                                                        <label>
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={field.required}
+                                                                onChange={() => handleRequiredChangeStandalone(field.id)}
+                                                            />
+                                                            <span className="checkbox"></span>
+                                                        </label>
+                                                    </div>
+                                                </FormControl>
+                                            </Tooltip>
                                             <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Add New Field"}>
-                                                <span>
+                                                {/* <span> */}
                                                     <IconButton
                                                         aria-label="add-field"
                                                         color="primary"
-                                                        className='action-button'
+                                                        className='action-button add-new-field'
                                                         onClick={() => handleAddFieldAfter(field.id)}
-                                                        style={{ marginRight: "10px", opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                        style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
                                                         disabled={buttonsDisabled}
                                                     >
                                                         <FaCirclePlus />
                                                     </IconButton>
-                                                </span>
+                                                {/* </span> */}
                                             </Tooltip>
                                             <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Delete Field"}>
-                                                <span>
+                                                {/* <span> */}
                                                     <IconButton
                                                         aria-label="delete-field"
                                                         color="primary"
-                                                        className='action-button'
+                                                        className='action-button delete-field'
                                                         onClick={() => handleRemoveField(null, field.id)}
                                                         style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
                                                         disabled={buttonsDisabled}
                                                     >
                                                         <MdDelete />
                                                     </IconButton>
-                                                </span>
+                                                {/* </span> */}
                                             </Tooltip>
                                         </Grid>
                                         {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
@@ -664,35 +724,50 @@ const DynamicEditForm = ({ existingData }) => {
                                                             </FormControl>
                                                         </Grid>
 
+                                                        {/* Required Checkbox */}
                                                         <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
+                                                            <Tooltip title="Make this field required">
+                                                                <FormControl>
+                                                                    <div className="checkbox-wrapper">
+                                                                        <label>
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                checked={field.required}
+                                                                                onChange={() => handleRequiredChangeSection(section.id, field.id)}
+                                                                            />
+                                                                            <span className="checkbox"></span>
+                                                                        </label>
+                                                                    </div>
+                                                                </FormControl>
+                                                            </Tooltip>
                                                             <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Add New Field"}>
-                                                                <span>
+                                                                {/* <span> */}
                                                                     <IconButton
                                                                         aria-label="add-field"
                                                                         color="primary"
-                                                                        className="action-button"
+                                                                        className="action-button add-new-field"
                                                                         onClick={() => handleAddField(section.id, field.id)}
-                                                                        style={{ marginRight: "10px", opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                                        style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
                                                                         disabled={buttonsDisabled}
                                                                     >
                                                                         <FaCirclePlus />
                                                                     </IconButton>
-                                                                </span>
+                                                                {/* </span> */}
                                                             </Tooltip>
                                                             {fieldIndex !== 0 && (
                                                                 <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Delete Field"}>
-                                                                    <span>
+                                                                    {/* <span> */}
                                                                         <IconButton
                                                                             aria-label="delete"
                                                                             color="primary"
-                                                                            className="action-button"
+                                                                            className="action-button delete-field"
                                                                             onClick={() => handleRemoveField(section.id, field.id)}
                                                                             style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
                                                                             disabled={buttonsDisabled}
                                                                         >
                                                                             <MdDelete />
                                                                         </IconButton>
-                                                                    </span>
+                                                                    {/* </span> */}
                                                                 </Tooltip>
                                                             )}
                                                         </Grid>

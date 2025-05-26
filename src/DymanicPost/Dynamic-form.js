@@ -13,8 +13,9 @@ const DynamicForm = () => {
   const [sections, setSections] = useState([
     {
       id: Date.now(),
-      isOpen: true,  // Track whether the section is collapsed or expanded
-      switchEnabled: false, // Add this new state
+      isOpen: true,
+      switchEnabled: false,
+      title: "Section 1",
       fields: [
         {
           id: Date.now(),
@@ -22,6 +23,7 @@ const DynamicForm = () => {
           type: "text",
           value: "",
           options: [],
+          required: false,
         },
       ],
     },
@@ -70,6 +72,7 @@ const DynamicForm = () => {
             type: "text",
             value: "",
             options: [],
+            required: false,
           },
         ],
       };
@@ -107,7 +110,7 @@ const DynamicForm = () => {
     setSections(
       sections.map((section) => {
         if (section.id === sectionId) {
-          const newField = { id: Date.now(), label: "", type: "text", value: "", options: [] };
+          const newField = { id: Date.now(), label: "", type: "text", value: "", options: [], required: false };
           const fieldIndex = section.fields.findIndex((field) => field.id === fieldId);
           const updatedFields = [
             ...section.fields.slice(0, fieldIndex + 1),
@@ -326,40 +329,35 @@ const DynamicForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Prepare standalone fields
-    const standaloneFieldsData = standaloneFields.map((field) => ({
-      label: field.label,
-      type: field.type,
-      value: field.value,
-      options: field.options,
-    }));
+    // 1. Add standalone fields as "0", "1", ... at root
+    let postDescription = {};
+    standaloneFields.forEach((field, idx) => {
+      postDescription[idx] = {
+        label: field.label,
+        type: field.type,
+        value: field.value,
+        options: field.options,
+        required: field.required,
+        [`Field_Slug_${field.label.replace(/\s+/g, '')}`]: field.label.replace(/\s+/g, '')
+      };
+    });
 
-    // Prepare section fields
-    const sectionFields = sections.reduce((acc, section, index) => {
-      const sectionTitle = section.title || `Section ${index + 1}`;
-      // acc[sectionTitle] = section.fields.map((field) => ({
-      //   label: field.label,
-      //   type: field.type,
-      //   value: field.value,
-      //   options: field.options,
-      // }));
-      acc[sectionTitle] = {
-        enabled: section.switchEnabled,  // Include switch value
-        ...section.fields.map((field) => ({
+    // 2. Add sections by title, with fields as "0", "1", ... and enabled
+    sections.forEach((section) => {
+      const sectionTitle = section.title || "Section";
+      let sectionObj = { enabled: section.switchEnabled };
+      section.fields.forEach((field, fieldIdx) => {
+        sectionObj[fieldIdx] = {
           label: field.label,
           type: field.type,
           value: field.value,
           options: field.options,
-        })),
-      };
-      return acc;
-    }, {});
-
-    // Combine standalone fields directly with section fields
-    const postDescription = {
-      ...sectionFields,
-      ...standaloneFieldsData,
-    };
+          required: field.required,
+          [`Field_Slug_${field.label.replace(/\s+/g, '')}`]: field.label.replace(/\s+/g, '')
+        };
+      });
+      postDescription[sectionTitle] = sectionObj;
+    });
 
     const SubmitformData = {
       post_title: formData.post_title,
@@ -372,7 +370,7 @@ const DynamicForm = () => {
       const response = await Authapi.Dynamicstoredata(SubmitformData);
       if (response) {
         Swal.fire("Success", "Data submitted successfully!", "success");
-        navigate("/dynamic-list-data");
+        // navigate("/dynamic-list-data");
       }
     } catch (error) {
       console.log("Error submitting data:", error);
@@ -381,12 +379,12 @@ const DynamicForm = () => {
   };
 
   const handleAddStandaloneField = () => {
-    const newField = { id: Date.now(), label: "", type: "text", value: "", options: [] };
+    const newField = { id: Date.now(), label: "", type: "text", value: "", options: [], required: false };
     setStandaloneFields([...standaloneFields, newField]);
   };
 
   const handleAddFieldAfter = (fieldId) => {
-    const newField = { id: Date.now(), label: "", type: "text", value: "", options: [] };
+    const newField = { id: Date.now(), label: "", type: "text", value: "", options: [], required: false };
     setStandaloneFields((prevFields) => {
       const index = prevFields.findIndex((f) => f.id === fieldId);
       return [
@@ -401,6 +399,29 @@ const DynamicForm = () => {
     setSections(sections.map(section =>
       section.id === sectionId ? { ...section, isEditing: !section.isEditing } : section
     ));
+  };
+
+  // Add handler for required checkbox for standalone fields
+  const handleRequiredChangeStandalone = (fieldId) => {
+    setStandaloneFields((prevFields) =>
+      prevFields.map((f) => (f.id === fieldId ? { ...f, required: !f.required } : f))
+    );
+  };
+
+  // Add handler for required checkbox for section fields
+  const handleRequiredChangeSection = (sectionId, fieldId) => {
+    setSections((prevSections) =>
+      prevSections.map((section) =>
+        section.id === sectionId
+          ? {
+              ...section,
+              fields: section.fields.map((field) =>
+                field.id === fieldId ? { ...field, required: !field.required } : field
+              ),
+            }
+          : section
+      )
+    );
   };
 
   return (
@@ -577,14 +598,30 @@ const DynamicForm = () => {
                       </FormControl>
                     </Grid>
 
+                    {/* Required Checkbox */}
                     <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
+                      <Tooltip title="Make this field required">
+                      <FormControl>
+                        <div className="checkbox-wrapper">
+                          <label>
+                            <input
+                              type="checkbox"
+                              // title='Make a field required'
+                              checked={field.required}
+                              onChange={() => handleRequiredChangeStandalone(field.id)}
+                            />
+                            <span className="checkbox"></span>
+                          </label>
+                        </div>
+                      </FormControl>
+                      </Tooltip>
                       <Tooltip title="Add New Field">
                         <IconButton
                           aria-label="add-field"
                           color="primary"
-                          className='action-button'
+                          className='action-button add-new-field'
                           onClick={() => handleAddFieldAfter(field.id)}
-                          style={{ marginRight: "10px" }}
+                        
                         >
                           <FaCirclePlus />
                         </IconButton>
@@ -593,7 +630,7 @@ const DynamicForm = () => {
                         <IconButton
                           aria-label="delete-field"
                           color="primary"
-                          className='action-button'
+                          className='action-button delete-field'
                           onClick={() => handleRemoveField(null, field.id)}
                         >
                           <MdDelete />
@@ -617,8 +654,6 @@ const DynamicForm = () => {
                       </Grid>
                     )}
                   </Grid>
-
-
                 ))}
                 {sections.map((section, index) => (
                   <div key={section.id} style={{ marginBottom: "20px", border: "1px solid #ccc", borderRadius: "8px", padding: "10px" }} className="section-part">
@@ -775,14 +810,29 @@ const DynamicForm = () => {
                               </FormControl>
                             </Grid>
 
+                            {/* Required Checkbox */}
                             <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
+                              <Tooltip title="Make this field required">
+                              <FormControl>
+                                <div className="checkbox-wrapper">
+                                  <label>
+                                    <input
+                                      type="checkbox"
+                                      checked={field.required}
+                                      onChange={() => handleRequiredChangeSection(section.id, field.id)}
+                                    />
+                                    <span className="checkbox"></span>
+                                  </label>
+                                </div>
+                              </FormControl>
+                              </Tooltip>
                               <Tooltip title="Add New Field">
                                 <IconButton
                                   aria-label="add-field"
                                   color="primary"
-                                  className="action-button"
+                                  className="action-button add-new-field"
                                   onClick={() => handleAddField(section.id, field.id)}
-                                  style={{ marginRight: "10px" }}
+                                  
                                 >
                                   <FaCirclePlus />
                                 </IconButton>
@@ -794,7 +844,7 @@ const DynamicForm = () => {
                                   <IconButton
                                     aria-label="delete"
                                     color="primary"
-                                    className="action-button"
+                                    className="action-button delete-field"
                                     onClick={() => handleRemoveField(section.id, field.id)}
                                   >
                                     <MdDelete />
@@ -824,7 +874,6 @@ const DynamicForm = () => {
                       </div>
                     </Collapse>
                   </div>
-
                 ))}
 
                 {/* <Tooltip title="Add Section">

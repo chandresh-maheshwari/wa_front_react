@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Authapi from "../Authapi";
-import { Typography, IconButton, Tooltip, Container, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, FormControlLabel, Checkbox, Radio, RadioGroup } from '@mui/material';
+import { Typography, IconButton, Tooltip, Container, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, FormControlLabel, Checkbox, Radio, RadioGroup, InputAdornment } from '@mui/material';
 import Expired from '../Login/ExpiredToken';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import "../Custom.css";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 const PostDynamicEdit = () => {
     const location = useLocation();
@@ -15,6 +15,8 @@ const PostDynamicEdit = () => {
     const [standaloneFields, setStandaloneFields] = useState([]);
     const [sections, setSections] = useState([]);
     const [errors, setErrors] = useState({});
+    const [touched, setTouched] = useState({});
+    const [showPassword, setShowPassword] = useState({});
     const post_title = location.state?.post_title;
 
     useEffect(() => {
@@ -66,12 +68,30 @@ const PostDynamicEdit = () => {
             const standaloneData = {};
             const sectionsData = {};
 
+            const isImageUrl = (url) => /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(url);
+
             Object.entries(data).forEach(([key, value]) => {
                 if (typeof value === 'object' && !Array.isArray(value) && value !== null) {
-                    // const modifiedKey = key.replace(/\s+/g, '_');
-                    sectionsData[key] = value;
+                    // Section fields
+                    Object.entries(value).forEach(([fieldLabel, fieldValue]) => {
+                        if (typeof fieldValue === 'string' && isImageUrl(fieldValue)) {
+                            // Set both the field and old_<fieldLabel>
+                            if (!sectionsData[key]) sectionsData[key] = {};
+                            sectionsData[key][fieldLabel] = fieldValue;
+                            sectionsData[key][`old_${fieldLabel}`] = fieldValue;
+                        } else {
+                            if (!sectionsData[key]) sectionsData[key] = {};
+                            sectionsData[key][fieldLabel] = fieldValue;
+                        }
+                    });
                 } else {
-                    standaloneData[key] = value;
+                    // Standalone fields
+                    if (typeof value === 'string' && isImageUrl(value)) {
+                        standaloneData[key] = value;
+                        standaloneData[`old_${key}`] = value;
+                    } else {
+                        standaloneData[key] = value;
+                    }
                 }
             });
 
@@ -115,46 +135,109 @@ const PostDynamicEdit = () => {
         }
     };
 
+    const getFieldError = (field, value) => {
+        if (field.required) {
+            if (field.type === 'file') {
+                // Check for new or old image
+                const oldImage = formData[`old_${field.label}`];
+                if (
+                    (!value || value === '') &&
+                    !(value instanceof File) &&
+                    (!oldImage || oldImage === '')
+                ) {
+                    return 'This field is required.';
+                }
+            } else if (
+                value === undefined ||
+                value === null ||
+                value === '' ||
+                (Array.isArray(value) && value.length === 0)
+            ) {
+                return 'This field is required.';
+            }
+        }
+        if (value) {
+            if (field.type === 'number') {
+                const digitsOnly = /^\d+$/;
+                if (!digitsOnly.test(value)) {
+                    return 'Only digits are allowed.';
+                } else if (String(value).length > 10) {
+                    return 'Maximum 10 digits allowed.';
+                }
+            }
+            if (field.type === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(value)) {
+                    return 'Please enter a valid email address.';
+                }
+            }
+            if (field.type === 'password') {
+                if (!value || value === '') {
+                    return 'This field is required.';
+                } else if (value.length !== 8) {
+                    return 'Input must be exactly 8 characters long.';
+                } else if (!/[A-Z]/.test(value)) {
+                    return 'Input must contain at least one uppercase letter.';
+                } else if (!/[a-z]/.test(value)) {
+                    return 'Input must contain at least one lowercase letter.';
+                } else if (!/\d/.test(value)) {
+                    return 'Input must contain at least one number.';
+                } else if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value)) {
+                    return 'Input must contain at least one special character.';
+                }
+            }
+            if (field.type === 'url') {
+                const urlRegex = /^(https?:\/\/)(localhost(:\d+)?|([\w\-]+\.)+[\w\-]+)(\/[\w\-./?%&=]*)?$/i;
+                if (!urlRegex.test(value)) {
+                    return 'Please enter a valid URL.';
+                }
+            }
+        }
+        return '';
+    };
+
+    const validateField = (field, value, sectionTitle = '') => {
+        const error = getFieldError(field, value);
+        setErrors(prevErrors => ({
+            ...prevErrors,
+            [field.label]: error,
+        }));
+        return error === '';
+    };
+
+    const handleBlur = (field, value, sectionTitle = '') => {
+        setTouched(prev => ({
+            ...prev,
+            [field.label]: prev[field.label] ? prev[field.label] + 1 : 1
+        }));
+        validateField(field, value, sectionTitle);
+    };
+
     const handleInputChange = (fieldLabel, fieldType, sectionTitle = '') => (event, option) => {
         let value;
-
         if (fieldType === 'checkbox') {
-            const currentValues = Array.isArray(sectionTitle ? formData[sectionTitle]?.[fieldLabel] : formData[fieldLabel])
-                ? sectionTitle ? formData[sectionTitle]?.[fieldLabel] : formData[fieldLabel]
-                : [];
-
+            const currentValues = sectionTitle ? (formData[sectionTitle]?.[fieldLabel] || []) : (formData[fieldLabel] || []);
             value = currentValues.includes(option)
                 ? currentValues.filter(item => item !== option)
                 : [...currentValues, option];
         } else if (fieldType === 'radio' || fieldType === 'dropdown' || fieldType === 'number') {
             value = event.target.value;
-            if (fieldType === 'number') {
-                if (value < 0) {
-                    setErrors(prevErrors => ({
-                        ...prevErrors,
-                        [fieldLabel]: 'Please enter a positive number.',
-                    }));
-                    return;
-                }
-                if (value.length > 11) {
-                    setErrors(prevErrors => ({
-                        ...prevErrors,
-                        [fieldLabel]: 'Number cannot exceed 11 characters.',
-                    }));
-                    return;
-                }
-            }
         } else if (fieldType === 'file') {
             value = event.target.files[0];
         } else {
             value = event.target.value;
         }
-
-        setErrors(prevErrors => ({
-            ...prevErrors,
-            [fieldLabel]: '',
-        }));
-
+        // Find the field definition
+        let field;
+        if (sectionTitle) {
+            const section = sections.find(s => s.title === sectionTitle);
+            field = section?.fields.find(f => f.label === fieldLabel);
+        } else {
+            field = standaloneFields.find(f => f.label === fieldLabel);
+        }
+        if (field) {
+            validateField(field, value, sectionTitle);
+        }
         if (sectionTitle) {
             setFormData(prevFormData => ({
                 ...prevFormData,
@@ -171,8 +254,55 @@ const PostDynamicEdit = () => {
         }
     };
 
+    const isEmpty = (value, type) => {
+        if (type === 'checkbox') {
+            return !Array.isArray(value) || value.length === 0;
+        }
+        if (type === 'file') {
+            // Accept if value is a File object or a non-empty string (URL)
+            return !(value instanceof File) && (!value || value === '');
+        }
+        // For all other types, check for empty string or null/undefined
+        return value === undefined || value === null || value === '';
+    };
+
     const validate = () => {
-        return true;
+        let valid = true;
+        const newErrors = {};
+        // Validate standalone fields
+        for (const field of standaloneFields) {
+            const value = formData[field.label];
+            const error = getFieldError(field, value);
+            if (error) {
+                newErrors[field.label] = error;
+                valid = false;
+            }
+        }
+        // Validate section fields
+        for (const section of sections) {
+            const sectionFields = formData[section.title] || {};
+            for (const field of section.fields) {
+                const value = sectionFields[field.label];
+                const error = getFieldError(field, value);
+                if (error) {
+                    newErrors[field.label] = error;
+                    valid = false;
+                }
+            }
+        }
+        setErrors(newErrors);
+        // Mark all fields as touched so errors show up
+        const allTouched = {};
+        standaloneFields.forEach(field => {
+            allTouched[field.label] = 2;
+        });
+        sections.forEach(section => {
+            section.fields.forEach(field => {
+                allTouched[field.label] = 2;
+            });
+        });
+        setTouched(allTouched);
+        return valid;
     };
 
     const convertToBase64 = (file) => {
@@ -278,6 +408,17 @@ const PostDynamicEdit = () => {
     }
 };
 
+    const renderLabel = (label, required) => {
+        if (!required) return label;
+        return label.trim().endsWith('*') ? label : <>{label}<span style={{color: 'red'}}>*</span></>;
+    };
+
+    const handleClickShowPassword = (fieldLabel) => {
+        setShowPassword(prev => ({
+            ...prev,
+            [fieldLabel]: !prev[fieldLabel]
+        }));
+    };
 
     return (
         <>
@@ -295,7 +436,7 @@ const PostDynamicEdit = () => {
                                         <Grid item xs={12} sm={6} key={index}>
                                             {field.type === 'dropdown' ? (
                                                 <FormControl fullWidth margin="normal">
-                                                    <InputLabel>{field.label}</InputLabel>
+                                                    <InputLabel>{renderLabel(field.label, field.required)}</InputLabel>
                                                     <Select
                                                         value={formData[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type)}
@@ -306,11 +447,11 @@ const PostDynamicEdit = () => {
                                                             </MenuItem>
                                                         ))}
                                                     </Select>
-                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                    {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                 </FormControl>
                                             ) : field.type === 'checkbox' ? (
                                                 <div>
-                                                    <Typography variant="body1">{field.label}</Typography>
+                                                    <Typography variant="body1">{renderLabel(field.label, field.required)}</Typography>
                                                     {field.options && field.options.map((option, idx) => (
                                                         <FormControlLabel
                                                             key={idx}
@@ -324,11 +465,11 @@ const PostDynamicEdit = () => {
                                                             label={option}  
                                                         />
                                                     ))}
-                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                    {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                 </div>
                                             ) : field.type === 'radio' ? (
                                                 <div>
-                                                    <Typography variant="body1">{field.label}</Typography>
+                                                    <Typography variant="body1">{renderLabel(field.label, field.required)}</Typography>
                                                     <RadioGroup
                                                         value={formData[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type)}
@@ -341,12 +482,12 @@ const PostDynamicEdit = () => {
                                                             />
                                                         ))}
                                                     </RadioGroup>
-                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                    {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                 </div>
                                             ) : (field.type === 'color') ? (
                                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                                     <TextField
-                                                        label={field.label}
+                                                        label={renderLabel(field.label, field.required)}
                                                         type="text"
                                                         value={formData[field.label] || '#000000'}
                                                         onChange={handleInputChange(field.label, field.type)}
@@ -368,7 +509,7 @@ const PostDynamicEdit = () => {
                                             ) : field.type === 'file' ? (
                                                 <div>
                                                     <TextField
-                                                        label={field.label}
+                                                        label={renderLabel(field.label, field.required)}
                                                         type="file"
                                                         onChange={handleInputChange(field.label, field.type)}
                                                         fullWidth
@@ -376,7 +517,7 @@ const PostDynamicEdit = () => {
                                                         InputLabelProps={{ shrink: true }}
                                                         error={!!errors[field.label]}
                                                     />
-                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                    {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                     {formData[field.label] instanceof File ? (
                                                         <>
                                                             <p>New image</p>
@@ -403,11 +544,20 @@ const PostDynamicEdit = () => {
                                                                 </IconButton>
                                                             </Tooltip>
                                                         </>
+                                                    ) : formData[`old_${field.label}`] ? (
+                                                        <>
+                                                            <p>Old image</p>
+                                                            <img
+                                                                src={formData[`old_${field.label}`]}
+                                                                alt="Old Image"
+                                                                width="100"
+                                                            />
+                                                        </>
                                                     ) : null}
                                                 </div>
                                             ) : field.type === 'textarea' ? (
                                                 <TextField
-                                                    label={field.label}
+                                                    label={renderLabel(field.label, field.required)}
                                                     value={formData[field.label] || ''}
                                                     onChange={handleInputChange(field.label, field.type)}
                                                     multiline
@@ -420,7 +570,7 @@ const PostDynamicEdit = () => {
                                                 />
                                             ) : field.type === 'date' ? (
                                                 <TextField
-                                                    label={field.label}
+                                                    label={renderLabel(field.label, field.required)}
                                                     type='date'
                                                     value={formData[field.label] || ''}
                                                     onChange={handleInputChange(field.label, field.type)}
@@ -431,20 +581,45 @@ const PostDynamicEdit = () => {
                                                     error={!!errors[field.label]}
                                                     helperText={errors[field.label] || ''}
                                                 />
-                                            )
-                                                : (
-                                                    <TextField
-                                                        fullWidth
-                                                        label={field.label}
-                                                        type={field.type}
-                                                        variant="outlined"
-                                                        value={formData[field.label] || ''}
-                                                        onChange={handleInputChange(field.label, field.type)}
-                                                        margin="normal"
-                                                        error={!!errors[field.label]}
-                                                        helperText={errors[field.label] || ''}
-                                                    />
-                                                )}
+                                            ) : field.type === 'password' ? (
+                                                <TextField
+                                                    fullWidth
+                                                    label={renderLabel(field.label, field.required)}
+                                                    type={showPassword[field.label] ? 'text' : 'password'}
+                                                    autoComplete="new-password"
+                                                    variant="outlined"
+                                                    value={formData[field.label] || ''}
+                                                    onChange={handleInputChange(field.label, field.type)}
+                                                    margin="normal"
+                                                    error={!!errors[field.label]}
+                                                    helperText={errors[field.label] || ''}
+                                                    InputProps={{
+                                                        endAdornment: (
+                                                            <InputAdornment position="end">
+                                                                <IconButton
+                                                                    aria-label="toggle password visibility"
+                                                                    onClick={() => handleClickShowPassword(field.label)}
+                                                                    edge="end"
+                                                                >
+                                                                    {showPassword[field.label] ? <MdVisibilityOff /> : <MdVisibility />}
+                                                                </IconButton>
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
+                                            ) : (
+                                                <TextField
+                                                    fullWidth
+                                                    label={renderLabel(field.label, field.required)}
+                                                    type={field.type}
+                                                    variant="outlined"
+                                                    value={formData[field.label] || ''}
+                                                    onChange={handleInputChange(field.label, field.type)}
+                                                    margin="normal"
+                                                    error={!!errors[field.label]}
+                                                    helperText={errors[field.label] || ''}
+                                                />
+                                            )}
                                         </Grid>
                                     ))}
 
@@ -462,7 +637,7 @@ const PostDynamicEdit = () => {
                                                             {/* {console.log(section)} */}
                                                             {field.type === 'dropdown' ? (
                                                                 <FormControl fullWidth margin="normal">
-                                                                    <InputLabel>{field.label}</InputLabel>
+                                                                    <InputLabel>{renderLabel(field.label, field.required)}</InputLabel>
                                                                     <Select
                                                                         value={formData[section.title]?.[field.label] || ''}
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
@@ -473,11 +648,11 @@ const PostDynamicEdit = () => {
                                                                             </MenuItem>
                                                                         ))}
                                                                     </Select>
-                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                    {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                                 </FormControl>
                                                             ) : field.type === 'checkbox' ? (
                                                                 <div>
-                                                                    <Typography variant="body1">{field.label}</Typography>
+                                                                    <Typography variant="body1">{renderLabel(field.label, field.required)}</Typography>
                                                                     {field.options && field.options.map((option, idx) => (
                                                                         <FormControlLabel
                                                                             key={idx}
@@ -491,11 +666,11 @@ const PostDynamicEdit = () => {
                                                                             label={option}
                                                                         />
                                                                     ))}
-                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                    {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                                 </div>
                                                             ) : field.type === 'radio' ? (
                                                                 <div>
-                                                                    <Typography variant="body1">{field.label}</Typography>
+                                                                    <Typography variant="body1">{renderLabel(field.label, field.required)}</Typography>
                                                                     <RadioGroup
                                                                         value={formData[section.title]?.[field.label] || ''}
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
@@ -508,13 +683,13 @@ const PostDynamicEdit = () => {
                                                                             />
                                                                         ))}
                                                                     </RadioGroup>
-                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                    {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                                 </div>
                                                             ) : field.type === 'color' ? (
                                                                 <div style={{ display: 'flex', alignItems: 'center' }}>
 
                                                                     <TextField
-                                                                        label={field.label}
+                                                                        label={renderLabel(field.label, field.required)}
                                                                         type="text"
                                                                         value={formData[section.title]?.[field.label] || '#000000'}
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
@@ -537,7 +712,7 @@ const PostDynamicEdit = () => {
                                                                 <div>
                                                                     {console.log(section.title.replace(/\s+/g, '_'))}
                                                                     <TextField
-                                                                        label={field.label}
+                                                                        label={renderLabel(field.label, field.required)}
                                                                         type="file"
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
                                                                         fullWidth
@@ -545,7 +720,7 @@ const PostDynamicEdit = () => {
                                                                         InputLabelProps={{ shrink: true }}
                                                                         error={!!errors[field.label]}
                                                                     />
-                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                    {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                                     {formData[section.title]?.[field.label] instanceof File ? (
                                                                         <>
                                                                             {/* <p>New Selected image: {formData[section.title][field.label].name} </p> */}
@@ -572,11 +747,20 @@ const PostDynamicEdit = () => {
                                                                                 </IconButton>
                                                                             </Tooltip>
                                                                         </>
+                                                                    ) : formData[section.title]?.[`old_${field.label}`] ? (
+                                                                        <>
+                                                                            <p>Old image</p>
+                                                                            <img
+                                                                                src={formData[section.title][`old_${field.label}`]}
+                                                                                alt="Old Image"
+                                                                                width="100"
+                                                                            />
+                                                                        </>
                                                                     ) : null}
                                                                 </div>
                                                             ) : field.type === 'textarea' ? (
                                                                 <TextField
-                                                                    label={field.label}
+                                                                    label={renderLabel(field.label, field.required)}
                                                                     value={formData[section.title]?.[field.label] || ''}
                                                                     onChange={handleInputChange(field.label, field.type, section.title)}
                                                                     multiline
@@ -589,7 +773,7 @@ const PostDynamicEdit = () => {
                                                                 />
                                                             ) : field.type === 'date' ? (
                                                                 <TextField
-                                                                    label={field.label}
+                                                                    label={renderLabel(field.label, field.required)}
                                                                     type='date'
                                                                     value={formData[section.title]?.[field.label] || ''}
                                                                     onChange={handleInputChange(field.label, field.type, section.title)}
@@ -600,10 +784,36 @@ const PostDynamicEdit = () => {
                                                                     error={!!errors[field.label]}
                                                                     helperText={errors[field.label] || ''}
                                                                 />
+                                                            ) : field.type === 'password' ? (
+                                                                <TextField
+                                                                    fullWidth
+                                                                    label={renderLabel(field.label, field.required)}
+                                                                    type={showPassword[field.label] ? 'text' : 'password'}
+                                                                    autoComplete="new-password"
+                                                                    variant="outlined"
+                                                                    value={formData[section.title]?.[field.label] || ''}
+                                                                    onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    margin="normal"
+                                                                    error={!!errors[field.label]}
+                                                                    helperText={errors[field.label] || ''}
+                                                                    InputProps={{
+                                                                        endAdornment: (
+                                                                            <InputAdornment position="end">
+                                                                                <IconButton
+                                                                                    aria-label="toggle password visibility"
+                                                                                    onClick={() => handleClickShowPassword(field.label)}
+                                                                                    edge="end"
+                                                                                >
+                                                                                    {showPassword[field.label] ? <MdVisibilityOff /> : <MdVisibility />}
+                                                                                </IconButton>
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                    }}
+                                                                />
                                                             ) : (
                                                                 <TextField
                                                                     fullWidth
-                                                                    label={field.label}
+                                                                    label={renderLabel(field.label, field.required)}
                                                                     type={field.type}
                                                                     variant="outlined"
                                                                     value={formData[section.title]?.[field.label] || ''}
