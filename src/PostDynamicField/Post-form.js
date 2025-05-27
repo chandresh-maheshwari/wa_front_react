@@ -99,6 +99,14 @@ const PostFormDynamic = () => {
                     return 'Please enter a valid URL.';
                 }
             }
+            if (field.type === 'file') {
+                if (value instanceof File) {
+                    const fileExtension = '.' + value.name.split('.').pop().toLowerCase();
+                    if (field.allowedFileTypes && !field.allowedFileTypes.includes(fileExtension)) {
+                        return `Only ${field.allowedFileTypes.join(', ')} files are allowed.`;
+                    }
+                }
+            }
         }
         return '';
     };
@@ -389,6 +397,9 @@ const PostFormDynamic = () => {
                                                         className='mt-5'
                                                         InputLabelProps={{ shrink: true }}
                                                         error={!!errors[field.label]}
+                                                        inputProps={{
+                                                            accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
+                                                        }}
                                                     />
                                                 </div>
                                             ) : field.type === 'textarea' ? (
@@ -574,6 +585,9 @@ const PostFormDynamic = () => {
                                                                         className='mt-5'
                                                                         InputLabelProps={{ shrink: true }}
                                                                         error={!!errors[field.label]}
+                                                                        inputProps={{
+                                                            accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
+                                                        }}
                                                                     />
                                                                 </div>
                                                             ) : field.type === 'textarea' ? (

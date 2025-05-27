@@ -24,6 +24,7 @@ const DynamicForm = () => {
           value: "",
           options: [],
           required: false,
+          allowedFileTypes: [],
         },
       ],
     },
@@ -73,6 +74,7 @@ const DynamicForm = () => {
             value: "",
             options: [],
             required: false,
+            allowedFileTypes: [],
           },
         ],
       };
@@ -110,7 +112,15 @@ const DynamicForm = () => {
     setSections(
       sections.map((section) => {
         if (section.id === sectionId) {
-          const newField = { id: Date.now(), label: "", type: "text", value: "", options: [], required: false };
+          const newField = { 
+            id: Date.now(), 
+            label: "", 
+            type: "text", 
+            value: "", 
+            options: [], 
+            required: false,
+            allowedFileTypes: []
+          };
           const fieldIndex = section.fields.findIndex((field) => field.id === fieldId);
           const updatedFields = [
             ...section.fields.slice(0, fieldIndex + 1),
@@ -149,7 +159,7 @@ const DynamicForm = () => {
             ...section,
             fields: section.fields.map((field) =>
               field.id === fieldId
-                ? { ...field, type: value, value: "", options: [] }
+                ? { ...field, type: value, value: "", options: [], allowedFileTypes: [] }
                 : field
             ),
           }
@@ -338,6 +348,7 @@ const DynamicForm = () => {
         value: field.value,
         options: field.options,
         required: field.required,
+        allowedFileTypes: field.allowedFileTypes || [],
         [`Field_Slug_${field.label.replace(/\s+/g, '')}`]: field.label.replace(/\s+/g, '')
       };
     });
@@ -353,6 +364,7 @@ const DynamicForm = () => {
           value: field.value,
           options: field.options,
           required: field.required,
+          allowedFileTypes: field.allowedFileTypes || [],
           [`Field_Slug_${field.label.replace(/\s+/g, '')}`]: field.label.replace(/\s+/g, '')
         };
       });
@@ -379,7 +391,15 @@ const DynamicForm = () => {
   };
 
   const handleAddStandaloneField = () => {
-    const newField = { id: Date.now(), label: "", type: "text", value: "", options: [], required: false };
+    const newField = { 
+      id: Date.now(), 
+      label: "", 
+      type: "text", 
+      value: "", 
+      options: [], 
+      required: false,
+      allowedFileTypes: []
+    };
     setStandaloneFields([...standaloneFields, newField]);
   };
 
@@ -422,6 +442,46 @@ const DynamicForm = () => {
           : section
       )
     );
+  };
+
+  // Add new handler for file type changes
+  const handleFileTypeChange = (fileType, sectionId, fieldId) => {
+    if (sectionId === null) {
+      // Handle standalone fields
+      setStandaloneFields((prevFields) =>
+        prevFields.map((field) =>
+          field.id === fieldId
+            ? {
+                ...field,
+                allowedFileTypes: field.allowedFileTypes.includes(fileType)
+                  ? field.allowedFileTypes.filter((type) => type !== fileType)
+                  : [...field.allowedFileTypes, fileType],
+              }
+            : field
+        )
+      );
+    } else {
+      // Handle fields within sections
+      setSections(
+        sections.map((section) =>
+          section.id === sectionId
+            ? {
+                ...section,
+                fields: section.fields.map((field) =>
+                  field.id === fieldId
+                    ? {
+                        ...field,
+                        allowedFileTypes: field.allowedFileTypes.includes(fileType)
+                          ? field.allowedFileTypes.filter((type) => type !== fileType)
+                          : [...field.allowedFileTypes, fileType],
+                      }
+                    : field
+                ),
+              }
+            : section
+        )
+      );
+    }
   };
 
   return (
@@ -653,6 +713,26 @@ const DynamicForm = () => {
                         />
                       </Grid>
                     )}
+                    {(field.type === 'file') && (
+                      <Grid item xs={12} sm={10}>
+                        <div style={{ marginBottom: '15px', backgroundColor: '#f4f6f8', padding: '15px', borderRadius: '5px' }}>
+                          <Typography variant="subtitle1" style={{ marginBottom: '10px' }}>Allowed File Types:</Typography>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                            {['.jpg', '.jpeg', '.png', '.gif', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.txt'].map((fileType) => (
+                              <label key={fileType} style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                                <input
+                                  type="checkbox"
+                                  checked={field.allowedFileTypes.includes(fileType)}
+                                  onChange={() => handleFileTypeChange(fileType, null, field.id)}
+                                  style={{ marginRight: '5px' }}
+                                />
+                                {fileType}
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      </Grid>
+                    )}
                   </Grid>
                 ))}
                 {sections.map((section, index) => (
@@ -866,6 +946,26 @@ const DynamicForm = () => {
                                     borderRadius: '5px'
                                   }}
                                 />
+                              </Grid>
+                            )}
+                            {(field.type === 'file') && (
+                              <Grid item xs={12} sm={10}>
+                                <div style={{ marginBottom: '15px', backgroundColor: '#f4f6f8', padding: '15px', borderRadius: '5px' }}>
+                                  <Typography variant="subtitle1" style={{ marginBottom: '10px' }}>Allowed File Types:</Typography>
+                                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                    {['.jpg', '.jpeg', '.png', '.gif', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.txt'].map((fileType) => (
+                                      <label key={fileType} style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                                        <input
+                                          type="checkbox"
+                                          checked={field.allowedFileTypes.includes(fileType)}
+                                          onChange={() => handleFileTypeChange(fileType, section.id, field.id)}
+                                          style={{ marginRight: '5px' }}
+                                        />
+                                        {fileType}
+                                      </label>
+                                    ))}
+                                  </div>
+                                </div>
                               </Grid>
                             )}
                           </Grid>
