@@ -192,6 +192,14 @@ const PostDynamicEdit = () => {
                     return 'Please enter a valid URL.';
                 }
             }
+            if (field.type === 'file') {
+                if (value instanceof File) {
+                    const fileExtension = '.' + value.name.split('.').pop().toLowerCase();
+                    if (field.allowedFileTypes && !field.allowedFileTypes.includes(fileExtension)) {
+                        return `Only ${field.allowedFileTypes.join(', ')} files are allowed.`;
+                    }
+                }
+            }
         }
         return '';
     };
@@ -516,6 +524,9 @@ const PostDynamicEdit = () => {
                                                         className='mt-5'
                                                         InputLabelProps={{ shrink: true }}
                                                         error={!!errors[field.label]}
+                                                        inputProps={{
+                                                            accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
+                                                        }}
                                                     />
                                                     {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                     {formData[field.label] instanceof File ? (
@@ -719,6 +730,10 @@ const PostDynamicEdit = () => {
                                                                         className='mt-5'
                                                                         InputLabelProps={{ shrink: true }}
                                                                         error={!!errors[field.label]}
+                                                                         inputProps={{
+                                                            accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
+                                                        }}
+
                                                                     />
                                                                     {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                                     {formData[section.title]?.[field.label] instanceof File ? (
