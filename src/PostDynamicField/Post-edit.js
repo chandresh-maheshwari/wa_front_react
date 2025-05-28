@@ -6,6 +6,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import "../Custom.css";
 import { MdDelete, MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const PostDynamicEdit = () => {
     const location = useLocation();
@@ -213,21 +215,31 @@ const PostDynamicEdit = () => {
         validateField(field, value, sectionTitle);
     };
 
-    const handleInputChange = (fieldLabel, fieldType, sectionTitle = '') => (event, option) => {
+    const handleInputChange = (fieldLabel, fieldType, sectionTitle = '') => (event, param2) => {
         let value;
+
+        console.log('handleInputChange called for:', { fieldLabel, fieldType, sectionTitle });
+
         if (fieldType === 'checkbox') {
+            // For checkbox, param2 is the option
             const currentValues = sectionTitle ? (formData[sectionTitle]?.[fieldLabel] || []) : (formData[fieldLabel] || []);
+            const option = param2;
             value = currentValues.includes(option)
                 ? currentValues.filter(item => item !== option)
                 : [...currentValues, option];
-        } else if (fieldType === 'radio' || fieldType === 'dropdown' || fieldType === 'number') {
-            value = event.target.value;
         } else if (fieldType === 'file') {
             value = event.target.files[0];
+        } else if (fieldType === 'ckeditor') {
+            // For CKEditor, param2 is the editor instance
+            const editor = param2;
+            value = editor.getData();
+            console.log('CKEditor data:', value);
         } else {
+            // For other input types (text, number, dropdown, radio, date, password, textarea, color)
             value = event.target.value;
         }
-        // Find the field definition
+
+        // Find the field definition (still needed for validation, though validation happens on blur/submit too)
         let field;
         if (sectionTitle) {
             const section = sections.find(s => s.title === sectionTitle);
@@ -235,22 +247,30 @@ const PostDynamicEdit = () => {
         } else {
             field = standaloneFields.find(f => f.label === fieldLabel);
         }
+
         if (field) {
-            validateField(field, value, sectionTitle);
+             // We can call validateField here for instant feedback if needed, or rely on blur/submit validation
+            validateField(field, value, sectionTitle); // Keep instant validation on change
         }
+
+        // Update form data state
         if (sectionTitle) {
-            setFormData(prevFormData => ({
+            setFormData(prevFormData => {
+                console.log('Updating section state for', sectionTitle, fieldLabel, ':', value);
+                return {
                 ...prevFormData,
                 [sectionTitle]: {
                     ...prevFormData[sectionTitle],
                     [fieldLabel]: value,
                 },
-            }));
+            }});
         } else {
-            setFormData(prevFormData => ({
+            setFormData(prevFormData => {
+                console.log('Updating standalone state for', fieldLabel, ':', value);
+                return {
                 ...prevFormData,
                 [fieldLabel]: value,
-            }));
+            }});
         }
     };
 
@@ -307,21 +327,21 @@ const PostDynamicEdit = () => {
 
     const convertToBase64 = (file) => {
         console.log("Converting file to base64");
-    
+
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
-    
+
             reader.onload = () => {
-                resolve(reader.result); 
+                resolve(reader.result);
             };
-    
+
             reader.onerror = (error) => {
-                reject(error);  
+                reject(error);
             };
         });
     };
-    
+
     const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -379,9 +399,9 @@ const PostDynamicEdit = () => {
                     console.error('Error converting file to base64', error);
                     value = ''; // Handle error gracefully
                 }
-            } else if (!value && formData[`old_${field.label}`]) {
+            } else if (!value && formData[section.title]?.[`old_${field.label}`]) {
                 // If no new file is selected and old file exists, use the old image name or URL
-                value = formData[`old_${field.label}`];
+                 value = formData[section.title]?.[`old_${field.label}`];
                 console.log("Using old image for section field:", field.label, value);
             }
 
@@ -433,7 +453,7 @@ const PostDynamicEdit = () => {
                             <form onSubmit={handleSubmit}>
                                 <Grid container spacing={3}>
                                     {standaloneFields.map((field, index) => (
-                                        <Grid item xs={12} sm={6} key={index}>
+                                        <Grid item xs={12} sm={field.type === 'ckeditor' ? 12 : 6} key={index}>
                                             {field.type === 'dropdown' ? (
                                                 <FormControl fullWidth margin="normal">
                                                     <InputLabel>{renderLabel(field.label, field.required)}</InputLabel>
@@ -457,12 +477,12 @@ const PostDynamicEdit = () => {
                                                             key={idx}
                                                             control={
                                                                 <Checkbox
-                                                                    checked={formData[field.label]?.includes(option)}  
-                                                                    onChange={(e) => handleInputChange(field.label, field.type, '')(e, option)}  
-                                                                    value={option}  
+                                                                    checked={formData[field.label]?.includes(option)}
+                                                                    onChange={(e) => handleInputChange(field.label, field.type, '')(e, option)}
+                                                                    value={option}
                                                                 />
                                                             }
-                                                            label={option}  
+                                                            label={option}
                                                         />
                                                     ))}
                                                     {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
@@ -607,6 +627,37 @@ const PostDynamicEdit = () => {
                                                         ),
                                                     }}
                                                 />
+                                            ) : field.type === 'ckeditor' ? (
+                                                <div style={{ width: '100%' }} className="ckeditor-container">
+                                                    <Typography variant="body1" style={{ marginBottom: '8px' }}>{renderLabel(field.label, field.required)}</Typography>
+                                                    <CKEditor
+                                                        editor={ClassicEditor}
+                                                        key={`${field.label}`}
+                                                        data={formData[field.label] || ''}
+                                                        config={{
+                                                            minHeight: '200px',
+                                                            toolbar: [
+                                                                'heading',
+                                                                '|',
+                                                                'bold',
+                                                                'italic',
+                                                                'link',
+                                                                'bulletedList',
+                                                                'numberedList',
+                                                                '|',
+                                                                'outdent',
+                                                                'indent',
+                                                                '|',
+                                                                'blockQuote',
+                                                                'insertTable',
+                                                                'undo',
+                                                                'redo'
+                                                            ]
+                                                        }}
+                                                        onChange={(event, editor) => handleInputChange(field.label, field.type)(event, editor)}
+                                                      />
+                                                      {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                  </div>
                                             ) : (
                                                 <TextField
                                                     fullWidth
@@ -633,7 +684,7 @@ const PostDynamicEdit = () => {
                                                 </Typography>
                                                 <Grid container spacing={3}>
                                                     {section.fields.map((field, index) => (
-                                                        <Grid item xs={12} sm={6} key={index}>
+                                                        <Grid item xs={12} sm={field.type === 'ckeditor' ? 12 : 6} key={index}>
                                                             {/* {console.log(section)} */}
                                                             {field.type === 'dropdown' ? (
                                                                 <FormControl fullWidth margin="normal">
@@ -810,6 +861,37 @@ const PostDynamicEdit = () => {
                                                                         ),
                                                                     }}
                                                                 />
+                                                            ) : field.type === 'ckeditor' ? (
+                                                                <div style={{ width: '100%' }} className="ckeditor-container">
+                                                                    <Typography variant="body1" style={{ marginBottom: '8px' }}>{renderLabel(field.label, field.required)}</Typography>
+                                                                    <CKEditor
+                                                                        editor={ClassicEditor}
+                                                                        key={`${section.title}-${field.label}`}
+                                                                        data={formData[section.title]?.[field.label] || ''}
+                                                                        config={{
+                                                                            minHeight: '500px',
+                                                                            toolbar: [
+                                                                                'heading',
+                                                                                '|',
+                                                                                'bold',
+                                                                                'italic',
+                                                                                'link',
+                                                                                'bulletedList',
+                                                                                'numberedList',
+                                                                                '|',
+                                                                                'outdent',
+                                                                                'indent',
+                                                                                '|',
+                                                                                'blockQuote',
+                                                                                'insertTable',
+                                                                                'undo',
+                                                                                'redo'
+                                                                            ]
+                                                                        }}
+                                                                        onChange={(event, editor) => handleInputChange(field.label, field.type, section.title)(event, editor)}
+                                                                    />
+                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                </div>
                                                             ) : (
                                                                 <TextField
                                                                     fullWidth

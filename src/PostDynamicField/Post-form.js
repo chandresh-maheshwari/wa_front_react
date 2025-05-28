@@ -6,6 +6,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import "../Custom.css";
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const PostFormDynamic = () => {
     const location = useLocation();
@@ -200,69 +202,69 @@ const PostFormDynamic = () => {
 
     const convertToBase64 = (file) => {
         return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-      
-          reader.onload = () => {
-            resolve(reader.result); 
-          };
-      
-          reader.onerror = (error) => {
-            reject(error);  
-          };
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = () => {
+                resolve(reader.result);
+            };
+
+            reader.onerror = (error) => {
+                reject(error);
+            };
         });
-      };
+    };
 
 
-      const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (!validate()) {
             console.log('Validation failed');
             return;
         }
-    
+
         const submitData = {};
-    
+
         for (const field of standaloneFields) {
             let value = formData['']?.[field.label] || '';
-    
+
             if (field.type === 'file' && value instanceof File) {
                 try {
                     value = await convertToBase64(value);
                 } catch (error) {
                     console.error('Error converting file to base64', error);
-                    value = '';  
+                    value = '';
                 }
             }
-    
+
             submitData[field.label] = value;
         }
-    
+
         for (const section of sections) {
             const sectionData = {};
             const sectionFields = formData[section.title] || {};
-    
+
             for (const field of section.fields) {
-                let value = sectionFields[field.label] || '';  
-    
+                let value = sectionFields[field.label] || '';
+
                 if (field.type === 'file' && value instanceof File) {
                     try {
                         value = await convertToBase64(value);
                     } catch (error) {
                         console.error('Error converting file to base64', error);
-                        value = ''; 
+                        value = '';
                     }
                 }
-    
+
                 sectionData[field.label] = value;
             }
-    
+
             submitData[section.title] = sectionData;
         }
-    
+
         console.log('Submitting JSON data:', submitData);
-    
+
         try {
             const response = await Authapi.postDynamicstoredata(submitData, post_title);
             if (response.status === true) {
@@ -281,7 +283,7 @@ const PostFormDynamic = () => {
     // Helper to render label with one red asterisk if required and not already present
     const renderLabel = (label, required) => {
         if (!required) return label;
-        return label.trim().endsWith('*') ? label : <>{label}<span style={{color: 'red'}}>*</span></>;
+        return label.trim().endsWith('*') ? label : <>{label}<span style={{ color: 'red' }}>*</span></>;
     };
 
     const handleClickShowPassword = (fieldLabel) => {
@@ -404,6 +406,44 @@ const PostFormDynamic = () => {
                                                     margin="normal"
                                                     error={!!errors[field.label]}
                                                 />
+                                            ) : field.type === 'ckeditor' ? (
+                                                <div style={{ width: '100%' }}>
+                                                    <Typography variant="body1" style={{ marginBottom: '8px' }}>{field.label}</Typography>
+                                                    <CKEditor
+                                                        editor={ClassicEditor}
+                                                        data={formData['']?.[field.label] || ''}
+                                                        config={{
+                                                            toolbar: [
+                                                                'heading',
+                                                                '|',
+                                                                'bold',
+                                                                'italic',
+                                                                'link',
+                                                                'bulletedList',
+                                                                'numberedList',
+                                                                '|',
+                                                                'outdent',
+                                                                'indent',
+                                                                '|',
+                                                                'blockQuote',
+                                                                'insertTable',
+                                                                'undo',
+                                                                'redo'
+                                                            ]
+                                                        }}
+                                                        onChange={(event, editor) => {
+                                                            const data = editor.getData();
+                                                            setFormData(prevFormData => ({
+                                                                ...prevFormData,
+                                                                ['']: {
+                                                                    ...prevFormData[''],
+                                                                    [field.label]: data,
+                                                                },
+                                                            }));
+                                                        }}
+                                                    />
+                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                </div>
                                             ) : field.type === 'date' ? (
                                                 <TextField
                                                     label={renderLabel(field.label, field.required)}
@@ -589,6 +629,44 @@ const PostFormDynamic = () => {
                                                                     margin="normal"
                                                                     error={!!errors[field.label]}
                                                                 />
+                                                            ) : field.type === 'ckeditor' ? (
+                                                                <div style={{ width: '100%' }}>
+                                                                    <Typography variant="body1" style={{ marginBottom: '8px' }}>{field.label}</Typography>
+                                                                    <CKEditor
+                                                                        editor={ClassicEditor}
+                                                                        data={formData[section.title]?.[field.label] || ''}
+                                                                        config={{
+                                                                            toolbar: [
+                                                                                'heading',
+                                                                                '|',
+                                                                                'bold',
+                                                                                'italic',
+                                                                                'link',
+                                                                                'bulletedList',
+                                                                                'numberedList',
+                                                                                '|',
+                                                                                'outdent',
+                                                                                'indent',
+                                                                                '|',
+                                                                                'blockQuote',
+                                                                                'insertTable',
+                                                                                'undo',
+                                                                                'redo'
+                                                                            ]
+                                                                        }}
+                                                                        onChange={(event, editor) => {
+                                                                            const data = editor.getData();
+                                                                            setFormData(prevFormData => ({
+                                                                                ...prevFormData,
+                                                                                [section.title]: {
+                                                                                    ...prevFormData[section.title],
+                                                                                    [field.label]: data,
+                                                                                },
+                                                                            }));
+                                                                        }}
+                                                                    />
+                                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                                </div>
                                                             ) : field.type === 'date' ? (
                                                                 <TextField
                                                                     label={renderLabel(field.label, field.required)}

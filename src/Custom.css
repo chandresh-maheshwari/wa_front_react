@@ -882,3 +882,36 @@ td {
   margin-right: 14px;
   font-family: "Roboto","Helvetica","Arial",sans-serif;
 }
+
+/* CKEditor Styles */
+.ckeditor-container .ck-editor__editable {
+    min-height: 200px !important;
+    max-height: 800px !important;
+    overflow-y: auto !important;
+}
+
+.ckeditor-container .ck-editor__editable_inline {
+    padding: 0 20px !important;
+}
+
+.ckeditor-container .ck.ck-editor {
+    width: 100% !important;
+}
+
+.ckeditor-container .ck.ck-editor__main > .ck-editor__editable {
+    background-color: #ffffff !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+}
+
+.ckeditor-container .ck.ck-toolbar {
+    border: 1px solid #ccc !important;
+    border-radius: 4px 4px 0 0 !important;
+    background-color: #f8f9fa !important;
+}
+
+.ckeditor-container .ck.ck-editor__main {
+    border: 1px solid #ccc !important;
+    border-top: none !important;
+    border-radius: 0 0 4px 4px !important;
+}

@@ -195,30 +195,30 @@ const DynamicEditForm = ({ existingData }) => {
 
     const handleOptionChange = (e, sectionId, fieldId) => {
         const { value } = e.target;
-      
+
         if (sectionId === null) {
-          // Update standalone fields
-          setStandaloneFields((prevFields) =>
-            prevFields.map((field) =>
-              field.id === fieldId ? { ...field, options: value.split(",") } : field
-            )
-          );
+            // Update standalone fields
+            setStandaloneFields((prevFields) =>
+                prevFields.map((field) =>
+                    field.id === fieldId ? { ...field, options: value.split(",") } : field
+                )
+            );
         } else {
-          // Update fields within sections
-          setSections(
-            sections.map((section) =>
-              section.id === sectionId
-                ? {
-                    ...section,
-                    fields: section.fields.map((field) =>
-                      field.id === fieldId ? { ...field, options: value.split(",") } : field
-                    ),
-                  }
-                : section
-            )
-          );
+            // Update fields within sections
+            setSections(
+                sections.map((section) =>
+                    section.id === sectionId
+                        ? {
+                            ...section,
+                            fields: section.fields.map((field) =>
+                                field.id === fieldId ? { ...field, options: value.split(",") } : field
+                            ),
+                        }
+                        : section
+                )
+            );
         }
-      };
+    };
 
     const handleToggleSection = (sectionId) => {
         setSections(sections.map(section =>
@@ -532,6 +532,8 @@ const DynamicEditForm = ({ existingData }) => {
                                                     <MenuItem value="url">Url</MenuItem>
                                                     <MenuItem value="dropdown">Dropdown</MenuItem>
                                                     <MenuItem value="color">Color</MenuItem>
+                                                    <MenuItem value="ckeditor">Text Area (with Editor)</MenuItem>
+
                                                 </Select>
                                             </FormControl>
                                         </Grid>
@@ -554,30 +556,30 @@ const DynamicEditForm = ({ existingData }) => {
                                             </Tooltip>
                                             <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Add New Field"}>
                                                 {/* <span> */}
-                                                    <IconButton
-                                                        aria-label="add-field"
-                                                        color="primary"
-                                                        className='action-button add-new-field'
-                                                        onClick={() => handleAddFieldAfter(field.id)}
-                                                        style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
-                                                        disabled={buttonsDisabled}
-                                                    >
-                                                        <FaCirclePlus />
-                                                    </IconButton>
+                                                <IconButton
+                                                    aria-label="add-field"
+                                                    color="primary"
+                                                    className='action-button add-new-field'
+                                                    onClick={() => handleAddFieldAfter(field.id)}
+                                                    style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                    disabled={buttonsDisabled}
+                                                >
+                                                    <FaCirclePlus />
+                                                </IconButton>
                                                 {/* </span> */}
                                             </Tooltip>
                                             <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Delete Field"}>
                                                 {/* <span> */}
-                                                    <IconButton
-                                                        aria-label="delete-field"
-                                                        color="primary"
-                                                        className='action-button delete-field'
-                                                        onClick={() => handleRemoveField(null, field.id)}
-                                                        style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
-                                                        disabled={buttonsDisabled}
-                                                    >
-                                                        <MdDelete />
-                                                    </IconButton>
+                                                <IconButton
+                                                    aria-label="delete-field"
+                                                    color="primary"
+                                                    className='action-button delete-field'
+                                                    onClick={() => handleRemoveField(null, field.id)}
+                                                    style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                    disabled={buttonsDisabled}
+                                                >
+                                                    <MdDelete />
+                                                </IconButton>
                                                 {/* </span> */}
                                             </Tooltip>
                                         </Grid>
@@ -720,6 +722,8 @@ const DynamicEditForm = ({ existingData }) => {
                                                                     <MenuItem value="url">Url</MenuItem>
                                                                     <MenuItem value="dropdown">Dropdown</MenuItem>
                                                                     <MenuItem value="color">Color</MenuItem>
+                                                                    <MenuItem value="ckeditor">Text Area (with Editor)</MenuItem>
+
                                                                 </Select>
                                                             </FormControl>
                                                         </Grid>
@@ -742,31 +746,31 @@ const DynamicEditForm = ({ existingData }) => {
                                                             </Tooltip>
                                                             <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Add New Field"}>
                                                                 {/* <span> */}
-                                                                    <IconButton
-                                                                        aria-label="add-field"
-                                                                        color="primary"
-                                                                        className="action-button add-new-field"
-                                                                        onClick={() => handleAddField(section.id, field.id)}
-                                                                        style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
-                                                                        disabled={buttonsDisabled}
-                                                                    >
-                                                                        <FaCirclePlus />
-                                                                    </IconButton>
+                                                                <IconButton
+                                                                    aria-label="add-field"
+                                                                    color="primary"
+                                                                    className="action-button add-new-field"
+                                                                    onClick={() => handleAddField(section.id, field.id)}
+                                                                    style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                                    disabled={buttonsDisabled}
+                                                                >
+                                                                    <FaCirclePlus />
+                                                                </IconButton>
                                                                 {/* </span> */}
                                                             </Tooltip>
                                                             {fieldIndex !== 0 && (
                                                                 <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Delete Field"}>
                                                                     {/* <span> */}
-                                                                        <IconButton
-                                                                            aria-label="delete"
-                                                                            color="primary"
-                                                                            className="action-button delete-field"
-                                                                            onClick={() => handleRemoveField(section.id, field.id)}
-                                                                            style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
-                                                                            disabled={buttonsDisabled}
-                                                                        >
-                                                                            <MdDelete />
-                                                                        </IconButton>
+                                                                    <IconButton
+                                                                        aria-label="delete"
+                                                                        color="primary"
+                                                                        className="action-button delete-field"
+                                                                        onClick={() => handleRemoveField(section.id, field.id)}
+                                                                        style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
+                                                                        disabled={buttonsDisabled}
+                                                                    >
+                                                                        <MdDelete />
+                                                                    </IconButton>
                                                                     {/* </span> */}
                                                                 </Tooltip>
                                                             )}

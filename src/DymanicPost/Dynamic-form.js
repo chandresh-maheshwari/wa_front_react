@@ -202,9 +202,9 @@ const DynamicForm = () => {
 
   const handleOptionChange = (e, sectionId, fieldId) => {
     const { value } = e.target;
-  
+
     // console.log("Field options before update:", value);
-  
+
     if (sectionId === null) {
       // Update standalone fields
       setStandaloneFields((prevFields) =>
@@ -218,20 +218,20 @@ const DynamicForm = () => {
         sections.map((section) =>
           section.id === sectionId
             ? {
-                ...section,
-                fields: section.fields.map((field) =>
-                  field.id === fieldId ? { ...field, options: value.split(",") } : field
-                ),
-              }
+              ...section,
+              fields: section.fields.map((field) =>
+                field.id === fieldId ? { ...field, options: value.split(",") } : field
+              ),
+            }
             : section
         )
       );
     }
   };
-  
-  
-  
-  
+
+
+
+
 
   const handleTitleChange = (e) => {
     const { name, value } = e.target;
@@ -414,11 +414,11 @@ const DynamicForm = () => {
       prevSections.map((section) =>
         section.id === sectionId
           ? {
-              ...section,
-              fields: section.fields.map((field) =>
-                field.id === fieldId ? { ...field, required: !field.required } : field
-              ),
-            }
+            ...section,
+            fields: section.fields.map((field) =>
+              field.id === fieldId ? { ...field, required: !field.required } : field
+            ),
+          }
           : section
       )
     );
@@ -594,6 +594,8 @@ const DynamicForm = () => {
                           <MenuItem value="url">Url</MenuItem>
                           <MenuItem value="dropdown">Dropdown</MenuItem>
                           <MenuItem value="color">Color</MenuItem>
+                          <MenuItem value="ckeditor">Text Area (with Editor)</MenuItem>
+
                         </Select>
                       </FormControl>
                     </Grid>
@@ -601,19 +603,19 @@ const DynamicForm = () => {
                     {/* Required Checkbox */}
                     <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
                       <Tooltip title="Make this field required">
-                      <FormControl>
-                        <div className="checkbox-wrapper">
-                          <label>
-                            <input
-                              type="checkbox"
-                              // title='Make a field required'
-                              checked={field.required}
-                              onChange={() => handleRequiredChangeStandalone(field.id)}
-                            />
-                            <span className="checkbox"></span>
-                          </label>
-                        </div>
-                      </FormControl>
+                        <FormControl>
+                          <div className="checkbox-wrapper">
+                            <label>
+                              <input
+                                type="checkbox"
+                                // title='Make a field required'
+                                checked={field.required}
+                                onChange={() => handleRequiredChangeStandalone(field.id)}
+                              />
+                              <span className="checkbox"></span>
+                            </label>
+                          </div>
+                        </FormControl>
                       </Tooltip>
                       <Tooltip title="Add New Field">
                         <IconButton
@@ -621,7 +623,7 @@ const DynamicForm = () => {
                           color="primary"
                           className='action-button add-new-field'
                           onClick={() => handleAddFieldAfter(field.id)}
-                        
+
                         >
                           <FaCirclePlus />
                         </IconButton>
@@ -806,6 +808,7 @@ const DynamicForm = () => {
                                   <MenuItem value="url">Url</MenuItem>
                                   <MenuItem value="dropdown">Dropdown</MenuItem>
                                   <MenuItem value="color">Color</MenuItem>
+                                  <MenuItem value="ckeditor">Text Area (with Editor)</MenuItem>
                                 </Select>
                               </FormControl>
                             </Grid>
@@ -813,18 +816,18 @@ const DynamicForm = () => {
                             {/* Required Checkbox */}
                             <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
                               <Tooltip title="Make this field required">
-                              <FormControl>
-                                <div className="checkbox-wrapper">
-                                  <label>
-                                    <input
-                                      type="checkbox"
-                                      checked={field.required}
-                                      onChange={() => handleRequiredChangeSection(section.id, field.id)}
-                                    />
-                                    <span className="checkbox"></span>
-                                  </label>
-                                </div>
-                              </FormControl>
+                                <FormControl>
+                                  <div className="checkbox-wrapper">
+                                    <label>
+                                      <input
+                                        type="checkbox"
+                                        checked={field.required}
+                                        onChange={() => handleRequiredChangeSection(section.id, field.id)}
+                                      />
+                                      <span className="checkbox"></span>
+                                    </label>
+                                  </div>
+                                </FormControl>
                               </Tooltip>
                               <Tooltip title="Add New Field">
                                 <IconButton
@@ -832,7 +835,7 @@ const DynamicForm = () => {
                                   color="primary"
                                   className="action-button add-new-field"
                                   onClick={() => handleAddField(section.id, field.id)}
-                                  
+
                                 >
                                   <FaCirclePlus />
                                 </IconButton>
