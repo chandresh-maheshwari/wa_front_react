@@ -6,6 +6,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import "../Custom.css";
 import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const PostFormDynamic = () => {
     const location = useLocation();
@@ -113,10 +115,20 @@ const PostFormDynamic = () => {
 
     const validateField = (field, value, sectionTitle = '') => {
         const error = getFieldError(field, value);
-        setErrors(prevErrors => ({
-            ...prevErrors,
-            [field.label]: error,
-        }));
+        setErrors(prevErrors => {
+            // Create a new errors object based on the previous state
+            const newErrors = { ...prevErrors };
+
+            if (error) {
+                // If there's an error, set it for the field label
+                newErrors[field.label] = error;
+            } else {
+                // If there's no error, remove the error for this field label
+                delete newErrors[field.label];
+            }
+
+            return newErrors;
+        });
         return error === '';
     };
 
@@ -150,7 +162,11 @@ const PostFormDynamic = () => {
             field = section?.fields.find(f => f.label === fieldLabel);
         }
         if (field) {
-            validateField(field, value, sectionTitle);
+            // Only validate here for non-CKEditor fields, CKEditor validation
+            // will be handled in its specific onChange handler
+            if (field.type !== 'ckeditor') {
+                 validateField(field, value, sectionTitle);
+            }
         }
     };
 
@@ -159,7 +175,10 @@ const PostFormDynamic = () => {
             ...prev,
             [field.label]: prev[field.label] ? prev[field.label] + 1 : 1
         }));
-        validateField(field, value, sectionTitle);
+        // Only validate on blur for non-CKEditor fields
+        if (field.type !== 'ckeditor') {
+            validateField(field, value, sectionTitle);
+        }
     };
 
     const validate = () => {
@@ -208,69 +227,69 @@ const PostFormDynamic = () => {
 
     const convertToBase64 = (file) => {
         return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-      
-          reader.onload = () => {
-            resolve(reader.result); 
-          };
-      
-          reader.onerror = (error) => {
-            reject(error);  
-          };
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onload = () => {
+                resolve(reader.result);
+            };
+
+            reader.onerror = (error) => {
+                reject(error);
+            };
         });
-      };
+    };
 
 
-      const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (!validate()) {
             console.log('Validation failed');
             return;
         }
-    
+
         const submitData = {};
-    
+
         for (const field of standaloneFields) {
             let value = formData['']?.[field.label] || '';
-    
+
             if (field.type === 'file' && value instanceof File) {
                 try {
                     value = await convertToBase64(value);
                 } catch (error) {
                     console.error('Error converting file to base64', error);
-                    value = '';  
+                    value = '';
                 }
             }
-    
+
             submitData[field.label] = value;
         }
-    
+
         for (const section of sections) {
             const sectionData = {};
             const sectionFields = formData[section.title] || {};
-    
+
             for (const field of section.fields) {
-                let value = sectionFields[field.label] || '';  
-    
+                let value = sectionFields[field.label] || '';
+
                 if (field.type === 'file' && value instanceof File) {
                     try {
                         value = await convertToBase64(value);
                     } catch (error) {
                         console.error('Error converting file to base64', error);
-                        value = ''; 
+                        value = '';
                     }
                 }
-    
+
                 sectionData[field.label] = value;
             }
-    
+
             submitData[section.title] = sectionData;
         }
-    
+
         console.log('Submitting JSON data:', submitData);
-    
+
         try {
             const response = await Authapi.postDynamicstoredata(submitData, post_title);
             if (response.status === true) {
@@ -289,7 +308,7 @@ const PostFormDynamic = () => {
     // Helper to render label with one red asterisk if required and not already present
     const renderLabel = (label, required) => {
         if (!required) return label;
-        return label.trim().endsWith('*') ? label : <>{label}<span style={{color: 'red'}}>*</span></>;
+        return label.trim().endsWith('*') ? label : <>{label}<span style={{ color: 'red' }}>*</span></>;
     };
 
     const handleClickShowPassword = (fieldLabel) => {
@@ -312,14 +331,13 @@ const PostFormDynamic = () => {
                             <form onSubmit={handleSubmit}>
                                 <Grid container spacing={3}>
                                     {standaloneFields.map((field, index) => (
-                                        <Grid item xs={12} sm={6} key={index}>
+                                        <Grid item xs={12} sm={field.type === 'ckeditor' ? 12 : 6} key={index}>
                                             {field.type === 'dropdown' ? (
                                                 <FormControl fullWidth margin="normal" error={!!errors[field.label]}>
                                                     <InputLabel>{renderLabel(field.label, field.required)}</InputLabel>
                                                     <Select
                                                         value={formData['']?.[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type, '')}
-                                                        onBlur={() => handleBlur(field, formData['']?.[field.label] || '', '')}
                                                     >
                                                         {field.options && field.options.map((option, idx) => (
                                                             <MenuItem key={idx} value={option.trim()}>
@@ -338,7 +356,6 @@ const PostFormDynamic = () => {
                                                                 <Checkbox
                                                                     checked={formData['']?.[field.label]?.includes(option)}
                                                                     onChange={(e) => handleInputChange(field.label, field.type, '')(e, option)}
-                                                                    onBlur={() => handleBlur(field, formData['']?.[field.label] || [], '')}
                                                                     value={option}
                                                                 />
                                                             }
@@ -352,7 +369,6 @@ const PostFormDynamic = () => {
                                                     <RadioGroup
                                                         value={formData['']?.[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type, '')}
-                                                        onBlur={() => handleBlur(field, formData['']?.[field.label] || '', '')}
                                                     >
                                                         {field.options && field.options.map((option, idx) => (
                                                             <FormControlLabel
@@ -370,7 +386,6 @@ const PostFormDynamic = () => {
                                                         type="text"
                                                         value={formData['']?.[field.label] || '#000000'}
                                                         onChange={handleInputChange(field.label, field.type, '')}
-                                                        onBlur={() => handleBlur(field, formData['']?.[field.label] || '', '')}
                                                         margin="normal"
                                                         error={!!errors[field.label]}
                                                         style={{ width: '100%', marginRight: '10px' }}
@@ -379,7 +394,6 @@ const PostFormDynamic = () => {
                                                         type="color"
                                                         value={formData['']?.[field.label] || '#000000'}
                                                         onChange={handleInputChange(field.label, field.type)}
-                                                        onBlur={() => handleBlur(field, formData['']?.[field.label] || '', '')}
                                                         style={{
                                                             width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
                                                         }}
@@ -392,7 +406,6 @@ const PostFormDynamic = () => {
                                                         label={renderLabel(field.label, field.required)}
                                                         type="file"
                                                         onChange={handleInputChange(field.label, field.type, '')}
-                                                        onBlur={() => handleBlur(field, formData['']?.[field.label] || '', '')}
                                                         fullWidth
                                                         className='mt-5'
                                                         InputLabelProps={{ shrink: true }}
@@ -407,7 +420,6 @@ const PostFormDynamic = () => {
                                                     label={renderLabel(field.label, field.required)}
                                                     value={formData['']?.[field.label] || ''}
                                                     onChange={handleInputChange(field.label, field.type, '')}
-                                                    onBlur={() => handleBlur(field, formData['']?.[field.label] || '', '')}
                                                     multiline
                                                     rows={4}
                                                     fullWidth
@@ -415,13 +427,51 @@ const PostFormDynamic = () => {
                                                     margin="normal"
                                                     error={!!errors[field.label]}
                                                 />
+                                            ) : field.type === 'ckeditor' ? (
+                                                <div style={{ width: '100%' }} className="ckeditor-container">
+                                                    <Typography variant="body1" style={{ marginBottom: '8px' }}>{renderLabel(field.label, field.required)}</Typography>
+                                                    <CKEditor
+                                                        editor={ClassicEditor}
+                                                        data={formData['']?.[field.label] || ''}
+                                                        config={{
+                                                            toolbar: [
+                                                                'heading',
+                                                                '|',
+                                                                'bold',
+                                                                'italic',
+                                                                'link',
+                                                                'bulletedList',
+                                                                'numberedList',
+                                                                '|',
+                                                                'outdent',
+                                                                'indent',
+                                                                '|',
+                                                                'blockQuote',
+                                                                'insertTable',
+                                                                'undo',
+                                                                'redo'
+                                                            ]
+                                                        }}
+                                                        onChange={(event, editor) => {
+                                                            const data = editor.getData();
+                                                            setFormData(prevFormData => ({
+                                                                ...prevFormData,
+                                                                ['']: {
+                                                                    ...prevFormData[''],
+                                                                    [field.label]: data,
+                                                                },
+                                                            }));
+                                                            // Explicitly validate CKEditor field on change
+                                                            validateField(field, data, '');
+                                                        }}
+                                                    />
+                                                </div>
                                             ) : field.type === 'date' ? (
                                                 <TextField
                                                     label={renderLabel(field.label, field.required)}
                                                     type='date'
                                                     value={formData['']?.[field.label] || ''}
                                                     onChange={handleInputChange(field.label, field.type, '')}
-                                                    onBlur={() => handleBlur(field, formData['']?.[field.label] || '', '')}
                                                     fullWidth
                                                     InputLabelProps={{ shrink: true }}
                                                     variant="outlined"
@@ -435,7 +485,6 @@ const PostFormDynamic = () => {
                                                         type='number'
                                                         value={formData['']?.[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type, '')}
-                                                        onBlur={() => handleBlur(field, formData['']?.[field.label] || '', '')}
                                                         fullWidth
                                                         InputLabelProps={{ shrink: true }}
                                                         variant="outlined"
@@ -451,7 +500,6 @@ const PostFormDynamic = () => {
                                                         variant="outlined"
                                                         value={formData['']?.[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type, '')}
-                                                        onBlur={() => handleBlur(field, formData['']?.[field.label] || '', '')}
                                                         margin="normal"
                                                         error={!!errors[field.label]}
                                                         InputProps={{
@@ -477,7 +525,6 @@ const PostFormDynamic = () => {
                                                         variant="outlined"
                                                         value={formData['']?.[field.label] || ''}
                                                         onChange={handleInputChange(field.label, field.type, '')}
-                                                        onBlur={() => handleBlur(field, formData['']?.[field.label] || '', '')}
                                                         margin="normal"
                                                         error={!!errors[field.label]}
                                                     />
@@ -500,14 +547,13 @@ const PostFormDynamic = () => {
                                                 </Typography>
                                                 <Grid container spacing={3}>
                                                     {section.fields.map((field, index) => (
-                                                        <Grid item xs={12} sm={6} key={index}>
+                                                        <Grid item xs={12} sm={field.type === 'ckeditor' ? 12 : 6} key={index}>
                                                             {field.type === 'dropdown' ? (
                                                                 <FormControl fullWidth margin="normal" error={!!errors[field.label]}>
                                                                     <InputLabel>{renderLabel(field.label, field.required)}</InputLabel>
                                                                     <Select
                                                                         value={formData[section.title]?.[field.label] || ''}
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                        onBlur={() => handleBlur(field, formData[section.title]?.[field.label] || '', section.title)}
                                                                     >
                                                                         {field.options && field.options.map((option, idx) => (
                                                                             <MenuItem key={idx} value={option.trim()}>
@@ -526,7 +572,6 @@ const PostFormDynamic = () => {
                                                                                 <Checkbox
                                                                                     checked={formData[section.title]?.[field.label]?.includes(option)}
                                                                                     onChange={(e) => handleInputChange(field.label, field.type, section.title)(e, option)}
-                                                                                    onBlur={() => handleBlur(field, formData[section.title]?.[field.label] || '', section.title)}
                                                                                     value={option}
                                                                                 />
                                                                             }
@@ -540,7 +585,6 @@ const PostFormDynamic = () => {
                                                                     <RadioGroup
                                                                         value={formData[section.title]?.[field.label] || ''}
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                        onBlur={() => handleBlur(field, formData[section.title]?.[field.label] || '', section.title)}
                                                                     >
                                                                         {field.options && field.options.map((option, idx) => (
                                                                             <FormControlLabel
@@ -558,7 +602,6 @@ const PostFormDynamic = () => {
                                                                         type="text"
                                                                         value={formData[section.title]?.[field.label] || '#000000'}
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                        onBlur={() => handleBlur(field, formData[section.title]?.[field.label] || '', section.title)}
                                                                         margin="normal"
                                                                         error={!!errors[field.label]}
                                                                         style={{ width: '100%', marginRight: '10px' }}
@@ -567,7 +610,6 @@ const PostFormDynamic = () => {
                                                                         type="color"
                                                                         value={formData[section.title]?.[field.label] || '#000000'}
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                        onBlur={() => handleBlur(field, formData[section.title]?.[field.label] || '', section.title)}
                                                                         style={{
                                                                             width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
                                                                         }}
@@ -580,7 +622,6 @@ const PostFormDynamic = () => {
                                                                         label={renderLabel(field.label, field.required)}
                                                                         type="file"
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                        onBlur={() => handleBlur(field, formData[section.title]?.[field.label] || '', section.title)}
                                                                         fullWidth
                                                                         className='mt-5'
                                                                         InputLabelProps={{ shrink: true }}
@@ -595,7 +636,6 @@ const PostFormDynamic = () => {
                                                                     label={renderLabel(field.label, field.required)}
                                                                     value={formData[section.title]?.[field.label] || ''}
                                                                     onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                    onBlur={() => handleBlur(field, formData[section.title]?.[field.label] || '', section.title)}
                                                                     multiline
                                                                     rows={4}
                                                                     fullWidth
@@ -603,13 +643,51 @@ const PostFormDynamic = () => {
                                                                     margin="normal"
                                                                     error={!!errors[field.label]}
                                                                 />
+                                                            ) : field.type === 'ckeditor' ? (
+                                                                <div style={{ width: '100%' }} className="ckeditor-container">
+                                                                    <Typography variant="body1" style={{ marginBottom: '8px' }}>{renderLabel(field.label, field.required)}</Typography>
+                                                                    <CKEditor
+                                                                        editor={ClassicEditor}
+                                                                        data={formData[section.title]?.[field.label] || ''}
+                                                                        config={{
+                                                                            toolbar: [
+                                                                                'heading',
+                                                                                '|',
+                                                                                'bold',
+                                                                                'italic',
+                                                                                'link',
+                                                                                'bulletedList',
+                                                                                'numberedList',
+                                                                                '|',
+                                                                                'outdent',
+                                                                                'indent',
+                                                                                '|',
+                                                                                'blockQuote',
+                                                                                'insertTable',
+                                                                                'undo',
+                                                                                'redo'
+                                                                            ]
+                                                                        }}
+                                                                        onChange={(event, editor) => {
+                                                                            const data = editor.getData();
+                                                                            setFormData(prevFormData => ({
+                                                                                ...prevFormData,
+                                                                                [section.title]: {
+                                                                                    ...prevFormData[section.title],
+                                                                                    [field.label]: data,
+                                                                                },
+                                                                            }));
+                                                                             // Explicitly validate CKEditor field on change
+                                                                             validateField(field, data, section.title);
+                                                                        }}
+                                                                    />
+                                                                </div>
                                                             ) : field.type === 'date' ? (
                                                                 <TextField
                                                                     label={renderLabel(field.label, field.required)}
                                                                     type='date'
                                                                     value={formData[section.title]?.[field.label] || ''}
                                                                     onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                    onBlur={() => handleBlur(field, formData[section.title]?.[field.label] || '', section.title)}
                                                                     fullWidth
                                                                     InputLabelProps={{ shrink: true }}
                                                                     variant="outlined"
@@ -626,7 +704,6 @@ const PostFormDynamic = () => {
                                                                         variant="outlined"
                                                                         value={formData[section.title]?.[field.label] || ''}
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                        onBlur={() => handleBlur(field, formData[section.title]?.[field.label] || '', section.title)}
                                                                         margin="normal"
                                                                         error={!!errors[field.label]}
                                                                         InputProps={{
@@ -652,7 +729,6 @@ const PostFormDynamic = () => {
                                                                         variant="outlined"
                                                                         value={formData[section.title]?.[field.label] || ''}
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                        onBlur={() => handleBlur(field, formData[section.title]?.[field.label] || '', section.title)}
                                                                         margin="normal"
                                                                         error={!!errors[field.label]}
                                                                     />
