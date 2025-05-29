@@ -891,6 +891,8 @@ td {
 }
 
 .ckeditor-container .ck-editor__editable_inline {
+    min-height: 200px;
+    height: auto;
     padding: 0 20px !important;
 }
 
