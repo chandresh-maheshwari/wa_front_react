@@ -882,3 +882,63 @@ td {
   margin-right: 14px;
   font-family: "Roboto","Helvetica","Arial",sans-serif;
 }
+
+/* Space between action buttons (download, delete, view, etc.) */
+.action-buttons-row {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust the gap as needed */
+}
+
+/* If you want to add margin to all icon buttons inside action rows */
+.action-buttons-row .MuiIconButton-root {
+  margin-right: 0 !important; /* Remove default right margin if any */
+}
+
+/* If you want to add margin only to the download button */
+.action-button-download {
+  margin-right: 10px !important;
+}
+
+/* Action buttons row for download/delete/view etc. */
+.action-buttons-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Download button margin (if needed) */
+.action-button-download {
+  margin-right: 10px !important;
+}
+
+/* Remove default margin from all icon buttons in action rows */
+.action-buttons-row .MuiIconButton-root {
+  margin-right: 0 !important;
+}
+
+/* Image preview margin */
+.action-image-preview {
+  margin-right: 10px;
+}
+
+/* Flex column for file info and actions */
+.action-file-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Flex row for file actions (for section fields) */
+.action-file-row {
+  display: flex;
+  align-items: center;
+}
+
+/* Remove background, box-shadow, padding, border-radius for icon buttons */
+.action-button {
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}

@@ -18,6 +18,7 @@ const PostDynamicEdit = () => {
     const [touched, setTouched] = useState({});
     const [showPassword, setShowPassword] = useState({});
     const post_title = location.state?.post_title;
+    const [apiError, setApiError] = useState(null);
 
     useEffect(() => {
         fetchData();
@@ -26,6 +27,23 @@ const PostDynamicEdit = () => {
     useEffect(() => {
         fetchEditData(id);
     }, [id]);
+
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_URL || 'http://wa.front.localhost.com/api'}/file-extensions`)
+            .then(res => {
+                if (!res.ok) throw new Error("API Error");
+                return res.json();
+            })
+            .then(data => {
+                if (data.status) {
+                    // Use data.data.images and data.data.documents as needed
+                    setApiError(null);
+                }
+            })
+            .catch(err => {
+                setApiError("Failed to fetch file extensions!");
+            });
+    }, []);
 
     const fetchData = async () => {
         try {
@@ -120,7 +138,6 @@ const PostDynamicEdit = () => {
             try {
                 const response = await Authapi.imgdelete(id, name);
                 if (response && response.status) {
-                    // Remove file from formData state immediately
                     setFormData(prev => {
                         const updated = { ...prev };
                         if (name.includes('.')) {
@@ -129,17 +146,16 @@ const PostDynamicEdit = () => {
                                 updated[section] = { ...updated[section] };
                                 delete updated[section][field];
                                 delete updated[section][`old_${field}`];
-                                console.log('After delete:', updated[section]);
                             }
                         } else {
-                            // For standalone fields
                             delete updated[name];
                             delete updated[`old_${name}`];
                         }
                         return updated;
                     });
-                    Swal.fire('Success!', 'Item marked as deleted.', 'success');
-                    window.location.reload(); //
+                    Swal.fire('Success!', 'File deleted successfully.', 'success').then(() => {
+                        window.location.reload();
+                    });
                 } else {
                     throw new Error(response?.message || 'Failed to delete item');
                 }
@@ -476,8 +492,17 @@ const PostDynamicEdit = () => {
 
     const sanitize = str => str.replace(/\s+/g, '_');
 
+    const handleDownload = async (filename) => {
+        try {
+            await Authapi.downloadFile(filename);
+        } catch (error) {
+            alert("Download failed!");
+        }
+    };
+
     return (
         <>
+            {apiError && <div style={{color: 'red', fontWeight: 'bold'}}>{apiError}</div>}
             <Expired />
             <div className="col-md-12">
                 <div className="row" style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: "1%" }}>
@@ -595,15 +620,7 @@ const PostDynamicEdit = () => {
                                                                         onClick={() => handleDelete1(id, field.label)}
                                                                         color="error"
                                                                         className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-                                                                        style={{
-                                                                            background: "none",
-                                                                            boxShadow: "none",
-                                                                            padding: 0,
-                                                                            borderRadius: 0
-                                                                        }}
-                                                                        disableRipple
-                                                                        disableFocusRipple
-                                                                        disableTouchRipple
+                                                                       
                                                                         title="Delete File"
                                                                     >
                                                                         <MdDelete style={{ fontSize: 24 }} />
@@ -615,39 +632,19 @@ const PostDynamicEdit = () => {
                                                                 <span style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>
                                                                     {getFileNameFromUrl(formData[field.label])}
                                                                 </span>
-                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                    <a
-                                                                        href={getViewUrl(formData[field.label])}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        style={{ margin: '0 10px 0 0', fontSize: '24px' }}
-                                                                        title="View File"
-                                                                        class ="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-                                                                    >
-                                                                        <MdVisibility />
-                                                                    </a>
-                                                                    <a
-                                                                        href={formData[field.label]}
-                                                                        download
-                                                                        style={{ margin: '0 10px 0 0', fontSize: '24px' }}
+                                                                <div className="action-buttons-row">
+                                                                    <IconButton
+                                                                        onClick={() => handleDownload(getFileNameFromUrl(formData[field.label]))}
+                                                                        color="primary"
+                                                                        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button action-button-download css-39nlm1"
                                                                         title="Download File"
-                                                                        class ="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
                                                                     >
                                                                         <MdFileDownload />
-                                                                    </a>
+                                                                    </IconButton>
                                                                     <IconButton
                                                                         onClick={() => handleDelete1(id, field.label)}
                                                                         color="error"
                                                                         className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-                                                                        style={{
-                                                                            background: "none",
-                                                                            boxShadow: "none",
-                                                                            padding: 0,
-                                                                            borderRadius: 0
-                                                                        }}
-                                                                        disableRipple
-                                                                        disableFocusRipple
-                                                                        disableTouchRipple
                                                                         title="Delete File"
                                                                     >
                                                                         <MdDelete style={{ fontSize: 24 }} />
@@ -873,15 +870,7 @@ const PostDynamicEdit = () => {
                                                                                         onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
                                                                                         color="error"
                                                                                         className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-                                                                                        style={{
-                                                                                            background: "none",
-                                                                                            boxShadow: "none",
-                                                                                            padding: 0,
-                                                                                            borderRadius: 0
-                                                                                        }}
-                                                                                        disableRipple
-                                                                                        disableFocusRipple
-                                                                                        disableTouchRipple
+                                                                                       
                                                                                         title="Delete File"
                                                                                     >
                                                                                         <MdDelete style={{ fontSize: 24 }} />
@@ -893,39 +882,19 @@ const PostDynamicEdit = () => {
                                                                                 <span style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>
                                                                                     {getFileNameFromUrl(formData[section.title][field.label])}
                                                                                 </span>
-                                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                                    <a
-                                                                                        href={getViewUrl(formData[section.title][field.label])}
-                                                                                        target="_blank"
-                                                                                        rel="noopener noreferrer"
-                                                                                        style={{ margin: '0 10px 0 0', fontSize: '24px' }}
-                                                                                        title="View File"
-                                                                                         class ="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-                                                                                    >
-                                                                                        <MdVisibility />
-                                                                                    </a>
-                                                                                    <a
-                                                                                        href={formData[section.title][field.label]}
-                                                                                        download
-                                                                                        style={{ margin: '0 10px 0 0', fontSize: '24px' }}
+                                                                                <div className="action-buttons-row">
+                                                                                    <IconButton
+                                                                                        onClick={() => handleDownload(getFileNameFromUrl(formData[section.title][field.label]))}
+                                                                                        color="primary"
+                                                                                         className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button action-button-download css-39nlm1"
                                                                                         title="Download File"
-                                                                                        class ="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
                                                                                     >
                                                                                         <MdFileDownload />
-                                                                                    </a>
+                                                                                    </IconButton>
                                                                                     <IconButton
                                                                                         onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
                                                                                         color="error"
                                                                                         className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-                                                                                        style={{
-                                                                                            background: "none",
-                                                                                            boxShadow: "none",
-                                                                                            padding: 0,
-                                                                                            borderRadius: 0
-                                                                                        }}
-                                                                                        disableRipple
-                                                                                        disableFocusRipple
-                                                                                        disableTouchRipple
                                                                                         title="Delete File"
                                                                                     >
                                                                                         <MdDelete style={{ fontSize: 24 }} />
@@ -945,15 +914,7 @@ const PostDynamicEdit = () => {
                                                                                 onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
                                                                                 color="error"
                                                                                 className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-                                                                                style={{
-                                                                                    background: "none",
-                                                                                    boxShadow: "none",
-                                                                                    padding: 0,
-                                                                                    borderRadius: 0
-                                                                                }}
-                                                                                disableRipple
-                                                                                disableFocusRipple
-                                                                                disableTouchRipple
+                                                                              
                                                                                 title="Delete File"
                                                                             >
                                                                                 <MdDelete style={{ fontSize: 24 }} />
