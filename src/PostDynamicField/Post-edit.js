@@ -5,7 +5,7 @@ import Expired from '../Login/ExpiredToken';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import "../Custom.css";
-import { MdDelete, MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { MdDelete, MdVisibility, MdVisibilityOff, MdFileDownload } from "react-icons/md";
 
 const PostDynamicEdit = () => {
     const location = useLocation();
@@ -119,17 +119,31 @@ const PostDynamicEdit = () => {
         if (confirmDelete.isConfirmed) {
             try {
                 const response = await Authapi.imgdelete(id, name);
-
                 if (response && response.status) {
-                    Swal.fire('Success!', 'Item marked as deleted.', 'success').then(() => {
-                        fetchData();
-                        window.location.reload();
+                    // Remove file from formData state immediately
+                    setFormData(prev => {
+                        const updated = { ...prev };
+                        if (name.includes('.')) {
+                            const [section, field] = name.split('.');
+                            if (updated[section]) {
+                                updated[section] = { ...updated[section] };
+                                delete updated[section][field];
+                                delete updated[section][`old_${field}`];
+                                console.log('After delete:', updated[section]);
+                            }
+                        } else {
+                            // For standalone fields
+                            delete updated[name];
+                            delete updated[`old_${name}`];
+                        }
+                        return updated;
                     });
+                    Swal.fire('Success!', 'Item marked as deleted.', 'success');
+                    window.location.reload(); //
                 } else {
                     throw new Error(response?.message || 'Failed to delete item');
                 }
             } catch (error) {
-                console.error("Error deleting item:", error);
                 Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete item', 'error');
             }
         }
@@ -428,6 +442,40 @@ const PostDynamicEdit = () => {
         }));
     };
 
+    const isImageFile = (url) => /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(
+        typeof url === 'string' ? url : (url?.name || '')
+    );
+
+    const isDocFile = (url) => /\.(docx?|xlsx?|pptx?)$/i.test(url);
+    const getViewUrl = (url) =>
+      isDocFile(url)
+        ? `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
+        : url;
+
+    const getFileNameFromUrl = (url) => {
+        if (!url) return '';
+        if (typeof url === 'string') {
+            return url.split('/').pop();
+        }
+        if (typeof url === 'object' && url.name) {
+            return url.name;
+        }
+        return '';
+    };
+
+    const getFileType = (urlOrFile) => {
+        const name = typeof urlOrFile === 'string' ? urlOrFile : (urlOrFile?.name || '');
+        const ext = name.split('.').pop().toLowerCase();
+        if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(ext)) return 'image';
+        if (['pdf'].includes(ext)) return 'pdf';
+        if (['doc', 'docx'].includes(ext)) return 'doc';
+        if (['xls', 'xlsx'].includes(ext)) return 'excel';
+        if (['txt'].includes(ext)) return 'txt';
+        return 'other';
+    };
+
+    const sanitize = str => str.replace(/\s+/g, '_');
+
     return (
         <>
             <Expired />
@@ -528,42 +576,111 @@ const PostDynamicEdit = () => {
                                                             accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
                                                         }}
                                                     />
-                                                    {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
-                                                    {formData[field.label] instanceof File ? (
-                                                        <>
-                                                            <p>New image</p>
-                                                            {/* <p>New Selected image: {formData[field.label].name} </p> */}
-                                                            <img
-                                                                src={URL.createObjectURL(formData[field.label])}
-                                                                alt="Preview"
-                                                                width="100"
-                                                            />
-                                                        </>
-                                                    ) : formData[field.label] ? (
-                                                        <>
-                                                            <p>Current image</p>
-                                                            {/* <p>Old image: {formData[field.label]?.split('/').pop()} </p> */}
-                                                            <img
-                                                                src={formData[field.label]}
-                                                                alt="Current Image"
-                                                                width="100"
-                                                                style={{ marginRight: '10px' }}
-                                                            />
-                                                            <Tooltip title="Delete">
-                                                                <IconButton aria-label="delete" className='action-button' color="primary" onClick={() => handleDelete1(id, formData[field.label]?.split('/').pop())}>
-                                                                    <MdDelete />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        </>
+                                                    {formData[field.label] && formData[field.label] !== "" && formData[field.label] !== null ? (
+                                                        isImageFile(formData[field.label]) ? (
+                                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                                                <span style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>
+                                                                    {getFileNameFromUrl(formData[field.label])}
+                                                                </span>
+                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                    <img
+                                                                        src={typeof formData[field.label] === 'string'
+                                                                            ? formData[field.label]
+                                                                            : URL.createObjectURL(formData[field.label])}
+                                                                        alt="Current File"
+                                                                        width="100"
+                                                                        style={{ marginRight: '10px' }}
+                                                                    />
+                                                                    <IconButton
+                                                                        onClick={() => handleDelete1(id, field.label)}
+                                                                        color="error"
+                                                                        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
+                                                                        style={{
+                                                                            background: "none",
+                                                                            boxShadow: "none",
+                                                                            padding: 0,
+                                                                            borderRadius: 0
+                                                                        }}
+                                                                        disableRipple
+                                                                        disableFocusRipple
+                                                                        disableTouchRipple
+                                                                        title="Delete File"
+                                                                    >
+                                                                        <MdDelete style={{ fontSize: 24 }} />
+                                                                    </IconButton>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                                                <span style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>
+                                                                    {getFileNameFromUrl(formData[field.label])}
+                                                                </span>
+                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                    <a
+                                                                        href={getViewUrl(formData[field.label])}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        style={{ margin: '0 10px 0 0', fontSize: '24px' }}
+                                                                        title="View File"
+                                                                        class ="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
+                                                                    >
+                                                                        <MdVisibility />
+                                                                    </a>
+                                                                    <a
+                                                                        href={formData[field.label]}
+                                                                        download
+                                                                        style={{ margin: '0 10px 0 0', fontSize: '24px' }}
+                                                                        title="Download File"
+                                                                        class ="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
+                                                                    >
+                                                                        <MdFileDownload />
+                                                                    </a>
+                                                                    <IconButton
+                                                                        onClick={() => handleDelete1(id, field.label)}
+                                                                        color="error"
+                                                                        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
+                                                                        style={{
+                                                                            background: "none",
+                                                                            boxShadow: "none",
+                                                                            padding: 0,
+                                                                            borderRadius: 0
+                                                                        }}
+                                                                        disableRipple
+                                                                        disableFocusRipple
+                                                                        disableTouchRipple
+                                                                        title="Delete File"
+                                                                    >
+                                                                        <MdDelete style={{ fontSize: 24 }} />
+                                                                    </IconButton>
+                                                                </div>
+                                                            </div>
+                                                        )
                                                     ) : formData[`old_${field.label}`] ? (
-                                                        <>
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
                                                             <p>Old image</p>
                                                             <img
                                                                 src={formData[`old_${field.label}`]}
                                                                 alt="Old Image"
                                                                 width="100"
                                                             />
-                                                        </>
+                                                            <IconButton
+                                                                onClick={() => handleDelete1(id, field.label)}
+                                                                color="error"
+                                                                className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
+                                                                style={{
+                                                                    background: "none",
+                                                                    boxShadow: "none",
+                                                                    padding: 0,
+                                                                    borderRadius: 0
+                                                                }}
+                                                                disableRipple
+                                                                disableFocusRipple
+                                                                disableTouchRipple
+                                                                title="Delete File"
+                                                            >
+                                                                <MdDelete style={{ fontSize: 24 }} />
+                                                            </IconButton>
+                                                        </div>
                                                     ) : null}
                                                 </div>
                                             ) : field.type === 'textarea' ? (
@@ -578,6 +695,7 @@ const PostDynamicEdit = () => {
                                                     margin="normal"
                                                     error={!!errors[field.label]}
                                                     helperText={errors[field.label] || ''}
+                                                    inputProps={{ maxLength: field.value ? parseInt(field.value) : undefined }}
                                                 />
                                             ) : field.type === 'date' ? (
                                                 <TextField
@@ -736,41 +854,111 @@ const PostDynamicEdit = () => {
 
                                                                     />
                                                                     {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
-                                                                    {formData[section.title]?.[field.label] instanceof File ? (
-                                                                        <>
-                                                                            {/* <p>New Selected image: {formData[section.title][field.label].name} </p> */}
-                                                                            <p>New image</p>
-                                                                            <img
-                                                                                src={URL.createObjectURL(formData[section.title][field.label])}
-                                                                                alt="Preview"
-                                                                                width="100"
-                                                                            />
-                                                                        </>
-                                                                    ) : formData[section.title]?.[field.label] ? (
-                                                                        <>
-                                                                            {/* <p>Old image: {formData[section.title][field.label]?.split('/').pop()} </p> */}
-                                                                            <p>Current image</p>
-                                                                            <img
-                                                                                src={formData[section.title][field.label]}
-                                                                                alt="Current Image"
-                                                                                width="100"
-                                                                                style={{ marginRight: '10px' }}
-                                                                            />
-                                                                            <Tooltip title="Delete">
-                                                                                <IconButton aria-label="delete" className='action-button' color="primary" onClick={() => handleDelete1(id, formData[section.title][field.label]?.split('/').pop())}>
-                                                                                    <MdDelete />
-                                                                                </IconButton>
-                                                                            </Tooltip>
-                                                                        </>
+                                                                    {formData[section.title]?.[field.label] && formData[section.title][field.label] !== "" && formData[section.title][field.label] !== null ? (
+                                                                        isImageFile(formData[section.title][field.label]) ? (
+                                                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                                                                <span style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>
+                                                                                    {getFileNameFromUrl(formData[section.title][field.label])}
+                                                                                </span>
+                                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                                    <img
+                                                                                        src={typeof formData[section.title][field.label] === 'string'
+                                                                                            ? formData[section.title][field.label]
+                                                                                            : URL.createObjectURL(formData[section.title][field.label])}
+                                                                                        alt="Current File"
+                                                                                        width="100"
+                                                                                        style={{ marginRight: '10px' }}
+                                                                                    />
+                                                                                    <IconButton
+                                                                                        onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
+                                                                                        color="error"
+                                                                                        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
+                                                                                        style={{
+                                                                                            background: "none",
+                                                                                            boxShadow: "none",
+                                                                                            padding: 0,
+                                                                                            borderRadius: 0
+                                                                                        }}
+                                                                                        disableRipple
+                                                                                        disableFocusRipple
+                                                                                        disableTouchRipple
+                                                                                        title="Delete File"
+                                                                                    >
+                                                                                        <MdDelete style={{ fontSize: 24 }} />
+                                                                                    </IconButton>
+                                                                                </div>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                                                                <span style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>
+                                                                                    {getFileNameFromUrl(formData[section.title][field.label])}
+                                                                                </span>
+                                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                                    <a
+                                                                                        href={getViewUrl(formData[section.title][field.label])}
+                                                                                        target="_blank"
+                                                                                        rel="noopener noreferrer"
+                                                                                        style={{ margin: '0 10px 0 0', fontSize: '24px' }}
+                                                                                        title="View File"
+                                                                                         class ="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
+                                                                                    >
+                                                                                        <MdVisibility />
+                                                                                    </a>
+                                                                                    <a
+                                                                                        href={formData[section.title][field.label]}
+                                                                                        download
+                                                                                        style={{ margin: '0 10px 0 0', fontSize: '24px' }}
+                                                                                        title="Download File"
+                                                                                        class ="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
+                                                                                    >
+                                                                                        <MdFileDownload />
+                                                                                    </a>
+                                                                                    <IconButton
+                                                                                        onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
+                                                                                        color="error"
+                                                                                        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
+                                                                                        style={{
+                                                                                            background: "none",
+                                                                                            boxShadow: "none",
+                                                                                            padding: 0,
+                                                                                            borderRadius: 0
+                                                                                        }}
+                                                                                        disableRipple
+                                                                                        disableFocusRipple
+                                                                                        disableTouchRipple
+                                                                                        title="Delete File"
+                                                                                    >
+                                                                                        <MdDelete style={{ fontSize: 24 }} />
+                                                                                    </IconButton>
+                                                                                </div>
+                                                                            </div>
+                                                                        )
                                                                     ) : formData[section.title]?.[`old_${field.label}`] ? (
-                                                                        <>
+                                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
                                                                             <p>Old image</p>
                                                                             <img
                                                                                 src={formData[section.title][`old_${field.label}`]}
                                                                                 alt="Old Image"
                                                                                 width="100"
                                                                             />
-                                                                        </>
+                                                                            <IconButton
+                                                                                onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
+                                                                                color="error"
+                                                                                className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
+                                                                                style={{
+                                                                                    background: "none",
+                                                                                    boxShadow: "none",
+                                                                                    padding: 0,
+                                                                                    borderRadius: 0
+                                                                                }}
+                                                                                disableRipple
+                                                                                disableFocusRipple
+                                                                                disableTouchRipple
+                                                                                title="Delete File"
+                                                                            >
+                                                                                <MdDelete style={{ fontSize: 24 }} />
+                                                                            </IconButton>
+                                                                        </div>
                                                                     ) : null}
                                                                 </div>
                                                             ) : field.type === 'textarea' ? (
@@ -785,6 +973,7 @@ const PostDynamicEdit = () => {
                                                                     margin="normal"
                                                                     error={!!errors[field.label]}
                                                                     helperText={errors[field.label] || ''}
+                                                                    inputProps={{ maxLength: field.value ? parseInt(field.value) : undefined }}
                                                                 />
                                                             ) : field.type === 'date' ? (
                                                                 <TextField
@@ -836,6 +1025,7 @@ const PostDynamicEdit = () => {
                                                                     margin="normal"
                                                                     error={!!errors[field.label]}
                                                                     helperText={errors[field.label] || ''}
+                                                                    inputProps={{ maxLength: field.value ? parseInt(field.value) : undefined }}
                                                                 />
                                                             )}
                                                         </Grid>
