@@ -101,14 +101,6 @@ const PostFormDynamic = () => {
                     return 'Please enter a valid URL.';
                 }
             }
-            if (field.type === 'file') {
-                if (value instanceof File) {
-                    const fileExtension = '.' + value.name.split('.').pop().toLowerCase();
-                    if (field.allowedFileTypes && !field.allowedFileTypes.includes(fileExtension)) {
-                        return `Only ${field.allowedFileTypes.join(', ')} files are allowed.`;
-                    }
-                }
-            }
         }
         return '';
     };
@@ -410,23 +402,25 @@ const PostFormDynamic = () => {
                                                         className='mt-5'
                                                         InputLabelProps={{ shrink: true }}
                                                         error={!!errors[field.label]}
-                                                        inputProps={{
-                                                            accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
-                                                        }}
                                                     />
                                                 </div>
                                             ) : field.type === 'textarea' ? (
-                                                <TextField
-                                                    label={renderLabel(field.label, field.required)}
-                                                    value={formData['']?.[field.label] || ''}
-                                                    onChange={handleInputChange(field.label, field.type, '')}
-                                                    multiline
-                                                    rows={4}
-                                                    fullWidth
-                                                    variant="outlined"
-                                                    margin="normal"
-                                                    error={!!errors[field.label]}
-                                                />
+                                               <>
+                                                    {console.log('Textarea field:', field)}
+                                                    <TextField
+                                                        label={renderLabel(field.label, field.required)}
+                                                        value={formData['']?.[field.label] || ''}
+                                                        onChange={handleInputChange(field.label, field.type, '')}
+                                                        onBlur={() => handleBlur(field, formData['']?.[field.label] || '', '')}
+                                                        multiline
+                                                        rows={4}
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        margin="normal"
+                                                        error={!!errors[field.label]}
+                                                        inputProps={{ maxLength: field.value ? parseInt(field.value) : undefined }}
+                                                    />
+                                                </>
                                             ) : field.type === 'ckeditor' ? (
                                                 <div style={{ width: '100%' }} className="ckeditor-container">
                                                     <Typography variant="body1" style={{ marginBottom: '8px' }}>{renderLabel(field.label, field.required)}</Typography>
@@ -626,23 +620,25 @@ const PostFormDynamic = () => {
                                                                         className='mt-5'
                                                                         InputLabelProps={{ shrink: true }}
                                                                         error={!!errors[field.label]}
-                                                                        inputProps={{
-                                                            accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
-                                                        }}
                                                                     />
                                                                 </div>
                                                             ) : field.type === 'textarea' ? (
-                                                                <TextField
-                                                                    label={renderLabel(field.label, field.required)}
-                                                                    value={formData[section.title]?.[field.label] || ''}
-                                                                    onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                    multiline
-                                                                    rows={4}
-                                                                    fullWidth
-                                                                    variant="outlined"
-                                                                    margin="normal"
-                                                                    error={!!errors[field.label]}
-                                                                />
+                                                                <>
+                                                                    {console.log('Textarea field:', field)}
+                                                                    <TextField
+                                                                        label={renderLabel(field.label, field.required)}
+                                                                        value={formData[section.title]?.[field.label] || ''}
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                        onBlur={() => handleBlur(field, formData[section.title]?.[field.label] || '', section.title)}
+                                                                        multiline
+                                                                        rows={4}
+                                                                        fullWidth
+                                                                        variant="outlined"
+                                                                        margin="normal"
+                                                                        error={!!errors[field.label]}
+                                                                        inputProps={{ maxLength: field.value ? parseInt(field.value) : undefined }}
+                                                                    />
+                                                                </>
                                                             ) : field.type === 'ckeditor' ? (
                                                                 <div style={{ width: '100%' }} className="ckeditor-container">
                                                                     <Typography variant="body1" style={{ marginBottom: '8px' }}>{renderLabel(field.label, field.required)}</Typography>

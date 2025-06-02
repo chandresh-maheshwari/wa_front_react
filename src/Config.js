@@ -111,6 +111,8 @@ export default {
     postDynamicDelete: 'api/post-data-delete/',
     postDynamicActive: 'api/post-data-active/',
     imgdelete: 'api/post-img-delete/', //New added
+    fileExtension: 'api/file-extensions/', //New added
+    downloadfile: 'api/download-file/', //New added
 
 
     pageStore: 'api/page-store',

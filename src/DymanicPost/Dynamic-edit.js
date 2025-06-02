@@ -597,6 +597,27 @@ const DynamicEditForm = ({ existingData }) => {
 
                                                 </Select>
                                             </FormControl>
+                                            {(field.type === 'textarea') && (
+                                                <TextField
+                                                    label="Max Char Limit"
+                                                    name="value"
+                                                    value={field.value}
+                                                    onChange={(e) => {
+                                                        const { value } = e.target;
+                                                        if (/^[0-9]*$/.test(value)) {
+                                                            setStandaloneFields((prevFields) =>
+                                                                prevFields.map((f) => (f.id === field.id ? { ...f, value: value } : f))
+                                                            );
+                                                        }
+                                                    }}
+                                                    fullWidth
+                                                    style={{
+                                                        marginTop: '15px',
+                                                        backgroundColor: '#f4f6f8',
+                                                        borderRadius: '5px'
+                                                    }}
+                                                />
+                                            )}
                                         </Grid>
 
                                         {/* Required Checkbox */}
@@ -807,6 +828,25 @@ const DynamicEditForm = ({ existingData }) => {
 
                                                                 </Select>
                                                             </FormControl>
+                                                            {(field.type === 'textarea') && (
+                                                                <TextField
+                                                                    label="Max Char Limit"
+                                                                    name="value"
+                                                                    value={field.value}
+                                                                    onChange={(e) => {
+                                                                        const { value } = e.target;
+                                                                        if (/^[0-9]*$/.test(value)) {
+                                                                            handleInputChange(e, section.id, field.id);
+                                                                        }
+                                                                    }}
+                                                                    fullWidth
+                                                                    style={{
+                                                                        marginTop: '15px',
+                                                                        backgroundColor: '#f4f6f8',
+                                                                        borderRadius: '5px'
+                                                                    }}
+                                                                />
+                                                            )}
                                                         </Grid>
 
                                                         {/* Required Checkbox */}
