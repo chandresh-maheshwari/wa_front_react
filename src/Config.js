@@ -134,8 +134,9 @@ export default {
     contactrestore: 'api/contact-page/restore/',
     pagerestore:'api/page/restore/',
     dynamicpostrestore: 'api/dynamic-post/restore/',
-    postrestore: 'api/post-store/restore/'
+    postrestore: 'api/post-store/restore/',
 
-
+    fileExtension: 'api/file-extensions/', 
+    downloadfile: 'api/download-file/', 
   },
 };

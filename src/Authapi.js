@@ -1575,7 +1575,7 @@ export default new (class AuthApi {
 
 
   async postData(post_id) {
-    console.log("AAAAAAAAAAAAAAAAAA");
+    // console.log("AAAAAAAAAAAAAAAAAA");
     console.log(post_id);
     try {
       const url = Config.apiurl + Config.apis.postData + post_id;
@@ -1940,6 +1940,38 @@ export default new (class AuthApi {
       throw error;
     }
   }
+
+  // DOWNLOAD FILE
+  async downloadFile(filename) {
+    const token = ls('Token');
+    const url = `${Config.apiurl}${Config.apis.downloadfile}${filename}`;
+    try {
+      // For file download, we use 'blob' responseType
+      const response = await axios.get(url, {
+        responseType: 'blob',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+ 
+      // Create a link and trigger download
+      const blob = new Blob([response.data]);
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+ 
+      return true;
+    } catch (error) {
+      console.error("Download Error:", error);
+      throw error;
+    }
+  }
+ 
 
 
 })();

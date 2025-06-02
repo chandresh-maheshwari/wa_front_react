@@ -134,20 +134,43 @@ const DynamicForm = () => {
     );
   };
 
+  // const handleInputChange = (e, sectionId, fieldId) => {
+  //   const { name, value } = e.target;
+  //   setSections(
+  //     sections.map((section) =>
+  //       section.id === sectionId
+  //         ? {
+  //           ...section,
+  //           fields: section.fields.map((field) =>
+  //             field.id === fieldId ? { ...field, [name]: value } : field
+  //           ),
+  //         }
+  //         : section
+  //     )
+  //   );
+  // };
   const handleInputChange = (e, sectionId, fieldId) => {
     const { name, value } = e.target;
-    setSections(
-      sections.map((section) =>
-        section.id === sectionId
-          ? {
-            ...section,
-            fields: section.fields.map((field) =>
-              field.id === fieldId ? { ...field, [name]: value } : field
-            ),
-          }
-          : section
-      )
-    );
+    if (sectionId === null) {
+      setStandaloneFields((prevFields) =>
+        prevFields.map((field) =>
+          field.id === fieldId ? { ...field, [name]: value } : field
+        )
+      );
+    } else {
+      setSections(
+        sections.map((section) =>
+          section.id === sectionId
+            ? {
+                ...section,
+                fields: section.fields.map((field) =>
+                  field.id === fieldId ? { ...field, [name]: value } : field
+                ),
+              }
+            : section
+        )
+      );
+    }
   };
 
   const handleTypeChange = (e, sectionId, fieldId) => {
@@ -404,7 +427,15 @@ const DynamicForm = () => {
   };
 
   const handleAddFieldAfter = (fieldId) => {
-    const newField = { id: Date.now(), label: "", type: "text", value: "", options: [], required: false };
+    const newField = { 
+      id: Date.now(), 
+      label: "", 
+      type: "text", 
+      value: "", 
+      options: [], 
+      required: false,
+      allowedFileTypes: []
+    };
     setStandaloneFields((prevFields) => {
       const index = prevFields.findIndex((f) => f.id === fieldId);
       return [
@@ -632,7 +663,13 @@ const DynamicForm = () => {
                           onChange={(e) => {
                             const { value } = e.target;
                             setStandaloneFields((prevFields) =>
-                              prevFields.map((f) => (f.id === field.id ? { ...f, type: value } : f))
+                              prevFields.map((f) => (f.id === field.id ? { 
+                                ...f, 
+                                type: value, 
+                                value: "", 
+                                options: [], 
+                                allowedFileTypes: [] 
+                              } : f))
                             );
                           }}
                           fullWidth
@@ -658,6 +695,25 @@ const DynamicForm = () => {
 
                         </Select>
                       </FormControl>
+                       {(field.type === 'textarea') && (
+                        <TextField
+                          label="Max Char Limit"
+                          name="value"
+                          value={field.value}
+                          onChange={(e) => {
+                            const { value } = e.target;
+                            if (/^[0-9]*$/.test(value)) {
+                              handleInputChange(e, null, field.id);
+                            }
+                          }}
+                          fullWidth
+                          style={{
+                            marginBottom: '15px',
+                            backgroundColor: '#f4f6f8',
+                            borderRadius: '5px'
+                          }}
+                        />
+                      )}
                     </Grid>
 
                     {/* Required Checkbox */}
@@ -891,6 +947,25 @@ const DynamicForm = () => {
                                   <MenuItem value="ckeditor">Text Area (with Editor)</MenuItem>
                                 </Select>
                               </FormControl>
+                               {(field.type === 'textarea') && (
+                                <TextField
+                                  label="Max Char Limit"
+                                  name="value"
+                                  value={field.value}
+                                  onChange={(e) => {
+                                    const { value } = e.target;
+                                    if (/^[0-9]*$/.test(value)) {
+                                      handleInputChange(e, section.id, field.id);
+                                    }
+                                  }}
+                                  fullWidth
+                                  style={{
+                                    marginTop: '15px',
+                                    backgroundColor: '#f4f6f8',
+                                    borderRadius: '5px'
+                                  }}
+                                />
+                              )}
                             </Grid>
 
                             {/* Required Checkbox */}

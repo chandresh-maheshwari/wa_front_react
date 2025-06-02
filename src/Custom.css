@@ -917,3 +917,49 @@ td {
     border-top: none !important;
     border-radius: 0 0 4px 4px !important;
 }
+
+
+
+.action-buttons-row {
+  display: flex;
+  align-items: center;
+}
+ 
+.action-buttons-row .MuiIconButton-root {
+  margin-right: 0 !important; 
+}
+ 
+.action-button-download {
+  margin-right: 10px !important;
+}
+ 
+.action-button-download {
+  margin-right: 10px !important;
+}
+ 
+.action-buttons-row .MuiIconButton-root {
+  margin-right: 0 !important;
+}
+ 
+.action-image-preview {
+  margin-right: 10px;
+}
+ 
+.action-file-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+ 
+.action-file-row {
+  display: flex;
+  align-items: center;
+}
+ 
+.css-1nkhxq8-MuiTypography-root{
+  font-size: 0.75rem !important;
+}
+
+.css-1wc848c-MuiFormHelperText-root{
+  margin-left: 0px !important;
+}

@@ -165,7 +165,7 @@ const PostFormDynamic = () => {
             // Only validate here for non-CKEditor fields, CKEditor validation
             // will be handled in its specific onChange handler
             if (field.type !== 'ckeditor') {
-                 validateField(field, value, sectionTitle);
+                validateField(field, value, sectionTitle);
             }
         }
     };
@@ -426,6 +426,7 @@ const PostFormDynamic = () => {
                                                     variant="outlined"
                                                     margin="normal"
                                                     error={!!errors[field.label]}
+                                                    inputProps={{ maxLength: field.value ? parseInt(field.value) : undefined }}
                                                 />
                                             ) : field.type === 'ckeditor' ? (
                                                 <div style={{ width: '100%' }} className="ckeditor-container">
@@ -627,8 +628,8 @@ const PostFormDynamic = () => {
                                                                         InputLabelProps={{ shrink: true }}
                                                                         error={!!errors[field.label]}
                                                                         inputProps={{
-                                                            accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
-                                                        }}
+                                                                            accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
+                                                                        }}
                                                                     />
                                                                 </div>
                                                             ) : field.type === 'textarea' ? (
@@ -642,6 +643,7 @@ const PostFormDynamic = () => {
                                                                     variant="outlined"
                                                                     margin="normal"
                                                                     error={!!errors[field.label]}
+                                                                    inputProps={{ maxLength: field.value ? parseInt(field.value) : undefined }}
                                                                 />
                                                             ) : field.type === 'ckeditor' ? (
                                                                 <div style={{ width: '100%' }} className="ckeditor-container">
@@ -677,8 +679,8 @@ const PostFormDynamic = () => {
                                                                                     [field.label]: data,
                                                                                 },
                                                                             }));
-                                                                             // Explicitly validate CKEditor field on change
-                                                                             validateField(field, data, section.title);
+                                                                            // Explicitly validate CKEditor field on change
+                                                                            validateField(field, data, section.title);
                                                                         }}
                                                                     />
                                                                 </div>
