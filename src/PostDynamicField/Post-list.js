@@ -32,10 +32,12 @@ const PostDynamicList = () => {
     const [abc, setAbc] = useState();
     const [statusFilter, setStatusFilter] = useState('all');
     const [actionFilter, setActionFilter] = useState("all");
+    const [fieldDefinitions, setFieldDefinitions] = useState([]);
 
     useEffect(() => {
         setTimeout(() => {
             fetchData(page, pageSize);
+            fetchFieldDefinitions();
         }, 100);
         setSelectedRows([]);
         setStatusFilter('all'); 
@@ -87,6 +89,32 @@ const PostDynamicList = () => {
         }
     };
 
+    const fetchFieldDefinitions = async () => {
+        try {
+            const response = await Authapi.dynamifieldfetchdata(post_title);
+            const postDescription = response.data?.post_description || {};
+            const allFields = [];
+            Object.entries(postDescription).forEach(([key, value]) => {
+                if (isNaN(key)) {
+                    if (value.enabled) {
+                        const fields = Object.values(value).filter(field => field.label);
+                        allFields.push(...fields);
+                    }
+                } else {
+                    allFields.push(value);
+                }
+            });
+            setFieldDefinitions(allFields);
+        } catch (error) {
+            setFieldDefinitions([]);
+        }
+    };
+
+    const getFieldTypeByLabel = (label) => {
+        const found = fieldDefinitions.find(f => f.label === label);
+        return found ? found.type : null;
+    };
+
     const dynamicColumns = [
         {
             field: 'checkboxSelection',
@@ -109,7 +137,13 @@ const PostDynamicList = () => {
         },
 
         ...Object.keys(rows[0] || {}).map((key) => {
-            if (key === 'id' || key === 'status' || key === 'deleted_at' || key.toLowerCase().includes('slug')) return null;
+            if (
+                key === 'id' ||
+                key === 'status' ||
+                key === 'deleted_at' ||
+                key.toLowerCase().includes('slug') ||
+                ['textarea', 'ckeditor'].includes(getFieldTypeByLabel(key))
+            ) return null;
             return {
                 field: key,
                 headerName: key.charAt(0).toUpperCase() + key.slice(1),
