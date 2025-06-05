@@ -196,9 +196,11 @@ const PostDynamicEdit = () => {
             }
             if (field.type === 'file') {
                 if (value instanceof File) {
-                    const fileExtension = '.' + value.name.split('.').pop().toLowerCase();
-                    if (field.allowedFileTypes && !field.allowedFileTypes.includes(fileExtension)) {
-                        return `Only ${field.allowedFileTypes.join(', ')} files are allowed.`;
+                    if (field.allowedFileTypes && field.allowedFileTypes.length > 0) {
+                        const fileExtension = '.' + value.name.split('.').pop().toLowerCase();
+                        if (!field.allowedFileTypes.includes(fileExtension)) {
+                            return `Only ${field.allowedFileTypes.join(', ')} files are allowed.`;
+                        }
                     }
                 }
             }
