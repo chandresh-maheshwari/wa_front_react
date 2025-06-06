@@ -519,9 +519,9 @@ const DynamicForm = () => {
     <>
       <Expired />
       <div className="col-md-12">
-        <div className="row mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
+        <div className="row mt-4 dynamic-form-wrapper">
           <div className="card-header Form-main-title">
-            <Typography variant="h6" className="title" align="center">Add Dynamic Post</Typography>
+            <Typography variant="h6" className="title dynamic-form-title-base" align="center">Add Dynamic Post</Typography>
           </div>
           <div className="card-body">
             <Container>
@@ -531,43 +531,21 @@ const DynamicForm = () => {
                     <TextField
                       label="Post Title"
                       name="post_title"
-                      className='field-of-dynamic-from'
+                      className='field-of-dynamic-from dynamic-form-field-base'
                       fullWidth
                       value={formData.post_title}
                       onChange={(e) => handleTitleChange(e, null)}
-                      style={{
-                        marginBottom: '15px',
-                        backgroundColor: '#f4f6f8',
-                        borderRadius: '5px'
-                      }}
                     />
                   </Grid>
-                  {/* <Grid item xs={12} sm={6}>
-                    <TextField
-                      label="Ordering"
-                      name="ordering"
-                      className='field-of-dynamic-from'
-                      fullWidth
-                      min="0"
-                      value={formData.ordering}
-                      onChange={(e) => handleTitleChange(e, null)}
-                      style={{
-                        marginBottom: '15px',
-                        backgroundColor: '#f4f6f8',
-                        borderRadius: '5px'
-                      }}
-                    />
-                  </Grid> */}
                   <Grid item xs={12} sm={6}>
                     <TextField
                       label="Ordering"
                       name="ordering"
-                      className="field-of-dynamic-from"
+                      className="field-of-dynamic-from dynamic-form-field-base"
                       fullWidth
                       value={formData.ordering}
                       onChange={(e) => {
                         const value = e.target.value;
-                        // Allow only positive numbers or empty string
                         if (value === '' || /^[+]?\d+(\.\d+)?$/.test(value)) {
                           handleTitleChange(e, null);
                         }
@@ -575,19 +553,15 @@ const DynamicForm = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <FormControl fullWidth style={{ marginTop: '15px' }}>
+                    <FormControl fullWidth className="dynamic-form-control-base">
                       <InputLabel>Post Type</InputLabel>
                       <Select
                         label="Post Type"
-                        className='dropdown-css-change field-of-dynamic-from'
+                        className='dropdown-css-change field-of-dynamic-from dynamic-form-field-type-select-base'
                         name="post_type"
                         value={formData.post_type}
                         onChange={(e) => handleTitleChange(e, null)}
                         fullWidth
-                        style={{
-                          backgroundColor: '#f4f6f8',
-                          borderRadius: '5px'
-                        }}
                       >
                         <MenuItem value="custom_post">Custom Post</MenuItem>
                         <MenuItem value="normal_post">Normal Post</MenuItem>
@@ -596,27 +570,7 @@ const DynamicForm = () => {
                   </Grid>
                 </Grid>
 
-                {/* <TextField
-                  label="Title"
-                  name="post_title"
-                  className='field-of-dynamic-from mt-3'
-                  fullWidth
-                  // value={formData.post_title}
-                  // onChange={(e) => handleTitleChange(e, null)}
-                  style={{
-                    marginBottom: '15px',
-                    backgroundColor: '#f4f6f8',
-                    borderRadius: '5px'
-                  }}
-                />
-                <textarea
-                  className='form-control'
-                  // name={`field${index}`}
-                  rows="4"
-                // onChange={(e) => handleInputChange(e, index)}
-                /> */}
-
-                <Grid container justifyContent="flex-end" style={{ marginBottom: "40px" }}>
+                <Grid container justifyContent="flex-end" className="dynamic-form-action-buttons-base">
                   <Grid item>
                     <Tooltip title="Add New Field">
                       <IconButton
@@ -624,15 +578,15 @@ const DynamicForm = () => {
                         color="primary"
                         className='action-button'
                         onClick={handleAddStandaloneField}
-                        style={{ marginBottom: "15px" }}
                       >
                         <FaCirclePlus />
                       </IconButton>
                     </Tooltip>
                   </Grid>
                 </Grid>
+
                 {standaloneFields.map((field) => (
-                  <Grid container spacing={3} key={field.id} style={{ marginTop: "10px", marginBottom: "20px" }}>
+                  <Grid container spacing={3} key={field.id} className="dynamic-form-field-grid-base">
                     <Grid item xs={12} sm={5}>
                       <TextField
                         label="Label"
@@ -645,16 +599,12 @@ const DynamicForm = () => {
                           );
                         }}
                         fullWidth
-                        style={{
-                          marginBottom: "15px",
-                          backgroundColor: "#f4f6f8",
-                          borderRadius: "5px",
-                        }}
+                        className="field-of-dynamic-from dynamic-form-field-base"
                       />
                     </Grid>
 
                     <Grid item xs={12} sm={5}>
-                      <FormControl fullWidth style={{ marginBottom: "15px" }}>
+                      <FormControl fullWidth className="dynamic-form-field-type-container-base">
                         <InputLabel>Field Type</InputLabel>
                         <Select
                           label="Field Type"
@@ -673,10 +623,7 @@ const DynamicForm = () => {
                             );
                           }}
                           fullWidth
-                          style={{
-                            backgroundColor: "#f4f6f8",
-                            borderRadius: "5px",
-                          }}
+                          className="field-of-dynamic-from dynamic-form-field-type-select-base"
                         >
                           <MenuItem value="text">Text</MenuItem>
                           <MenuItem value="file">File</MenuItem>
@@ -685,17 +632,15 @@ const DynamicForm = () => {
                           <MenuItem value="checkbox">Checkbox</MenuItem>
                           <MenuItem value="radio">Radio</MenuItem>
                           <MenuItem value="date">Date</MenuItem>
-                          {/* <MenuItem value="button">Button</MenuItem> */}
                           <MenuItem value="email">Email</MenuItem>
                           <MenuItem value="password">Password</MenuItem>
                           <MenuItem value="url">Url</MenuItem>
                           <MenuItem value="dropdown">Dropdown</MenuItem>
                           <MenuItem value="color">Color</MenuItem>
                           <MenuItem value="ckeditor">Text Area (with Editor)</MenuItem>
-
                         </Select>
                       </FormControl>
-                       {(field.type === 'textarea') && (
+                      {(field.type === 'textarea') && (
                         <TextField
                           label="Max Char Limit"
                           name="value"
@@ -707,24 +652,18 @@ const DynamicForm = () => {
                             }
                           }}
                           fullWidth
-                          style={{
-                            marginBottom: '15px',
-                            backgroundColor: '#f4f6f8',
-                            borderRadius: '5px'
-                          }}
+                          className="field-of-dynamic-from dynamic-form-max-char-base"
                         />
                       )}
                     </Grid>
 
-                    {/* Required Checkbox */}
-                    <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
+                    <Grid item xs={12} sm={2} className="dynamic-form-required-checkbox-base">
                       <Tooltip title="Make this field required">
                         <FormControl>
                           <div className="checkbox-wrapper">
                             <label>
                               <input
                                 type="checkbox"
-                                // title='Make a field required'
                                 checked={field.required}
                                 onChange={() => handleRequiredChangeStandalone(field.id)}
                               />
@@ -739,7 +678,6 @@ const DynamicForm = () => {
                           color="primary"
                           className='action-button add-new-field'
                           onClick={() => handleAddFieldAfter(field.id)}
-
                         >
                           <FaCirclePlus />
                         </IconButton>
@@ -755,34 +693,31 @@ const DynamicForm = () => {
                         </IconButton>
                       </Tooltip>
                     </Grid>
+
                     {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
                       <Grid item xs={12} sm={10}>
                         <TextField
                           label={`${field.type.charAt(0).toUpperCase() + field.type.slice(1)} Options (comma-separated)`}
                           value={field.options.join(',')}
-                          className='field-of-dynamic-from'
+                          className='field-of-dynamic-from dynamic-form-field-base'
                           onChange={(e) => handleOptionChange(e, null, field.id)}
                           fullWidth
-                          style={{
-                            marginBottom: '15px',
-                            backgroundColor: '#f4f6f8',
-                            borderRadius: '5px'
-                          }}
                         />
                       </Grid>
                     )}
+
                     {(field.type === 'file') && (
                       <Grid item xs={12} sm={10}>
-                        <div style={{ marginBottom: '15px', backgroundColor: '#f4f6f8', padding: '15px', borderRadius: '5px' }}>
-                          <Typography variant="subtitle1" style={{ marginBottom: '10px' }}>Allowed File Types:</Typography>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                        <div className="dynamic-form-file-types-base">
+                          <Typography variant="subtitle1" className="dynamic-form-file-types-title">Allowed File Types:</Typography>
+                          <div className="dynamic-form-file-types-grid-base">
                             {['.jpg', '.jpeg', '.png', '.gif', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.txt'].map((fileType) => (
-                              <label key={fileType} style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                              <label key={fileType} className="dynamic-form-file-types-label-base">
                                 <input
                                   type="checkbox"
                                   checked={field.allowedFileTypes.includes(fileType)}
                                   onChange={() => handleFileTypeChange(fileType, null, field.id)}
-                                  style={{ marginRight: '5px' }}
+                                  className="dynamic-form-file-types-checkbox-base"
                                 />
                                 {fileType}
                               </label>
@@ -793,25 +728,19 @@ const DynamicForm = () => {
                     )}
                   </Grid>
                 ))}
+
                 {sections.map((section, index) => (
-                  <div key={section.id} style={{ marginBottom: "20px", border: "1px solid #ccc", borderRadius: "8px", padding: "10px" }} className="section-part">
-                    <div className="section-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 10px", backgroundColor: "#f4f6f8", borderRadius: "8px" }}>
+                  <div key={section.id} className="section-part dynamic-form-section-base">
+                    <div className="section-header dynamic-form-section-header-base">
                       {section.isEditingTitle ? (
-                        // Inline editing when isEditingTitle is true
                         <TextField
                           label="Section Title"
-                          value={section.title || `Section ${index + 1}`} // Default title if no custom title is provided
-                          onChange={(e) => handleSectionTitleChange(e, section.id)} // Updated function name
-                          // fullWidth
+                          value={section.title || `Section ${index + 1}`}
+                          onChange={(e) => handleSectionTitleChange(e, section.id)}
                           variant="outlined"
-                          style={{
-                            marginBottom: "15px",
-                            backgroundColor: "#f4f6f8",
-                            borderRadius: "5px",
-                          }}
+                          className="field-of-dynamic-from dynamic-form-section-title-base"
                         />
                       ) : (
-                        // Display the section title
                         <Typography variant="h6">
                           {section.title || `Section ${index + 1}`}
                         </Typography>
@@ -820,7 +749,7 @@ const DynamicForm = () => {
                         <Switch
                           checked={section.switchEnabled}
                           onChange={() => handleSwitchChange(section.id)}
-                          className='action-button'
+                          className='action-button switch-class'
                           color="primary"
                           title={section.switchEnabled ? "Hide Section" : "Show Section"}
                         />
@@ -844,17 +773,6 @@ const DynamicForm = () => {
                             {section.isOpen ? <FaChevronUp /> : <FaChevronDown />}
                           </IconButton>
                         </Tooltip>
-                        {/* <Tooltip title="Add Section">
-                          <IconButton
-                            aria-label="add-section"
-                            color="primary"
-                            className='action-button'
-                            onClick={handleAddSection}
-                            style={{ marginLeft: "10px" }}
-                          >
-                            <FaPlusCircle />
-                          </IconButton>
-                        </Tooltip> */}
                         <Tooltip title="Add New Section">
                           <IconButton
                             aria-label="add-section"
@@ -866,8 +784,6 @@ const DynamicForm = () => {
                           </IconButton>
                         </Tooltip>
 
-
-
                         {index !== 0 && (
                           <Tooltip title="Delete Section">
                             <IconButton
@@ -875,7 +791,6 @@ const DynamicForm = () => {
                               color="primary"
                               className="action-button"
                               onClick={() => handleRemoveSection(section.id)}
-                              style={{ marginLeft: "10px" }}
                             >
                               <MdDelete />
                             </IconButton>
@@ -885,51 +800,30 @@ const DynamicForm = () => {
                     </div>
 
                     <Collapse in={section.isOpen}>
-                      <div style={{ padding: "10px" }}>
-                        {/* <Tooltip title="Add New Field">
-                          <IconButton
-                            aria-label="add-field"
-                            color="primary"
-                            className='action-button'
-                            onClick={() => handleAddField(section.id)}
-                            style={{ marginRight: "10px" }}
-                          >
-                            <FaCirclePlus />
-                          </IconButton>
-                        </Tooltip> */}
-
+                      <div className="dynamic-form-section-content-base">
                         {section.fields.map((field, fieldIndex) => (
-                          <Grid container spacing={3} key={field.id} style={{ marginTop: "10px" }}>
+                          <Grid container spacing={3} key={field.id} className="dynamic-form-field-grid-base">
                             <Grid item xs={12} sm={5}>
                               <TextField
                                 label="Label"
                                 name="label"
-                                className="field-of-dynamic-from"
+                                className="field-of-dynamic-from dynamic-form-field-base"
                                 value={field.label}
                                 onChange={(e) => handleInputChange(e, section.id, field.id)}
                                 fullWidth
-                                style={{
-                                  marginBottom: "15px",
-                                  backgroundColor: "#f4f6f8",
-                                  borderRadius: "5px",
-                                }}
                               />
                             </Grid>
 
                             <Grid item xs={12} sm={5}>
-                              <FormControl fullWidth style={{ marginBottom: "15px" }}>
+                              <FormControl fullWidth className="dynamic-form-field-type-container-base">
                                 <InputLabel>Field Type</InputLabel>
                                 <Select
                                   label="Field Type"
                                   name="type"
-                                  className="field-of-dynamic-from"
+                                  className="field-of-dynamic-from dynamic-form-field-type-select-base"
                                   value={field.type}
                                   onChange={(e) => handleTypeChange(e, section.id, field.id)}
                                   fullWidth
-                                  style={{
-                                    backgroundColor: "#f4f6f8",
-                                    borderRadius: "5px",
-                                  }}
                                 >
                                   <MenuItem value="text">Text</MenuItem>
                                   <MenuItem value="file">File</MenuItem>
@@ -938,7 +832,6 @@ const DynamicForm = () => {
                                   <MenuItem value="checkbox">Checkbox</MenuItem>
                                   <MenuItem value="radio">Radio</MenuItem>
                                   <MenuItem value="date">Date</MenuItem>
-                                  {/* <MenuItem value="button">Button</MenuItem> */}
                                   <MenuItem value="email">Email</MenuItem>
                                   <MenuItem value="password">Password</MenuItem>
                                   <MenuItem value="url">Url</MenuItem>
@@ -947,7 +840,7 @@ const DynamicForm = () => {
                                   <MenuItem value="ckeditor">Text Area (with Editor)</MenuItem>
                                 </Select>
                               </FormControl>
-                               {(field.type === 'textarea') && (
+                              {(field.type === 'textarea') && (
                                 <TextField
                                   label="Max Char Limit"
                                   name="value"
@@ -959,17 +852,12 @@ const DynamicForm = () => {
                                     }
                                   }}
                                   fullWidth
-                                  style={{
-                                    marginTop: '15px',
-                                    backgroundColor: '#f4f6f8',
-                                    borderRadius: '5px'
-                                  }}
+                                  className="field-of-dynamic-from dynamic-form-max-char-base"
                                 />
                               )}
                             </Grid>
 
-                            {/* Required Checkbox */}
-                            <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
+                            <Grid item xs={12} sm={2} className="dynamic-form-required-checkbox-base">
                               <Tooltip title="Make this field required">
                                 <FormControl>
                                   <div className="checkbox-wrapper">
@@ -990,13 +878,11 @@ const DynamicForm = () => {
                                   color="primary"
                                   className="action-button add-new-field"
                                   onClick={() => handleAddField(section.id, field.id)}
-
                                 >
                                   <FaCirclePlus />
                                 </IconButton>
                               </Tooltip>
 
-                              {/* Conditionally render the Delete button for all fields except the first one */}
                               {fieldIndex !== 0 && (
                                 <Tooltip title="Delete Field">
                                   <IconButton
@@ -1010,34 +896,31 @@ const DynamicForm = () => {
                                 </Tooltip>
                               )}
                             </Grid>
+
                             {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
                               <Grid item xs={12} sm={10}>
                                 <TextField
                                   label={`${field.type.charAt(0).toUpperCase() + field.type.slice(1)} Options (comma-separated)`}
                                   value={field.options.join(',')}
-                                  className='field-of-dynamic-from'
+                                  className='field-of-dynamic-from dynamic-form-field-base'
                                   onChange={(e) => handleOptionChange(e, section.id, field.id)}
                                   fullWidth
-                                  style={{
-                                    marginBottom: '15px',
-                                    backgroundColor: '#f4f6f8',
-                                    borderRadius: '5px'
-                                  }}
                                 />
                               </Grid>
                             )}
+
                             {(field.type === 'file') && (
                               <Grid item xs={12} sm={10}>
-                                <div style={{ marginBottom: '15px', backgroundColor: '#f4f6f8', padding: '15px', borderRadius: '5px' }}>
-                                  <Typography variant="subtitle1" style={{ marginBottom: '10px' }}>Allowed File Types:</Typography>
-                                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                <div className="dynamic-form-file-types-base">
+                                  <Typography variant="subtitle1" className="dynamic-form-file-types-title">Allowed File Types:</Typography>
+                                  <div className="dynamic-form-file-types-grid-base">
                                     {['.jpg', '.jpeg', '.png', '.gif', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.txt'].map((fileType) => (
-                                      <label key={fileType} style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                                      <label key={fileType} className="dynamic-form-file-types-label-base">
                                         <input
                                           type="checkbox"
                                           checked={field.allowedFileTypes.includes(fileType)}
                                           onChange={() => handleFileTypeChange(fileType, section.id, field.id)}
-                                          style={{ marginRight: '5px' }}
+                                          className="dynamic-form-file-types-checkbox-base"
                                         />
                                         {fileType}
                                       </label>
@@ -1048,31 +931,19 @@ const DynamicForm = () => {
                             )}
                           </Grid>
                         ))}
-
                       </div>
                     </Collapse>
                   </div>
                 ))}
 
-                {/* <Tooltip title="Add Section">
-                  <IconButton
-                    aria-label="add-section"
-                    color="primary"
-                    className='action-button'
-                    onClick={handleAddSection}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    <FaPlusCircle />
-                  </IconButton>
-                </Tooltip> */}
-                <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
+                <Grid container justifyContent="flex-start" spacing={2} className="dynamic-form-action-buttons-container-base">
                   <Grid item>
-                    <Button variant="contained" className='submit-btn' color="primary" style={{ backgroundColor: "#2c9dd4" }} type="submit">
+                    <Button variant="contained" className='submit-btn' type="submit">
                       Submit
                     </Button>
                   </Grid>
                   <Grid item>
-                    <Button className='cancel-btn' style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
+                    <Button className='cancel-btn'
                       onClick={() => navigate('/dynamic-list-data')}>
                       Cancel
                     </Button>

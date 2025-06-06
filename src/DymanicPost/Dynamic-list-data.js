@@ -500,7 +500,7 @@ const DynamicList = () => {
                   onClick={() => handleEdit(params.row.id)}
                   color="primary"
                   className="action-button"
-                  style={{ margin: "1px" }}
+                  // style={{ margin: "1px" }}
                 >
                   <FaEdit />
                 </IconButton>
@@ -594,14 +594,7 @@ const DynamicList = () => {
     <>
       <Expired />
       <div className="col-md-12">
-        <div
-          className="row"
-          style={{
-            marginTop: "10px",
-            marginBottom: "20px",
-            marginLeft: "262px",
-          }}
-        >
+        <div className="row dynamic-list-main-row">
           <div className="card-header col-6 dynamic-post-section">
             <h5 className="title">Post</h5>
             <IconButton
@@ -641,12 +634,9 @@ const DynamicList = () => {
               onChange={handleSearch}
             />
           </div>
-          <div
-            className="card-body table-card-body"
-            style={{ height: "calc(115vh - 200px)", width: "100%" }}
-          >
-            <Container className="table-container" style={{ height: "100%" }}>
-              <div style={{ height: "100%" }}>
+          <div className="card-body table-card-body dynamic-list-card-body">
+            <Container className="table-container dynamic-list-container">
+              <div className="dynamic-list-inner">
                 <DataGrid
                   rows={filteredRows}
                   columns={columns}
@@ -676,14 +666,9 @@ const DynamicList = () => {
                     event.stopPropagation();
                   }}
                 />
-                {/* <div className="card-header col-3"> */}
                 <FormControl
                   fullWidth
-                  sx={{
-                    width: "20%",
-                    marginTop: "-44px",
-                    marginLeft: "10px",
-                  }}
+                  className="dynamic-list-action-filter"
                 >
                   <InputLabel>Action Filter</InputLabel>
                   <Select
@@ -721,7 +706,6 @@ const DynamicList = () => {
                     </MenuItem>
                   </Select>
                 </FormControl>
-                {/* </div> */}
               </div>
             </Container>
           </div>

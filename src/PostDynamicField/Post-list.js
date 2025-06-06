@@ -156,9 +156,9 @@ const PostDynamicList = () => {
                     const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
                     const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
                     return (
-                        <div style={{ whiteSpace: 'normal', }}>
+                        <div className="post-list-cell-content">
                             {isImage ? (
-                                <img src={value} alt={displayValue} style={{ width: '50%', height: 'auto' }} />
+                                <img src={value} alt={displayValue} className="post-list-image" />
                             ) : (
                                 <span className={`email-display-${safeValue}`}>
                                     {displayValue}
@@ -177,21 +177,21 @@ const PostDynamicList = () => {
                 if (statusFilter === 'deleted' && params.row.deleted_at === 1) {
                     return (
                         <Tooltip title="Restore">
-                            <IconButton aria-label="restore" color="primary" className="action-button" style={{ margin: '1px' }} onClick={() => handleRestore(params.row.id)}>
+                            <IconButton aria-label="restore" color="primary" className="action-button" onClick={() => handleRestore(params.row.id)}>
                                 <MdRestore />
                             </IconButton>
                         </Tooltip>
                     );
                 }
                 return (
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <div className="action-button-container">
                         <Tooltip title="Update">
-                            <IconButton aria-label="Update" className="action-button" onClick={() => handleEdit(params.row.id)} color="primary" style={{ margin: '1px' }}>
+                            <IconButton aria-label="Update" className="action-button" onClick={() => handleEdit(params.row.id)} color="primary">
                                 <FaEdit />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete">
-                            <IconButton aria-label="delete" color="primary" style={{ margin: '1px' }} className='action-button'>
+                            <IconButton aria-label="delete" color="primary" className="action-button">
                                 <MdDelete onClick={() => handleDelete1(params.row.id)} />
                             </IconButton>
                         </Tooltip>
@@ -217,7 +217,6 @@ const PostDynamicList = () => {
                                         Swal.fire('Success!', 'Active status changed successfully.', 'success');
                                     }
                                 }}
-                                style={{ margin: '1px' }}
                             />
                         </Tooltip>
                     </div>
@@ -639,7 +638,7 @@ const PostDynamicList = () => {
         <>
             <Expired />
             <div className="col-md-12">
-                <div className="row " style={{ marginLeft: '20%', width: '80%', marginBottom: '20px', marginTop: '1%' }}>
+                <div className="row post-list-layout">
                     <div className="card-header col-6 post-section">
                         <h5 className="title">{post_title}</h5>
                         <Link className="post-add-btn " title={`Add ${post_title}`} id="listing" to="/post-form" state={{ post_title }}>
@@ -671,10 +670,10 @@ const PostDynamicList = () => {
                             onChange={handleSearch}
                         />
                     </div>
-                    <div className="card-body table-card-body" style={{ height: 'calc(115vh - 200px)', width: '80%' }}>
-                        <Container className="table-container" style={{ height: '100%' }}>
-                            <div style={{ width: '100%', marginBottom: "45px" }}>
-                                <div style={{ width: '100%', height: '500px', overflowY: 'hidden' }}>
+                    <div className="card-body table-card-body post-list-table-body">
+                        <Container className="table-container post-list-table-container">
+                            <div className="post-list-table-wrapper">
+                                <div className="post-list-table-inner">
                                     <DataGrid
                                         rows={filteredRows}
                                         columns={dynamicColumns}
@@ -684,24 +683,7 @@ const PostDynamicList = () => {
                                         autoHeight={false}
                                         onPageChange={(newPage) => setPage(newPage)}
                                         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                                        sx={{
-                                            height: '100%',
-                                            overflow: 'hidden',
-                                            '& .MuiDataGrid-columnHeaders': {
-                                                backgroundColor: '#113b4f',
-                                                color: 'white',
-                                            },
-                                            '& .MuiDataGrid-cell': {
-                                                padding: '10px',
-                                                borderBottom: '1px solid #e0e0e0',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                                whiteSpace: 'nowrap',
-                                            },
-                                            '& .MuiDataGrid-row:hover': {
-                                                backgroundColor: '#f5f5f5',
-                                            },
-                                        }}
+                                        className="post-list-datagrid"
                                         selectionModel={selectedRows}
                                         onSelectionModelChange={handleSelectionChange}
                                         onCellClick={(params, event) => {
@@ -714,11 +696,7 @@ const PostDynamicList = () => {
                                     <div className="card-header col-3 action-filter-div">
                                         <FormControl
                                             fullWidth
-                                            sx={{
-                                                maxWidth: "100%",
-                                                marginTop: "-60px",
-                                                marginBottom: "46px",
-                                            }}
+                                            className="post-list-action-filter"
                                         >
                                             <InputLabel>Action Filter</InputLabel>
                                             <Select

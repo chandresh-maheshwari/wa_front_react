@@ -262,23 +262,22 @@
 
 /* .css-180cd0o-MuiGrid-root .css-sghohy-MuiButtonBase-root-MuiButton-root { */
 .submit-btn {
-  background-color: #48AD3B !important;
-  /* background-image: linear-gradient(to right, #48AD3B 0%, #48AD3B 100%); */
+  background-color: #48ad3b !important;
   background-repeat: repeat-x !important;
   border-width: 0 !important;
-  color: #fff !important;
   border-radius: 10px !important;
+  color: #fff !important;
+  padding: .594rem .75rem !important;
   text-transform: capitalize !important;
-  padding: 0.594rem 0.75rem !important;
 }
 
 /* .css-1e6y48t-MuiButtonBase-root-MuiButton-root { */
 .cancel-btn {
   border-radius: 10px !important;
   color: #fff !important;
-  background-color: #87888a !important;
-  padding: 0.594rem 0.75rem !important;
+  padding: .594rem .75rem !important;
   text-transform: capitalize !important;
+  background-color: #87888a !important;
 }
 
 
@@ -464,10 +463,10 @@
   margin-left: 1rem !important;
 }
 
-.dynamic-post-add-btn {
+/* .dynamic-post-add-btn {
   margin-top: 6px !important;
   margin-left: 2px !important;
-}
+} */
 
 /* Added On 21-01-25 START */
 
@@ -761,7 +760,10 @@ td {
 }
 
 .action-filter-div {
-  background-color: #ffffff;
+  position: relative;
+  /* width: 100%; */
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .page-add-btn svg,
@@ -962,4 +964,845 @@ td {
 
 .css-1wc848c-MuiFormHelperText-root{
   margin-left: 0px !important;
+}
+
+/* =========================================
+   EXTERNAL CSS - DYNAMIC LIST COMPONENT
+   ========================================= */
+
+/* Main Layout */
+.dynamic-list-main-row {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  margin-left: 262px;
+}
+
+.dynamic-list-card-body {
+  height: calc(115vh - 200px);
+  width: 100%;
+}
+
+.dynamic-list-container {
+  height: 100%;
+}
+
+.dynamic-list-inner {
+  height: 100%;
+}
+
+.dynamic-list-action-filter {
+  width: 20% !important;
+  margin-top: -44px !important;
+  margin-left: 10px !important;
+}
+
+/* DataGrid specific styles */
+.dynamic-list-container .MuiDataGrid-columnHeaders {
+  background-color: #113b4f;
+  color: white;
+}
+
+/* Action buttons styling */
+.dynamic-list-container .action-button {
+  color: #113B4F !important;
+}
+
+.dynamic-list-container .switch-class span .MuiSwitch-thumb {
+  background-color: #113B4F !important;
+}
+
+/* Form control styling */
+.dynamic-list-container .filter_dropdown_of_main_page div {
+  padding: 6.5px 14px !important;
+}
+
+/* Add button styling */
+.dynamic-post-add-btn {
+  margin-top: 6px !important;
+  margin-left: 2px !important;
+}
+
+.dynamic-post-add-btn svg {
+  background-color: rgb(15, 50, 67);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 22px;
+}
+
+/* Table container styling */
+.dynamic-list-container .table-card-body {
+  padding: 1rem 0rem 1rem 0rem !important;
+}
+
+.dynamic-list-container .table-container {
+  padding: 1rem 0rem 1rem 0rem !important;
+  max-width: 100%;
+}
+
+/* Cell alignment */
+.dynamic-list-container .MuiDataGrid-cell {
+  justify-content: center !important;
+}
+
+.dynamic-list-container .MuiDataGrid-columnHeaderTitleContainer {
+  justify-content: center;
+}
+
+/* Container max width */
+.dynamic-list-container .MuiContainer-root {
+  max-width: 100% !important;
+}
+
+/* Disabled action button */
+.dynamic-list-container .action-button[disabled] {
+  opacity: 0.5 !important;
+}
+
+/* Dynamic Form Container Styles */
+.dynamic-form-container {
+  margin-left: 22%;
+  width: 75%;
+  margin-bottom: 20px;
+}
+
+/* Form Field Styles */
+.dynamic-form-field {
+  margin-bottom: 15px;
+  background-color: #f4f6f8;
+  border-radius: 5px;
+}
+
+/* Section Styles */
+.dynamic-form-section {
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.dynamic-form-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #f4f6f8;
+  border-radius: 8px;
+}
+
+.dynamic-form-section-content {
+  padding: 10px;
+}
+
+/* Field Grid Styles */
+.dynamic-form-field-grid {
+  margin-top: 10px;
+}
+
+/* File Type Container Styles */
+.dynamic-form-file-types {
+  margin-bottom: 15px;
+  background-color: #f4f6f8;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.dynamic-form-file-types-label {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.dynamic-form-file-types-checkbox {
+  margin-right: 5px;
+}
+
+/* Button Styles */
+.dynamic-form-submit-btn {
+  background-color: #2c9dd4 !important;
+}
+
+.dynamic-form-cancel-btn {
+  background-color: rgb(212 44 42) !important;
+  color: white !important;
+  margin-left: -10px;
+}
+
+/* Action Button Container */
+.dynamic-form-action-buttons {
+  margin-bottom: 40px;
+}
+
+/* Field Type Container */
+.dynamic-form-field-type-container {
+  margin-bottom: 15px;
+}
+
+/* Required Checkbox Wrapper */
+.dynamic-form-required-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+/* File Types Grid */
+.dynamic-form-file-types-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Section Title Styles */
+.dynamic-form-section-title {
+  margin-bottom: 15px;
+  background-color: #f4f6f8;
+  border-radius: 5px;
+}
+
+/* Form Control Styles */
+.dynamic-form-control {
+  margin-top: 15px;
+}
+
+/* Field Type Select Styles */
+.dynamic-form-field-type-select {
+  background-color: #f4f6f8;
+  border-radius: 5px;
+}
+
+/* Max Char Limit Field */
+.dynamic-form-max-char {
+  margin-top: 15px;
+  background-color: #f4f6f8;
+  border-radius: 5px;
+}
+
+/* Action Buttons Container */
+.dynamic-form-action-buttons-container {
+  margin-top: 3;
+}
+
+/* Form Title Styles */
+.dynamic-form-title {
+  text-align: center;
+}
+
+/* Form Container */
+.dynamic-form-main-container {
+  margin-top: 4;
+}
+
+/* Dynamic Form Additional Styles */
+.dynamic-form-wrapper {
+  margin-left: 22%;
+  width: 75%;
+  margin-bottom: 20px;
+}
+
+.dynamic-form-field-base {
+  margin-bottom: 15px;
+  background-color: rgb(244, 246, 248);
+  border-radius: 5px;
+}
+
+.dynamic-form-section-base {
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.dynamic-form-section-header-base {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: rgb(244, 246, 248);
+  border-radius: 8px;
+}
+
+.dynamic-form-section-content-base {
+  padding: 10px;
+}
+
+.dynamic-form-field-grid-base {
+  margin-top: 10px;
+}
+
+.dynamic-form-file-types-base {
+  margin-bottom: 15px;
+  background-color: rgb(244, 246, 248);
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.dynamic-form-file-types-grid-base {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dynamic-form-file-types-label-base {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.dynamic-form-file-types-checkbox-base {
+  margin-right: 5px;
+}
+
+.dynamic-form-action-buttons-base {
+  margin-bottom: 40px;
+}
+
+.dynamic-form-field-type-container-base {
+  margin-bottom: 15px;
+}
+
+.dynamic-form-required-checkbox-base {
+  display: flex;
+  align-items: center;
+}
+
+.dynamic-form-section-title-base {
+  margin-bottom: 15px;
+  background-color: rgb(244, 246, 248);
+  border-radius: 5px;
+}
+
+.dynamic-form-control-base {
+  margin-top: 15px;
+}
+
+.dynamic-form-field-type-select-base {
+  background-color: rgb(244, 246, 248);
+  border-radius: 5px;
+}
+
+.dynamic-form-max-char-base {
+  margin-top: 15px;
+  background-color: rgb(244, 246, 248);
+  border-radius: 5px;
+}
+
+.dynamic-form-action-buttons-container-base {
+  margin-top: 3;
+}
+
+.dynamic-form-title-base {
+  text-align: center;
+}
+
+.dynamic-form-main-container-base {
+  margin-top: 4;
+}
+
+.dynamic-form-file-types-title {
+  margin-bottom: 10px;
+}
+
+/* Dynamic Edit Form Specific Styles */
+.dynamic-edit-form-container {
+  margin-left: 22%;
+  width: 75%;
+  margin-bottom: 20px;
+}
+
+.dynamic-edit-form-field {
+  margin-bottom: 15px;
+  /* background-color: #f4f6f8; */
+  border-radius: 5px;
+}
+
+.dynamic-edit-form-section {
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.dynamic-edit-form-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: #f4f6f8;
+  border-radius: 8px;
+}
+
+.dynamic-edit-form-section-content {
+  padding: 10px;
+}
+
+.dynamic-edit-form-field-grid {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.dynamic-edit-form-file-types {
+  margin-bottom: 15px;
+  background-color: #f4f6f8;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.dynamic-edit-form-file-types-label {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+
+.dynamic-edit-form-file-types-checkbox {
+  margin-right: 5px;
+}
+
+.dynamic-edit-form-action-buttons {
+  margin-bottom: 40px;
+}
+
+.dynamic-edit-form-field-type-container {
+  margin-bottom: 15px;
+}
+
+.dynamic-edit-form-required-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.dynamic-edit-form-section-title {
+  width: 200px;
+  margin-right: 10px;
+}
+
+.dynamic-edit-form-file-types-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dynamic-edit-form-control {
+  margin-top: 15px;
+}
+
+.dynamic-edit-form-field-type-select {
+  /* background-color: #f4f6f8; */
+  border-radius: 5px;
+}
+
+.dynamic-edit-form-max-char {
+  margin-top: 15px;
+  background-color: #f4f6f8;
+  border-radius: 5px;
+}
+
+.dynamic-edit-form-action-buttons-container {
+  margin-top: 3;
+}
+
+.dynamic-edit-form-title {
+  text-align: center;
+}
+
+.dynamic-edit-form-main-container {
+  margin-top: 4;
+}
+
+/* Additional Dynamic Edit Form Styles */
+.dynamic-edit-form-alert {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.dynamic-edit-form-button-disabled {
+  opacity: 0.5 !important;
+}
+
+.dynamic-edit-form-button-enabled {
+  opacity: 1 !important;
+}
+
+.dynamic-edit-form-section-title-text {
+  margin: 0;
+}
+
+.dynamic-edit-form-delete-section-button {
+  margin-left: 10px;
+}
+
+/* Dynamic Edit Form Button Styles */
+.dynamic-edit-form-button-disabled {
+  opacity: 0.5 !important;
+}
+
+.dynamic-edit-form-button-enabled {
+  opacity: 1 !important;
+}
+
+.action-button {
+  color: #113B4F !important;
+}
+
+.action-button.add-new-field,
+.action-button.delete-field {
+  margin-top: -15% !important;
+}
+
+/* Post List Component Styles */
+.post-list-main-container {
+    margin-left: 20%;
+    width: 80%;
+    margin-bottom: 20px;
+    margin-top: 1%;
+}
+
+.post-list-table-wrapper {
+    height: calc(115vh - 200px);
+    width: 80%;
+}
+
+.post-list-table-inner {
+    width: 100%;
+    margin-bottom: 45px;
+}
+
+.post-list-datagrid-container {
+    width: 100%;
+    height: 500px;
+    overflow-y: hidden;
+}
+
+.post-list-action-filter-container {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.post-list-action-filter-container .MuiFormControl-root {
+    width: 100%;
+}
+
+.post-list-action-filter-container .MuiInputBase-root {
+    width: 100%;
+}
+
+.post-list-action-filter-container .MuiSelect-select {
+    width: 100%;
+}
+
+.post-list-cell-content {
+    white-space: normal;
+}
+
+.post-list-image {
+    width: 50%;
+    height: auto;
+}
+
+.post-list-action-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.post-list-action-button {
+    margin: 1px;
+}
+
+/* Styles added by AI to position the action filter in Post-list.js footer */
+
+/* Make the inner container a flex container with column direction */
+.post-list-table-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Ensure the container has a defined height */
+  /* You might need to adjust width or other properties here based on your overall layout */
+}
+
+/* Style the DataGrid to take up available vertical space */
+.post-list-table-inner .MuiDataGrid-root {
+  flex-grow: 1; /* Allow DataGrid to grow and push footer down */
+  /* Ensure DataGrid doesn't have fixed height that prevents flex-grow */
+  height: auto; /* Or remove any conflicting fixed height */
+}
+
+/* Style the action filter container to align it in the footer area */
+.post-list-action-filter-container.action-filter-div {
+  /* Remove original margins that push it below */
+  margin-top: 0;
+  margin-bottom: 0;
+
+  /* Use flex properties to position it to the right */
+  display: flex;
+  justify-content: flex-end; /* Align content to the right */
+  align-items: center; /* Vertically center content */
+  width: auto; /* Allow width to be determined by content or min-width */
+
+  /* Add margin-left: auto to push it to the far right, next to pagination */
+  margin-left: auto;
+  margin-right: 16px; /* Add some space from the right edge, adjust as needed */
+
+  /* You might need to adjust vertical alignment further with padding or align-self */
+  padding-top: 8px; /* Add some padding at the top to align with pagination */
+  padding-bottom: 8px; /* Add some padding at the bottom */
+}
+
+/* Ensure the FormControl inside the action filter container doesn't take full width */
+.post-list-action-filter-container.action-filter-div .MuiFormControl-root {
+    width: auto; /* Or set a specific width like min-width */
+    min-width: 200px; /* Example min-width, adjust as needed */
+}
+
+/* Adjust padding for the table container if needed */
+.table-container {
+    padding-bottom: 0 !important; /* Remove bottom padding to bring footer content closer */
+}
+
+/* Add padding back to the card body if removed from table-container */
+.table-card-body {
+    padding-bottom: 1rem !important; /* Ensure there's padding below the table */
+}
+
+/* Post List Layout Styles */
+.post-list-layout {
+    margin-left: 20%;
+    width: 80%;
+    margin-bottom: 20px;
+    margin-top: 1%;
+}
+
+.post-list-table-body {
+    height: calc(115vh - 200px);
+    width: 80%;
+}
+
+.post-list-table-container {
+    height: 100%;
+}
+
+.post-list-table-wrapper {
+    width: 100%;
+    margin-bottom: 45px;
+}
+
+.post-list-table-inner {
+    width: 100%;
+    height: 500px;
+    overflow-y: hidden;
+}
+
+.post-list-action-filter {
+    max-width: 100%;
+    margin-top: -60px;
+    margin-bottom: 46px;
+}
+
+/* DataGrid Custom Styles */
+.post-list-datagrid {
+    height: 100%;
+    overflow: hidden;
+}
+
+.post-list-datagrid .MuiDataGrid-columnHeaders {
+    background-color: #113b4f;
+    color: white;
+}
+
+.post-list-datagrid .MuiDataGrid-cell {
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.post-list-datagrid .MuiDataGrid-row:hover {
+    background-color: #f5f5f5;
+}
+
+/* Action Button Styles */
+.action-button {
+    margin: 1px !important;
+}
+
+.action-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Post List Image Styles */
+.post-list-image {
+    width: 50%;
+    height: auto;
+}
+.action-filter-div{
+  margin: -60px 0px 46px;
+  background-color: transparent;
+}
+
+/* Post Form Dynamic Styles */
+.post-form-container {
+    margin-left: 20%;
+    width: 80%;
+    margin-bottom: 20px;
+    margin-top: 1%;
+}
+
+.post-form-title {
+    background-color: #f4f6f8;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.post-form-section {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.post-form-color-input {
+    width: 100%;
+    margin-right: 10px;
+}
+
+.post-form-color-picker {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border: none;
+    margin-left: -60px;
+    margin-top: -17px;
+}
+
+.post-form-error-text {
+    color: #d32f2f;
+    margin-top: 4px;
+}
+
+.post-form-submit-btn {
+    background-color: #2c9dd4;
+}
+
+.post-form-cancel-btn {
+    background-color: rgb(212 44 42);
+    color: white;
+    margin-left: -10px;
+}
+
+.post-form-ckeditor-label {
+    margin-bottom: 8px;
+}
+
+/* Additional Post Form Dynamic Styles */
+.post-form-flex-container {
+    display: flex;
+    align-items: center;
+}
+
+.post-form-full-width {
+    width: 100%;
+}
+
+.post-form-grid-margin {
+    margin-top: 10px !important;
+}
+
+.post-form-red-asterisk {
+    color: red;
+}
+
+/* Post Edit Form Styles */
+.post-edit-main-container {
+  margin-left: 20%;
+  width: 80%;
+  margin-bottom: 20px;
+  margin-top: 1%;
+}
+
+.post-edit-section-wrapper {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.post-edit-section-header {
+  background-color: #f4f6f8;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.post-edit-color-input-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.post-edit-color-input-field {
+  width: 100%;
+  margin-right: 10px;
+}
+
+.post-edit-color-picker {
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border: none;
+  margin-left: -60px;
+  margin-top: -17px;
+}
+
+.post-edit-file-preview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.post-edit-file-name {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.post-edit-file-preview-row {
+  display: flex;
+  align-items: center;
+}
+
+.post-edit-file-preview-image {
+  width: 100px;
+  margin-right: 10px;
+}
+
+.post-edit-form-actions {
+  margin-top: 24px;
+}
+
+.post-edit-file-actions {
+  display: flex;
+  align-items: center;
+}
+
+.post-edit-old-file-label {
+  margin-right: 10px;
+}
+
+.post-edit-delete-button {
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+.post-edit-delete-icon {
+  font-size: 24px;
+}
+
+.post-edit-required-asterisk {
+  color: red;
+}
+
+.post-edit-ckeditor-container {
+  width: 100%;
+}
+
+.post-edit-ckeditor-label {
+  margin-bottom: 8px;
 }

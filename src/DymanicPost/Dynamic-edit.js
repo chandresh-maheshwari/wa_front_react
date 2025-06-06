@@ -456,14 +456,14 @@ const DynamicEditForm = ({ existingData }) => {
         <>
             <Expired />
             <div className="col-md-12">
-                <div className="row mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
+                <div className="row mt-4 dynamic-edit-form-container">
                     {buttonsDisabled && (
-                        <Alert severity="info" sx={{ width: '100%', marginBottom: '20px' }}>
+                        <Alert severity="info" className="dynamic-edit-form-alert">
                             This form's add/delete buttons are disabled because posts have already been created using this form structure. To maintain data consistency, structural modifications are not allowed.
                         </Alert>
                     )}
                     <div className="card-header Form-main-title">
-                        <Typography variant="h6" className="title" align="center">Update Dynamic Post</Typography>
+                        <Typography variant="h6" className="dynamic-edit-form-title" align="center">Update Dynamic Post</Typography>
                     </div>
                     <div className="card-body">
                         <Container>
@@ -473,27 +473,21 @@ const DynamicEditForm = ({ existingData }) => {
                                         <TextField
                                             label="Post Title"
                                             name="post_title"
-                                            className='field-of-dynamic-from'
+                                            className='dynamic-edit-form-field'
                                             fullWidth
                                             value={formData.post_title}
                                             onChange={handleFormDataChange}
-                                            style={{
-                                                marginBottom: '15px',
-                                                backgroundColor: '#f4f6f8',
-                                                borderRadius: '5px'
-                                            }}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Ordering"
                                             name="ordering"
-                                            className="field-of-dynamic-from"
+                                            className="dynamic-edit-form-field"
                                             fullWidth
                                             value={formData.ordering}
                                             onChange={(e) => {
                                                 const value = e.target.value;
-                                                // Allow only positive numbers or empty string
                                                 if (value === '' || /^[+]?\d+(\.\d+)?$/.test(value)) {
                                                     handleFormDataChange(e);
                                                 }
@@ -501,19 +495,15 @@ const DynamicEditForm = ({ existingData }) => {
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <FormControl fullWidth style={{ marginTop: '15px' }}>
+                                        <FormControl fullWidth className="dynamic-edit-form-control">
                                             <InputLabel>Post Type</InputLabel>
                                             <Select
                                                 label="Post Type"
-                                                className='dropdown-css-change field-of-dynamic-from'
+                                                className='dynamic-edit-form-field-type-select'
                                                 name="post_type"
                                                 value={formData.post_type}
                                                 onChange={handleFormDataChange}
                                                 fullWidth
-                                                style={{
-                                                    backgroundColor: '#f4f6f8',
-                                                    borderRadius: '5px'
-                                                }}
                                             >
                                                 <MenuItem value="custom_post">Custom Post</MenuItem>
                                                 <MenuItem value="normal_post">Normal Post</MenuItem>
@@ -522,16 +512,15 @@ const DynamicEditForm = ({ existingData }) => {
                                     </Grid>
                                 </Grid>
 
-                                <Grid container justifyContent="flex-end" style={{ marginBottom: "40px" }}>
+                                <Grid container justifyContent="flex-end" className="dynamic-edit-form-action-buttons">
                                     <Grid item>
                                         <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Add New Field"}>
                                             <span>
                                                 <IconButton
                                                     aria-label="add-new-field"
                                                     color="primary"
-                                                    className='action-button'
+                                                    className={`action-button ${buttonsDisabled ? 'dynamic-edit-form-button-disabled' : 'dynamic-edit-form-button-enabled'}`}
                                                     onClick={handleAddStandaloneField}
-                                                    style={{ marginBottom: "15px", opacity: buttonsDisabled ? 0.5 : 1 }}
                                                     disabled={buttonsDisabled}
                                                 >
                                                     <FaCirclePlus />
@@ -541,7 +530,7 @@ const DynamicEditForm = ({ existingData }) => {
                                     </Grid>
                                 </Grid>
                                 {standaloneFields.map((field) => (
-                                    <Grid container spacing={3} key={field.id} style={{ marginTop: "10px", marginBottom: "20px" }}>
+                                    <Grid container spacing={3} key={field.id} className="dynamic-edit-form-field-grid">
                                         <Grid item xs={12} sm={5}>
                                             <TextField
                                                 label="Label"
@@ -554,16 +543,12 @@ const DynamicEditForm = ({ existingData }) => {
                                                     );
                                                 }}
                                                 fullWidth
-                                                style={{
-                                                    marginBottom: "15px",
-                                                    backgroundColor: "#f4f6f8",
-                                                    borderRadius: "5px",
-                                                }}
+                                                className="dynamic-edit-form-field"
                                             />
                                         </Grid>
 
                                         <Grid item xs={12} sm={5}>
-                                            <FormControl fullWidth style={{ marginBottom: "15px" }}>
+                                            <FormControl fullWidth className="dynamic-edit-form-field-type-container">
                                                 <InputLabel>Field Type</InputLabel>
                                                 <Select
                                                     label="Field Type"
@@ -576,10 +561,7 @@ const DynamicEditForm = ({ existingData }) => {
                                                         );
                                                     }}
                                                     fullWidth
-                                                    style={{
-                                                        backgroundColor: "#f4f6f8",
-                                                        borderRadius: "5px",
-                                                    }}
+                                                    className="dynamic-edit-form-field-type-select"
                                                 >
                                                     <MenuItem value="text">Text</MenuItem>
                                                     <MenuItem value="file">File</MenuItem>
@@ -594,7 +576,6 @@ const DynamicEditForm = ({ existingData }) => {
                                                     <MenuItem value="dropdown">Dropdown</MenuItem>
                                                     <MenuItem value="color">Color</MenuItem>
                                                     <MenuItem value="ckeditor">Text Area (with Editor)</MenuItem>
-
                                                 </Select>
                                             </FormControl>
                                             {(field.type === 'textarea') && (
@@ -611,17 +592,12 @@ const DynamicEditForm = ({ existingData }) => {
                                                         }
                                                     }}
                                                     fullWidth
-                                                    style={{
-                                                        marginTop: '15px',
-                                                        backgroundColor: '#f4f6f8',
-                                                        borderRadius: '5px'
-                                                    }}
+                                                    className="dynamic-edit-form-max-char"
                                                 />
                                             )}
                                         </Grid>
 
-                                        {/* Required Checkbox */}
-                                        <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
+                                        <Grid item xs={12} sm={2} className="dynamic-edit-form-required-checkbox">
                                             <Tooltip title="Make this field required">
                                                 <FormControl>
                                                     <div className="checkbox-wrapper">
@@ -637,32 +613,26 @@ const DynamicEditForm = ({ existingData }) => {
                                                 </FormControl>
                                             </Tooltip>
                                             <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Add New Field"}>
-                                                {/* <span> */}
                                                 <IconButton
                                                     aria-label="add-field"
                                                     color="primary"
-                                                    className='action-button add-new-field'
+                                                    className={`action-button ${buttonsDisabled ? 'dynamic-edit-form-button-disabled' : 'dynamic-edit-form-button-enabled'}`}
                                                     onClick={() => handleAddFieldAfter(field.id)}
-                                                    style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
                                                     disabled={buttonsDisabled}
                                                 >
                                                     <FaCirclePlus />
                                                 </IconButton>
-                                                {/* </span> */}
                                             </Tooltip>
                                             <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Delete Field"}>
-                                                {/* <span> */}
                                                 <IconButton
                                                     aria-label="delete-field"
                                                     color="primary"
-                                                    className='action-button delete-field'
+                                                    className={`action-button ${buttonsDisabled ? 'dynamic-edit-form-button-disabled' : 'dynamic-edit-form-button-enabled'}`}
                                                     onClick={() => handleRemoveField(null, field.id)}
-                                                    style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
                                                     disabled={buttonsDisabled}
                                                 >
                                                     <MdDelete />
                                                 </IconButton>
-                                                {/* </span> */}
                                             </Tooltip>
                                         </Grid>
                                         {(field.type === 'dropdown' || field.type === 'checkbox' || field.type === 'radio') && (
@@ -670,29 +640,24 @@ const DynamicEditForm = ({ existingData }) => {
                                                 <TextField
                                                     label={`${field.type.charAt(0).toUpperCase() + field.type.slice(1)} Options (comma-separated)`}
                                                     value={field.options.join(',')}
-                                                    className='field-of-dynamic-from'
+                                                    className='dynamic-edit-form-field'
                                                     onChange={(e) => handleOptionChange(e, null, field.id)}
                                                     fullWidth
-                                                    style={{
-                                                        marginBottom: '15px',
-                                                        backgroundColor: '#f4f6f8',
-                                                        borderRadius: '5px'
-                                                    }}
                                                 />
                                             </Grid>
                                         )}
                                         {(field.type === 'file') && (
                                             <Grid item xs={12} sm={10}>
-                                                <div style={{ marginBottom: '15px', backgroundColor: '#f4f6f8', padding: '15px', borderRadius: '5px' }}>
-                                                    <Typography variant="subtitle1" style={{ marginBottom: '10px' }}>Allowed File Types:</Typography>
-                                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                                <div className="dynamic-edit-form-file-types">
+                                                    <Typography variant="subtitle1" className="dynamic-edit-form-file-types-title">Allowed File Types:</Typography>
+                                                    <div className="dynamic-edit-form-file-types-grid">
                                                         {['.jpg', '.jpeg', '.png', '.gif', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.txt'].map((fileType) => (
-                                                            <label key={fileType} style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                                                            <label key={fileType} className="dynamic-edit-form-file-types-label">
                                                                 <input
                                                                     type="checkbox"
                                                                     checked={field.allowedFileTypes?.includes(fileType)}
                                                                     onChange={() => handleFileTypeChange(fileType, null, field.id)}
-                                                                    style={{ marginRight: '5px' }}
+                                                                    className="dynamic-edit-form-file-types-checkbox"
                                                                 />
                                                                 {fileType}
                                                             </label>
@@ -704,17 +669,17 @@ const DynamicEditForm = ({ existingData }) => {
                                     </Grid>
                                 ))}
                                 {sections.map((section, index) => (
-                                    <div key={section.id} style={{ marginBottom: "20px", border: "1px solid #ccc", borderRadius: "8px", padding: "10px" }} className="section-part">
-                                        <div className="section-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 10px", backgroundColor: "#f4f6f8", borderRadius: "8px" }}>
+                                    <div key={section.id} className="dynamic-edit-form-section">
+                                        <div className="dynamic-edit-form-section-header">
                                             {section.isEditing ? (
                                                 <TextField
                                                     label="Section Title"
                                                     value={section.title}
                                                     onChange={(e) => handleTitleChange(e, section.id)}
-                                                    style={{ width: "200px", marginRight: "10px" }}
+                                                    className="dynamic-edit-form-section-title"
                                                 />
                                             ) : (
-                                                <Typography variant="h6" style={{ margin: "0" }}>{section.title}</Typography>
+                                                <Typography variant="h6" className="dynamic-edit-form-section-title-text">{section.title}</Typography>
                                             )}
                                             <div>
                                                 <Switch
@@ -749,12 +714,11 @@ const DynamicEditForm = ({ existingData }) => {
                                                         <IconButton
                                                             aria-label="add-section"
                                                             color="primary"
-                                                            className='action-button'
+                                                            className={`action-button ${buttonsDisabled ? 'dynamic-edit-form-button-disabled' : 'dynamic-edit-form-button-enabled'}`}
                                                             onClick={() => handleAddSection(section.id)}
-                                                            style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
                                                             disabled={buttonsDisabled}
                                                         >
-                                                            <FaPlusCircle />
+                                                            <FaCirclePlus />
                                                         </IconButton>
                                                     </span>
                                                 </Tooltip>
@@ -764,9 +728,8 @@ const DynamicEditForm = ({ existingData }) => {
                                                             <IconButton
                                                                 aria-label="delete-section"
                                                                 color="primary"
-                                                                className="action-button"
+                                                                className={`action-button ${buttonsDisabled ? 'dynamic-edit-form-button-disabled' : 'dynamic-edit-form-button-enabled'}`}
                                                                 onClick={() => handleRemoveSection(section.id)}
-                                                                style={{ marginLeft: "10px", opacity: buttonsDisabled ? 0.5 : 1 }}
                                                                 disabled={buttonsDisabled}
                                                             >
                                                                 <MdDelete />
@@ -778,39 +741,30 @@ const DynamicEditForm = ({ existingData }) => {
                                         </div>
 
                                         <Collapse in={section.isOpen}>
-                                            <div style={{ padding: "10px" }}>
+                                            <div className="dynamic-edit-form-section-content">
                                                 {section.fields.map((field, fieldIndex) => (
-                                                    <Grid container spacing={3} key={field.id} style={{ marginTop: "10px" }}>
+                                                    <Grid container spacing={3} key={field.id} className="dynamic-edit-form-field-grid">
                                                         <Grid item xs={12} sm={5}>
                                                             <TextField
                                                                 label="Label"
                                                                 name="label"
-                                                                className="field-of-dynamic-from"
+                                                                className="dynamic-edit-form-field"
                                                                 value={field.label}
                                                                 onChange={(e) => handleInputChange(e, section.id, field.id)}
                                                                 fullWidth
-                                                                style={{
-                                                                    marginBottom: "15px",
-                                                                    backgroundColor: "#f4f6f8",
-                                                                    borderRadius: "5px",
-                                                                }}
                                                             />
                                                         </Grid>
 
                                                         <Grid item xs={12} sm={5}>
-                                                            <FormControl fullWidth style={{ marginBottom: "15px" }}>
+                                                            <FormControl fullWidth className="dynamic-edit-form-field-type-container">
                                                                 <InputLabel>Field Type</InputLabel>
                                                                 <Select
                                                                     label="Field Type"
                                                                     name="type"
-                                                                    className="field-of-dynamic-from"
+                                                                    className="dynamic-edit-form-field-type-select"
                                                                     value={field.type}
                                                                     onChange={(e) => handleTypeChange(e, section.id, field.id)}
                                                                     fullWidth
-                                                                    style={{
-                                                                        backgroundColor: "#f4f6f8",
-                                                                        borderRadius: "5px",
-                                                                    }}
                                                                 >
                                                                     <MenuItem value="text">Text</MenuItem>
                                                                     <MenuItem value="file">File</MenuItem>
@@ -825,7 +779,6 @@ const DynamicEditForm = ({ existingData }) => {
                                                                     <MenuItem value="dropdown">Dropdown</MenuItem>
                                                                     <MenuItem value="color">Color</MenuItem>
                                                                     <MenuItem value="ckeditor">Text Area (with Editor)</MenuItem>
-
                                                                 </Select>
                                                             </FormControl>
                                                             {(field.type === 'textarea') && (
@@ -840,17 +793,12 @@ const DynamicEditForm = ({ existingData }) => {
                                                                         }
                                                                     }}
                                                                     fullWidth
-                                                                    style={{
-                                                                        marginTop: '15px',
-                                                                        backgroundColor: '#f4f6f8',
-                                                                        borderRadius: '5px'
-                                                                    }}
+                                                                    className="dynamic-edit-form-max-char"
                                                                 />
                                                             )}
                                                         </Grid>
 
-                                                        {/* Required Checkbox */}
-                                                        <Grid item xs={12} sm={2} style={{ display: "flex", alignItems: "center" }}>
+                                                        <Grid item xs={12} sm={2} className="dynamic-edit-form-required-checkbox">
                                                             <Tooltip title="Make this field required">
                                                                 <FormControl>
                                                                     <div className="checkbox-wrapper">
@@ -866,33 +814,27 @@ const DynamicEditForm = ({ existingData }) => {
                                                                 </FormControl>
                                                             </Tooltip>
                                                             <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Add New Field"}>
-                                                                {/* <span> */}
                                                                 <IconButton
                                                                     aria-label="add-field"
                                                                     color="primary"
-                                                                    className="action-button add-new-field"
+                                                                    className={`action-button ${buttonsDisabled ? 'dynamic-edit-form-button-disabled' : 'dynamic-edit-form-button-enabled'}`}
                                                                     onClick={() => handleAddField(section.id, field.id)}
-                                                                    style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
                                                                     disabled={buttonsDisabled}
                                                                 >
                                                                     <FaCirclePlus />
                                                                 </IconButton>
-                                                                {/* </span> */}
                                                             </Tooltip>
                                                             {fieldIndex !== 0 && (
                                                                 <Tooltip title={buttonsDisabled ? "Button disabled due to existing posts" : "Delete Field"}>
-                                                                    {/* <span> */}
                                                                     <IconButton
                                                                         aria-label="delete"
                                                                         color="primary"
-                                                                        className="action-button delete-field"
+                                                                        className={`action-button ${buttonsDisabled ? 'dynamic-edit-form-button-disabled' : 'dynamic-edit-form-button-enabled'}`}
                                                                         onClick={() => handleRemoveField(section.id, field.id)}
-                                                                        style={{ opacity: buttonsDisabled ? 0.5 : 1 }}
                                                                         disabled={buttonsDisabled}
                                                                     >
                                                                         <MdDelete />
                                                                     </IconButton>
-                                                                    {/* </span> */}
                                                                 </Tooltip>
                                                             )}
                                                         </Grid>
@@ -901,29 +843,24 @@ const DynamicEditForm = ({ existingData }) => {
                                                                 <TextField
                                                                     label={`${field.type.charAt(0).toUpperCase() + field.type.slice(1)} Options (comma-separated)`}
                                                                     value={field.options.join(',')}
-                                                                    className='field-of-dynamic-from'
+                                                                    className='dynamic-edit-form-field'
                                                                     onChange={(e) => handleOptionChange(e, section.id, field.id)}
                                                                     fullWidth
-                                                                    style={{
-                                                                        marginBottom: '15px',
-                                                                        backgroundColor: '#f4f6f8',
-                                                                        borderRadius: '5px'
-                                                                    }}
                                                                 />
                                                             </Grid>
                                                         )}
                                                         {(field.type === 'file') && (
                                                             <Grid item xs={12} sm={10}>
-                                                                <div style={{ marginBottom: '15px', backgroundColor: '#f4f6f8', padding: '15px', borderRadius: '5px' }}>
-                                                                    <Typography variant="subtitle1" style={{ marginBottom: '10px' }}>Allowed File Types:</Typography>
-                                                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                                                <div className="dynamic-edit-form-file-types">
+                                                                    <Typography variant="subtitle1" className="dynamic-edit-form-file-types-title">Allowed File Types:</Typography>
+                                                                    <div className="dynamic-edit-form-file-types-grid">
                                                                         {['.jpg', '.jpeg', '.png', '.gif', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.txt'].map((fileType) => (
-                                                                            <label key={fileType} style={{ display: 'flex', alignItems: 'center', marginRight: '15px' }}>
+                                                                            <label key={fileType} className="dynamic-edit-form-file-types-label">
                                                                                 <input
                                                                                     type="checkbox"
                                                                                     checked={field.allowedFileTypes?.includes(fileType)}
                                                                                     onChange={() => handleFileTypeChange(fileType, section.id, field.id)}
-                                                                                    style={{ marginRight: '5px' }}
+                                                                                    className="dynamic-edit-form-file-types-checkbox"
                                                                                 />
                                                                                 {fileType}
                                                                             </label>
@@ -939,15 +876,14 @@ const DynamicEditForm = ({ existingData }) => {
                                     </div>
                                 ))}
 
-                                <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
+                                <Grid container justifyContent="flex-start" spacing={2} className="dynamic-edit-form-action-buttons-container">
                                     <Grid item>
-                                        <Button variant="contained" className='submit-btn' color="primary" style={{ backgroundColor: "#2c9dd4" }} type="submit">
+                                        <Button variant="contained" className='submit-btn' color="primary" type="submit">
                                             Submit
                                         </Button>
                                     </Grid>
                                     <Grid item>
-                                        <Button className='cancel-btn' style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
-                                            onClick={() => navigate('/dynamic-list-data')}>
+                                        <Button className='cancel-btn' onClick={() => navigate('/dynamic-list-data')}>
                                             Cancel
                                         </Button>
                                     </Grid>
