@@ -8,6 +8,7 @@ import "../Custom.css";
 import { MdDelete, MdVisibility, MdVisibilityOff, MdFileDownload } from "react-icons/md";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { FaPlusCircle, FaCirclePlus } from 'react-icons/fa';
 
 const PostDynamicEdit = () => {
     const location = useLocation();
@@ -189,7 +190,8 @@ const PostDynamicEdit = () => {
                 }
             }
             if (field.type === 'url') {
-                const urlRegex = /^(https?:\/\/)(localhost(:\d+)?|([\w\-]+\.)+[\w\-]+)(\/[\w\-./?%&=]*)?$/i;
+                const urlRegex = /^(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/[a-zA-Z0-9]+\.[^\s]{2,}|https?:\/\/localhost(:\d+)?(\/[^\s]*)?)$/i;
+                console.log('Validating URL:', value);
                 if (!urlRegex.test(value)) {
                     return 'Please enter a valid URL.';
                 }
@@ -280,7 +282,7 @@ const PostDynamicEdit = () => {
                 console.log('Updating standalone state for', fieldLabel, ':', value);
                 return {
                     ...prevFormData,
-                    [fieldLabel]: value,
+                    [field.label]: value,
                 }
             });
         }
@@ -442,7 +444,7 @@ const PostDynamicEdit = () => {
 
     const renderLabel = (label, required) => {
         if (!required) return label;
-        return label.trim().endsWith('*') ? label : <>{label}<span style={{ color: 'red' }}>*</span></>;
+        return label.trim().endsWith('*') ? label : <>{label}<span className='required-span'>*</span></>;
     };
 
     const handleClickShowPassword = (fieldLabel) => {
@@ -500,7 +502,7 @@ const PostDynamicEdit = () => {
         <>
             <Expired />
             <div className="col-md-12">
-                <div className="row" style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: "1%" }}>
+                <div className="row post-edit-wrapper">
                     <div className="card-header Form-main-title">
                         <Typography variant="h6" className="title" align="center">Edit Post</Typography>
                     </div>
@@ -561,7 +563,7 @@ const PostDynamicEdit = () => {
                                                     {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                 </div>
                                             ) : (field.type === 'color') ? (
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                <div className="post-form-color-wrapper">
                                                     <TextField
                                                         label={renderLabel(field.label, field.required)}
                                                         type="text"
@@ -570,70 +572,16 @@ const PostDynamicEdit = () => {
                                                         margin="normal"
                                                         error={!!errors[field.label]}
                                                         helperText={errors[field.label] || ''}
-                                                        style={{ width: '100%', marginRight: '10px' }}
+                                                        className="post-form-color-text-field"
                                                     />
                                                     <TextField
                                                         type="color"
                                                         value={formData[field.label] || '#000000'}
                                                         onChange={handleInputChange(field.label, field.type)}
-                                                        style={{
-                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
-                                                        }}
-                                                        className='color-code'
+                                                        className="post-form-color-picker"
                                                     />
                                                 </div>
                                             ) : field.type === 'file' ? (
-                                                // <div>
-                                                //     <TextField
-                                                //         label={renderLabel(field.label, field.required)}
-                                                //         type="file"
-                                                //         onChange={handleInputChange(field.label, field.type)}
-                                                //         fullWidth
-                                                //         className='mt-5'
-                                                //         InputLabelProps={{ shrink: true }}
-                                                //         error={!!errors[field.label]}
-                                                //         inputProps={{
-                                                //             accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
-                                                //         }}
-                                                //     />
-                                                //     {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
-                                                //     {formData[field.label] instanceof File ? (
-                                                //         <>
-                                                //             <p>New image</p>
-                                                //             {/* <p>New Selected image: {formData[field.label].name} </p> */}
-                                                //             <img
-                                                //                 src={URL.createObjectURL(formData[field.label])}
-                                                //                 alt="Preview"
-                                                //                 width="100"
-                                                //             />
-                                                //         </>
-                                                //     ) : formData[field.label] ? (
-                                                //         <>
-                                                //             <p>Current image</p>
-                                                //             {/* <p>Old image: {formData[field.label]?.split('/').pop()} </p> */}
-                                                //             <img
-                                                //                 src={formData[field.label]}
-                                                //                 alt="Current Image"
-                                                //                 width="100"
-                                                //                 style={{ marginRight: '10px' }}
-                                                //             />
-                                                //             <Tooltip title="Delete">
-                                                //                 <IconButton aria-label="delete" className='action-button' color="primary" onClick={() => handleDelete1(id, formData[field.label]?.split('/').pop())}>
-                                                //                     <MdDelete />
-                                                //                 </IconButton>
-                                                //             </Tooltip>
-                                                //         </>
-                                                //     ) : formData[`old_${field.label}`] ? (
-                                                //         <>
-                                                //             <p>Old image</p>
-                                                //             <img
-                                                //                 src={formData[`old_${field.label}`]}
-                                                //                 alt="Old Image"
-                                                //                 width="100"
-                                                //             />
-                                                //         </>
-                                                //     ) : null}
-                                                // </div>
                                                 <div>
                                                     <TextField
                                                         label={renderLabel(field.label, field.required)}
@@ -649,40 +597,39 @@ const PostDynamicEdit = () => {
                                                     />
                                                     {formData[field.label] && formData[field.label] !== "" && formData[field.label] !== null ? (
                                                         isImageFile(formData[field.label]) ? (
-                                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                                                                <span style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>
+                                                            <div className="post-edit-file-preview">
+                                                                <span className="post-edit-file-name">
                                                                     {getFileNameFromUrl(formData[field.label])}
                                                                 </span>
-                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                <div className="post-edit-file-row">
                                                                     <img
                                                                         src={typeof formData[field.label] === 'string'
                                                                             ? formData[field.label]
                                                                             : URL.createObjectURL(formData[field.label])}
                                                                         alt="Current File"
                                                                         width="100"
-                                                                        style={{ marginRight: '10px' }}
+                                                                        className="post-edit-file-image"
                                                                     />
                                                                     <IconButton
                                                                         onClick={() => handleDelete1(id, field.label)}
                                                                         color="error"
-                                                                        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-
+                                                                        className="action-button post-edit-delete-btn"
                                                                         title="Delete File"
                                                                     >
-                                                                        <MdDelete style={{ fontSize: 24 }} />
+                                                                        <MdDelete />
                                                                     </IconButton>
                                                                 </div>
                                                             </div>
                                                         ) : (
-                                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                                                                <span style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>
+                                                            <div className="post-edit-file-preview">
+                                                                <span className="post-edit-file-name">
                                                                     {getFileNameFromUrl(formData[field.label])}
                                                                 </span>
                                                                 <div className="action-buttons-row">
                                                                     <IconButton
                                                                         onClick={() => handleDownload(getFileNameFromUrl(formData[field.label]))}
                                                                         color="primary"
-                                                                        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button action-button-download css-39nlm1"
+                                                                        className="action-button action-button-download"
                                                                         title="Download File"
                                                                     >
                                                                         <MdFileDownload />
@@ -690,43 +637,34 @@ const PostDynamicEdit = () => {
                                                                     <IconButton
                                                                         onClick={() => handleDelete1(id, field.label)}
                                                                         color="error"
-                                                                        className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
+                                                                        className="action-button post-edit-delete-btn"
                                                                         title="Delete File"
                                                                     >
-                                                                        <MdDelete style={{ fontSize: 24 }} />
+                                                                        <MdDelete />
                                                                     </IconButton>
                                                                 </div>
                                                             </div>
                                                         )
                                                     ) : formData[`old_${field.label}`] ? (
-                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                        <div className="post-edit-file-row">
                                                             <p>Old image</p>
                                                             <img
                                                                 src={formData[`old_${field.label}`]}
                                                                 alt="Old Image"
                                                                 width="100"
+                                                                className="post-edit-file-image"
                                                             />
                                                             <IconButton
                                                                 onClick={() => handleDelete1(id, field.label)}
                                                                 color="error"
-                                                                className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-                                                                style={{
-                                                                    background: "none",
-                                                                    boxShadow: "none",
-                                                                    padding: 0,
-                                                                    borderRadius: 0
-                                                                }}
-                                                                disableRipple
-                                                                disableFocusRipple
-                                                                disableTouchRipple
+                                                                className="action-button post-edit-delete-btn"
                                                                 title="Delete File"
                                                             >
-                                                                <MdDelete style={{ fontSize: 24 }} />
+                                                                <MdDelete />
                                                             </IconButton>
                                                         </div>
                                                     ) : null}
                                                 </div>
-
                                             ) : field.type === 'textarea' ? (
                                                 <TextField
                                                     label={renderLabel(field.label, field.required)}
@@ -781,14 +719,14 @@ const PostDynamicEdit = () => {
                                                     }}
                                                 />
                                             ) : field.type === 'ckeditor' ? (
-                                                <div style={{ width: '100%' }} className="ckeditor-container">
-                                                    <Typography variant="body1" style={{ marginBottom: '8px' }}>{renderLabel(field.label, field.required)}</Typography>
+                                                <div className="ckeditor-container">
+                                                    <Typography variant="body1" className="post-form-ckeditor-label">{renderLabel(field.label, field.required)}</Typography>
                                                     <CKEditor
                                                         editor={ClassicEditor}
                                                         key={`${field.label}`}
                                                         data={formData[field.label] || ''}
                                                         config={{
-                                                            minHeight: '200px',
+                                                            minHeight: '500px',
                                                             toolbar: [
                                                                 'heading',
                                                                 '|',
@@ -809,7 +747,14 @@ const PostDynamicEdit = () => {
                                                         }}
                                                         onChange={(event, editor) => handleInputChange(field.label, field.type)(event, editor)}
                                                     />
-                                                    {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
+                                                    {errors[field.label] && (
+                                                        <Typography
+                                                            className="post-form-error-text"
+                                                            variant="body2"
+                                                        >
+                                                            {errors[field.label]}
+                                                        </Typography>
+                                                    )}
                                                 </div>
                                             ) : (
                                                 <TextField
@@ -829,16 +774,12 @@ const PostDynamicEdit = () => {
 
                                     {sections.map((section, sectionIndex) => (
                                         <Grid item xs={12} key={sectionIndex}>
-                                            <div style={{ border: "1px solid #ccc", borderRadius: "8px", padding: "10px" }}>
-                                                <Typography variant="h6" style={{ backgroundColor: "#f4f6f8", padding: "10px", borderRadius: "8px" }}>
-                                                    {/* {section.title} */}
-                                                    {section.title.replace(/_/g, ' ')}
-
-                                                </Typography>
+                                            <div className="post-edit-section-wrapper">
+                                                    <Typography variant="h6" className='post-form-section-header'>{section.title}</Typography>
+                                                   
                                                 <Grid container spacing={3}>
                                                     {section.fields.map((field, index) => (
                                                         <Grid item xs={12} sm={field.type === 'ckeditor' ? 12 : 6} key={index}>
-                                                            {/* {console.log(section)} */}
                                                             {field.type === 'dropdown' ? (
                                                                 <FormControl fullWidth margin="normal">
                                                                     <InputLabel>{renderLabel(field.label, field.required)}</InputLabel>
@@ -862,7 +803,7 @@ const PostDynamicEdit = () => {
                                                                             key={idx}
                                                                             control={
                                                                                 <Checkbox
-                                                                                    checked={formData[section.title]?.[field.label]?.includes(option) || false}
+                                                                                    checked={formData[section.title]?.[field.label]?.includes(option)}
                                                                                     onChange={(e) => handleInputChange(field.label, field.type, section.title)(e, option)}
                                                                                     value={option}
                                                                                 />
@@ -890,8 +831,7 @@ const PostDynamicEdit = () => {
                                                                     {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
                                                                 </div>
                                                             ) : field.type === 'color' ? (
-                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-
+                                                                <div className="post-form-color-wrapper">
                                                                     <TextField
                                                                         label={renderLabel(field.label, field.required)}
                                                                         type="text"
@@ -900,257 +840,203 @@ const PostDynamicEdit = () => {
                                                                         margin="normal"
                                                                         error={!!errors[field.label]}
                                                                         helperText={errors[field.label] || ''}
-                                                                        style={{ width: '100%', marginRight: '10px' }}
+                                                                        className="post-form-color-text-field"
                                                                     />
                                                                     <TextField
                                                                         type="color"
                                                                         value={formData[section.title]?.[field.label] || '#000000'}
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                        style={{
-                                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
-                                                                        }}
-                                                                        className='color-code'
+                                                                        className="post-form-color-picker"
                                                                     />
                                                                 </div>
                                                             ) : field.type === 'file' ? (
-                                                                // <div>
-                                                                //     {console.log(section.title.replace(/\s+/g, '_'))}
-                                                                //     <TextField
-                                                                //         label={renderLabel(field.label, field.required)}
-                                                                //         type="file"
-                                                                //         onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                //         fullWidth
-                                                                //         className='mt-5'
-                                                                //         InputLabelProps={{ shrink: true }}
-                                                                //         error={!!errors[field.label]}
-                                                                //         inputProps={{
-                                                                //             accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
-                                                                //         }}
-
-                                                                //     />
-                                                                //     {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
-                                                                //     {formData[section.title]?.[field.label] instanceof File ? (
-                                                                //         <>
-                                                                //             {/* <p>New Selected image: {formData[section.title][field.label].name} </p> */}
-                                                                //             <p>New image</p>
-                                                                //             <img
-                                                                //                 src={URL.createObjectURL(formData[section.title][field.label])}
-                                                                //                 alt="Preview"
-                                                                //                 width="100"
-                                                                //             />
-                                                                //         </>
-                                                                //     ) : formData[section.title]?.[field.label] ? (
-                                                                //         <>
-                                                                //             {/* <p>Old image: {formData[section.title][field.label]?.split('/').pop()} </p> */}
-                                                                //             <p>Current image</p>
-                                                                //             <img
-                                                                //                 src={formData[section.title][field.label]}
-                                                                //                 alt="Current Image"
-                                                                //                 width="100"
-                                                                //                 style={{ marginRight: '10px' }}
-                                                                //             />
-                                                                //             <Tooltip title="Delete">
-                                                                //                 <IconButton aria-label="delete" className='action-button' color="primary" onClick={() => handleDelete1(id, formData[section.title][field.label]?.split('/').pop())}>
-                                                                //                     <MdDelete />
-                                                                //                 </IconButton>
-                                                                //             </Tooltip>
-                                                                //         </>
-                                                                //     ) : formData[section.title]?.[`old_${field.label}`] ? (
-                                                                //         <>
-                                                                //             <p>Old image</p>
-                                                                //             <img
-                                                                //                 src={formData[section.title][`old_${field.label}`]}
-                                                                //                 alt="Old Image"
-                                                                //                 width="100"
-                                                                //             />
-                                                                //         </>
-                                                                //     ) : null}
-                                                                // </div>
-
-                                                            <div>
-                                                                {/* {console.log(section.title.replace(/\s+/g, '_'))} */}
+                                                                <div>
+                                                                    <TextField
+                                                                        label={renderLabel(field.label, field.required)}
+                                                                        type="file"
+                                                                        onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                        fullWidth
+                                                                        className='mt-5'
+                                                                        InputLabelProps={{ shrink: true }}
+                                                                        error={!!errors[field.label]}
+                                                                        inputProps={{
+                                                                            accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
+                                                                        }}
+                                                                    />
+                                                                    {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
+                                                                    {formData[section.title]?.[field.label] && formData[section.title][field.label] !== "" && formData[section.title][field.label] !== null ? (
+                                                                        isImageFile(formData[section.title][field.label]) ? (
+                                                                            <div className="post-edit-file-preview">
+                                                                                <span className="post-edit-file-name">
+                                                                                    {getFileNameFromUrl(formData[section.title][field.label])}
+                                                                                </span>
+                                                                                <div className="post-edit-file-row">
+                                                                                    <img
+                                                                                        src={typeof formData[section.title][field.label] === 'string'
+                                                                                            ? formData[section.title][field.label]
+                                                                                            : URL.createObjectURL(formData[section.title][field.label])}
+                                                                                        alt="Current File"
+                                                                                        width="100"
+                                                                                        className="post-edit-file-image"
+                                                                                    />
+                                                                                    <IconButton
+                                                                                        onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
+                                                                                        color="error"
+                                                                                        className="action-button post-edit-delete-btn"
+                                                                                        title="Delete File"
+                                                                                    >
+                                                                                        <MdDelete />
+                                                                                    </IconButton>
+                                                                                </div>
+                                                                            </div>
+                                                                        ) : (
+                                                                            <div className="post-edit-file-preview">
+                                                                                <span className="post-edit-file-name">
+                                                                                    {getFileNameFromUrl(formData[section.title][field.label])}
+                                                                                </span>
+                                                                                <div className="action-buttons-row">
+                                                                                    <IconButton
+                                                                                        onClick={() => handleDownload(getFileNameFromUrl(formData[section.title][field.label]))}
+                                                                                        color="primary"
+                                                                                        className="action-button action-button-download"
+                                                                                        title="Download File"
+                                                                                    >
+                                                                                        <MdFileDownload />
+                                                                                    </IconButton>
+                                                                                    <IconButton
+                                                                                        onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
+                                                                                        color="error"
+                                                                                        className="action-button post-edit-delete-btn"
+                                                                                        title="Delete File"
+                                                                                    >
+                                                                                        <MdDelete />
+                                                                                    </IconButton>
+                                                                                </div>
+                                                                            </div>
+                                                                        )
+                                                                    ) : formData[section.title]?.[`old_${field.label}`] ? (
+                                                                        <div className="post-edit-file-row">
+                                                                            <p>Old image</p>
+                                                                            <img
+                                                                                src={formData[section.title][`old_${field.label}`]}
+                                                                                alt="Old Image"
+                                                                                width="100"
+                                                                                className="post-edit-file-image"
+                                                                            />
+                                                                            <IconButton
+                                                                                onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
+                                                                                color="error"
+                                                                                className="action-button post-edit-delete-btn"
+                                                                                title="Delete File"
+                                                                            >
+                                                                                <MdDelete />
+                                                                            </IconButton>
+                                                                        </div>
+                                                                    ) : null}
+                                                                </div>
+                                                            ) : field.type === 'textarea' ? (
                                                                 <TextField
                                                                     label={renderLabel(field.label, field.required)}
-                                                                    type="file"
+                                                                    value={formData[section.title]?.[field.label] || ''}
+                                                                    onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    multiline
+                                                                    rows={4}
+                                                                    fullWidth
+                                                                    variant="outlined"
+                                                                    margin="normal"
+                                                                    error={!!errors[field.label]}
+                                                                    helperText={errors[field.label] || ''}
+                                                                    inputProps={{ maxLength: field.value ? parseInt(field.value) : undefined }}
+                                                                />
+                                                            ) : field.type === 'date' ? (
+                                                                <TextField
+                                                                    label={renderLabel(field.label, field.required)}
+                                                                    type='date'
+                                                                    value={formData[section.title]?.[field.label] || ''}
                                                                     onChange={handleInputChange(field.label, field.type, section.title)}
                                                                     fullWidth
-                                                                    className='mt-5'
                                                                     InputLabelProps={{ shrink: true }}
+                                                                    variant="outlined"
+                                                                    margin="normal"
                                                                     error={!!errors[field.label]}
-                                                                    inputProps={{
-                                                                        accept: field.allowedFileTypes ? field.allowedFileTypes.join(',') : ''
-                                                                    }}
-
+                                                                    helperText={errors[field.label] || ''}
                                                                 />
-                                                                {errors[field.label] && <div className="error-text">{errors[field.label]}</div>}
-                                                                {formData[section.title]?.[field.label] && formData[section.title][field.label] !== "" && formData[section.title][field.label] !== null ? (
-                                                                    isImageFile(formData[section.title][field.label]) ? (
-                                                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                                                                            <span style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>
-                                                                                {getFileNameFromUrl(formData[section.title][field.label])}
-                                                                            </span>
-                                                                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                                <img
-                                                                                    src={typeof formData[section.title][field.label] === 'string'
-                                                                                        ? formData[section.title][field.label]
-                                                                                        : URL.createObjectURL(formData[section.title][field.label])}
-                                                                                    alt="Current File"
-                                                                                    width="100"
-                                                                                    style={{ marginRight: '10px' }}
-                                                                                />
-                                                                                <IconButton
-                                                                                    onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
-                                                                                    color="error"
-                                                                                    className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-
-                                                                                    title="Delete File"
-                                                                                >
-                                                                                    <MdDelete style={{ fontSize: 24 }} />
-                                                                                </IconButton>
-                                                                            </div>
-                                                                        </div>
-                                                                    ) : (
-                                                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                                                                            <span style={{ fontSize: 14, color: "#333", marginBottom: 4 }}>
-                                                                                {getFileNameFromUrl(formData[section.title][field.label])}
-                                                                            </span>
-                                                                            <div className="action-buttons-row">
-                                                                                <IconButton
-                                                                                    onClick={() => handleDownload(getFileNameFromUrl(formData[section.title][field.label]))}
-                                                                                    color="primary"
-                                                                                    className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button action-button-download css-39nlm1"
-                                                                                    title="Download File"
-                                                                                >
-                                                                                    <MdFileDownload />
-                                                                                </IconButton>
-                                                                                <IconButton
-                                                                                    onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
-                                                                                    color="error"
-                                                                                    className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-                                                                                    title="Delete File"
-                                                                                >
-                                                                                    <MdDelete style={{ fontSize: 24 }} />
-                                                                                </IconButton>
-                                                                            </div>
-                                                                        </div>
-                                                                    )
-                                                                ) : formData[section.title]?.[`old_${field.label}`] ? (
-                                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                        <p>Old image</p>
-                                                                        <img
-                                                                            src={formData[section.title][`old_${field.label}`]}
-                                                                            alt="Old Image"
-                                                                            width="100"
-                                                                        />
-                                                                        <IconButton
-                                                                            onClick={() => handleDelete1(id, `${sanitize(section.title)}.${field.label}`)}
-                                                                            color="error"
-                                                                            className="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium action-button css-39nlm1"
-
-                                                                            title="Delete File"
-                                                                        >
-                                                                            <MdDelete style={{ fontSize: 24 }} />
-                                                                        </IconButton>
-                                                                    </div>
-                                                                ) : null}
-                                                            </div>
-
-                                                            ) : field.type === 'textarea' ? (
-                                                            <TextField
-                                                                label={renderLabel(field.label, field.required)}
-                                                                value={formData[section.title]?.[field.label] || ''}
-                                                                onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                multiline
-                                                                rows={4}
-                                                                fullWidth
-                                                                variant="outlined"
-                                                                margin="normal"
-                                                                error={!!errors[field.label]}
-                                                                helperText={errors[field.label] || ''}
-                                                                inputProps={{ maxLength: field.value ? parseInt(field.value) : undefined }}
-                                                            />
-                                                            ) : field.type === 'date' ? (
-                                                            <TextField
-                                                                label={renderLabel(field.label, field.required)}
-                                                                type='date'
-                                                                value={formData[section.title]?.[field.label] || ''}
-                                                                onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                fullWidth
-                                                                InputLabelProps={{ shrink: true }}
-                                                                variant="outlined"
-                                                                margin="normal"
-                                                                error={!!errors[field.label]}
-                                                                helperText={errors[field.label] || ''}
-                                                            />
                                                             ) : field.type === 'password' ? (
-                                                            <TextField
-                                                                fullWidth
-                                                                label={renderLabel(field.label, field.required)}
-                                                                type={showPassword[field.label] ? 'text' : 'password'}
-                                                                autoComplete="new-password"
-                                                                variant="outlined"
-                                                                value={formData[section.title]?.[field.label] || ''}
-                                                                onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                margin="normal"
-                                                                error={!!errors[field.label]}
-                                                                helperText={errors[field.label] || ''}
-                                                                InputProps={{
-                                                                    endAdornment: (
-                                                                        <InputAdornment position="end">
-                                                                            <IconButton
-                                                                                aria-label="toggle password visibility"
-                                                                                onClick={() => handleClickShowPassword(field.label)}
-                                                                                edge="end"
-                                                                            >
-                                                                                {showPassword[field.label] ? <MdVisibilityOff /> : <MdVisibility />}
-                                                                            </IconButton>
-                                                                        </InputAdornment>
-                                                                    ),
-                                                                }}
-                                                            />
-                                                            ) : field.type === 'ckeditor' ? (
-                                                            <div style={{ width: '100%' }} className="ckeditor-container">
-                                                                <Typography variant="body1" style={{ marginBottom: '8px' }}>{renderLabel(field.label, field.required)}</Typography>
-                                                                <CKEditor
-                                                                    editor={ClassicEditor}
-                                                                    key={`${section.title}-${field.label}`}
-                                                                    data={formData[section.title]?.[field.label] || ''}
-                                                                    config={{
-                                                                        minHeight: '500px',
-                                                                        toolbar: [
-                                                                            'heading',
-                                                                            '|',
-                                                                            'bold',
-                                                                            'italic',
-                                                                            'link',
-                                                                            'bulletedList',
-                                                                            'numberedList',
-                                                                            '|',
-                                                                            'outdent',
-                                                                            'indent',
-                                                                            '|',
-                                                                            'blockQuote',
-                                                                            'insertTable',
-                                                                            'undo',
-                                                                            'redo'
-                                                                        ]
+                                                                <TextField
+                                                                    fullWidth
+                                                                    label={renderLabel(field.label, field.required)}
+                                                                    type={showPassword[field.label] ? 'text' : 'password'}
+                                                                    autoComplete="new-password"
+                                                                    variant="outlined"
+                                                                    value={formData[section.title]?.[field.label] || ''}
+                                                                    onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    margin="normal"
+                                                                    error={!!errors[field.label]}
+                                                                    helperText={errors[field.label] || ''}
+                                                                    InputProps={{
+                                                                        endAdornment: (
+                                                                            <InputAdornment position="end">
+                                                                                <IconButton
+                                                                                    aria-label="toggle password visibility"
+                                                                                    onClick={() => handleClickShowPassword(field.label)}
+                                                                                    edge="end"
+                                                                                >
+                                                                                    {showPassword[field.label] ? <MdVisibilityOff /> : <MdVisibility />}
+                                                                                </IconButton>
+                                                                            </InputAdornment>
+                                                                        ),
                                                                     }}
-                                                                    onChange={(event, editor) => handleInputChange(field.label, field.type, section.title)(event, editor)}
                                                                 />
-                                                                {errors[field.label] && <Typography color="error">{errors[field.label]}</Typography>}
-                                                            </div>
+                                                            ) : field.type === 'ckeditor' ? (
+                                                                <div className="ckeditor-container">
+                                                                    <Typography variant="body1" className="post-form-ckeditor-label">{renderLabel(field.label, field.required)}</Typography>
+                                                                    <CKEditor
+                                                                        editor={ClassicEditor}
+                                                                        key={`${section.title}-${field.label}`}
+                                                                        data={formData[section.title]?.[field.label] || ''}
+                                                                        config={{
+                                                                            minHeight: '500px',
+                                                                            toolbar: [
+                                                                                'heading',
+                                                                                '|',
+                                                                                'bold',
+                                                                                'italic',
+                                                                                'link',
+                                                                                'bulletedList',
+                                                                                'numberedList',
+                                                                                '|',
+                                                                                'outdent',
+                                                                                'indent',
+                                                                                '|',
+                                                                                'blockQuote',
+                                                                                'insertTable',
+                                                                                'undo',
+                                                                                'redo'
+                                                                            ]
+                                                                        }}
+                                                                        onChange={(event, editor) => handleInputChange(field.label, field.type, section.title)(event, editor)}
+                                                                    />
+                                                                    {errors[field.label] && (
+                                                                        <Typography
+                                                                            className="post-form-error-text"
+                                                                            variant="body2"
+                                                                        >
+                                                                            {errors[field.label]}
+                                                                        </Typography>
+                                                                    )}
+                                                                </div>
                                                             ) : (
-                                                            <TextField
-                                                                fullWidth
-                                                                label={renderLabel(field.label, field.required)}
-                                                                type={field.type}
-                                                                variant="outlined"
-                                                                value={formData[section.title]?.[field.label] || ''}
-                                                                onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                margin="normal"
-                                                                error={!!errors[field.label]}
-                                                                helperText={errors[field.label] || ''}
-                                                            />
+                                                                <TextField
+                                                                    fullWidth
+                                                                    label={renderLabel(field.label, field.required)}
+                                                                    type={field.type}
+                                                                    variant="outlined"
+                                                                    value={formData[section.title]?.[field.label] || ''}
+                                                                    onChange={handleInputChange(field.label, field.type, section.title)}
+                                                                    margin="normal"
+                                                                    error={!!errors[field.label]}
+                                                                    helperText={errors[field.label] || ''}
+                                                                />
                                                             )}
                                                         </Grid>
                                                     ))}
@@ -1160,13 +1046,12 @@ const PostDynamicEdit = () => {
                                     ))}
                                 </Grid>
 
-                                <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
+                                <Grid container justifyContent="flex-start" spacing={2} className="post-form-action-buttons">
                                     <Grid item>
                                         <Button
                                             className='submit-btn'
                                             variant="contained"
                                             color="primary"
-                                            style={{ backgroundColor: "#2c9dd4" }}
                                             type="submit"
                                         >
                                             Submit
@@ -1175,7 +1060,6 @@ const PostDynamicEdit = () => {
                                     <Grid item>
                                         <Button
                                             className='cancel-btn'
-                                            style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
                                             type="button"
                                             onClick={() => (navigate('/post-list', { state: { post_title } }))}
                                         >

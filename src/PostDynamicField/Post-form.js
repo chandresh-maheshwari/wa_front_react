@@ -310,7 +310,7 @@ const PostFormDynamic = () => {
     // Helper to render label with one red asterisk if required and not already present
     const renderLabel = (label, required) => {
         if (!required) return label;
-        return label.trim().endsWith('*') ? label : <>{label}<span style={{ color: 'red' }}>*</span></>;
+        return label.trim().endsWith('*') ? label : <>{label}<span className='required-span'>*</span></>;
     };
 
     const handleClickShowPassword = (fieldLabel) => {
@@ -324,7 +324,7 @@ const PostFormDynamic = () => {
         <>
             <Expired />
             <div className="col-md-12">
-                <div className="row" style={{ marginLeft: "20%", width: "80%", marginBottom: "20px", marginTop: "1%" }}>
+                <div className="row post-form-main-container">
                     <div className="card-header Form-main-title">
                         <Typography variant="h6" className="title" align="center">Add Post</Typography>
                     </div>
@@ -382,7 +382,7 @@ const PostFormDynamic = () => {
                                                     </RadioGroup>
                                                 </div>
                                             ) : (field.type === 'color') ? (
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                <div className="post-form-color-wrapper">
                                                     <TextField
                                                         label={renderLabel(field.label, field.required)}
                                                         type="text"
@@ -390,16 +390,13 @@ const PostFormDynamic = () => {
                                                         onChange={handleInputChange(field.label, field.type, '')}
                                                         margin="normal"
                                                         error={!!errors[field.label]}
-                                                        style={{ width: '100%', marginRight: '10px' }}
+                                                        className="post-form-color-text-field"
                                                     />
                                                     <TextField
                                                         type="color"
                                                         value={formData['']?.[field.label] || '#000000'}
                                                         onChange={handleInputChange(field.label, field.type)}
-                                                        style={{
-                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
-                                                        }}
-                                                        className='color-code'
+                                                        className="post-form-color-picker"
                                                     />
                                                 </div>
                                             ) : field.type === 'file' ? (
@@ -431,8 +428,8 @@ const PostFormDynamic = () => {
                                                     inputProps={{ maxLength: field.value ? parseInt(field.value) : undefined }}
                                                 />
                                             ) : field.type === 'ckeditor' ? (
-                                                <div style={{ width: '100%' }} className="ckeditor-container">
-                                                    <Typography variant="body1" style={{ marginBottom: '8px' }}>{renderLabel(field.label, field.required)}</Typography>
+                                                <div className="ckeditor-container">
+                                                    <Typography variant="body1" className="post-form-ckeditor-label">{renderLabel(field.label, field.required)}</Typography>
                                                     <CKEditor
                                                         editor={ClassicEditor}
                                                         data={formData['']?.[field.label] || ''}
@@ -534,7 +531,7 @@ const PostFormDynamic = () => {
                                                 )}
                                             {errors[field.label] && (
                                                 <Typography
-                                                    style={{ color: '#d32f2f', marginTop: 4 }}
+                                                    className="post-form-error-text"
                                                     variant="body2"
                                                 >
                                                     {errors[field.label]}
@@ -544,8 +541,8 @@ const PostFormDynamic = () => {
                                     ))}
                                     {sections.map((section, sectionIndex) => (
                                         <Grid item xs={12} key={sectionIndex}>
-                                            <div style={{ border: "1px solid #ccc", borderRadius: "8px", padding: "10px" }}>
-                                                <Typography variant="h6" style={{ backgroundColor: "#f4f6f8", padding: "10px", borderRadius: "8px" }}>
+                                            <div className="post-form-section-container">
+                                                <Typography variant="h6" className="post-form-section-header">
                                                     {section.title}
                                                 </Typography>
                                                 <Grid container spacing={3}>
@@ -599,7 +596,7 @@ const PostFormDynamic = () => {
                                                                     </RadioGroup>
                                                                 </div>
                                                             ) : (field.type === 'color') ? (
-                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                <div className="post-form-color-wrapper">
                                                                     <TextField
                                                                         label={renderLabel(field.label, field.required)}
                                                                         type="text"
@@ -607,16 +604,13 @@ const PostFormDynamic = () => {
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
                                                                         margin="normal"
                                                                         error={!!errors[field.label]}
-                                                                        style={{ width: '100%', marginRight: '10px' }}
+                                                                        className="post-form-color-text-field"
                                                                     />
                                                                     <TextField
                                                                         type="color"
                                                                         value={formData[section.title]?.[field.label] || '#000000'}
                                                                         onChange={handleInputChange(field.label, field.type, section.title)}
-                                                                        style={{
-                                                                            width: '50px', height: '50px', padding: '0', border: 'none', marginLeft: "-60px", marginTop: "-17px"
-                                                                        }}
-                                                                        className='color-code'
+                                                                        className="post-form-color-picker"
                                                                     />
                                                                 </div>
                                                             ) : field.type === 'file' ? (
@@ -648,8 +642,8 @@ const PostFormDynamic = () => {
                                                                     inputProps={{ maxLength: field.value ? parseInt(field.value) : undefined }}
                                                                 />
                                                             ) : field.type === 'ckeditor' ? (
-                                                                <div style={{ width: '100%' }} className="ckeditor-container">
-                                                                    <Typography variant="body1" style={{ marginBottom: '8px' }}>{renderLabel(field.label, field.required)}</Typography>
+                                                                <div className="ckeditor-container">
+                                                                    <Typography variant="body1" className="post-form-ckeditor-label">{renderLabel(field.label, field.required)}</Typography>
                                                                     <CKEditor
                                                                         editor={ClassicEditor}
                                                                         data={formData[section.title]?.[field.label] || ''}
@@ -739,7 +733,7 @@ const PostFormDynamic = () => {
                                                                 )}
                                                             {errors[field.label] && (
                                                                 <Typography
-                                                                    style={{ color: '#d32f2f', marginTop: 4 }}
+                                                                    className="post-form-error-text"
                                                                     variant="body2"
                                                                 >
                                                                     {errors[field.label]}
@@ -753,13 +747,13 @@ const PostFormDynamic = () => {
                                     ))}
                                 </Grid>
 
-                                <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
+                                <Grid container justifyContent="flex-start" spacing={2} className="post-form-action-buttons">
                                     <Grid item>
                                         <Button
                                             className='submit-btn'
                                             variant="contained"
                                             color="primary"
-                                            style={{ backgroundColor: "#2c9dd4" }}
+                                            // style={{ backgroundColor: "#2c9dd4" }}
                                             type="submit"
                                         >
                                             Submit
@@ -768,7 +762,7 @@ const PostFormDynamic = () => {
                                     <Grid item>
                                         <Button
                                             className='cancel-btn'
-                                            style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
+                                            // style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
                                             type="button"
                                             onClick={() => (navigate('/post-list', { state: { post_title } }))}
                                         >

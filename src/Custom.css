@@ -1806,3 +1806,196 @@ td {
 .post-edit-ckeditor-label {
   margin-bottom: 8px;
 }
+
+/* Post Form Dynamic Styles */
+.post-form-main-container {
+    margin-left: 20%;
+    width: 80%;
+    margin-bottom: 20px;
+    margin-top: 1%;
+}
+
+.post-form-color-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.post-form-color-text-field {
+    width: 100%;
+    margin-right: 10px;
+}
+
+.post-form-color-picker {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border: none;
+    margin-left: -60px;
+    margin-top: -17px;
+}
+
+.post-form-section-container {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.post-form-section-header {
+    background-color: #f4f6f8;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.post-form-error-text {
+    color: #d32f2f;
+    margin-top: 4px;
+}
+
+.post-form-ckeditor-label {
+    margin-bottom: 8px;
+}
+
+.post-form-ckeditor-container {
+    width: 100%;
+}
+
+.post-form-action-buttons {
+    margin-top: 24px !important;
+}
+
+.required-span{
+  /* color: 'red' !important; */
+  color: red;
+}
+
+/* Post Edit Inline Styles */
+.post-edit-wrapper {
+    margin-left: 20%;
+    width: 80%;
+    margin-bottom: 20px;
+    margin-top: 1%;
+}
+
+.post-edit-color-field {
+    width: 100%;
+    margin-right: 10px;
+}
+
+.post-edit-color-picker {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border: none;
+    margin-left: -60px;
+    margin-top: -17px;
+}
+
+.post-edit-file-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.post-edit-file-name {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.post-edit-file-row {
+    display: flex;
+    align-items: center;
+}
+
+.post-edit-file-image {
+    margin-right: 10px;
+}
+
+.post-edit-delete-btn {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+/* Post Edit Additional Styles */
+.post-edit-section-wrapper {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.post-edit-section-title {
+    background-color: #f4f6f8;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.post-edit-form-buttons {
+    margin-top: 24px;
+}
+
+
+/* Post Edit Additional Styles */
+.post-edit-ckeditor-label {
+    margin-bottom: 8px;
+}
+
+.post-edit-flex-center {
+    display: flex;
+    align-items: center;
+}
+
+.post-edit-flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-edit-flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.post-edit-file-type-label {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.post-edit-file-type-checkbox {
+    margin-right: 5px;
+}
+
+.post-edit-section-padding {
+    padding: 10px;
+}
+
+.post-edit-margin-left {
+    margin-left: 10px;
+}
+
+.post-edit-margin-right {
+    margin-right: 10px;
+}
+
+.post-edit-margin-bottom {
+    margin-bottom: 15px;
+}
+
+.post-edit-margin-top {
+    margin-top: 15px;
+}
+
+.post-edit-bg-light {
+    background-color: #f4f6f8;
+}
+
+.post-edit-border-radius {
+    border-radius: 5px;
+}
+
+.post-edit-padding {
+    padding: 15px;
+}
