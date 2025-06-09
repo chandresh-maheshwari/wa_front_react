@@ -159,11 +159,11 @@ const PageList = () => {
     }
   };
   // multi delete data
-   const handleDelete = async (ids) => {
-          if (selectedRows.length === 0) {
-              Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
-              return;
-          }
+  const handleDelete = async (ids) => {
+    if (selectedRows.length === 0) {
+      Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+      return;
+    }
 
     if (selectedRows.length === 0) {
       Swal.fire(
@@ -195,8 +195,8 @@ const PageList = () => {
         Swal.fire(
           "Error!",
           error.response?.data?.message ||
-            error.message ||
-            "Failed to delete items",
+          error.message ||
+          "Failed to delete items",
           "error"
         );
       }
@@ -206,9 +206,9 @@ const PageList = () => {
   const handleRestore = async (ids) => {
     if (!Array.isArray(ids)) {
       ids = [ids]; // Ensure ids is an array
-      
+
     }
-    
+
 
     if (statusFilter !== "deleted") {
       Swal.fire(
@@ -309,14 +309,14 @@ const PageList = () => {
       const response = await Authapi.pagestatus(id, newStatus);
       if (response.status === true) {
         // Update the rows state first
-        const updatedRows = rows.map(row => 
+        const updatedRows = rows.map(row =>
           row.id === id ? { ...row, status: newStatus } : row
         );
         setRows(updatedRows);
-        
+
         // Then apply the current filter to the updated data
         applyFilter(updatedRows, statusFilter);
-        
+
         setActiveStates((prevStates) => ({
           ...prevStates,
           [id]: newStatus === 1,
@@ -347,11 +347,11 @@ const PageList = () => {
         await Promise.all(promises);
 
         // Update the rows state first
-        const updatedRows = rows.map(row => 
+        const updatedRows = rows.map(row =>
           ids.includes(row.id) ? { ...row, status: newStatus } : row
         );
         setRows(updatedRows);
-        
+
         // Then apply the current filter to the updated data
         applyFilter(updatedRows, statusFilter);
 
@@ -387,11 +387,11 @@ const PageList = () => {
         await Promise.all(promises);
 
         // Update the rows state first
-        const updatedRows = rows.map(row => 
+        const updatedRows = rows.map(row =>
           ids.includes(row.id) ? { ...row, status: newStatus } : row
         );
         setRows(updatedRows);
-        
+
         // Then apply the current filter to the updated data
         applyFilter(updatedRows, statusFilter);
 
@@ -417,14 +417,14 @@ const PageList = () => {
       const response = await Authapi.pageActive(id, newStatus);
       if (response) {
         // Update the rows state first
-        const updatedRows = rows.map(row => 
+        const updatedRows = rows.map(row =>
           row.id === id ? { ...row, page_status: newStatus } : row
         );
         setRows(updatedRows);
-        
+
         // Then apply the current filter to the updated data
         applyFilter(updatedRows, statusFilter);
-        
+
         setActiveStates((prevStates) => ({
           ...prevStates,
           [id]: newStatus === 1,
@@ -490,7 +490,7 @@ const PageList = () => {
       return;
     }
     if (Array.isArray(ids) && ids.length > 0) {
-      
+
       const newStatus = 1;
       try {
         // const idsToinnerActivate = ids.filter(id => activeStates[id] !== true);
@@ -670,7 +670,7 @@ const PageList = () => {
           <img
             src={params.row.image_url}
             alt="Page"
-            style={{ width: "50%", height: "auto" }}
+            className="page-list-image"
           />
         ) : (
           <span>-</span>
@@ -693,7 +693,7 @@ const PageList = () => {
       renderCell: (params) => {
         if (statusFilter === "deleted") {
           return (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div className="page-list-action-buttons">
               {params.row.deleted_at === 1 && (
                 <Tooltip title="Restore">
                   <IconButton
@@ -711,14 +711,13 @@ const PageList = () => {
         }
 
         return (
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div className="page-list-action-buttons">
             <Tooltip title="Update">
               <IconButton
                 aria-label="Update"
-                className="action-button"
+                className="action-button page-list-action-button"
                 onClick={() => handleEdit(params.row.id)}
                 color="primary"
-                style={{ margin: "1px" }}
               >
                 <FaEdit />
               </IconButton>
@@ -830,15 +829,7 @@ const PageList = () => {
     <>
       <Expired />
       <div className="col-md-12">
-        <div
-          className="row "
-          style={{
-            marginLeft: "20%",
-            width: "80%",
-            marginBottom: "20px",
-            marginTop: "1%",
-          }}
-        >
+        <div className="row page-list-container">
           <div className="card-header col-6 page-title-section">
             <h5 className="title">Page</h5>
             <IconButton
@@ -869,7 +860,7 @@ const PageList = () => {
               </Select>
             </FormControl>
           </div>
-          <div className="card-header col-3">
+          <div className="card-header col-3 ">
             <input
               type="search"
               className="form-control form control navbar-search"
@@ -879,15 +870,10 @@ const PageList = () => {
             />
           </div>
 
-          <div
-            className="card-body table-card-body" 
-            style={{ height: "calc(115vh - 200px)", width: "80%" }}
-          >
-            <Container style={{ height: "100%" }}  className='table-container'>
-              <div style={{ width: "100%", marginBottom: "45px" }}>
-                <div
-                  style={{ width: "100%", height: "500px", overflowY: "hidden" }}
-                >
+          <div className="card-body table-card-body page-list-table-body">
+            <Container className="table-container page-list-table-container">
+              <div className="page-list-table-wrapper">
+                <div className="page-list-table-inner">
                   <DataGrid
                     rows={filteredRows}
                     columns={columns}
@@ -902,12 +888,7 @@ const PageList = () => {
                     autoHeight={false}
                     onPageChange={(newPage) => setPage(newPage)}
                     onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                    sx={{
-                      "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: "#113b4f",
-                        color: "white",
-                      },
-                    }}
+                    className="page-list-datagrid"
                     selectionModel={selectedRows}
                     onSelectionModelChange={handleSelectionChange}
                     onCellClick={(params, event) => {
@@ -917,22 +898,19 @@ const PageList = () => {
                       event.stopPropagation();
                     }}
                   />
-                  {/* <div className="card-header col-3"> */}
-                  <FormControl
-                    fullWidth
-                    sx={{
-                      width: "20%",
-                      marginTop: "-44px",
-                      marginLeft: "10px",
-                    }}
-                  >
-                    <InputLabel>Action Filter</InputLabel>
-                    <Select
-                      className="filter_dropdown_of_main_page"
-                      value={actionFilter}
-                      onChange={handleActionFilterChange}
-                      label="Action Filter"
+                  <div className="card-header col-3 action-filter-div">
+                    <FormControl
+                      fullWidth
+                      className="page-list-action-filter"
                     >
+                      <InputLabel>Action Filter</InputLabel>
+                      <Select
+                        className="filter_dropdown_of_main_page"
+                        value={actionFilter}
+                        onChange={handleActionFilterChange}
+                        label="Action Filter"
+                      >
+                      
                       <MenuItem value="all" disabled>
                         All
                       </MenuItem>
@@ -974,7 +952,7 @@ const PageList = () => {
                       </MenuItem>
                     </Select>
                   </FormControl>
-                  {/* </div> */}
+                  </div>
                 </div>
               </div>
             </Container>

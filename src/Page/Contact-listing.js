@@ -37,7 +37,7 @@ const Contact = () => {
   const [selectedTimeEntry, setSelectedTimeEntry] = useState(null);
   const [isReasonExpanded, setIsReasonExpanded] = useState(false);
   const [actionFilter, setActionFilter] = useState("all");
-  
+
 
   useEffect(() => {
     // Remove localStorage check
@@ -92,91 +92,91 @@ const Contact = () => {
   };
   // ... existing code ...
 
-const handleSearch = (event) => {
-  const query = event.target.value.trim();
-  setSearchQuery(query);
+  const handleSearch = (event) => {
+    const query = event.target.value.trim();
+    setSearchQuery(query);
 
-  if (query) {
+    if (query) {
       // Determine the filter based on the statusFilter
       const filtered = rows
-          .filter((row) => {
-              if (statusFilter === "all") {
-                  return row.deleted_at === 0;
-              } else if (statusFilter === "deleted") {
-                  return row.deleted_at === 1;
-              }
-              return false;
-          })
-          .filter((row) => {
-              return Object.values(row).some((value) =>
-                  String(value).toLowerCase().includes(query.toLowerCase())
-              );
-          });
+        .filter((row) => {
+          if (statusFilter === "all") {
+            return row.deleted_at === 0;
+          } else if (statusFilter === "deleted") {
+            return row.deleted_at === 1;
+          }
+          return false;
+        })
+        .filter((row) => {
+          return Object.values(row).some((value) =>
+            String(value).toLowerCase().includes(query.toLowerCase())
+          );
+        });
       setFilteredRows(filtered);
-  } else {
+    } else {
       // Apply the current status filter when the search query is cleared
       if (statusFilter === "all") {
-          setFilteredRows(rows.filter((row) => row.deleted_at === 0));
+        setFilteredRows(rows.filter((row) => row.deleted_at === 0));
       } else if (statusFilter === "deleted") {
-          setFilteredRows(rows.filter((row) => row.deleted_at === 1));
+        setFilteredRows(rows.filter((row) => row.deleted_at === 1));
       }
-  }
-};
+    }
+  };
 
-// ... existing code ...
+  // ... existing code ...
 
   const handleSelectionChange = (newSelection) => {
     setSelectedRows(newSelection);
   };
 
   // multi Delete Data
-const handleDelete = async (ids) => {
-  // if (statusFilter !== "deleted") {
-  //   Swal.fire(
-  //     "Warning",
-  //     "You can only delete items in the 'Deleted' state.",
-  //     "warning"
-  //   );
-  //   return;
-  // }
+  const handleDelete = async (ids) => {
+    // if (statusFilter !== "deleted") {
+    //   Swal.fire(
+    //     "Warning",
+    //     "You can only delete items in the 'Deleted' state.",
+    //     "warning"
+    //   );
+    //   return;
+    // }
 
-  // if (selectedRows.length === 0) {
-  //   Swal.fire(
-  //     "Warning",
-  //     "Please select at least one item to delete.",
-  //     "warning"
-  //   );
-  //   return;
-  // }
+    // if (selectedRows.length === 0) {
+    //   Swal.fire(
+    //     "Warning",
+    //     "Please select at least one item to delete.",
+    //     "warning"
+    //   );
+    //   return;
+    // }
 
-  const confirmDelete = await Swal.fire({
-    title: "Are you sure?",
-    text: "This will mark the selected items as deleted!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#48AD3B",
-    cancelButtonColor: "#87888a",
-    confirmButtonText: "Yes, mark them!",
-  });
+    const confirmDelete = await Swal.fire({
+      title: "Are you sure?",
+      text: "This will mark the selected items as deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#48AD3B",
+      cancelButtonColor: "#87888a",
+      confirmButtonText: "Yes, mark them!",
+    });
 
-  if (confirmDelete.isConfirmed) {
-    try {
-      const promises = ids.map((id) => Authapi.contactdelete(id));
-      await Promise.all(promises);
-      Swal.fire("Success!", "Selected items marked as deleted.", "success");
-      fetchData(); // Re-fetch to apply the "deleted" filter
-      setSelectedRows([]); // Clear selected rows after action
-    } catch (error) {
-      Swal.fire(
-        "Error!",
-        error.response?.data?.message ||
+    if (confirmDelete.isConfirmed) {
+      try {
+        const promises = ids.map((id) => Authapi.contactdelete(id));
+        await Promise.all(promises);
+        Swal.fire("Success!", "Selected items marked as deleted.", "success");
+        fetchData(); // Re-fetch to apply the "deleted" filter
+        setSelectedRows([]); // Clear selected rows after action
+      } catch (error) {
+        Swal.fire(
+          "Error!",
+          error.response?.data?.message ||
           error.message ||
           "Failed to delete items",
-        "error"
-      );
+          "error"
+        );
+      }
     }
-  }
-};
+  };
 
   // Single Delete Data
   const handleDelete1 = async (id) => {
@@ -203,8 +203,8 @@ const handleDelete = async (ids) => {
         Swal.fire(
           "Error!",
           error.response?.data?.message ||
-            error.message ||
-            "Failed to delete item",
+          error.message ||
+          "Failed to delete item",
           "error"
         );
       }
@@ -269,7 +269,7 @@ const handleDelete = async (ids) => {
     }
 
     if (ids.length === 0) {
-      
+
       Swal.fire(
         "Warning",
         "Please select at least one item to restore.",
@@ -449,17 +449,9 @@ const handleDelete = async (ids) => {
     <>
       <Expired />
       <div className="col-md-12">
-        <div
-          className="row "
-          style={{
-            marginLeft: "20%",
-            width: "80%",
-            marginBottom: "20px",
-            marginTop: "1%",
-          }}
-        >
-          <div className="card-header col-6" >
-            <h5 className="title ">Contact Us</h5>
+        <div className="row contact-listing-container">
+          <div className="card-header col-6">
+            <h5 className="title contact-listing-title">Contact Us</h5>
           </div>
           <div className="card-header col-3">
             <FormControl fullWidth>
@@ -484,17 +476,11 @@ const handleDelete = async (ids) => {
               onChange={handleSearch}
             />
           </div>
-        
 
-          <div
-            className="card-body table-card-body"
-            style={{ height: "calc(115vh - 200px)", width: "80%" }}
-          >
-            <Container style={{ height: "100%" }} className='table-container'>
-              <div style={{ width: "100%", marginBottom: "45px" }}>
-                <div
-                  style={{ width: "100%", height: "500px", overflow: "hidden" }}
-                >
+          <div className="card-body table-card-body contact-listing-table-body">
+            <Container className="table-container contact-listing-table-container">
+              <div className="contact-listing-table-wrapper">
+                <div className="contact-listing-table-inner">
                   <DataGrid
                     rows={filteredRows}
                     columns={columns}
@@ -524,41 +510,41 @@ const handleDelete = async (ids) => {
                       event.stopPropagation();
                     }}
                   />
-                  <FormControl
-                    fullWidth
-                    sx={{
-                      width: "20%",
-                      marginTop: "-44px",
-                      marginLeft: "10px",
-                    }}
-                  >
-                    <InputLabel>Action Filter</InputLabel>
-                    <Select
-                      className="filter_dropdown_of_main_page"
-                      value={actionFilter}
-                      onChange={handleActionFilterChange}
-                      label="Action Filter"
+                  <div className="card-header col-3 action-filter-div">
+
+                    <FormControl
+                      fullWidth
+                      className="contact-listing-action-filter"
                     >
-                      <MenuItem value="all" disabled>
-                        All
-                      </MenuItem>
-                      {statusFilter === "deleted" ? (
-                        <MenuItem
-                          value="restore"
-                          onClick={handleMultiRestore}
-                        >
-                          Restore
+                      <InputLabel>Action Filter</InputLabel>
+                      <Select
+                        className="filter_dropdown_of_main_page"
+                        value={actionFilter}
+                        onChange={handleActionFilterChange}
+                        label="Action Filter"
+                      >
+                        <MenuItem value="all" disabled>
+                          All
                         </MenuItem>
-                      ) : (
-                        <MenuItem
-                          value="delete"
-                          onClick={() => handleDelete(selectedRows)}
-                        >
-                          Delete
-                        </MenuItem>
-                      )}
-                    </Select>
-                  </FormControl>
+                        {statusFilter === "deleted" ? (
+                          <MenuItem
+                            value="restore"
+                            onClick={handleMultiRestore}
+                          >
+                            Restore
+                          </MenuItem>
+                        ) : (
+                          <MenuItem
+                            value="delete"
+                            onClick={() => handleDelete(selectedRows)}
+                          >
+                            Delete
+                          </MenuItem>
+                        )}
+                      </Select>
+                    </FormControl>
+                  </div>
+
                 </div>
               </div>
             </Container>
@@ -567,90 +553,65 @@ const handleDelete = async (ids) => {
       </div>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle
-          sx={{
-            backgroundColor: "#113b4f",
-            color: "white",
-            textAlign: "center",
-            padding: "10px",
-          }}
-        >
+        <DialogTitle className="contact-listing-dialog-title">
           Contact Details
           <IconButton
             aria-label="close"
             onClick={handleCloseDialog}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
+            className="contact-listing-dialog-close"
           >
-            {/* Add a close icon here */}
             <FaTimes />
           </IconButton>
         </DialogTitle>
-        <DialogContent style={{ padding: "10px" }}>
+        <DialogContent className="contact-listing-dialog-content">
           <div>
-            <table
-              className="popuptable"
-              style={{
-                width: "550px",
-                borderCollapse: "collapse",
-                border: "0px solid #000",
-              }}
-            >
+            <table className="popuptable contact-listing-popup-table">
               <tbody>
                 <tr>
-                  <td style={{ textAlign: "right" }}>
+                  <td className="contact-listing-popup-cell-right">
                     <b>Name</b>
                   </td>
-                  <td style={{ padding: "8px", textAlign: "center" }}>:</td>
-                  <td style={{ textAlign: "left" }}>
+                  <td className="contact-listing-popup-cell-center">:</td>
+                  <td className="contact-listing-popup-cell-left">
                     {selectedTimeEntry?.name}
                   </td>
                 </tr>
                 <tr>
-                  <td style={{ textAlign: "right" }}>
+                  <td className="contact-listing-popup-cell-right">
                     <b>Email</b>
                   </td>
-                  <td style={{ padding: "8px", textAlign: "center" }}>:</td>
-                  <td style={{ textAlign: "left" }}>
+                  <td className="contact-listing-popup-cell-center">:</td>
+                  <td className="contact-listing-popup-cell-left">
                     {selectedTimeEntry?.email}
                   </td>
                 </tr>
                 <tr>
-                  <td style={{ textAlign: "right" }}>
+                  <td className="contact-listing-popup-cell-right">
                     <b>Contact Number</b>
                   </td>
-                  <td style={{ padding: "8px", textAlign: "center" }}>:</td>
-                  <td style={{ textAlign: "left" }}>
+                  <td className="contact-listing-popup-cell-center">:</td>
+                  <td className="contact-listing-popup-cell-left">
                     {selectedTimeEntry?.contact_number}
                   </td>
                 </tr>
                 <tr>
-                  <td style={{ textAlign: "right" }}>
+                  <td className="contact-listing-popup-cell-right">
                     <b>Description</b>
                   </td>
-                  <td style={{ padding: "8px", textAlign: "center" }}>:</td>
-                  <td style={{ textAlign: "left" }}>
+                  <td className="contact-listing-popup-cell-center">:</td>
+                  <td className="contact-listing-popup-cell-left">
                     <>
                       {isReasonExpanded ||
-                      selectedTimeEntry?.description.length <= 100
+                        selectedTimeEntry?.description.length <= 100
                         ? selectedTimeEntry?.description
                         : `${selectedTimeEntry?.description.substring(
-                            0,
-                            100
-                          )}...`}
+                          0,
+                          100
+                        )}...`}
                       {selectedTimeEntry?.description.length > 100 && (
                         <span
                           onClick={() => setIsReasonExpanded(!isReasonExpanded)}
-                          style={{
-                            color: "#1b6e95",
-                            cursor: "pointer",
-                            marginLeft: "5px",
-                            display: "inline-block",
-                          }}
+                          className="contact-listing-read-more"
                         >
                           {isReasonExpanded ? "Read Less" : "Read More"}
                         </span>

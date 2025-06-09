@@ -136,13 +136,14 @@ function Login() {
                                                         fullWidth
                                                     />
                                                     {errors.email && (
-                                                        <p style={{ color: 'red' }}>{errors.email}</p>
+                                                        <p className='error-text'>{errors.email}</p>
+                                                        // <p style={{ color: 'red' }}>{errors.email}</p>
                                                     )}
                                                 </div>
                                                 <div className="form-group mb-3">
                                                     <TextField
                                                         label="Password"
-                                                        type="password"
+                                                        type="password" 
                                                         placeholder="Password"
                                                         name="password"
                                                         value={password}
@@ -150,7 +151,8 @@ function Login() {
                                                         fullWidth
                                                     />
                                                     {errors.password && (
-                                                        <p style={{ color: 'red' }}>{errors.password}</p>
+                                                        <p className='error-text'>{errors.password}</p>
+                                                        // <p style={{ color: 'red' }}>{errors.password}</p>
                                                     )}
                                                 </div>
 
@@ -174,7 +176,7 @@ function Login() {
                                                         id="remember"
                                                         checked={remember}
                                                         onChange={e => setRemember(e.target.checked)}
-                                                        style={{ marginLeft: '2%' }}
+                                                        // style={{ marginLeft: '2%' }}
                                                     />
                                                     <span className="checkmark"></span>
                                                     <label className="checkbox-wrap checkbox-primary mb-0">

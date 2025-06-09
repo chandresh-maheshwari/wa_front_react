@@ -194,7 +194,7 @@ const PageEdit = () => {
             <Expired />
             {/* <div className="container-fluid panel-header panel-header-sm"></div> */}
             <div className="col-md-12">
-                <div className="row mt-4" style={{ marginLeft: "22%", width: "75%", marginBottom: "20px" }}>
+                <div className="row mt-4 page-edit-container">
                     <div className="card-header Form-main-title">
                         {/* <h5 className="title">Page</h5> */}
                         <Typography variant="h6" className="title" align="center">
@@ -280,17 +280,14 @@ const PageEdit = () => {
                                     </Grid>
 
                                     <Grid item xs={12} sm={6}>
-                                        <FormControl fullWidth style={{ marginBottom: '15px' }}>
+                                        <FormControl fullWidth>
                                             <InputLabel>Post Type</InputLabel>
                                             <Select
                                                 label="Post Type"
                                                 name="post_type"
                                                 value={formData.post_type || ''}
                                                 fullWidth
-                                                style={{
-                                                    backgroundColor: '#f4f6f8',
-                                                    borderRadius: '5px'
-                                                }}
+                                                className="post-type-select"
                                                 onChange={(e) => setFormData({ ...formData, post_type: e.target.value })}
                                             >
                                                 {postTitles.length > 0 ? (
@@ -324,36 +321,16 @@ const PageEdit = () => {
                                 </Grid>
 
                                 {/* Page Settings Section */}
-                                <div style={{ 
-                                    marginTop: '20px',
-                                    border: '1px solid #ddd',
-                                    borderRadius: '4px',
-                                    padding: '15px',
-                                }}>
-                                    <div style={{ 
-                                       display: 'flex', 
-                                       justifyContent: 'space-between', 
-                                       alignItems: 'center',
-                                       backgroundColor: 'rgb(244, 246, 248)',
-                                       padding: '15px',
-                                       borderRadius: '8px'
-                                    }}>
-                                        <Typography 
-                                            variant="h6" 
-                                            // style={{ 
-                                            //     color: '#333',
-                                            //     fontSize: '16px',
-                                            //     fontWeight: '500'
-                                            // }}
-                                        >
+                                <div className="page-edit-form">
+                                    <div className="page-settings-header">
+                                        <Typography variant="h6">
                                             Page Settings
                                         </Typography>
                                         <Tooltip title={isSettingsExpanded ? "Collapse Section" : "Expand Section"}>
                                             <IconButton
                                                 aria-label="toggle-section"
                                                 onClick={() => setIsSettingsExpanded(!isSettingsExpanded)}
-                                                // size="small"
-                                                style={{ color: '#113B4F' }}
+                                                className="toggle-button"
                                             >
                                                 {isSettingsExpanded ? <FaChevronUp /> : <FaChevronDown />}
                                             </IconButton>
@@ -361,7 +338,7 @@ const PageEdit = () => {
                                     </div>
                                     
                                     <Collapse in={isSettingsExpanded}>
-                                        <div style={{ padding: '15px', marginTop: '20px' }}>
+                                        <div className="page-settings-content">
                                             <Grid container spacing={3}>
                                                 <Grid item xs={12} sm={6}>
                                                     <TextField
@@ -372,22 +349,7 @@ const PageEdit = () => {
                                                         variant="outlined"
                                                         onChange={handleChange}
                                                         value={formData.button_name || ''}
-                                                        InputProps={{
-                                                            style: { 
-                                                                backgroundColor: 'white',
-                                                                border: '1px solid #ddd'
-                                                            }
-                                                        }}
-                                                        sx={{
-                                                            '& .MuiOutlinedInput-root': {
-                                                                '& fieldset': {
-                                                                    borderColor: '#ddd',
-                                                                },
-                                                                '&:hover fieldset': {
-                                                                    borderColor: '#bbb',
-                                                                }
-                                                            }
-                                                        }}
+                                                        className="button-field"
                                                     />
                                                 </Grid>
                                                 <Grid item xs={12} sm={6}>
@@ -400,22 +362,7 @@ const PageEdit = () => {
                                                         variant="outlined"
                                                         onChange={handleChange}
                                                         value={formData.button_link || ''}
-                                                        InputProps={{
-                                                            style: { 
-                                                                backgroundColor: 'white',
-                                                                border: '1px solid #ddd'
-                                                            }
-                                                        }}
-                                                        sx={{
-                                                            '& .MuiOutlinedInput-root': {
-                                                                '& fieldset': {
-                                                                    borderColor: '#ddd',
-                                                                },
-                                                                '&:hover fieldset': {
-                                                                    borderColor: '#bbb',
-                                                                }
-                                                            }
-                                                        }}
+                                                        className="button-field"
                                                     />
                                                 </Grid>
                                             </Grid>
@@ -425,13 +372,12 @@ const PageEdit = () => {
 
                                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
                                     <Grid item>
-                                        <Button className='submit-btn' variant="contained" color="primary" style={{ backgroundColor: "#2c9dd4" }} type="submit">
+                                        <Button className='submit-btn submit-button' variant="contained" color="primary" type="submit">
                                             Submit
                                         </Button>
                                     </Grid>
                                     <Grid item>
-                                        <Button className='cancel-btn' style={{ backgroundColor: "rgb(212 44 42)", color: "white", marginLeft: "-10px" }}
-                                            onClick={() => navigate('/page-list')}>
+                                        <Button className='cancel-btn cancel-button' onClick={() => navigate('/page-list')}>
                                             Cancel
                                         </Button>
                                     </Grid>
