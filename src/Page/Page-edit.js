@@ -330,7 +330,7 @@ const PageEdit = () => {
                                             <IconButton
                                                 aria-label="toggle-section"
                                                 onClick={() => setIsSettingsExpanded(!isSettingsExpanded)}
-                                                className="toggle-button"
+                                                className="toggle-button action-button"
                                             >
                                                 {isSettingsExpanded ? <FaChevronUp /> : <FaChevronDown />}
                                             </IconButton>
