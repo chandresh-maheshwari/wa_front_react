@@ -2,6 +2,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "./Dashboard/Dashboard";
+import CMSCallback from "./Dashboard/CMSCallback";
 import "./App.css";
 import "./Service/Addrvices.css";
 import Servicenave from "./Service/Servicenave";
@@ -56,6 +57,9 @@ function App() {
         <Route path="/Page-list" element={<ProtectedRoute><PageList /></ProtectedRoute>} />
         <Route path="/Page-edit/:id" element={<ProtectedRoute><PageEdit /></ProtectedRoute>} />
         <Route path="/Contact-listing" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
+        <Route path="/cms/Dashboard" element={<ProtectedRoute><CMSCallback /></ProtectedRoute>} />
+        {/* <Route path="/cms/Dashboard" element={<CMSCallback />} /> */}
+
         {/* <Route path="/Contact-view/:id" element={<ProtectedRoute><contactView /></ProtectedRoute>} /> */}
         {/* <Route path="*" element={<ProtectedRoute><Navigate to="/" /></ProtectedRoute>} /> */}
         {/* <Route path="*" element={<ProtectedRoute><Navigate to="/" /></ProtectedRoute>} /> */}
