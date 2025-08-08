@@ -7,6 +7,7 @@ import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import Authapi from '../Authapi';
 import { useNavigate } from 'react-router-dom';
 import { CiLogout } from "react-icons/ci";
+import UserInfo from '../components/UserInfo';
 // import img from './images/WasteAccountant_LOGO.png'
 // const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
 const img = `https://laravel.wasteaccountant.com/admin/images/WasteAccountant_LOGO.png`;
@@ -138,6 +139,10 @@ const Sidebar = () => {
       <div className="logo">
         <img src={img} style={{ width: "100%" }} alt="img" />
       </div>
+      
+      {/* User Information Component */}
+      <UserInfo />
+      
       <div className="sidebar-wrapper" id="navigation">
         <ul className="nav">
 

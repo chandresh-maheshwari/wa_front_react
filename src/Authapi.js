@@ -121,7 +121,52 @@ export default new (class AuthApi {
     }
   }
 
+  // New method to handle Laravel session validation
+  async validateLaravelSession(laravelToken) {
+    try {
+      const url = Config.apiurl + 'api/validate-laravel-session';
+      const response = await axios.post(url, { laravel_token: laravelToken }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+      });
 
+      const data = response.data;
+      
+      if (data.status === true && data.token) {
+        // Store the React token
+        localStorage.setItem('Token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        return data;
+      }
+      
+      return data;
+    } catch (error) {
+      console.error("Error validating Laravel session:", error);
+      throw new Error("Failed to validate Laravel session");
+    }
+  }
+
+  // Method to check if user is authenticated via Laravel session
+  async checkLaravelAuth() {
+    try {
+      const url = Config.apiurl + 'api/check-laravel-auth';
+      const response = await axios.get(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        withCredentials: true // Important for sending cookies
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("Error checking Laravel auth:", error);
+      return { status: false, message: "Not authenticated" };
+    }
+  }
 
 
   async durTime() {
@@ -1894,6 +1939,7 @@ export default new (class AuthApi {
       // Ensure the URL is properly formatted
       const url = `${Config.apiurl}${Config.apis.imgdelete}${id}/${name}`;
       console.log("API URL:", url); // Debugging the URL to ensure it's correct
+      
       const token = ls('Token');
 
       // Ensure headers are set correctly for DELETE request

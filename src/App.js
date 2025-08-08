@@ -7,6 +7,7 @@ import "./Service/Addrvices.css";
 import Servicenave from "./Service/Servicenave";
 import Login from "./Login/Login";
 import ForgetPasswordForm from "./Login/ForgetPassword";
+import LaravelRedirect from "./Login/LaravelRedirect";
 import Sidebar from "./Sidebar/Sidebar";
 import MaybeshowNavbar from "./MaybeshowNavbar";
 import Dynamicform from "./DymanicPost/Dynamic-form";
@@ -42,6 +43,7 @@ function App() {
       </MaybeshowNavbar>
       <Routes>
         <Route path="/" element={ls('user') ? <Navigate to="/Dashboard" /> : <Login />} />
+        <Route path="/laravel-redirect" element={<LaravelRedirect />} />
         <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/ForgetPassword" element={<ForgetPasswordForm />} />
         <Route path="/dynamic-form" element={<ProtectedRoute><Dynamicform /></ProtectedRoute>} />

@@ -30,6 +30,56 @@ function Login() {
             }
         }
 
+        // Check for Laravel user data and pre-fill form
+        const laravelEmail = localStorage.getItem('laravel_email');
+        const laravelPassword = localStorage.getItem('laravel_password');
+        
+        if (laravelEmail || laravelPassword) {
+            setEmail(laravelEmail || '');
+            setPassword(laravelPassword || '');
+            
+            // Clear the stored Laravel data after pre-filling
+            localStorage.removeItem('laravel_email');
+            localStorage.removeItem('laravel_password');
+            
+            // Show message that form is pre-filled
+            Swal.fire({
+                icon: 'info',
+                title: 'Form Pre-filled',
+                text: 'Your login details from Laravel have been pre-filled.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        // Check for Laravel session authentication
+        const checkLaravelAuth = async () => {
+            try {
+                const authCheck = await Authapi.checkLaravelAuth();
+                if (authCheck.status === true) {
+                    // User is authenticated via Laravel session
+                    if (authCheck.token) {
+                        localStorage.setItem('Token', authCheck.token);
+                        // Add source information to user data
+                        const userWithSource = {
+                            ...authCheck.user,
+                            source: 'Laravel'
+                        };
+                        localStorage.setItem('user', JSON.stringify(userWithSource));
+                    }
+                    navigate("/Dashboard");
+                    return;
+                }
+            } catch (error) {
+                console.log('No Laravel session found, continuing with normal login flow');
+            }
+        };
+
+        // Only check Laravel auth if no React token exists
+        if (!localStorage.getItem('Token')) {
+            checkLaravelAuth();
+        }
+
         const savedEmail = localStorage.getItem('rememberedEmail');
         const savedPassword = localStorage.getItem('rememberedPassword');
         const savedRemember = localStorage.getItem('remember') === 'true';
@@ -71,7 +121,12 @@ function Login() {
 
             if (response.status === true) {
                 const { token, user } = response;
-                localStorage.setItem('user', JSON.stringify(user));
+                // Add source information to user data
+                const userWithSource = {
+                    ...user,
+                    source: 'React CMS'
+                };
+                localStorage.setItem('user', JSON.stringify(userWithSource));
                 localStorage.setItem('Token', token);
 
                 if (remember) {
