@@ -5,8 +5,14 @@ import ForgetPasswordForm from "./Login/ForgetPassword";
 console.log(`NODE_ENV is set to: ${process.env.NODE_ENV}`);
 export default {
 
+    // apiurl: process.env.NODE_ENV === "development"
+    // ? "http://wa_front.localhost.com/"
+    // // : "https://hrmsapi.cherrypiksoftware.com/",
+    // : "https://front.wasteaccountant.com/",
+
 
   apiurl: process.env.NODE_ENV === "development"
+    // ? "http://wa_front.localhost.com/"
     ? "http://wa_front.localhost.com/"
     // : "https://hrmsapi.cherrypiksoftware.com/",
     : "https://front.wasteaccountant.com/",
@@ -28,7 +34,7 @@ export default {
     LoginExToken: 'api/refresh',
 
 
-
+    
     forgetPassSendotp: 'api/send-otp',
     forgetPassvarify: 'api/verify-otp',
     forgetPassreset: 'api/reset-password',

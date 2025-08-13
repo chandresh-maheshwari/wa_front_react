@@ -22,6 +22,7 @@ import Contact from "./Page/Contact-listing";
 // import contactView from "./Page/Contact-view";
 import ls from "local-storage";
 import NoPage from './NoPage'; 
+import CMSCallback from "./Dashboard/CMSCallback";
 
 
 // ProtectedRoute Component for guarding the routes
@@ -31,6 +32,11 @@ function ProtectedRoute({ children }) {
     return <Navigate to="/" />;
   }
   return children;
+  // const token = ls('Token');
+  // if (!token) {
+  //   return <Navigate to="/" />;
+  // }
+  // return children;
 }
 
 function App() {
@@ -41,8 +47,9 @@ function App() {
         <Sidebar />
       </MaybeshowNavbar>
       <Routes>
+        {/* <Route path="/" element={ls('user') ? <Navigate to="/Dashboard" /> : <Login />} /> */}
         <Route path="/" element={ls('user') ? <Navigate to="/Dashboard" /> : <Login />} />
-        <Route path="/Dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/ForgetPassword" element={<ForgetPasswordForm />} />
         <Route path="/dynamic-form" element={<ProtectedRoute><Dynamicform /></ProtectedRoute>} />
         <Route path="/dynamic-list-data" element={<ProtectedRoute><DynamicList /></ProtectedRoute>} />
@@ -54,6 +61,7 @@ function App() {
         <Route path="/Page-list" element={<ProtectedRoute><PageList /></ProtectedRoute>} />
         <Route path="/Page-edit/:id" element={<ProtectedRoute><PageEdit /></ProtectedRoute>} />
         <Route path="/Contact-listing" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
+        <Route path="/Dashboard" element={<ProtectedRoute><CMSCallback /></ProtectedRoute>} />
         {/* <Route path="/Contact-view/:id" element={<ProtectedRoute><contactView /></ProtectedRoute>} /> */}
         {/* <Route path="*" element={<ProtectedRoute><Navigate to="/" /></ProtectedRoute>} /> */}
         {/* <Route path="*" element={<ProtectedRoute><Navigate to="/" /></ProtectedRoute>} /> */}

@@ -23,6 +23,7 @@
     "chroma-js": "^3.1.2",
     "html-react-parser": "^5.0.6",
     "jquery": "^3.7.1",
+    "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "local-storage": "^2.0.0",
     "mdbreact": "^5.2.0",
