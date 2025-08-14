@@ -25,6 +25,8 @@ const PageEdit = () => {
     useEffect(() => {
         const fetchPostTitles = async () => {
             try {
+      console.log('page-edit');
+
                 const response = await Authapi.dynamicListData();
                 // console.log("API Response:", response);
                 if (response && response.results) {

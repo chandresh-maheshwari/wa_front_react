@@ -49,6 +49,7 @@ const PostDynamicList = () => {
 
     const fetchData = async (currentPage, currentPageSize) => {
         try {
+            console.log("test");
             const response = await Authapi.postdynamicListData(post_title);
             if (response.status === true) {
                 const formattedRows = response.results.map((item, index) => {

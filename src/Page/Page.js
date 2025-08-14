@@ -16,6 +16,8 @@ const Page = () => {
     useEffect(() => {
         const fetchPostTitles = async () => {
             try {
+                      console.log('Page file');
+
                 const response = await Authapi.dynamicListData();
                 // console.log(response)
                 if (response && response.results) {

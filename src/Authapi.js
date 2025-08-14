@@ -101,7 +101,7 @@ export default new (class AuthApi {
   }
 
 
-  async refreshToken1(formData) {
+  async refreshToken(formData) {
     // console.log()
     try {
       const url = Config.apiurl + Config.apis.LoginExToken;

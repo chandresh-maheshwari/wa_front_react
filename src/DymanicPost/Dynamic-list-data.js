@@ -43,6 +43,7 @@ const DynamicList = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
+      console.log('dynamic-list-data');
       const response = await Authapi.dynamicListData();
       console.log("API Response:", response); // Log the API response
 

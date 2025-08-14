@@ -13,7 +13,7 @@ export default {
 
   apiurl: process.env.NODE_ENV === "development"
     // ? "http://wa_front.localhost.com/"
-    ? "http://wa_front.localhost.com/"
+    ? "http://walara.localhost.com/admin/"
     // : "https://hrmsapi.cherrypiksoftware.com/",
     : "https://front.wasteaccountant.com/",
 

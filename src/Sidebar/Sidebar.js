@@ -145,7 +145,7 @@ const Sidebar = () => {
             <Link to="/Dashboard">
               <p>Dashboard</p>
             </Link>
-          </li><li>
+          </li>          <li>
             <Link
               id="Dynamic_POST"
               className={`nav-link nav-dropdown-toggle nav-item nav-dropdown ${isActive('Dynamic_POST') ? 'active-sidebar-item' : ''}`}
@@ -218,7 +218,7 @@ const Sidebar = () => {
                     {openItems[post.id] ? (
                       <IoIosArrowUp className="Arrow-icon-Sidebar" />
                     ) : (
-                      <IoIosArrowDown className="Arrow-icon-Sidebar" />
+                      <IoIosArrowDown className="Arrow-icon-Sidebar" />                                                                      
                     )}
                   </Link>
                   {openItems[post.id] && (

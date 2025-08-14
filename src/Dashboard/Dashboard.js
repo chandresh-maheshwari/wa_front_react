@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';  // Import useState here
+import React, { useEffect, useState, useRef } from 'react';  // Import useState here
 import axios from 'axios'; 
 // import localStorage from 'local-storage'
 // import '../App.css';
@@ -6,7 +6,7 @@ import Expired from '../Login/ExpiredToken'
 import Cookies from 'js-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ls from 'local-storage';
-
+import Authapi from "../Authapi";
 function Dashboard() {
 //  const [authData, setAuthData] = useState(null);
 
@@ -43,28 +43,49 @@ function Dashboard() {
 //     return <div>Loading...</div>;
 //   }
 
-const location = useLocation();
-  const navigate = useNavigate();
 
+
+ const navigate = useNavigate();
+  const location = useLocation();
+  const [loading, setLoading] = useState(true);
+
+  // ✅ Step 1: Handle token in URL once (on first login)
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const token = params.get('token');
+    console.log(token);
     const userParam = params.get('user');
 
     if (token && userParam) {
       const user = JSON.parse(decodeURIComponent(userParam));
-      ls.set('Token', token);
-      ls.set('user', user);
-
-      // Redirect to actual dashboard after storing token
-      navigate('/Dashboard', { replace: true });
-
-    } else {
-      // If no token in URL, redirect to login
-      navigate('/', { replace: true });
+      localStorage.setItem('Token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      navigate('/Dashboard', { replace: true }); // ✅ clean URL
     }
   }, [location.search, navigate]);
 
+  // ✅ Step 2: Only call API if token exists
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('Token');
+      if (!token) {
+        navigate('/'); // redirect to login
+        return;
+      }
+
+      try {
+        const response = await Authapi.getUserData(); // your API call
+        console.log("User Info:", response);
+        // you can store in state if needed
+      } catch (error) {
+        console.error("API Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
 
   // return <div>Loading...</div>;
 
