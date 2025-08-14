@@ -65,27 +65,27 @@ function Dashboard() {
   }, [location.search, navigate]);
 
   // ✅ Step 2: Only call API if token exists
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const token = localStorage.getItem('Token');
-      if (!token) {
-        navigate('/'); // redirect to login
-        return;
-      }
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     const token = localStorage.getItem('Token');
+  //     if (!token) {
+  //       navigate('/'); // redirect to login
+  //       return;
+  //     }
 
-      try {
-        const response = await Authapi.getUserData(); // your API call
-        console.log("User Info:", response);
-        // you can store in state if needed
-      } catch (error) {
-        console.error("API Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //     try {
+  //       const response = await Authapi.getUserData(); // your API call
+  //       console.log("User Info:", response);
+  //       // you can store in state if needed
+  //     } catch (error) {
+  //       console.error("API Error:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchUserData();
-  }, [navigate]);
+  //   fetchUserData();
+  // }, [navigate]);
 
   // return <div>Loading...</div>;
 
