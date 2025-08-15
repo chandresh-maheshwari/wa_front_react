@@ -183,7 +183,7 @@ const ForgetPasswordForm = () => {
                                                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                                                     required
                                                                     fullWidth
-                                                                    margin="normal"
+                                                                    
                                                                     error={!!confirmPasswordError}
                                                                     helperText={confirmPasswordError}
                                                                 />

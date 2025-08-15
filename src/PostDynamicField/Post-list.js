@@ -35,11 +35,12 @@ const PostDynamicList = () => {
     const [fieldDefinitions, setFieldDefinitions] = useState([]);
 
     useEffect(() => {
+        console.log("Call post listing file");
         setTimeout(() => {
             fetchData(page, pageSize);
-            fetchFieldDefinitions();
+            // fetchFieldDefinitions();
         }, 100);
-        setSelectedRows([]);
+        setSelectedRows([]); 
         setStatusFilter('all'); 
     }, [post_title]);
 
@@ -49,7 +50,7 @@ const PostDynamicList = () => {
 
     const fetchData = async (currentPage, currentPageSize) => {
         try {
-            console.log("test");
+            // console.log("test");
             const response = await Authapi.postdynamicListData(post_title);
             if (response.status === true) {
                 const formattedRows = response.results.map((item, index) => {
