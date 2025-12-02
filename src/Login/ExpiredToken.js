@@ -140,24 +140,29 @@ const Expired = () => {
 
     // Function to regenerate token
     const regenerateToken = async () => {
-        try {
-            let formData = {
-                user_id: localStorage("user").id
-            };
-            const newToken = await Authapi.refreshToken1(formData);
-            if (newToken.data.add_token) {
-                localStorage("Token", newToken.data.add_token);
-                setIsTokenExpired(false);
-                setHasShownPopup(false); // Reset the popup flag
-                Swal.fire("Success", "Your session has been refreshed!", "success");
-            } else {
-                Swal.fire("Error", "Failed to regenerate token. Please try again.", "error");
-            }
-        } catch (error) {
-            console.error("Error refreshing token:", error);
-            Swal.fire("Error", "Failed to regenerate token. Please try again.", "error");
+    try {
+        let formData = {
+            user_id: localStorage.get("user").id
+        };
+
+        const newToken = await Authapi.refreshToken1(formData);
+
+        if (newToken.data.api_token) {
+            localStorage.set("Token", newToken.data.api_token);
+            setIsTokenExpired(false);
+            setHasShownPopup(false);
+
+            Swal.fire("Success", "Your session has been refreshed!", "success");
+        } else {
+            throw new Error("Token missing in response");
         }
-    };
+
+    } catch (error) {
+        console.error("Refresh Token Error:", error);
+        Swal.fire("Error", "Failed to regenerate token. Please try again.", "error");
+    }
+};
+
 
     // Effect to check for token expiration immediately when the component is mounted
     useEffect(() => {
