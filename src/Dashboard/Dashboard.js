@@ -3,7 +3,7 @@ import axios from 'axios';
 // import localStorage from 'local-storage'
 // import '../App.css';
 import Expired from '../Login/ExpiredToken'
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ls from 'local-storage';
 import Authapi from "../Authapi";
