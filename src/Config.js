@@ -15,9 +15,7 @@ export default {
     // ? "http://wa_front.localhost.com/"
     ? "http://walara.localhost.com/admin/"
     // : "https://hrmsapi.cherrypiksoftware.com/",
-    : "https://laravel.wasteaccountant.com/admin/",
-
-
+    : "https://laravel.wasteaccountant.com/admin/", 
   //   authApis: {
   //     login: "api/auth/login",
   //     logout: "api/auth/logout",

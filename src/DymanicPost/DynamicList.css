@@ -1,0 +1,87 @@
+/* Dynamic List Component Styles */
+.dynamic-list-main-row {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  margin-left: 262px;
+}
+
+.dynamic-list-card-body {
+  height: calc(115vh - 200px);
+  width: 100%;
+}
+
+.dynamic-list-container {
+  height: 100%;
+}
+
+.dynamic-list-inner {
+  height: 100%;
+}
+
+.dynamic-list-action-filter {
+  width: 20% !important;
+  margin-top: -44px !important;
+  margin-left: 10px !important;
+}
+
+/* DataGrid specific styles */
+.dynamic-list-container .MuiDataGrid-columnHeaders {
+  background-color: #113b4f;
+  color: white;
+}
+
+/* Action buttons styling */
+.dynamic-list-container .action-button {
+  color: #113B4F !important;
+}
+
+.dynamic-list-container .switch-class span .MuiSwitch-thumb {
+  background-color: #113B4F !important;
+}
+
+/* Form control styling */
+.dynamic-list-container .filter_dropdown_of_main_page div {
+  padding: 6.5px 14px !important;
+}
+
+/* Add button styling */
+.dynamic-post-add-btn {
+  margin-top: 6px !important;
+  margin-left: 2px !important;
+}
+
+.dynamic-post-add-btn svg {
+  background-color: rgb(15, 50, 67);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 22px;
+}
+
+/* Table container styling */
+.dynamic-list-container .table-card-body {
+  padding: 1rem 0rem 1rem 0rem !important;
+}
+
+.dynamic-list-container .table-container {
+  padding: 1rem 0rem 1rem 0rem !important;
+  max-width: 100%;
+}
+
+/* Cell alignment */
+.dynamic-list-container .MuiDataGrid-cell {
+  justify-content: center !important;
+}
+
+.dynamic-list-container .MuiDataGrid-columnHeaderTitleContainer {
+  justify-content: center;
+}
+
+/* Container max width */
+.dynamic-list-container .MuiContainer-root {
+  max-width: 100% !important;
+}
+
+/* Disabled action button */
+.dynamic-list-container .action-button[disabled] {
+  opacity: 0.5 !important;
+} 
