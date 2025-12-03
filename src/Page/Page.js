@@ -12,7 +12,7 @@ const Page = () => {
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
     const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
     useEffect(() => {
         const fetchPostTitles = async () => {
             try {
@@ -75,6 +75,8 @@ const Page = () => {
     // };
     const handleSubmit = async (event) => {
         event.preventDefault();
+      
+
         setErrors({});
 
         const newFormData = { ...formData };
@@ -106,6 +108,8 @@ const Page = () => {
         form.append('button_link', newFormData.button_link || " ");
 
         try {
+              // Disable button on first click
+        setIsSubmitting(true);
             const response = await Authapi.Pagestoredata(form);
             if (response) {
                 Swal.fire('Success', ' added successfully!', 'success');
@@ -117,6 +121,8 @@ const Page = () => {
             console.error("API Error:", error);
             Swal.fire('Error', 'An error occurred while submitting.', 'error');
         }
+        // Re-enable button after response
+        setIsSubmitting(false);
     };
 
 
@@ -333,9 +339,12 @@ const Page = () => {
 
                                 <Grid container justifyContent="flex-start" spacing={2} className="page-form-action-buttons">
                                     <Grid item>
-                                        <Button className='submit-btn' variant="contained" color="primary" type="submit">
+                                        {/* <Button className='submit-btn' variant="contained" color="primary" type="submit">
                                             Submit
-                                        </Button>
+                                        </Button> */}
+                                        <Button variant="contained" color="primary" className='submit-btn' type="submit" disabled={isSubmitting}>
+                                            {isSubmitting ? "Submitting..." : "Submit"}</Button>
+
                                     </Grid>
                                     <Grid item>
                                         <Button className='cancel-btn' onClick={() => navigate('/page-list')}>

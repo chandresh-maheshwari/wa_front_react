@@ -1372,6 +1372,21 @@ export default new (class AuthApi {
   }
 
 
+  async CheckPostTitle(title) {
+    // const url = `${Config.apiurl}/check-post-title`;
+    console.log(`${Config.apiurl}${Config.apis.getposttitle}`);
+    const url = `${Config.apiurl}${Config.apis.getposttitle}`; // no extra '/'
+
+    const token = ls("Token");
+  
+    return axios.post(
+      url,
+      { title },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+  }
+
+
 
   async dynamicListData() {
     try {

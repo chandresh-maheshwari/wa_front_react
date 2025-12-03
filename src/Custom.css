@@ -869,9 +869,9 @@ td {
   transition: all 0.375s;
 }
 
-.MuiFormControl-root:has(.checkbox-wrapper) {
+/* .MuiFormControl-root:has(.checkbox-wrapper) {
   margin-top: 7%;
-}
+} */
 /* .action-button{ */
 .add-new-field, .delete-field{
   margin-top: -15% !important;
@@ -1419,9 +1419,7 @@ td {
   opacity: 0.5 !important;
 }
 
-.dynamic-edit-form-button-enabled {
-  opacity: 1 !important;
-}
+
 
 .dynamic-edit-form-section-title-text {
   margin: 0;
@@ -1436,9 +1434,7 @@ td {
   opacity: 0.5 !important;
 }
 
-.dynamic-edit-form-button-enabled {
-  opacity: 1 !important;
-}
+
 
 .action-button {
   color: #113B4F !important;
@@ -1446,7 +1442,8 @@ td {
 
 .action-button.add-new-field,
 .action-button.delete-field {
-  margin-top: -15% !important;
+  /* margin-top: -15% !important; */
+  margin-top: -6% !important;
 }
 
 /* Post List Component Styles */
@@ -2290,3 +2287,19 @@ td {
   margin-left: 5px;
   display: inline-block;
 }
+
+/* New Chages css 02-12-25 START */
+.submit-btn.Mui-disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+.dynamic-edit-form-button-enabled {
+  margin-top: -15px !important;
+  opacity: 1 !important;
+}
+.dashboard_nav_item{
+  margin-bottom: 0;
+}
+/* New Chages css 02-12-25 END */

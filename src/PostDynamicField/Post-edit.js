@@ -20,6 +20,7 @@ const PostDynamicEdit = () => {
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
     const [showPassword, setShowPassword] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const post_title = location.state?.post_title;
 
     useEffect(() => {
@@ -359,6 +360,8 @@ const PostDynamicEdit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+
+
         if (!validate()) {
             console.log('Validation failed');
             return;
@@ -428,6 +431,8 @@ const PostDynamicEdit = () => {
         console.log('Submitting JSON data:', submitData);
 
         try {
+            // Disable button on first click
+            setIsSubmitting(true);
             // Assuming `Authapi.postdynamicupdatedata` expects the `id` and `submitData` as arguments
             const response = await Authapi.postdynamicupdatedata(id, submitData);
             if (response.status === true) {
@@ -440,6 +445,8 @@ const PostDynamicEdit = () => {
             Swal.fire('Error', 'There was an issue with your submission.', 'error');
             console.error('Error submitting data:', error);
         }
+        // Re-enable button after response
+        setIsSubmitting(false);
     };
 
     const renderLabel = (label, required) => {
@@ -455,16 +462,16 @@ const PostDynamicEdit = () => {
     };
 
     // extention of file and textarea
-      const isImageFile = (url) => /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(
+    const isImageFile = (url) => /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(
         typeof url === 'string' ? url : (url?.name || '')
     );
- 
+
     // const isDocFile = (url) => /\.(docx?|xlsx?|pptx?)$/i.test(url);
     // const getViewUrl = (url) =>
     //   isDocFile(url)
     //     ? `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
     //     : url;
- 
+
     const getFileNameFromUrl = (url) => {
         if (!url) return '';
         if (typeof url === 'string') {
@@ -475,7 +482,7 @@ const PostDynamicEdit = () => {
         }
         return '';
     };
- 
+
     // const getFileType = (urlOrFile) => {
     //     const name = typeof urlOrFile === 'string' ? urlOrFile : (urlOrFile?.name || '');
     //     const ext = name.split('.').pop().toLowerCase();
@@ -486,9 +493,9 @@ const PostDynamicEdit = () => {
     //     if (['txt'].includes(ext)) return 'txt';
     //     return 'other';
     // };
- 
+
     const sanitize = str => str.replace(/\s+/g, '_');
- 
+
     const handleDownload = async (filename) => {
         try {
             await Authapi.downloadFile(filename);
@@ -496,7 +503,7 @@ const PostDynamicEdit = () => {
             alert("Download failed!");
         }
     };
- 
+
 
     return (
         <>
@@ -775,8 +782,8 @@ const PostDynamicEdit = () => {
                                     {sections.map((section, sectionIndex) => (
                                         <Grid item xs={12} key={sectionIndex}>
                                             <div className="post-edit-section-wrapper">
-                                                    <Typography variant="h6" className='post-form-section-header'>{section.title}</Typography>
-                                                   
+                                                <Typography variant="h6" className='post-form-section-header'>{section.title}</Typography>
+
                                                 <Grid container spacing={3}>
                                                     {section.fields.map((field, index) => (
                                                         <Grid item xs={12} sm={field.type === 'ckeditor' ? 12 : 6} key={index}>
@@ -1048,13 +1055,16 @@ const PostDynamicEdit = () => {
 
                                 <Grid container justifyContent="flex-start" spacing={2} className="post-form-action-buttons">
                                     <Grid item>
-                                        <Button
+                                        {/* <Button
                                             className='submit-btn'
                                             variant="contained"
                                             color="primary"
                                             type="submit"
                                         >
                                             Submit
+                                        </Button> */}
+                                        <Button variant="contained" color="primary" className='submit-btn' type="submit" disabled={isSubmitting}>
+                                            {isSubmitting ? "Submitting..." : "Submit"}
                                         </Button>
                                     </Grid>
                                     <Grid item>

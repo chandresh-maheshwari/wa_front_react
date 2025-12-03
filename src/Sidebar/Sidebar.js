@@ -19,10 +19,27 @@ const Sidebar = () => {
   const [postTitles, setPostTitles] = useState([]);
   const [openItems, setOpenItems] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [userTypeEmail, setuserTypeEmail] = useState(null);
 
   const [, forceUpdate] = useState();
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+
+  // Fetch current user from localStorage
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser && parsedUser.email) {
+          setuserTypeEmail(parsedUser.email);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to parse user from localStorage:', error);
+    }
+  }, []);
+
   useEffect(() => {
     const fetchPostTitles = async () => {
       try {
@@ -143,41 +160,52 @@ const Sidebar = () => {
 
           <li className={`nav-item nav-dropdown ${isActive('/Dashboard') ? 'active-sidebar-item' : ''}`}>
             <Link to="/Dashboard">
+            {userTypeEmail === "admindevloper@cms.com" ? (
               <p>Dashboard</p>
-            </Link>
-          </li>          <li>
-            <Link
-              id="Dynamic_POST"
-              className={`nav-link nav-dropdown-toggle nav-item nav-dropdown ${isActive('Dynamic_POST') ? 'active-sidebar-item' : ''}`}
-              style={{ ...isActive('Dynamic_POST') ? activeStyle : {}, display: 'flex', alignItems: 'center' }}
-              to="#"
-              onClick={(e) => {
-                e.preventDefault();
-                toggle('Dynamic_POST');
-              }}
-            >
-              Dynamic post
-              {openItems['Dynamic_POST'] ? (
-                <IoIosArrowUp className="Arrow-icon-Sidebar" />
-              ) : (
-                <IoIosArrowDown className="Arrow-icon-Sidebar" />
-              )}
+            ) : (
+              <p class="dashboard_nav_item">Dashboard</p>
+            )}
             </Link>
           </li>
+          {console.log("User Type:", userTypeEmail)}
 
-          {openItems['Dynamic_POST'] && (
-            <ul className="nav-dropdown-items-Dynamic_POST">
-              <li className="nav-item">
-                <Link className="nav-link" to="/dynamic-form">
-                  <span>Add New </span>
+          {userTypeEmail === "admindevloper@cms.com" && (
+            <>
+              <li>
+                <Link
+                  id="Dynamic_POST"
+                  className={`nav-link nav-dropdown-toggle nav-item nav-dropdown ${isActive('Dynamic_POST') ? 'active-sidebar-item' : ''}`}
+                  style={{ ...isActive('Dynamic_POST') ? activeStyle : {}, display: 'flex', alignItems: 'center' }}
+                  to="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggle('Dynamic_POST');
+                  }}
+                >
+                  Dynamic Post Type
+                  {openItems['Dynamic_POST'] ? (
+                    <IoIosArrowUp className="Arrow-icon-Sidebar" />
+                  ) : (
+                    <IoIosArrowDown className="Arrow-icon-Sidebar" />
+                  )}
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link " id="listing" to="/dynamic-list-data">
-                  <span>Dynamic post List</span>
-                </Link>
-              </li>
-            </ul>
+
+              {openItems['Dynamic_POST'] && (
+                <ul className="nav-dropdown-items-Dynamic_POST">
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/dynamic-form">
+                      <span>Add New </span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link " id="listing" to="/dynamic-list-data">
+                      <span>List</span>
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </>
           )}
 
           <li>

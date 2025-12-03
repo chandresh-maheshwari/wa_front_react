@@ -18,6 +18,7 @@ const PostFormDynamic = () => {
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
     const [showPassword, setShowPassword] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const post_title = location.state?.post_title;
 
     useEffect(() => {
@@ -246,6 +247,8 @@ const PostFormDynamic = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // // Disable button on first click
+        // setIsSubmitting(true);
         if (!validate()) {
             console.log('Validation failed');
             return;
@@ -293,6 +296,8 @@ const PostFormDynamic = () => {
         console.log('Submitting JSON data:', submitData);
 
         try {
+            // Disable button on first click
+            setIsSubmitting(true);
             const response = await Authapi.postDynamicstoredata(submitData, post_title);
             if (response.status === true) {
                 Swal.fire('Success', 'Data submitted successfully!', 'success');
@@ -305,6 +310,8 @@ const PostFormDynamic = () => {
             Swal.fire('Error', 'There was an issue with your submission.', 'error');
             console.error('Error submitting data:', error);
         }
+        // Re-enable button after response
+        setIsSubmitting(false);
     };
 
     // Helper to render label with one red asterisk if required and not already present
@@ -749,7 +756,7 @@ const PostFormDynamic = () => {
 
                                 <Grid container justifyContent="flex-start" spacing={2} className="post-form-action-buttons">
                                     <Grid item>
-                                        <Button
+                                        {/* <Button
                                             className='submit-btn'
                                             variant="contained"
                                             color="primary"
@@ -757,6 +764,9 @@ const PostFormDynamic = () => {
                                             type="submit"
                                         >
                                             Submit
+                                        </Button> */}
+                                        <Button variant="contained" color="primary" className='submit-btn' type="submit" disabled={isSubmitting}>
+                                            {isSubmitting ? "Submitting..." : "Submit"}
                                         </Button>
                                     </Grid>
                                     <Grid item>

@@ -20,7 +20,7 @@ const PageEdit = () => {
     const navigate = useNavigate();
     const [errors, setErrors] = useState({})
     const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         const fetchPostTitles = async () => {
@@ -86,6 +86,8 @@ const PageEdit = () => {
         form.append('button_name', formData.button_name);
         form.append('button_link', formData.button_link);
         try {
+            // Disable button on first click
+            setIsSubmitting(true);
             const response = await Authapi.pageupdatedata(id, form);
             if (response) {
                 Swal.fire('Success', ' added successfully!', 'success');
@@ -97,6 +99,8 @@ const PageEdit = () => {
             console.error("API Error:", error);
             Swal.fire('Error', 'An error occurred while submitting.', 'error');
         }
+        // Re-enable button after response
+        setIsSubmitting(false);
     };
 
 
@@ -374,8 +378,11 @@ const PageEdit = () => {
 
                                 <Grid container justifyContent="flex-start" spacing={2} marginTop={3}>
                                     <Grid item>
-                                        <Button className='submit-btn submit-button' variant="contained" color="primary" type="submit">
+                                        {/* <Button className='submit-btn submit-button' variant="contained" color="primary" type="submit">
                                             Submit
+                                        </Button> */}
+                                        <Button variant="contained" color="primary" className='submit-btn' type="submit" disabled={isSubmitting}>
+                                            {isSubmitting ? "Submitting..." : "Submit"}
                                         </Button>
                                     </Grid>
                                     <Grid item>

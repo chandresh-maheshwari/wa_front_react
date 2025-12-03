@@ -143,5 +143,7 @@ export default {
 
     fileExtension: 'api/file-extensions/', 
     downloadfile: 'api/download-file/', 
+
+    getposttitle: 'api/check-post-title',    
   },
 };

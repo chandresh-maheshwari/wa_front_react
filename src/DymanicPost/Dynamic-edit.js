@@ -14,6 +14,8 @@ const DynamicEditForm = ({ existingData }) => {
     const navigate = useNavigate();
     const [standaloneFields, setStandaloneFields] = useState([]);
     const [buttonsDisabled, setButtonsDisabled] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
 
     const [formData, setFormData] = useState({
         post_title: '',
@@ -273,6 +275,17 @@ const DynamicEditForm = ({ existingData }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // // Disable button on first click
+        // setIsSubmitting(true);
+        // check that post title not be same 
+        const check = await Authapi.CheckPostTitle(formData.post_title);
+        console.log(check);
+        if (check?.data?.exists) {
+            Swal.fire("Warning", "This post title already exists!", "warning");
+            setIsSubmitting(false);
+            return; // STOP form submit
+        }
+
         // Prepare standalone fields
         const standaloneFieldsData = standaloneFields.map((field) => ({
             label: field.label,
@@ -327,6 +340,8 @@ const DynamicEditForm = ({ existingData }) => {
         try {
             let response;
             if (id) {
+                // Disable button on first click
+                setIsSubmitting(true);
                 // If an ID exists, update the existing entry
                 response = await Authapi.dynamicupdatedata(id, submitFormData);
             } else {
@@ -342,6 +357,9 @@ const DynamicEditForm = ({ existingData }) => {
             console.log("Error submitting data:", error);
             Swal.fire("Error", "There was an issue with your submission.", "error");
         }
+
+        // Re-enable button after response
+        setIsSubmitting(false);
     };
 
     const handleEditSection = (sectionId) => {
@@ -878,8 +896,11 @@ const DynamicEditForm = ({ existingData }) => {
 
                                 <Grid container justifyContent="flex-start" spacing={2} className="dynamic-edit-form-action-buttons-container">
                                     <Grid item>
-                                        <Button variant="contained" className='submit-btn' color="primary" type="submit">
+                                        {/* <Button variant="contained" className='submit-btn' color="primary" type="submit">
                                             Submit
+                                        </Button> */}
+                                        <Button variant="contained" color="primary" className='submit-btn' type="submit" disabled={isSubmitting}>
+                                            {isSubmitting ? "Submitting..." : "Submit"}
                                         </Button>
                                     </Grid>
                                     <Grid item>

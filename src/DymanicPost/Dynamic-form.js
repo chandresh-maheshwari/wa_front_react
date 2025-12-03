@@ -31,6 +31,7 @@ const DynamicForm = () => {
   ]);
 
   const [standaloneFields, setStandaloneFields] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     post_title: "",
@@ -112,12 +113,12 @@ const DynamicForm = () => {
     setSections(
       sections.map((section) => {
         if (section.id === sectionId) {
-          const newField = { 
-            id: Date.now(), 
-            label: "", 
-            type: "text", 
-            value: "", 
-            options: [], 
+          const newField = {
+            id: Date.now(),
+            label: "",
+            type: "text",
+            value: "",
+            options: [],
             required: false,
             allowedFileTypes: []
           };
@@ -162,11 +163,11 @@ const DynamicForm = () => {
         sections.map((section) =>
           section.id === sectionId
             ? {
-                ...section,
-                fields: section.fields.map((field) =>
-                  field.id === fieldId ? { ...field, [name]: value } : field
-                ),
-              }
+              ...section,
+              fields: section.fields.map((field) =>
+                field.id === fieldId ? { ...field, [name]: value } : field
+              ),
+            }
             : section
         )
       );
@@ -362,6 +363,16 @@ const DynamicForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    //  1. CHECK IF POST TITLE ALREADY EXISTS
+    const check = await Authapi.CheckPostTitle(formData.post_title);
+    console.log(check);
+    if (check?.data?.exists) {
+      Swal.fire("Warning", "This post title already exists!", "warning");
+      setIsSubmitting(false);
+      return; // STOP form submit
+    }
+    // // Disable button on first click
+    // setIsSubmitting(true);
     // 1. Add standalone fields as "0", "1", ... at root
     let postDescription = {};
     standaloneFields.forEach((field, idx) => {
@@ -402,6 +413,8 @@ const DynamicForm = () => {
     };
 
     try {
+      // Disable button on first click
+      setIsSubmitting(true);
       const response = await Authapi.Dynamicstoredata(SubmitformData);
       if (response) {
         Swal.fire("Success", "Data submitted successfully!", "success");
@@ -411,15 +424,17 @@ const DynamicForm = () => {
       console.log("Error submitting data:", error);
       Swal.fire("Error", "There was an issue with your submission.", "error");
     }
+    // Re-enable button after response
+    setIsSubmitting(false);
   };
 
   const handleAddStandaloneField = () => {
-    const newField = { 
-      id: Date.now(), 
-      label: "", 
-      type: "text", 
-      value: "", 
-      options: [], 
+    const newField = {
+      id: Date.now(),
+      label: "",
+      type: "text",
+      value: "",
+      options: [],
       required: false,
       allowedFileTypes: []
     };
@@ -427,12 +442,12 @@ const DynamicForm = () => {
   };
 
   const handleAddFieldAfter = (fieldId) => {
-    const newField = { 
-      id: Date.now(), 
-      label: "", 
-      type: "text", 
-      value: "", 
-      options: [], 
+    const newField = {
+      id: Date.now(),
+      label: "",
+      type: "text",
+      value: "",
+      options: [],
       required: false,
       allowedFileTypes: []
     };
@@ -483,11 +498,11 @@ const DynamicForm = () => {
         prevFields.map((field) =>
           field.id === fieldId
             ? {
-                ...field,
-                allowedFileTypes: field.allowedFileTypes.includes(fileType)
-                  ? field.allowedFileTypes.filter((type) => type !== fileType)
-                  : [...field.allowedFileTypes, fileType],
-              }
+              ...field,
+              allowedFileTypes: field.allowedFileTypes.includes(fileType)
+                ? field.allowedFileTypes.filter((type) => type !== fileType)
+                : [...field.allowedFileTypes, fileType],
+            }
             : field
         )
       );
@@ -497,18 +512,18 @@ const DynamicForm = () => {
         sections.map((section) =>
           section.id === sectionId
             ? {
-                ...section,
-                fields: section.fields.map((field) =>
-                  field.id === fieldId
-                    ? {
-                        ...field,
-                        allowedFileTypes: field.allowedFileTypes.includes(fileType)
-                          ? field.allowedFileTypes.filter((type) => type !== fileType)
-                          : [...field.allowedFileTypes, fileType],
-                      }
-                    : field
-                ),
-              }
+              ...section,
+              fields: section.fields.map((field) =>
+                field.id === fieldId
+                  ? {
+                    ...field,
+                    allowedFileTypes: field.allowedFileTypes.includes(fileType)
+                      ? field.allowedFileTypes.filter((type) => type !== fileType)
+                      : [...field.allowedFileTypes, fileType],
+                  }
+                  : field
+              ),
+            }
             : section
         )
       );
@@ -613,12 +628,12 @@ const DynamicForm = () => {
                           onChange={(e) => {
                             const { value } = e.target;
                             setStandaloneFields((prevFields) =>
-                              prevFields.map((f) => (f.id === field.id ? { 
-                                ...f, 
-                                type: value, 
-                                value: "", 
-                                options: [], 
-                                allowedFileTypes: [] 
+                              prevFields.map((f) => (f.id === field.id ? {
+                                ...f,
+                                type: value,
+                                value: "",
+                                options: [],
+                                allowedFileTypes: []
                               } : f))
                             );
                           }}
@@ -938,8 +953,12 @@ const DynamicForm = () => {
 
                 <Grid container justifyContent="flex-start" spacing={2} className="dynamic-form-action-buttons-container-base">
                   <Grid item>
-                    <Button variant="contained" className='submit-btn' type="submit">
+                    {/* <Button variant="contained" className='submit-btn' type="submit">
                       Submit
+                    </Button> */}
+
+                    <Button variant="contained" className='submit-btn' type="submit" disabled={isSubmitting}>
+                      {isSubmitting ? "Submitting..." : "Submit"}
                     </Button>
                   </Grid>
                   <Grid item>
