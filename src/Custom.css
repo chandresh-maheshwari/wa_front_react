@@ -2064,7 +2064,7 @@ td {
 }
 
 .page-form-control {
-    margin-top: 15px;
+    margin-top: 15px !important;
 }
 
 .page-select-field {

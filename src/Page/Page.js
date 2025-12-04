@@ -92,6 +92,7 @@ const Page = () => {
         const newErrors = {};
         if (!newFormData.page_name) newErrors.page_name = "Page Name is required.";
         if (!newFormData.image) newErrors.image = "Image is required.";
+        if (!newFormData.post_type) newErrors.post_type = "Post Type is required.";
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
@@ -112,7 +113,7 @@ const Page = () => {
         setIsSubmitting(true);
             const response = await Authapi.Pagestoredata(form);
             if (response) {
-                Swal.fire('Success', ' added successfully!', 'success');
+                Swal.fire('Success', ' Page Data added successfully!', 'success');
                 navigate('/page-list');
             } else {
                 Swal.fire('Error', 'Failed to add .', 'error');
@@ -126,16 +127,59 @@ const Page = () => {
     };
 
 
+    // const handleChange = (e) => {
+    //     const { name, value, files } = e.target;
+
+    //     if (name === 'image' && files && files[0]) {
+    //         const file = files[0];
+
+    //         if (file && file.type.startsWith('image')) {
+    //             const img = new Image();
+    //             const reader = new FileReader();
+
+    //             reader.onload = () => {
+    //                 img.src = reader.result;
+    //                 img.onload = () => {
+    //                     const { width, height } = img;
+    //                     if (width >= 50 && height >= 50 && width <= 1600 && height <= 1600) {
+    //                         setErrors((prev) => ({
+    //                             ...prev,
+    //                             image: '',
+    //                         }));
+    //                         setFormData((prev) => ({
+    //                             ...prev,
+    //                             [name]: file,
+    //                         }));
+    //                     } else {
+    //                         setErrors((prev) => ({
+    //                             ...prev,
+    //                             image: 'Image dimensions must be between 50px and 1600px for both width and height.',
+    //                         }));
+    //                     }
+    //                 };
+    //             };
+    //             reader.readAsDataURL(file);
+    //         } else {
+    //             setErrors((prev) => ({
+    //                 ...prev,
+    //                 image: 'Please select a valid image file (e.g., PNG, JPG, GIF).',
+    //             }));
+    //         }
+    //     } else {
+    //         setFormData((prev) => ({
+    //             ...prev,
+    //             [name]: files ? files[0] : value,
+    //         }));
+    //     }
+    // };
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-
+    
         if (name === 'image' && files && files[0]) {
             const file = files[0];
-
             if (file && file.type.startsWith('image')) {
                 const img = new Image();
                 const reader = new FileReader();
-
                 reader.onload = () => {
                     img.src = reader.result;
                     img.onload = () => {
@@ -165,6 +209,11 @@ const Page = () => {
                 }));
             }
         } else {
+            // CLEAR FIELD ERROR for 'page_name' or 'post_type' (or any input)
+            setErrors((prev) => ({
+                ...prev,
+                [name]: '',
+            }));
             setFormData((prev) => ({
                 ...prev,
                 [name]: files ? files[0] : value,
@@ -211,7 +260,7 @@ const Page = () => {
                                         />
                                     </Grid>
 
-                                    <Grid item xs={12} sm={6}>
+                                    {/* <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Ordering"
                                             type="Ordering"
@@ -225,7 +274,7 @@ const Page = () => {
                                             error={!!errors.ordering}
                                             helperText={errors.ordering}
                                         />
-                                    </Grid>
+                                    </Grid> */}
 
                                     <Grid item xs={12} sm={6}>
                                         <TextField

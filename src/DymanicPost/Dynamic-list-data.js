@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
-import { MdDelete, MdAdd, MdRestore } from "react-icons/md";
+import { MdDelete, MdAdd, MdRestore, MdDragIndicator } from "react-icons/md";
 import "../Custom.css";
 import Switch from "@mui/material/Switch";
 import Expired from "../Login/ExpiredToken";
@@ -31,6 +31,7 @@ const DynamicList = () => {
   const [pageSize, setPageSize] = useState(5);
   const [statusFilter, setStatusFilter] = useState("all");
   const [actionFilter, setActionFilter] = useState("all");
+  const [draggedRowId, setDraggedRowId] = useState(null);
   useEffect(() => {
     fetchData();
   }, []);
@@ -57,6 +58,13 @@ const DynamicList = () => {
           status: item.status,
           deleted_at: item.deleted_at, // Ensure this field is included
         }));
+
+        formattedData.sort((a, b) => {
+          if (a.ordering === b.ordering) {
+            return a.id - b.id;
+          }
+          return (a.ordering || 0) - (b.ordering || 0);
+        });
 
         console.log("Formatted Data:", formattedData); // Log the formatted data
 
@@ -91,14 +99,53 @@ const DynamicList = () => {
         filteredData = data.filter((row) => row.deleted_at === 0);
     }
 
-    // Reassign sr_no based on the filtered data
-    filteredData = filteredData.map((row, index) => ({
-      ...row,
-      sr_no: index + 1,
-    }));
+    filteredData = filteredData
+      .sort((a, b) => {
+        if (a.ordering === b.ordering) {
+          return a.id - b.id;
+        }
+        return (a.ordering || 0) - (b.ordering || 0);
+      })
+      .map((row, index) => ({
+        ...row,
+        sr_no: index + 1,
+      }));
 
     setFilteredRows(filteredData);
     console.log("Filtered Rows:", filteredData);
+  };
+
+  const handleRowReorder = async (newOrderedVisibleRows) => {
+    const idToOrdering = new Map();
+    newOrderedVisibleRows.forEach((row, index) => {
+      idToOrdering.set(row.id, index + 1);
+    });
+
+    const updatedAllRows = rows.map((row) =>
+      idToOrdering.has(row.id)
+        ? { ...row, ordering: idToOrdering.get(row.id) }
+        : row
+    );
+
+    setRows(updatedAllRows);
+    applyFilter(updatedAllRows, statusFilter);
+
+    const payload = Array.from(idToOrdering.entries()).map(
+      ([id, ordering]) => ({ id, ordering })
+    );
+
+    try {
+      await Authapi.dynamicPostReorder(payload);
+    } catch (error) {
+      Swal.fire(
+        "Error",
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to save new ordering",
+        "error"
+      );
+      fetchData();
+    }
   };
 
   const handleStatusFilterChange = (event) => {
@@ -139,7 +186,75 @@ const DynamicList = () => {
     }
   };
 
-  
+  const reorderVisibleRows = (list, sourceId, targetId) => {
+    const updated = [...list];
+    const sourceIndex = updated.findIndex((row) => row.id === sourceId);
+    const targetIndex = updated.findIndex((row) => row.id === targetId);
+
+    if (sourceIndex === -1 || targetIndex === -1) {
+      return list;
+    }
+
+    const [movedRow] = updated.splice(sourceIndex, 1);
+    updated.splice(targetIndex, 0, movedRow);
+
+    return updated.map((row, index) => ({
+      ...row,
+      ordering: index + 1,
+      sr_no: index + 1,
+    }));
+  };
+
+  const handleDragStart = (event, rowId) => {
+    if (statusFilter === "deleted") return;
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", String(rowId));
+    setDraggedRowId(rowId);
+  };
+
+  const handleDragOver = (event, targetId) => {
+    if (!draggedRowId || statusFilter === "deleted") {
+      return;
+    }
+    event.preventDefault();
+    event.dataTransfer.dropEffect =
+      draggedRowId === targetId ? "none" : "move";
+  };
+
+  const handleDragEnd = () => {
+    setDraggedRowId(null);
+  };
+
+  const handleDrop = async (event, targetId) => {
+    if (!draggedRowId || statusFilter === "deleted") {
+      return;
+    }
+    event.preventDefault();
+    if (draggedRowId === targetId) {
+      setDraggedRowId(null);
+      return;
+    }
+
+    const reorderedRows = reorderVisibleRows(
+      filteredRows,
+      draggedRowId,
+      targetId
+    );
+
+    if (reorderedRows === filteredRows) {
+      setDraggedRowId(null);
+      return;
+    }
+
+    setFilteredRows(reorderedRows);
+
+    try {
+      await handleRowReorder(reorderedRows);
+    } finally {
+      setDraggedRowId(null);
+    }
+  };
+
 
   // multi deleted Data
 
@@ -462,7 +577,36 @@ const DynamicList = () => {
   };
 
   const paginationModel = { page: 0, pageSize: 10 };
-  const columns = [
+
+  const dragHandleColumn = {
+    field: "drag",
+    headerName: "",
+    width: 70,
+    sortable: false,
+    filterable: false,
+    disableColumnMenu: true,
+    renderHeader: () => <span>Drag</span>,
+    renderCell: (params) => (
+      <span
+        className={`drag-handle ${draggedRowId === params.row.id ? "dragging" : ""}`}
+        draggable={statusFilter !== "deleted"}
+        onDragStart={(event) => handleDragStart(event, params.row.id)}
+        onDragOver={(event) => handleDragOver(event, params.row.id)}
+        onDrop={(event) => handleDrop(event, params.row.id)}
+        onDragEnd={handleDragEnd}
+        style={{
+          cursor: statusFilter === "deleted" ? "not-allowed" : "grab",
+          display: "inline-flex",
+          alignItems: "center",
+        }}
+        title="Drag to reorder"
+      >
+        <MdDragIndicator size={20} />
+      </span>
+    ),
+  };
+
+  const baseColumns = [
     {
       field: "checkboxSelection",
       headerName: "Select",
@@ -485,7 +629,17 @@ const DynamicList = () => {
     { field: "sr_no", headerName: "Sr.No", width: 90, flex: 1 },
     { field: "post_title", headerName: "Title", width: 150, flex: 1 },
     { field: "post_type", headerName: "Post Type", width: 150, flex: 1 },
-    { field: "ordering", headerName: "Ordering", width: 150, flex: 1 },
+    {
+      field: "ordering",
+      headerName: "Ordering",
+      width: 150,
+      flex: 1,
+      renderCell: (params) => (
+        <div className="ordering-cell" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span>{params.row.ordering || "-"}</span>
+        </div>
+      ),
+    },
     {
       field: "actions",
       headerName: "Actions",
@@ -501,7 +655,6 @@ const DynamicList = () => {
                   onClick={() => handleEdit(params.row.id)}
                   color="primary"
                   className="action-button"
-                  // style={{ margin: "1px" }}
                 >
                   <FaEdit />
                 </IconButton>
@@ -563,6 +716,11 @@ const DynamicList = () => {
       ),
     },
   ];
+
+  const columns =
+    statusFilter !== "deleted"
+      ? [baseColumns[0], dragHandleColumn, ...baseColumns.slice(1)]
+      : baseColumns;
 
   const handleSelectionChange = (newSelection) => {
     setSelectedRows(newSelection);

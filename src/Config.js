@@ -105,6 +105,7 @@ export default {
     dynamicUpdate: 'api/dynamic-post-update/',
     dynamicActive: 'api/dynamic-post-active/',
     dynamicDelete: 'api/dynamic-post-delete/',
+    dynamicPostReorder: 'api/dynamic-post-reorder',
 
 
     dynamicFieldfetch: 'api/get-form-data/',
@@ -115,6 +116,7 @@ export default {
     postDynamicUpdate: 'api/post-data-update/',
     postDynamicDelete: 'api/post-data-delete/',
     postDynamicActive: 'api/post-data-active/',
+    postDynamicReorder: 'api/post-data-reorder',
     imgdelete: 'api/post-img-delete/', //New added
 
 
@@ -124,6 +126,7 @@ export default {
     pageUpdate: 'api/page-update/',
     pageDelele: 'api/page-delete/',
     pageActie: 'api/page-active/',
+    pageReorder: 'api/page-reorder',
     imgdeletepage: 'api/page-image-delete/', //New added
 
 
