@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 import { FaEdit } from "react-icons/fa";
-import { MdDelete, MdAdd, MdRestore, MdOutlineCancel } from 'react-icons/md';
+import { MdDelete, MdAdd, MdRestore, MdOutlineCancel, MdArrowUpward, MdArrowDownward, MdDragIndicator } from 'react-icons/md';
 import Switch from '@mui/material/Switch';
 import Expired from '../Login/ExpiredToken';
 import { useLocation } from 'react-router-dom';
@@ -33,6 +33,7 @@ const PostDynamicList = () => {
     const [statusFilter, setStatusFilter] = useState('all');
     const [actionFilter, setActionFilter] = useState("all");
     const [fieldDefinitions, setFieldDefinitions] = useState([]);
+    const [draggedRowId, setDraggedRowId] = useState(null);
 
     useEffect(() => {
         console.log("Call post listing file");
@@ -64,9 +65,18 @@ const PostDynamicList = () => {
                         id: item.id,
                         status: item.status,
                         deleted_at: item.deleted_at,
+                        ordering: item.ordering || index + 1,
                         "Sr.No": index + 1,
                         ...filteredData,
                     };
+                });
+
+                // Sort by ordering
+                formattedRows.sort((a, b) => {
+                    if (a.ordering === b.ordering) {
+                        return a.id - b.id;
+                    }
+                    return (a.ordering || 0) - (b.ordering || 0);
                 });
 
                 // Filter out deleted items by default
@@ -117,7 +127,104 @@ const PostDynamicList = () => {
         return found ? found.type : null;
     };
 
-    const dynamicColumns = [
+    const reorderVisibleRows = (list, sourceId, targetId) => {
+        const updated = [...list];
+        const sourceIndex = updated.findIndex((row) => row.id === sourceId);
+        const targetIndex = updated.findIndex((row) => row.id === targetId);
+
+        if (sourceIndex === -1 || targetIndex === -1) {
+            return list;
+        }
+
+        const [movedRow] = updated.splice(sourceIndex, 1);
+        updated.splice(targetIndex, 0, movedRow);
+
+        return updated.map((row, index) => ({
+            ...row,
+            ordering: index + 1,
+            "Sr.No": index + 1,
+        }));
+    };
+
+    const handleDragStart = (event, rowId) => {
+        if (statusFilter === "deleted") return;
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", String(rowId));
+        setDraggedRowId(rowId);
+    };
+
+    const handleDragOver = (event, targetId) => {
+        if (!draggedRowId || statusFilter === "deleted") {
+            return;
+        }
+        event.preventDefault();
+        event.dataTransfer.dropEffect =
+            draggedRowId === targetId ? "none" : "move";
+    };
+
+    const handleDragEnd = () => {
+        setDraggedRowId(null);
+    };
+
+    const handleDrop = async (event, targetId) => {
+        if (!draggedRowId || statusFilter === "deleted") {
+            return;
+        }
+        event.preventDefault();
+        if (draggedRowId === targetId) {
+            setDraggedRowId(null);
+            return;
+        }
+
+        const reorderedRows = reorderVisibleRows(
+            filteredRows,
+            draggedRowId,
+            targetId
+        );
+
+        if (reorderedRows === filteredRows) {
+            setDraggedRowId(null);
+            return;
+        }
+
+        setFilteredRows(reorderedRows);
+
+        try {
+            await handleRowReorder(reorderedRows);
+        } finally {
+            setDraggedRowId(null);
+        }
+    };
+
+    const dragHandleColumn = {
+        field: "drag",
+        headerName: "",
+        width: 70,
+        sortable: false,
+        filterable: false,
+        disableColumnMenu: true,
+        renderHeader: () => <span>Drag</span>,
+        renderCell: (params) => (
+            <span
+                className={`drag-handle ${draggedRowId === params.row.id ? "dragging" : ""}`}
+                draggable={statusFilter !== "deleted"}
+                onDragStart={(event) => handleDragStart(event, params.row.id)}
+                onDragOver={(event) => handleDragOver(event, params.row.id)}
+                onDrop={(event) => handleDrop(event, params.row.id)}
+                onDragEnd={handleDragEnd}
+                style={{
+                    cursor: statusFilter === "deleted" ? "not-allowed" : "grab",
+                    display: "inline-flex",
+                    alignItems: "center",
+                }}
+                title="Drag to reorder"
+            >
+                <MdDragIndicator size={20} />
+            </span>
+        ),
+    };
+
+    const baseColumns = [
         {
             field: 'checkboxSelection',
             headerName: 'Select',
@@ -143,6 +250,7 @@ const PostDynamicList = () => {
                 key === 'id' ||
                 key === 'status' ||
                 key === 'deleted_at' ||
+                key === 'ordering' ||
                 key.toLowerCase().includes('slug') ||
                 ['textarea', 'ckeditor'].includes(getFieldTypeByLabel(key))
             ) return null;
@@ -171,6 +279,40 @@ const PostDynamicList = () => {
                 }
             };
         }).filter(Boolean),
+        {
+            field: 'ordering',
+            headerName: 'Ordering',
+            width: 150,
+            renderCell: (params) => {
+                const index = filteredRows.findIndex((row) => row.id === params.row.id);
+                const isFirst = index === 0;
+                const isLast = index === filteredRows.length - 1;
+
+                return (
+                    <div className="ordering-cell" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span>{params.row.ordering || "-"}</span>
+                        <div>
+                            <IconButton
+                                size="small"
+                                disabled={isFirst}
+                                onClick={() => moveRow(params.row.id, "up")}
+                                title="Move up"
+                            >
+                                <MdArrowUpward />
+                            </IconButton>
+                            <IconButton
+                                size="small"
+                                disabled={isLast}
+                                onClick={() => moveRow(params.row.id, "down")}
+                                title="Move down"
+                            >
+                                <MdArrowDownward />
+                            </IconButton>
+                        </div>
+                    </div>
+                );
+            },
+        },
         {
             field: 'actions',
             headerName: 'Actions',
@@ -226,6 +368,11 @@ const PostDynamicList = () => {
             },
         },
     ];
+
+    const dynamicColumns =
+        statusFilter !== "deleted"
+            ? [baseColumns[0], dragHandleColumn, ...baseColumns.slice(1)]
+            : baseColumns;
 
     const handleSelectAllRows = (e) => {
         const isChecked = e.target.checked;
@@ -313,8 +460,74 @@ const PostDynamicList = () => {
             default: // "all" case
                 filteredData = data.filter((row) => row.deleted_at !== 1); // Exclude deleted items
         }
+        // Sort filtered data by ordering
+        filteredData.sort((a, b) => {
+            if (a.ordering === b.ordering) {
+                return a.id - b.id;
+            }
+            return (a.ordering || 0) - (b.ordering || 0);
+        });
         setFilteredRows(filteredData.map((row, index) => ({ ...row, "Sr.No": index + 1 })));
         console.log("Filtered Rows:", filteredData);
+    };
+
+    // Handle reordering (used by move up/down)
+    const handleRowReorder = async (newOrderedVisibleRows) => {
+        const idToOrdering = new Map();
+        newOrderedVisibleRows.forEach((row, index) => {
+            idToOrdering.set(row.id, index + 1);
+        });
+
+        const updatedAllRows = rows.map((row) =>
+            idToOrdering.has(row.id)
+                ? { ...row, ordering: idToOrdering.get(row.id) }
+                : row
+        );
+
+        setRows(updatedAllRows);
+        applyFilter(updatedAllRows, statusFilter);
+
+        setFilteredRows(
+            newOrderedVisibleRows.map((row, index) => ({
+                ...row,
+                ordering: index + 1,
+                "Sr.No": index + 1,
+            }))
+        );
+
+        const payload = {
+            post_name: post_title,
+            items: Array.from(idToOrdering.entries()).map(
+                ([id, ordering]) => ({ id, ordering })
+            ),
+        };
+
+        try {
+            await Authapi.postDynamicReorder(payload);
+        } catch (error) {
+            Swal.fire(
+                "Error",
+                error.response?.data?.message ||
+                error.message ||
+                "Failed to save new ordering",
+                "error"
+            );
+        }
+    };
+
+    // Move a row up or down in the current filtered view
+    const moveRow = (rowId, direction) => {
+        const current = [...filteredRows];
+        const index = current.findIndex((row) => row.id === rowId);
+        if (index === -1) return;
+
+        const targetIndex = direction === "up" ? index - 1 : index + 1;
+        if (targetIndex < 0 || targetIndex >= current.length) return;
+
+        const [movedRow] = current.splice(index, 1);
+        current.splice(targetIndex, 0, movedRow);
+
+        handleRowReorder(current);
     };
 
     const handleStatusFilterChange = (event) => {

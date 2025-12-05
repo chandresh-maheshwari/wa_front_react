@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import Swal from "sweetalert2";
 import { FaEdit } from "react-icons/fa";
-import { MdDelete, MdAdd, MdRestore } from "react-icons/md";
+import { MdDelete, MdAdd, MdRestore, MdDragIndicator } from "react-icons/md";
 import {
   Container,
   IconButton,
@@ -35,6 +35,7 @@ const PageList = () => {
   const [pageSize, setPageSize] = useState(5);
   const [actionFilter, setActionFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [draggedRowId, setDraggedRowId] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -63,10 +64,16 @@ const PageList = () => {
         }));
 
         console.log("Formatted Data:", formattedData); // Log the formatted data
-console.log("Setting Rows with formatted data",statusFilter);
+
+        formattedData.sort((a, b) => {
+          if (a.ordering === b.ordering) {
+            return a.id - b.id;
+          }
+          return (a.ordering || 0) - (b.ordering || 0);
+        });
+
         setRows(formattedData); // Set all data, including deleted
         applyFilter(formattedData, statusFilter);
-        // setFilteredRows(formattedData.filter((row) => row.deleted_at === 0));
       } else {
         console.error("Unexpected response format", response.results);
         Swal.fire("Error", "Invalid data format received.", "error");
@@ -79,44 +86,36 @@ console.log("Setting Rows with formatted data",statusFilter);
     }
   };
 
- const applyFilter = (data, filterValue) => {
-  console.log("Applying filter:", filterValue);
-  let filteredData;
+  const getFilteredData = (data, filterValue) => {
+    switch (filterValue) {
+      case "page active":
+        return data.filter((row) => row.deleted_at === 0 && row.status === 1);
+      case "page inactive":
+        return data.filter((row) => row.deleted_at === 0 && row.status === 0);
+      case "inner page active":
+        return data.filter((row) => row.deleted_at === 0 && row.page_status === 1);
+      case "inner page inactive":
+        return data.filter((row) => row.deleted_at === 0 && row.page_status === 0);
+      case "deleted":
+        return data.filter((row) => row.deleted_at === 1);
+      default:
+        return data.filter((row) => row.deleted_at === 0);
+    }
+  };
 
-  switch (filterValue) {
-    case "page active":
-      filteredData = data.filter((row) => row.status === 1 && row.deleted_at === 0);
-      break;
-
-    case "page inactive":
-      filteredData = data.filter((row) => row.status === 0 && row.deleted_at === 0);
-      break;
-
-    case "inner page active":
-      filteredData = data.filter((row) => row.page_status === 1 && row.deleted_at === 0);
-      break;
-
-    case "inner page inactive":
-      filteredData = data.filter((row) => row.page_status === 0 && row.deleted_at === 0);
-      break;
-
-    case "deleted":
-      filteredData = data.filter((row) => row.deleted_at === 1);
-      break;
-
-    default: // "all"
-      filteredData = data.filter((row) => row.deleted_at === 0);
-  }
-
-  // Reassign serial numbers
-  filteredData = filteredData.map((row, index) => ({
-    ...row,
-    sr_no: index + 1,
-  }));
-
-  setFilteredRows(filteredData);
-  console.log("Filtered Rows:", filteredData);
-};
+  const applyFilter = (data, filterValue) => {
+    console.log("Applying filter:", filterValue); // Log the filter being applied
+    const filteredData = getFilteredData(data, filterValue)
+      .sort((a, b) => {
+        if (a.ordering === b.ordering) {
+          return a.id - b.id;
+        }
+        return (a.ordering || 0) - (b.ordering || 0);
+      })
+      .map((row, index) => ({
+        ...row,
+        sr_no: index + 1, // Ensure sr_no starts from 1
+      }));
 
 
   // const handleSearch = (event) => {
@@ -139,29 +138,20 @@ console.log("Setting Rows with formatted data",statusFilter);
     setSearchQuery(query);
 
     if (query) {
-      // Determine the filter based on the statusFilter
-      const filtered = rows
-        .filter((row) => {
-          if (statusFilter === "all") {
-            return row.deleted_at === 0;
-          } else if (statusFilter === "deleted") {
-            return row.deleted_at === 1;
-          }
-          return false;
-        })
-        .filter((row) => {
-          return Object.values(row).some((value) =>
+      const baseData = getFilteredData(rows, statusFilter);
+      const filtered = baseData
+        .filter((row) =>
+          Object.values(row).some((value) =>
             String(value).toLowerCase().includes(query.toLowerCase())
-          );
-        });
+          )
+        )
+        .map((row, index) => ({
+          ...row,
+          sr_no: index + 1,
+        }));
       setFilteredRows(filtered);
     } else {
-      // Apply the current status filter when the search query is cleared
-      if (statusFilter === "all") {
-        setFilteredRows(rows.filter((row) => row.deleted_at === 0));
-      } else if (statusFilter === "deleted") {
-        setFilteredRows(rows.filter((row) => row.deleted_at === 1));
-      }
+      applyFilter(rows, statusFilter);
     }
   };
   // multi delete data
@@ -602,6 +592,109 @@ console.log("Setting Rows with formatted data",statusFilter);
     }
   };
 
+  // Handle reordering (used by drag & drop)
+  const handleRowReorder = async (newOrderedVisibleRows) => {
+    const idToOrdering = new Map();
+    newOrderedVisibleRows.forEach((row, index) => {
+      idToOrdering.set(row.id, index + 1);
+    });
+
+    const updatedAllRows = rows.map((row) =>
+      idToOrdering.has(row.id)
+        ? { ...row, ordering: idToOrdering.get(row.id) }
+        : row
+    );
+
+    setRows(updatedAllRows);
+    applyFilter(updatedAllRows, statusFilter);
+
+    const payload = Array.from(idToOrdering.entries()).map(
+      ([id, ordering]) => ({ id, ordering })
+    );
+
+    try {
+      await Authapi.pageReorder(payload);
+    } catch (error) {
+      Swal.fire(
+        "Error",
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to save new ordering",
+        "error"
+      );
+    }
+  };
+
+  // Reorder visible rows array (for drag & drop)
+  const reorderVisibleRows = (list, sourceId, targetId) => {
+    const updated = [...list];
+    const sourceIndex = updated.findIndex((row) => row.id === sourceId);
+    const targetIndex = updated.findIndex((row) => row.id === targetId);
+
+    if (sourceIndex === -1 || targetIndex === -1) {
+      return list;
+    }
+
+    const [movedRow] = updated.splice(sourceIndex, 1);
+    updated.splice(targetIndex, 0, movedRow);
+
+    return updated.map((row, index) => ({
+      ...row,
+      ordering: index + 1,
+      sr_no: index + 1,
+    }));
+  };
+
+  const handleDragStart = (event, rowId) => {
+    if (statusFilter === "deleted") return;
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", String(rowId));
+    setDraggedRowId(rowId);
+  };
+
+  const handleDragOver = (event, targetId) => {
+    if (!draggedRowId || statusFilter === "deleted") {
+      return;
+    }
+    event.preventDefault();
+    event.dataTransfer.dropEffect =
+      draggedRowId === targetId ? "none" : "move";
+  };
+
+  const handleDragEnd = () => {
+    setDraggedRowId(null);
+  };
+
+  const handleDrop = async (event, targetId) => {
+    if (!draggedRowId || statusFilter === "deleted") {
+      return;
+    }
+    event.preventDefault();
+    if (draggedRowId === targetId) {
+      setDraggedRowId(null);
+      return;
+    }
+
+    const reorderedRows = reorderVisibleRows(
+      filteredRows,
+      draggedRowId,
+      targetId
+    );
+
+    if (reorderedRows === filteredRows) {
+      setDraggedRowId(null);
+      return;
+    }
+
+    setFilteredRows(reorderedRows);
+
+    try {
+      await handleRowReorder(reorderedRows);
+    } finally {
+      setDraggedRowId(null);
+    }
+  };
+
   // Add this new function for multi-restore
   const handleMultiRestore = async () => {
     // Ensure selectedRows is an array
@@ -667,7 +760,35 @@ console.log("Setting Rows with formatted data",statusFilter);
     }
   };
 
-  const columns = [
+  const dragHandleColumn = {
+    field: "drag",
+    headerName: "",
+    width: 70,
+    sortable: false,
+    filterable: false,
+    disableColumnMenu: true,
+    renderHeader: () => <span>Drag</span>,
+    renderCell: (params) => (
+      <span
+        className={`drag-handle ${draggedRowId === params.row.id ? "dragging" : ""}`}
+        draggable={statusFilter !== "deleted"}
+        onDragStart={(event) => handleDragStart(event, params.row.id)}
+        onDragOver={(event) => handleDragOver(event, params.row.id)}
+        onDrop={(event) => handleDrop(event, params.row.id)}
+        onDragEnd={handleDragEnd}
+        style={{
+          cursor: statusFilter === "deleted" ? "not-allowed" : "grab",
+          display: "inline-flex",
+          alignItems: "center",
+        }}
+        title="Drag to reorder"
+      >
+        <MdDragIndicator size={20} />
+      </span>
+    ),
+  };
+
+  const baseColumns = [
     {
       field: "checkboxSelection",
       headerName: "Select",
@@ -675,7 +796,6 @@ console.log("Setting Rows with formatted data",statusFilter);
       renderHeader: () => (
         <input
           type="checkbox"
-          // checked={selectedRows.length === rows.length}
           checked={rows.length > 0 && selectedRows.length === rows.length}
           onChange={() => handleSelectAllRows()}
         />
@@ -693,6 +813,7 @@ console.log("Setting Rows with formatted data",statusFilter);
       headerName: "Sr.No",
       width: 90,
       flex: 1,
+      renderCell: (params) => params.row.sr_no,
     },
     {
       field: "page_name",
@@ -701,13 +822,6 @@ console.log("Setting Rows with formatted data",statusFilter);
       flex: 1,
       renderCell: (params) => params.row.page_name || "-",
     },
-    // {
-    //   field: "page_description",
-    //   headerName: "Page Description",
-    //   width: 200,
-    //   flex: 1,
-    //   renderCell: (params) => params.row.page_description || "-",
-    // },
     {
       field: "image",
       headerName: "Image",
@@ -730,9 +844,15 @@ console.log("Setting Rows with formatted data",statusFilter);
       headerName: "Ordering",
       width: 150,
       flex: 1,
-      renderCell: (params) => params.row.ordering || "-",
+      renderCell: (params) => (
+        <div
+          className="ordering-cell"
+          style={{ display: "flex", alignItems: "center", gap: 8 }}
+        >
+          <span>{params.row.ordering || "-"}</span>
+        </div>
+      ),
     },
-
     {
       field: "actions",
       headerName: "Actions",
@@ -784,7 +904,7 @@ console.log("Setting Rows with formatted data",statusFilter);
               <Switch
                 className="switch-class"
                 key={params.row.id}
-                checked={params.row.status}
+                checked={Boolean(params.row.status)}
                 size="xs"
                 onChange={async () => {
                   const confirmToggle = await Swal.fire({
@@ -812,7 +932,7 @@ console.log("Setting Rows with formatted data",statusFilter);
               <Switch
                 className="switch-class"
                 key={params.row.id}
-                checked={params.row.page_status}
+                checked={Boolean(params.row.page_status)}
                 size="xs"
                 onChange={async () => {
                   const confirmToggle = await Swal.fire({
@@ -841,6 +961,11 @@ console.log("Setting Rows with formatted data",statusFilter);
       },
     },
   ];
+
+  const columns =
+    statusFilter !== "deleted"
+      ? [baseColumns[0], dragHandleColumn, ...baseColumns.slice(1)]
+      : baseColumns;
 
   const handleSelectionChange = (newSelection) => {
     setSelectedRows(newSelection);

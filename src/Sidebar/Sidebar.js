@@ -9,7 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { CiLogout } from "react-icons/ci";
 // import img from './images/WasteAccountant_LOGO.png'
 // const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
-const img = `https://laravel.wasteaccountant.com/admin/images/WasteAccountant_LOGO.png`;
+// const img = `https://laravel.wasteaccountant.com/admin/images/profile_bkp.png`;
+const img = `http://walara.localhost.com/admin/images/profile_bkp.png`;
 
 // const img = `https://front.wasteaccountant.com/images/page/WasteAccountant_LOGO.png`;
 
@@ -122,8 +123,8 @@ const Sidebar = () => {
   };
 
   const activeStyle = {
-    backgroundColor: '#f0f0f0',
-    color: '#333',
+    backgroundColor: 'rgba(72, 173, 59, 0.16)',
+    color: '#ffffff',
   };
 
  const logoutData = async () => {
@@ -152,25 +153,42 @@ const Sidebar = () => {
 
   return (
     <div className="sidebar" data-color="orange">
-      <div className="logo">
-        <img src={img} style={{ width: "100%" }} alt="img" />
+      <div className="logo sidebar-brand">
+        <img src={img} className="sidebar-logo" alt="Waste Accountant" />
+        <div className="sidebar-brand-text">
+          <span className="sidebar-brand-name">Waste Accountant</span>
+          <span className="sidebar-brand-tagline">IT Admin Console</span>
+        </div>
       </div>
+
       <div className="sidebar-wrapper" id="navigation">
-        <ul className="nav">
+        {userTypeEmail && (
+          <div className="sidebar-user-chip">
+            <span className="sidebar-user-avatar">
+              {userTypeEmail.charAt(0).toUpperCase()}
+            </span>
+            <div className="sidebar-user-info">
+              <span className="sidebar-user-label">Signed in</span>
+              <span className="sidebar-user-email">{userTypeEmail}</span>
+            </div>
+          </div>
+        )}
+
+        <ul className="nav sidebar-menu">
+
+          {/* <li className="nav-section-label">Overview</li> */}
 
           <li className={`nav-item nav-dropdown ${isActive('/Dashboard') ? 'active-sidebar-item' : ''}`}>
-            <Link to="/Dashboard">
-            {userTypeEmail === "admindevloper@cms.com" ? (
-              <p>Dashboard</p>
-            ) : (
-              <p class="dashboard_nav_item">Dashboard</p>
-            )}
+            <Link to="/Dashboard" className="nav-link dashboard-link">
+              <p className="dashboard_nav_item">Dashboard</p>
             </Link>
           </li>
           {console.log("User Type:", userTypeEmail)}
 
           {userTypeEmail === "admindevloper@cms.com" && (
             <>
+              {/* <li className="nav-section-label">CMS Management</li> */}
+
               <li>
                 <Link
                   id="Dynamic_POST"
@@ -207,6 +225,8 @@ const Sidebar = () => {
               )}
             </>
           )}
+
+          {/* <li className="nav-section-label">Content</li> */}
 
           <li>
             <Link
@@ -301,6 +321,8 @@ const Sidebar = () => {
               </li>
             </ul>
           )}
+
+          {/* <li className="nav-section-label">Other</li> */}
 
           <li className="nav-item nav-dropdown mt-2">
             <Link

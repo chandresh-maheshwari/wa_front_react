@@ -1505,6 +1505,24 @@ export default new (class AuthApi {
   }
 
 
+  async dynamicPostReorder(payload) {
+    try {
+      const url = Config.apiurl + Config.apis.dynamicPostReorder;
+      const token = ls('Token');
+      const response = await axios.post(url, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("API Error:", error);
+      throw error;
+    }
+  }
+
+
   async dynamifieldfetchdata(post_title) {
     // console.log(post_title)
     try {
@@ -1688,6 +1706,23 @@ export default new (class AuthApi {
         status: status1
       }
       const response = await axios.post(url, status, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("API Error:", error);
+      throw error;
+    }
+  }
+
+  async postDynamicReorder(payload) {
+    try {
+      const url = Config.apiurl + Config.apis.postDynamicReorder;
+      const token = ls('Token');
+      const response = await axios.post(url, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -1956,6 +1991,22 @@ export default new (class AuthApi {
     }
   }
 
+  async pageReorder(payload) {
+    try {
+      const url = Config.apiurl + Config.apis.pageReorder;
+      const token = ls('Token');
+      const response = await axios.post(url, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("API Error:", error);
+      throw error;
+    }
+  }
   // DOWNLOAD FILE
   async downloadFile(filename) {
     const token = ls('Token');
