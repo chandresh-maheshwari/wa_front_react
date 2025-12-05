@@ -41,8 +41,8 @@ const PostDynamicList = () => {
             fetchData(page, pageSize);
             // fetchFieldDefinitions();
         }, 100);
-        setSelectedRows([]); 
-        setStatusFilter('all'); 
+        setSelectedRows([]);
+        setStatusFilter('all');
     }, [post_title]);
 
     useEffect(() => {
@@ -546,7 +546,7 @@ const PostDynamicList = () => {
                     ...prevStates,
                     [id]: newStatus === 1,
                 }));
-                
+
                 // Update the rows state with the new status
                 const updatedRows = rows.map(row => {
                     if (row.id === id) {
@@ -555,7 +555,7 @@ const PostDynamicList = () => {
                     return row;
                 });
                 setRows(updatedRows);
-                
+
                 // Reapply the current filter
                 applyFilter(updatedRows, statusFilter);
             } else {
@@ -599,7 +599,7 @@ const PostDynamicList = () => {
     };
 
     const getActive = async (ids) => {
-        
+
         if (selectedRows.length === 0) {
             Swal.fire('Warning', 'Please select at least one item to Active.', 'warning');
             return;
@@ -609,7 +609,7 @@ const PostDynamicList = () => {
             try {
                 if (ids.length > 0) {
                     const promises = ids.map(id => Authapi.postdynamicstatus(id, newStatus));
-                    
+
                     await Promise.all(promises);
 
                     setActiveStates(prevStates => {
@@ -631,32 +631,109 @@ const PostDynamicList = () => {
         }
     };
 
-    const handleDelete = async (ids) => {
-        if (selectedRows.length === 0) {
-            Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+    // const handleDelete = async (ids) => {
+    //     if (selectedRows.length === 0) {
+    //         Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+    //         return;
+    //     }
+
+    //     const confirmDelete = await Swal.fire({
+    //         title: 'Are you sure?',
+    //         text: 'This will mark the selected items as deleted!',
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonColor: "#48AD3B",
+    //         cancelButtonColor: "#87888a",
+    //         confirmButtonText: 'Yes, mark them!',
+    //     });
+
+    //     if (confirmDelete.isConfirmed) {
+    //         try {
+    //             const promises = ids.map(id => Authapi.postdynamicDeleteData(id));
+    //             await Promise.all(promises);
+    //             Swal.fire('Success!', 'Selected items marked as deleted.', 'success');
+    //             fetchData(page, pageSize);
+    //             setSelectedRows([]);
+    //         } catch (error) {
+    //             Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete items', 'error');
+    //         }
+    //     }
+    // };
+    // const handleDelete = async (ids, isPermanent) => {
+    //   if (ids.length === 0) {
+    //     Swal.fire("Warning", "Please select at least one item.", "warning");
+    //     return;
+    //   }
+
+    //   const confirmDelete = await Swal.fire({
+    //     title: isPermanent ? "Permanent Delete?" : "Soft Delete?",
+    //     text: isPermanent 
+    //       ? "This will permanently delete selected items!"
+    //       : "This will mark items as deleted!",
+    //     icon: "warning",
+    //     showCancelButton: true,
+    //     confirmButtonText: isPermanent ? "Yes, delete permanently!" : "Yes, delete!",
+    //   });
+
+    //   if (!confirmDelete.isConfirmed) return;
+
+    //   try {
+
+    //     const promises = ids.map((id) =>
+    //       Authapi.postdynamicDeleteData(id, { isPermanent })
+    //     );
+    //     await Promise.all(promises);
+
+    //     Swal.fire(
+    //       "Success!",
+    //       isPermanent
+    //         ? "Items permanently deleted."
+    //         : "Items soft deleted.",
+    //       "success"
+    //     );
+
+    //     fetchData();
+    //     setSelectedRows([]);
+    //   } catch (error) {
+    //     console.log(error);
+    //     Swal.fire("Error", "Delete failed!", "error");
+    //   }
+    // };
+    const handleDelete = async (ids, isPermanent = false) => {
+        if (ids.length === 0) {
+            Swal.fire("Warning", "Please select at least one item.", "warning");
             return;
         }
 
         const confirmDelete = await Swal.fire({
-            title: 'Are you sure?',
-            text: 'This will mark the selected items as deleted!',
-            icon: 'warning',
+            title: isPermanent ? "Permanent Delete?" : "Soft Delete?",
+            text: isPermanent
+                ? "This will permanently delete selected items!"
+                : "This will mark items as deleted!",
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#48AD3B",
-            cancelButtonColor: "#87888a",
-            confirmButtonText: 'Yes, mark them!',
+            confirmButtonText: isPermanent
+                ? "Yes, delete permanently!"
+                : "Yes, delete!",
         });
 
-        if (confirmDelete.isConfirmed) {
-            try {
-                const promises = ids.map(id => Authapi.postdynamicDeleteData(id));
-                await Promise.all(promises);
-                Swal.fire('Success!', 'Selected items marked as deleted.', 'success');
-                fetchData(page, pageSize);
-                setSelectedRows([]);
-            } catch (error) {
-                Swal.fire('Error!', error.response?.data?.message || error.message || 'Failed to delete items', 'error');
-            }
+        if (!confirmDelete.isConfirmed) return;
+
+        try {
+            const promises = ids.map((id) => Authapi.postdynamicDeleteData(id, { isPermanent }));
+            await Promise.all(promises);
+
+            Swal.fire(
+                "Success!",
+                isPermanent ? "Items permanently deleted." : "Items soft deleted.",
+                "success"
+            );
+
+            fetchData();
+            setSelectedRows([]);
+        } catch (error) {
+            console.log(error);
+            Swal.fire("Error", "Delete failed!", "error");
         }
     };
 
@@ -676,7 +753,7 @@ const PostDynamicList = () => {
     //     }
 
 
-    
+
     //     try {
     //         const promises = ids.map(id => Authapi.restorePostDeletedData(id));
     //         await Promise.all(promises);
@@ -690,61 +767,61 @@ const PostDynamicList = () => {
     // Restore function for individual items    
     const handleRestore = async (ids) => {
         if (!Array.isArray(ids)) {
-          ids = [ids]; // Ensure ids is an array
+            ids = [ids]; // Ensure ids is an array
         }
-    
+
         if (statusFilter !== "deleted") {
-          Swal.fire(
-            "Warning",
-            "You can only restore items in the 'Deleted' state.",
-            "warning"
-          );
-          return;
-        }
-    
-        if (ids.length === 0) {
-          Swal.fire(
-            "Warning",
-            "Please select at least one item to restore.",
-            "warning"
-          );
-          return;
-        }
-    
-        try {  
-          const promises = ids.map((id) => Authapi.restorePostDeletedData(id));
-          const results = await Promise.all(promises);
-    
-          if (results.every(result => result.status)) {
-            Swal.fire("Success!", "Selected items restored successfully.", "success");
-    
-            // Update the state directly instead of re-fetching
-            const updatedRows = rows.map((row) => {
-              if (ids.includes(row.id)) {
-                return { ...row, deleted_at: 0 }; // Update the deleted_at status
-              }
-              return row;
-            });
-    
-            setRows(updatedRows);
-            applyFilter(updatedRows, statusFilter); // Reapply the current filter
-          } else {
             Swal.fire(
-              "Error!",
-              "Some items could not be restored.",
-              "error"
+                "Warning",
+                "You can only restore items in the 'Deleted' state.",
+                "warning"
             );
-          }
-        } catch (error) {
-          Swal.fire(
-            "Error!",
-            error.response?.data?.message ||
-            error.message ||
-            "Failed to restore items",
-            "error"
-          );
+            return;
         }
-      };
+
+        if (ids.length === 0) {
+            Swal.fire(
+                "Warning",
+                "Please select at least one item to restore.",
+                "warning"
+            );
+            return;
+        }
+
+        try {
+            const promises = ids.map((id) => Authapi.restorePostDeletedData(id));
+            const results = await Promise.all(promises);
+
+            if (results.every(result => result.status)) {
+                Swal.fire("Success!", "Selected items restored successfully.", "success");
+
+                // Update the state directly instead of re-fetching
+                const updatedRows = rows.map((row) => {
+                    if (ids.includes(row.id)) {
+                        return { ...row, deleted_at: 0 }; // Update the deleted_at status
+                    }
+                    return row;
+                });
+
+                setRows(updatedRows);
+                applyFilter(updatedRows, statusFilter); // Reapply the current filter
+            } else {
+                Swal.fire(
+                    "Error!",
+                    "Some items could not be restored.",
+                    "error"
+                );
+            }
+        } catch (error) {
+            Swal.fire(
+                "Error!",
+                error.response?.data?.message ||
+                error.message ||
+                "Failed to restore items",
+                "error"
+            );
+        }
+    };
 
     const handleEdit = async (id) => {
         navigate(`/post-edit/${id}`, { state: { post_title } });
@@ -923,7 +1000,17 @@ const PostDynamicList = () => {
                                                 <MenuItem value="all" disabled>All</MenuItem>
                                                 <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
                                                 <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
-                                                <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem>
+                                                {/* <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem> */}
+                                                <MenuItem
+                                                    value="delete"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation(); // prevent double call if inside MUI Select
+                                                        const isPermanent = statusFilter === "deleted"; // dynamic based on current filter
+                                                        handleDelete(selectedRows, isPermanent);
+                                                    }}
+                                                >
+                                                    {statusFilter === "deleted" ? "Parm Delete" : "Deleted"}
+                                                </MenuItem>
                                                 <MenuItem value="restore" onClick={() => handleMultiRestore(selectedRows)}>Restore</MenuItem>
                                             </Select>
                                         </FormControl>

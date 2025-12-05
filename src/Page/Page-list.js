@@ -117,9 +117,6 @@ const PageList = () => {
         sr_no: index + 1, // Ensure sr_no starts from 1
       }));
 
-    setFilteredRows(filteredData);
-    console.log("Filtered Rows:", filteredData);
-  };
 
   // const handleSearch = (event) => {
   //   const query = event.target.value.trim();
@@ -158,47 +155,89 @@ const PageList = () => {
     }
   };
   // multi delete data
-  const handleDelete = async (ids) => {
-    if (selectedRows.length === 0) {
-      Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
-      return;
-    }
+  // const handleDelete = async (ids) => {
+  //   if (selectedRows.length === 0) {
+  //     Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+  //     return;
+  //   }
 
-    if (selectedRows.length === 0) {
-      Swal.fire(
-        "Warning",
-        "Please select at least one item to delete.",
-        "warning"
-      );
+  //   if (selectedRows.length === 0) {
+  //     Swal.fire(
+  //       "Warning",
+  //       "Please select at least one item to delete.",
+  //       "warning"
+  //     );
+  //     return;
+  //   }
+
+  //   const confirmDelete = await Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "This will mark the selected items as deleted!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#48AD3B",
+  //     cancelButtonColor: "#87888a",
+  //     confirmButtonText: "Yes, mark them!",
+  //   });
+
+  //   if (confirmDelete.isConfirmed) {
+  //     try {
+  //       const promises = ids.map((id) => Authapi.pageDeleteData(id));
+  //       await Promise.all(promises);
+  //       Swal.fire("Success!", "Selected items marked as deleted.", "success");
+  //       fetchData(); // Re-fetch to apply the "deleted" filter
+  //       setSelectedRows([]); // Clear selected rows after action
+  //     } catch (error) {
+  //       Swal.fire(
+  //         "Error!",
+  //         error.response?.data?.message ||
+  //         error.message ||
+  //         "Failed to delete items",
+  //         "error"
+  //       );
+  //     }
+  //   }
+  // };
+ const handleDelete = async (ids, isPermanent = false) => {
+    if (ids.length === 0) {
+      Swal.fire("Warning", "Please select at least one item.", "warning");
       return;
     }
 
     const confirmDelete = await Swal.fire({
-      title: "Are you sure?",
-      text: "This will mark the selected items as deleted!",
+      title: isPermanent ? "Permanent Delete?" : "Soft Delete?",
+      text: isPermanent
+        ? "This will permanently delete selected items!"
+        : "This will mark items as deleted!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#48AD3B",
-      cancelButtonColor: "#87888a",
-      confirmButtonText: "Yes, mark them!",
+      confirmButtonText: isPermanent
+        ? "Yes, delete permanently!"
+        : "Yes, delete!",
     });
 
-    if (confirmDelete.isConfirmed) {
-      try {
-        const promises = ids.map((id) => Authapi.pageDeleteData(id));
-        await Promise.all(promises);
-        Swal.fire("Success!", "Selected items marked as deleted.", "success");
-        fetchData(); // Re-fetch to apply the "deleted" filter
-        setSelectedRows([]); // Clear selected rows after action
-      } catch (error) {
-        Swal.fire(
-          "Error!",
-          error.response?.data?.message ||
-          error.message ||
-          "Failed to delete items",
-          "error"
-        );
-      }
+    if (!confirmDelete.isConfirmed) return;
+
+    try {
+      const promises = ids.map((id) =>
+        Authapi.pageDeleteData(id, { isPermanent })
+      );
+      await Promise.all(promises);
+
+      Swal.fire(
+        "Success!",
+        isPermanent ? "Items permanently deleted." : "Items soft deleted.",
+        "success"
+      );
+
+      // After delete, keep status filter as "deleted" if permanent delete
+      const newFilter = isPermanent ? "deleted" : statusFilter;
+      applyFilter(rows, newFilter);
+      setSelectedRows([]);
+      fetchData(); // Refresh rows
+      setStatusFilter(newFilter);
+    } catch (error) {
+      Swal.fire("Error", "Delete failed!", "error");
     }
   };
   // single restore data
@@ -1044,48 +1083,58 @@ const PageList = () => {
                         onChange={handleActionFilterChange}
                         label="Action Filter"
                       >
-                      
-                      <MenuItem value="all" disabled>
-                        All
-                      </MenuItem>
-                      <MenuItem
-                        value="page active"
-                        onClick={() => getActive(selectedRows)}
-                      >
-                        Page Active
-                      </MenuItem>
-                      <MenuItem
-                        value="page inactive"
-                        onClick={() => getInactive(selectedRows)}
-                      >
-                        Page Inactive
-                      </MenuItem>
-                      <MenuItem
+
+                        <MenuItem value="all" disabled>
+                          All
+                        </MenuItem>
+                        <MenuItem
+                          value="page active"
+                          onClick={() => getActive(selectedRows)}
+                        >
+                          Page Active
+                        </MenuItem>
+                        <MenuItem
+                          value="page inactive"
+                          onClick={() => getInactive(selectedRows)}
+                        >
+                          Page Inactive
+                        </MenuItem>
+                        {/* <MenuItem
                         value="deleted"
                         onClick={() => handleDelete(selectedRows)}
                       >
                         Deleted
-                      </MenuItem>
-                      <MenuItem
-                        value="restore"
-                        onClick={() => handleMultiRestore()}
-                      >
-                        Restore
-                      </MenuItem>
-                      <MenuItem
-                        value="inner page active"
-                        onClick={() => getMultiActive(selectedRows)}
-                      >
-                        Inner Page Active
-                      </MenuItem>
-                      <MenuItem
-                        value="inner page inactive"
-                        onClick={() => getmultiInactive(selectedRows)}
-                      >
-                        Inner Page Inactive
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
+                      </MenuItem> */}
+                        <MenuItem
+                          value="delete"
+                          onClick={(e) => {
+                            e.stopPropagation(); // prevent double call if inside MUI Select
+                            const isPermanent = statusFilter === "deleted"; // dynamic based on current filter
+                            handleDelete(selectedRows, isPermanent);
+                          }}
+                        >
+                          {statusFilter === "deleted" ? "Parm Delete" : "Deleted"}
+                        </MenuItem>
+                        <MenuItem
+                          value="restore"
+                          onClick={() => handleMultiRestore()}
+                        >
+                          Restore
+                        </MenuItem>
+                        <MenuItem
+                          value="inner page active"
+                          onClick={() => getMultiActive(selectedRows)}
+                        >
+                          Inner Page Active
+                        </MenuItem>
+                        <MenuItem
+                          value="inner page inactive"
+                          onClick={() => getmultiInactive(selectedRows)}
+                        >
+                          Inner Page Inactive
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
                   </div>
                 </div>
               </div>
@@ -1096,6 +1145,6 @@ const PageList = () => {
     </>
   );
 };
-
+}
 export default PageList;
 
