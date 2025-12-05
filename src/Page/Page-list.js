@@ -116,7 +116,9 @@ const PageList = () => {
         ...row,
         sr_no: index + 1, // Ensure sr_no starts from 1
       }));
-
+    setFilteredRows(filteredData);
+    return filteredData;
+  }
 
   // const handleSearch = (event) => {
   //   const query = event.target.value.trim();
@@ -198,7 +200,7 @@ const PageList = () => {
   //     }
   //   }
   // };
- const handleDelete = async (ids, isPermanent = false) => {
+  const handleDelete = async (ids, isPermanent = false) => {
     if (ids.length === 0) {
       Swal.fire("Warning", "Please select at least one item.", "warning");
       return;
@@ -618,8 +620,8 @@ const PageList = () => {
       Swal.fire(
         "Error",
         error.response?.data?.message ||
-          error.message ||
-          "Failed to save new ordering",
+        error.message ||
+        "Failed to save new ordering",
         "error"
       );
     }
@@ -1145,6 +1147,6 @@ const PageList = () => {
     </>
   );
 };
-}
+
 export default PageList;
 
