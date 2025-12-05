@@ -38,7 +38,7 @@ const DynamicList = () => {
   useEffect(() => {
     setSelectedRows([]); // Clear selected rows when statusFilter changes
   }, [statusFilter]);
-  
+
 
   const fetchData = async () => {
     setLoading(true);
@@ -139,54 +139,130 @@ const DynamicList = () => {
     }
   };
 
-  
+
 
   // multi deleted Data
 
-  const handleDelete = async (ids) => {
-         if (selectedRows.length === 0) {
-             Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
-             return;
-         }
+  // const handleDelete = async (ids) => {
+  //   if (selectedRows.length === 0) {
+  //     Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+  //     return;
+  //   }
 
-    if (selectedRows.length === 0) {
-      Swal.fire(
-        "Warning",
-        "Please select at least one item to delete.",
-        "warning"
-      );
+  //   if (selectedRows.length === 0) {
+  //     Swal.fire(
+  //       "Warning",
+  //       "Please select at least one item to delete.",
+  //       "warning"
+  //     );
+  //     return;
+  //   }
+
+  //   const confirmDelete = await Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "This will mark the selected items as deleted!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#48AD3B",
+  //     cancelButtonColor: "#87888a",
+  //     confirmButtonText: "Yes, mark them!",
+  //   });
+
+  //   if (confirmDelete.isConfirmed) {
+  //     try {
+  //       const promises = ids.map((id) => Authapi.dynamicDeleteData(id));
+  //       await Promise.all(promises);
+  //       Swal.fire("Success!", "Selected items marked as deleted.", "success");
+  //       fetchData();
+  //       setSelectedRows([]); // Clear selected rows after action
+  //     } catch (error) {
+  //       Swal.fire(
+  //         "Error!",
+  //         error.response?.data?.message ||
+  //         error.message ||
+  //         "Failed to delete items",
+  //         "error"
+  //       );
+  //     }
+  //   }
+  // };
+//   const handleDelete = async (ids, isPermanent) => {
+//   if (ids.length === 0) {
+//     Swal.fire("Warning", "Please select at least one item.", "warning");
+//     return;
+//   }
+
+//   const confirmDelete = await Swal.fire({
+//     title: isPermanent ? "Permanent Delete?" : "Soft Delete?",
+//     text: isPermanent 
+//       ? "This will permanently delete selected items!"
+//       : "This will mark items as deleted!",
+//     icon: "warning",
+//     showCancelButton: true,
+//     confirmButtonText: isPermanent ? "Yes, delete permanently!" : "Yes, delete!",
+//   });
+
+//   if (!confirmDelete.isConfirmed) return;
+
+//   try {
+
+//     const promises = ids.map((id) =>
+//       Authapi.dynamicDeleteData(id, { isPermanent })
+//     );
+//     await Promise.all(promises);
+
+//     Swal.fire(
+//       "Success!",
+//       isPermanent
+//         ? "Items permanently deleted."
+//         : "Items soft deleted.",
+//       "success"
+//     );
+
+//     fetchData();
+//     setSelectedRows([]);
+//   } catch (error) {
+//     console.log(error);
+//     Swal.fire("Error", "Delete failed!", "error");
+//   }
+// };
+  const handleDelete = async (ids, isPermanent = false) => {
+    if (ids.length === 0) {
+      Swal.fire("Warning", "Please select at least one item.", "warning");
       return;
     }
 
     const confirmDelete = await Swal.fire({
-      title: "Are you sure?",
-      text: "This will mark the selected items as deleted!",
+      title: isPermanent ? "Permanent Delete?" : "Soft Delete?",
+      text: isPermanent
+        ? "This will permanently delete selected items!"
+        : "This will mark items as deleted!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#48AD3B",
-      cancelButtonColor: "#87888a",
-      confirmButtonText: "Yes, mark them!",
+      confirmButtonText: isPermanent
+        ? "Yes, delete permanently!"
+        : "Yes, delete!",
     });
 
-    if (confirmDelete.isConfirmed) {
-      try {
-        const promises = ids.map((id) => Authapi.dynamicDeleteData(id));
-        await Promise.all(promises);
-        Swal.fire("Success!", "Selected items marked as deleted.", "success");
-        fetchData();
-        setSelectedRows([]); // Clear selected rows after action
-      } catch (error) {
-        Swal.fire(
-          "Error!",
-          error.response?.data?.message ||
-          error.message ||
-          "Failed to delete items",
-          "error"
-        );
-      }
+    if (!confirmDelete.isConfirmed) return;
+
+    try {
+      const promises = ids.map((id) => Authapi.dynamicDeleteData(id, { isPermanent }));
+      await Promise.all(promises);
+
+      Swal.fire(
+        "Success!",
+        isPermanent ? "Items permanently deleted." : "Items soft deleted.",
+        "success"
+      );
+
+      fetchData();
+      setSelectedRows([]);
+    } catch (error) {
+      console.log(error);
+      Swal.fire("Error", "Delete failed!", "error");
     }
   };
-  
 
 
   const handleRestore = async (ids) => {
@@ -227,6 +303,8 @@ const DynamicList = () => {
       );
     }
   };
+
+ 
 
   // Function to handle single restore
   const handleSingleRestore = async (id) => {
@@ -407,7 +485,7 @@ const DynamicList = () => {
       try {
         // Get all rows from the current filter
         const currentRows = statusFilter === "all" ? rows.filter(row => row.deleted_at === 0) : filteredRows;
-        
+
         // Filter out items that are already active
         const idsToActivate = ids.filter(id => {
           const row = currentRows.find(row => row.id === id);
@@ -446,7 +524,7 @@ const DynamicList = () => {
   const handleActionFilterChange = (event) => {
     const filterValue = event.target.value;
     setActionFilter(filterValue);
-  
+
     // Check for "deleted" status filter
     if (statusFilter === "deleted") {
       // Apply the current action on only the deleted rows
@@ -501,7 +579,7 @@ const DynamicList = () => {
                   onClick={() => handleEdit(params.row.id)}
                   color="primary"
                   className="action-button"
-                  // style={{ margin: "1px" }}
+                // style={{ margin: "1px" }}
                 >
                   <FaEdit />
                 </IconButton>
@@ -580,10 +658,10 @@ const DynamicList = () => {
     if (selectedRows.length === rows.length) {
       setSelectedRows([]);
 
-      
+
     } else {
       setSelectedRows(rows.map((row) => row.id));
-      
+
     }
   };
 
@@ -693,11 +771,30 @@ const DynamicList = () => {
                     >
                       Inactive
                     </MenuItem>
-                    <MenuItem
+                    {/* <MenuItem
                       value="deleted"
                       onClick={() => handleDelete(selectedRows)}
                     >
                       Deleted
+                    </MenuItem> */}
+                    {/* <MenuItem
+                      value="deleted"
+                      onClick={() => {
+                        const isPermanent = (statusFilter === "deleted");
+                        handleDelete(selectedRows, isPermanent);
+                      }}
+                    >
+                      {statusFilter === "deleted" ? "Parm Delete" : "Deleted"}
+                    </MenuItem> */}
+                      <MenuItem
+                      value="delete"
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent double call if inside MUI Select
+                        const isPermanent = statusFilter === "deleted"; // dynamic based on current filter
+                        handleDelete(selectedRows, isPermanent);
+                      }}
+                    >
+                      {statusFilter === "deleted" ? "Parm Delete" : "Deleted"}
                     </MenuItem>
                     <MenuItem
                       value="restore"
