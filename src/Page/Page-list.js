@@ -116,7 +116,7 @@ const PageList = () => {
         ...row,
         sr_no: index + 1, // Ensure sr_no starts from 1
       }));
-
+    }
 
   // const handleSearch = (event) => {
   //   const query = event.target.value.trim();
