@@ -208,48 +208,58 @@ console.log("Setting Rows with formatted data",statusFilter);
   //     }
   //   }
   // };
- const handleDelete = async (ids, isPermanent = false) => {
-    if (ids.length === 0) {
-      Swal.fire("Warning", "Please select at least one item.", "warning");
-      return;
-    }
+const handleDelete = async (ids, isPermanent = false) => {
+  if (!ids.length) {
+    Swal.fire("Warning", "Please select at least one item.", "warning");
+    return;
+  }
 
-    const confirmDelete = await Swal.fire({
-      title: isPermanent ? "Permanent Delete?" : "Soft Delete?",
-      text: isPermanent
-        ? "This will permanently delete selected items!"
-        : "This will mark items as deleted!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: isPermanent
-        ? "Yes, delete permanently!"
-        : "Yes, delete!",
-    });
+  const confirmDelete = await Swal.fire({
+    title: isPermanent ? "Permanent Delete?" : "Soft Delete?",
+    text: isPermanent
+      ? "This will permanently delete selected items!"
+      : "This will mark items as deleted!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: isPermanent
+      ? "Yes, delete permanently!"
+      : "Yes, delete!",
+  });
 
-    if (!confirmDelete.isConfirmed) return;
+  if (!confirmDelete.isConfirmed) return;
 
-    try {
-      const promises = ids.map((id) =>
-        Authapi.pageDeleteData(id, { isPermanent })
-      );
-      await Promise.all(promises);
+  try {
+    // send all IDs in single request
+    const response = await Authapi.pageDeleteData(
+      ids.join(","), 
+      { isPermanent }
+    );
 
-      Swal.fire(
-        "Success!",
-        isPermanent ? "Items permanently deleted." : "Items soft deleted.",
-        "success"
-      );
+    Swal.fire(
+      "Success!",
+      response.message ||
+        (isPermanent
+          ? "Items permanently deleted."
+          : "Items soft deleted."),
+      "success"
+    );
 
-      // After delete, keep status filter as "deleted" if permanent delete
-      const newFilter = isPermanent ? "deleted" : statusFilter;
-      applyFilter(rows, newFilter);
-      setSelectedRows([]);
-      fetchData(); // Refresh rows
-      setStatusFilter(newFilter);
-    } catch (error) {
-      Swal.fire("Error", "Delete failed!", "error");
-    }
-  };
+    const newFilter = isPermanent ? "deleted" : statusFilter;
+
+    applyFilter(rows, newFilter);
+    fetchData();
+    setSelectedRows([]);
+    setStatusFilter(newFilter);
+
+  } catch (error) {
+    Swal.fire(
+      "Error",
+      error?.response?.data?.message || "Delete failed!",
+      "error"
+    );
+  }
+};
+
   // single restore data
   const handleRestore = async (ids) => {
     if (!Array.isArray(ids)) {

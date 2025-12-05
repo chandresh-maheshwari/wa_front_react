@@ -1469,25 +1469,27 @@ export default new (class AuthApi {
   }
 
 
-  async dynamicDeleteData(id) {
-    // console.log(id)
-    try {
-      const url = Config.apiurl + Config.apis.dynamicDelete + id;
+  async dynamicDeleteData(id, params = {}) {
+  try {
+    const url = Config.apiurl + Config.apis.dynamicDelete + id;
 
-      // console.log(url)
-      const token = ls('Token');
-      this.setHeaders("delete");
-      const response = await axios.delete(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+    const token = ls('Token');
+    this.setHeaders("delete");
+
+    const response = await axios.delete(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      params: params   // <-- IMPORTANT FIX (Laravel reads flag now)
+    });
+
+    return response.data;
+  } catch (error) {
+    throw error;
   }
+}
+
 
 
   async dynamifieldfetchdata(post_title) {
@@ -1644,23 +1646,27 @@ export default new (class AuthApi {
 
 
 
-  async postdynamicDeleteData(id) {
-    // console.log(id)
-    try {
-      const url = Config.apiurl + Config.apis.postDynamicDelete + id;
-      const token = ls('Token');
-      this.setHeaders("delete");
-      const response = await axios.delete(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+ async postdynamicDeleteData(id, params = {}) {
+  try {
+    const url = Config.apiurl + Config.apis.postDynamicDelete + id;
+    const token = ls("Token");
+
+    this.setHeaders("delete");
+
+    const response = await axios.delete(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      params: params, // 🔥 MOST IMPORTANT FIX
+    });
+
+    return response.data; // return only data (not entire axios object)
+  } catch (error) {
+    throw error;
   }
+}
+
 
 
 
@@ -1778,23 +1784,27 @@ export default new (class AuthApi {
   }
 
 
-  async pageDeleteData(id) {
-    try {
-      const url = Config.apiurl + Config.apis.pageDelele + id;
-      // console.log(url)
-      const token = ls('Token');
-      this.setHeaders("delete");
-      const response = await axios.delete(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+  async pageDeleteData(id, params = {}) {
+  try {
+    const url = Config.apiurl + Config.apis.pageDelele + id;
+    const token = ls("Token");
+
+    this.setHeaders("delete");
+
+    const response = await axios.delete(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      params: params,   // << IMPORTANT FIX
+    });
+
+    return response.data; // return direct data
+  } catch (error) {
+    throw error;
   }
+}
+
 
 
   async pagestatus(id, status1) {
