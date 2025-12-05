@@ -36,7 +36,7 @@ const DynamicForm = () => {
   const [formData, setFormData] = useState({
     post_title: "",
     post_type: "",
-    ordering: "",
+    // ordering: "",
   });
 
   const navigate = useNavigate();
@@ -408,7 +408,7 @@ const DynamicForm = () => {
     const SubmitformData = {
       post_title: formData.post_title,
       post_type: formData.post_type,
-      ordering: formData.ordering,
+      // ordering: formData.ordering,
       post_description: postDescription,
     };
 
@@ -422,7 +422,12 @@ const DynamicForm = () => {
       }
     } catch (error) {
       console.log("Error submitting data:", error);
-      Swal.fire("Error", "There was an issue with your submission.", "error");
+      // Swal.fire("Error", "There was an issue with your submission.", "error");
+       Swal.fire(
+    "Error",
+    error.error || error.message || "Something went wrong!",
+    "error"
+  );
     }
     // Re-enable button after response
     setIsSubmitting(false);
@@ -552,7 +557,7 @@ const DynamicForm = () => {
                       onChange={(e) => handleTitleChange(e, null)}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  {/* <Grid item xs={12} sm={6}>
                     <TextField
                       label="Ordering"
                       name="ordering"
@@ -566,8 +571,8 @@ const DynamicForm = () => {
                         }
                       }}
                     />
-                  </Grid>
-                  <Grid item xs={12}>
+                  </Grid> */}
+                  <Grid item xs={12} sm={6}>
                     <FormControl fullWidth className="dynamic-form-control-base">
                       <InputLabel>Post Type</InputLabel>
                       <Select
