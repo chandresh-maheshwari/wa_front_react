@@ -63,10 +63,10 @@ const PageList = () => {
         }));
 
         console.log("Formatted Data:", formattedData); // Log the formatted data
-
+console.log("Setting Rows with formatted data",statusFilter);
         setRows(formattedData); // Set all data, including deleted
         applyFilter(formattedData, statusFilter);
-        setFilteredRows(formattedData.filter((row) => row.deleted_at === 0));
+        // setFilteredRows(formattedData.filter((row) => row.deleted_at === 0));
       } else {
         console.error("Unexpected response format", response.results);
         Swal.fire("Error", "Invalid data format received.", "error");
@@ -79,39 +79,45 @@ const PageList = () => {
     }
   };
 
-  const applyFilter = (data, filterValue) => {
-    console.log("Applying filter:", filterValue); // Log the filter being applied
-    let filteredData;
-    // alert(filterValue);
-    switch (filterValue) {
-      case "page active":
-        filteredData = data.filter((row) => row.status === 1);
-        break;
-      case "page inactive":
-        filteredData = data.filter((row) => row.status === 0);
-        break;
-      case "inner page active":
-        filteredData = data.filter((row) => row.page_status === 1);
-        break;
-      case "inner page inactive":
-        filteredData = data.filter((row) => row.page_status === 0);
-        break;
-      case "deleted":
-        filteredData = data.filter((row) => row.deleted_at === 1);
-        break;
-      default: // "all" case
-        filteredData = data; // No filter, show all data
-    }
+ const applyFilter = (data, filterValue) => {
+  console.log("Applying filter:", filterValue);
+  let filteredData;
 
-    // Reassign serial numbers starting from 1
-    filteredData = filteredData.map((row, index) => ({
-      ...row,
-      sr_no: index + 1, // Ensure sr_no starts from 1
-    }));
+  switch (filterValue) {
+    case "page active":
+      filteredData = data.filter((row) => row.status === 1 && row.deleted_at === 0);
+      break;
 
-    setFilteredRows(filteredData);
-    console.log("Filtered Rows:", filteredData);
-  };
+    case "page inactive":
+      filteredData = data.filter((row) => row.status === 0 && row.deleted_at === 0);
+      break;
+
+    case "inner page active":
+      filteredData = data.filter((row) => row.page_status === 1 && row.deleted_at === 0);
+      break;
+
+    case "inner page inactive":
+      filteredData = data.filter((row) => row.page_status === 0 && row.deleted_at === 0);
+      break;
+
+    case "deleted":
+      filteredData = data.filter((row) => row.deleted_at === 1);
+      break;
+
+    default: // "all"
+      filteredData = data.filter((row) => row.deleted_at === 0);
+  }
+
+  // Reassign serial numbers
+  filteredData = filteredData.map((row, index) => ({
+    ...row,
+    sr_no: index + 1,
+  }));
+
+  setFilteredRows(filteredData);
+  console.log("Filtered Rows:", filteredData);
+};
+
 
   // const handleSearch = (event) => {
   //   const query = event.target.value.trim();
@@ -159,47 +165,89 @@ const PageList = () => {
     }
   };
   // multi delete data
-  const handleDelete = async (ids) => {
-    if (selectedRows.length === 0) {
-      Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
-      return;
-    }
+  // const handleDelete = async (ids) => {
+  //   if (selectedRows.length === 0) {
+  //     Swal.fire('Warning', 'Please select at least one item to delete.', 'warning');
+  //     return;
+  //   }
 
-    if (selectedRows.length === 0) {
-      Swal.fire(
-        "Warning",
-        "Please select at least one item to delete.",
-        "warning"
-      );
+  //   if (selectedRows.length === 0) {
+  //     Swal.fire(
+  //       "Warning",
+  //       "Please select at least one item to delete.",
+  //       "warning"
+  //     );
+  //     return;
+  //   }
+
+  //   const confirmDelete = await Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "This will mark the selected items as deleted!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#48AD3B",
+  //     cancelButtonColor: "#87888a",
+  //     confirmButtonText: "Yes, mark them!",
+  //   });
+
+  //   if (confirmDelete.isConfirmed) {
+  //     try {
+  //       const promises = ids.map((id) => Authapi.pageDeleteData(id));
+  //       await Promise.all(promises);
+  //       Swal.fire("Success!", "Selected items marked as deleted.", "success");
+  //       fetchData(); // Re-fetch to apply the "deleted" filter
+  //       setSelectedRows([]); // Clear selected rows after action
+  //     } catch (error) {
+  //       Swal.fire(
+  //         "Error!",
+  //         error.response?.data?.message ||
+  //         error.message ||
+  //         "Failed to delete items",
+  //         "error"
+  //       );
+  //     }
+  //   }
+  // };
+ const handleDelete = async (ids, isPermanent = false) => {
+    if (ids.length === 0) {
+      Swal.fire("Warning", "Please select at least one item.", "warning");
       return;
     }
 
     const confirmDelete = await Swal.fire({
-      title: "Are you sure?",
-      text: "This will mark the selected items as deleted!",
+      title: isPermanent ? "Permanent Delete?" : "Soft Delete?",
+      text: isPermanent
+        ? "This will permanently delete selected items!"
+        : "This will mark items as deleted!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#48AD3B",
-      cancelButtonColor: "#87888a",
-      confirmButtonText: "Yes, mark them!",
+      confirmButtonText: isPermanent
+        ? "Yes, delete permanently!"
+        : "Yes, delete!",
     });
 
-    if (confirmDelete.isConfirmed) {
-      try {
-        const promises = ids.map((id) => Authapi.pageDeleteData(id));
-        await Promise.all(promises);
-        Swal.fire("Success!", "Selected items marked as deleted.", "success");
-        fetchData(); // Re-fetch to apply the "deleted" filter
-        setSelectedRows([]); // Clear selected rows after action
-      } catch (error) {
-        Swal.fire(
-          "Error!",
-          error.response?.data?.message ||
-          error.message ||
-          "Failed to delete items",
-          "error"
-        );
-      }
+    if (!confirmDelete.isConfirmed) return;
+
+    try {
+      const promises = ids.map((id) =>
+        Authapi.pageDeleteData(id, { isPermanent })
+      );
+      await Promise.all(promises);
+
+      Swal.fire(
+        "Success!",
+        isPermanent ? "Items permanently deleted." : "Items soft deleted.",
+        "success"
+      );
+
+      // After delete, keep status filter as "deleted" if permanent delete
+      const newFilter = isPermanent ? "deleted" : statusFilter;
+      applyFilter(rows, newFilter);
+      setSelectedRows([]);
+      fetchData(); // Refresh rows
+      setStatusFilter(newFilter);
+    } catch (error) {
+      Swal.fire("Error", "Delete failed!", "error");
     }
   };
   // single restore data
@@ -910,48 +958,58 @@ const PageList = () => {
                         onChange={handleActionFilterChange}
                         label="Action Filter"
                       >
-                      
-                      <MenuItem value="all" disabled>
-                        All
-                      </MenuItem>
-                      <MenuItem
-                        value="page active"
-                        onClick={() => getActive(selectedRows)}
-                      >
-                        Page Active
-                      </MenuItem>
-                      <MenuItem
-                        value="page inactive"
-                        onClick={() => getInactive(selectedRows)}
-                      >
-                        Page Inactive
-                      </MenuItem>
-                      <MenuItem
+
+                        <MenuItem value="all" disabled>
+                          All
+                        </MenuItem>
+                        <MenuItem
+                          value="page active"
+                          onClick={() => getActive(selectedRows)}
+                        >
+                          Page Active
+                        </MenuItem>
+                        <MenuItem
+                          value="page inactive"
+                          onClick={() => getInactive(selectedRows)}
+                        >
+                          Page Inactive
+                        </MenuItem>
+                        {/* <MenuItem
                         value="deleted"
                         onClick={() => handleDelete(selectedRows)}
                       >
                         Deleted
-                      </MenuItem>
-                      <MenuItem
-                        value="restore"
-                        onClick={() => handleMultiRestore()}
-                      >
-                        Restore
-                      </MenuItem>
-                      <MenuItem
-                        value="inner page active"
-                        onClick={() => getMultiActive(selectedRows)}
-                      >
-                        Inner Page Active
-                      </MenuItem>
-                      <MenuItem
-                        value="inner page inactive"
-                        onClick={() => getmultiInactive(selectedRows)}
-                      >
-                        Inner Page Inactive
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
+                      </MenuItem> */}
+                        <MenuItem
+                          value="delete"
+                          onClick={(e) => {
+                            e.stopPropagation(); // prevent double call if inside MUI Select
+                            const isPermanent = statusFilter === "deleted"; // dynamic based on current filter
+                            handleDelete(selectedRows, isPermanent);
+                          }}
+                        >
+                          {statusFilter === "deleted" ? "Parm Delete" : "Deleted"}
+                        </MenuItem>
+                        <MenuItem
+                          value="restore"
+                          onClick={() => handleMultiRestore()}
+                        >
+                          Restore
+                        </MenuItem>
+                        <MenuItem
+                          value="inner page active"
+                          onClick={() => getMultiActive(selectedRows)}
+                        >
+                          Inner Page Active
+                        </MenuItem>
+                        <MenuItem
+                          value="inner page inactive"
+                          onClick={() => getmultiInactive(selectedRows)}
+                        >
+                          Inner Page Inactive
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
                   </div>
                 </div>
               </div>
