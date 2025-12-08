@@ -341,43 +341,55 @@ const DynamicList = () => {
 //     Swal.fire("Error", "Delete failed!", "error");
 //   }
 // };
-  const handleDelete = async (ids, isPermanent = false) => {
-    if (ids.length === 0) {
-      Swal.fire("Warning", "Please select at least one item.", "warning");
-      return;
-    }
+ const handleDelete = async (ids, isPermanent = false) => {
+  if (!ids.length) {
+    Swal.fire("Warning", "Please select at least one item.", "warning");
+    return;
+  }
 
-    const confirmDelete = await Swal.fire({
-      title: isPermanent ? "Permanent Delete?" : "Soft Delete?",
-      text: isPermanent
-        ? "This will permanently delete selected items!"
-        : "This will mark items as deleted!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: isPermanent
-        ? "Yes, delete permanently!"
-        : "Yes, delete!",
-    });
+  const confirmDelete = await Swal.fire({
+    title: isPermanent ? "Permanent Delete?" : "Soft Delete?",
+    text: isPermanent
+      ? "This will permanently delete selected items!"
+      : "This will mark items as deleted!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: isPermanent
+      ? "Yes, delete permanently!"
+      : "Yes, delete!",
+  });
 
-    if (!confirmDelete.isConfirmed) return;
+  if (!confirmDelete.isConfirmed) return;
 
-    try {
-      const promises = ids.map((id) => Authapi.dynamicDeleteData(id, { isPermanent }));
-      await Promise.all(promises);
+  try {
+    const response = await Authapi.dynamicDeleteData(
+      ids.join(","), 
+      { isPermanent }
+    );
 
-      Swal.fire(
-        "Success!",
-        isPermanent ? "Items permanently deleted." : "Items soft deleted.",
-        "success"
-      );
+    console.log("DELETE RESPONSE:", response);
 
-      fetchData();
-      setSelectedRows([]);
-    } catch (error) {
-      console.log(error);
-      Swal.fire("Error", "Delete failed!", "error");
-    }
-  };
+    Swal.fire(
+      "Success!",
+      response.message || 
+        (isPermanent ? "Items permanently deleted." : "Items soft deleted."),
+      "success"
+    );
+
+    fetchData();
+    setSelectedRows([]);
+  } catch (error) {
+    console.log("DELETE ERROR:", error?.response?.data);
+
+    Swal.fire(
+      "Error",
+      error?.response?.data?.message || "Delete failed!",
+      "error"
+    );
+  }
+};
+
+
 
 
   const handleRestore = async (ids) => {
