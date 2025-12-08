@@ -2761,5 +2761,9 @@ margin-bottom: 15px !important;
     background-color: rgb(209 235 205 / 16%) !important
 }
 
+.css-rhv0j2-MuiDataGrid-root .MuiDataGrid-columnHeaders {
+    background-color: #1b6e95 !important;
+    color: white;
+}
 /* CHECKBOX CSS END */
 
