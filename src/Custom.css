@@ -2685,85 +2685,81 @@ margin-bottom: 15px !important;
 } */
 
 /* Checkbox hover state */
-.MuiDataGrid-root input[type="checkbox"]:hover,
-.page-list-datagrid input[type="checkbox"]:hover,
-.dynamic-list-container input[type="checkbox"]:hover,
-.post-list-datagrid input[type="checkbox"]:hover {
-  border-color: #1B6E95;
-  box-shadow: 0 0 0 3px rgba(27, 110, 149, 0.1);
-}
+/* .M */
 
-/* Checkbox checked state */
-.MuiDataGrid-root input[type="checkbox"]:checked,
-.page-list-datagrid input[type="checkbox"]:checked,
-.dynamic-list-container input[type="checkbox"]:checked,
-.post-list-datagrid input[type="checkbox"]:checked {
-  background-color: #1B6E95;
-  border-color: #1B6E95;
-}
-
-/* Checkbox checked indicator */
-.MuiDataGrid-root input[type="checkbox"]:checked::after,
-.page-list-datagrid input[type="checkbox"]:checked::after,
-.dynamic-list-container input[type="checkbox"]:checked::after,
-.post-list-datagrid input[type="checkbox"]:checked::after {
-  content: "✓";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 1;
-}
-
-/* Checkbox disabled state */
-.MuiDataGrid-root input[type="checkbox"]:disabled,
-.page-list-datagrid input[type="checkbox"]:disabled,
-.dynamic-list-container input[type="checkbox"]:disabled,
-.post-list-datagrid input[type="checkbox"]:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background-color: #f1f5f9;
-  border-color: #cbd5e1;
-}
-
-/* Checkbox in header (select all) */
+/* CHECKBOX CSS START */
+/* Apply to BOTH header & row checkboxes */
 .MuiDataGrid-columnHeader input[type="checkbox"],
-.MuiDataGrid-columnHeader .MuiCheckbox-root input[type="checkbox"] {
-  width: 18px !important;
-  height: 18px !important;
-}
-
-/* Checkbox cell alignment */
-.MuiDataGrid-cell[data-field="checkboxSelection"],
-.MuiDataGrid-cell[data-field="checkboxSelection"] input {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Custom checkbox wrapper for better spacing */
 .MuiDataGrid-cell input[type="checkbox"] {
-  margin: auto;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #6b7280;
+  border-radius: 6px;
+  cursor: pointer;
+  /* position: relative; */
+  transition: all 0.25s ease-in-out;
 }
 
-/* Focus state for accessibility */
-.MuiDataGrid-root input[type="checkbox"]:focus,
-.page-list-datagrid input[type="checkbox"]:focus,
-.dynamic-list-container input[type="checkbox"]:focus,
-.post-list-datagrid input[type="checkbox"]:focus {
-  outline: 2px solid #1B6E95;
-  outline-offset: 2px;
+/* Hover effect */
+.MuiDataGrid-columnHeader input[type="checkbox"]:hover,
+.MuiDataGrid-cell input[type="checkbox"]:hover {
+  border-color: green;
+  /* box-shadow: 0 3px 6px rgba(37, 99, 235, 0.3); */
+}
+
+/* Checked state */
+
+.MuiDataGrid-cell input[type="checkbox"]:checked,
+.MuiDataGrid-columnHeader input[type="checkbox"]:checked {
+ border-color: #0000 #24c78e #24c78e #0000;
+    border-radius: 0;
+    border-width: 3px;
+    margin-left: 8px;
+    transform: rotate(45deg);
+    width: 10px;
+}
+
+/* .MuiDataGrid-columnHeader input[type="checkbox"]:checked{
+  border-color: #0000 #24c78e #24c78e #0000;
+    border-radius: 0;
+    border-width: 3px;
+    margin-left: 8px;
+    transform: rotate(45deg);
+    width: 10px;
+} */
+
+/* Tick mark */
+.MuiDataGrid-columnHeader input[type="checkbox"]:checked::after,
+.MuiDataGrid-cell input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 3px;
+  width: 7px;
+  height: 12px;
+  /* border: solid #fff; */
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+  animation: tickAppear 0.2s ease-in-out;
+}
+
+/* Tick animation */
+@keyframes tickAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotate(45deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
 }
 
 .nav-item.active-sidebar-item {
-    background-color: #1b6e95 !important;
+    background-color: rgb(209 235 205 / 16%) !important
 }
 
-.Form-main-title {
-    border-radius: 10px !important;
-    background-color: #1b6e95!important;
-    color: white;
-}
+/* CHECKBOX CSS END */
+

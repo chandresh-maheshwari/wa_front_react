@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import Swal from "sweetalert2";
 import { FaEdit } from "react-icons/fa";
@@ -36,6 +36,9 @@ const PageList = () => {
   const [actionFilter, setActionFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [draggedRowId, setDraggedRowId] = useState(null);
+  const [dragOverRowId, setDragOverRowId] = useState(null);
+  const [dragDirection, setDragDirection] = useState(null); // "up" | "down" | null
+  const gridRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -662,6 +665,8 @@ const handleDelete = async (ids, isPermanent = false) => {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", String(rowId));
     setDraggedRowId(rowId);
+    setDragOverRowId(null);
+    setDragDirection(null);
   };
 
   const handleDragOver = (event, targetId) => {
@@ -669,12 +674,29 @@ const handleDelete = async (ids, isPermanent = false) => {
       return;
     }
     event.preventDefault();
-    event.dataTransfer.dropEffect =
-      draggedRowId === targetId ? "none" : "move";
+    const isSame = draggedRowId === targetId;
+    event.dataTransfer.dropEffect = isSame ? "none" : "move";
+    if (isSame) {
+      setDragOverRowId(null);
+      setDragDirection(null);
+      return;
+    }
+
+    const sourceIndex = filteredRows.findIndex((row) => row.id === draggedRowId);
+    const targetIndex = filteredRows.findIndex((row) => row.id === targetId);
+    if (sourceIndex !== -1 && targetIndex !== -1) {
+      setDragDirection(targetIndex < sourceIndex ? "up" : "down");
+    } else {
+      setDragDirection(null);
+    }
+
+    setDragOverRowId(targetId);
   };
 
   const handleDragEnd = () => {
     setDraggedRowId(null);
+    setDragOverRowId(null);
+    setDragDirection(null);
   };
 
   const handleDrop = async (event, targetId) => {
@@ -704,8 +726,72 @@ const handleDelete = async (ids, isPermanent = false) => {
       await handleRowReorder(reorderedRows);
     } finally {
       setDraggedRowId(null);
+      setDragOverRowId(null);
+      setDragDirection(null);
     }
   };
+
+  // Enable dropping on the whole row (not just the handle) and show hover state
+  useEffect(() => {
+    const gridElement = gridRef.current;
+    if (!gridElement) return;
+
+    const scroller = gridElement.querySelector(".MuiDataGrid-virtualScroller");
+    if (!scroller) return;
+
+    const handleRowDragOver = (event) => {
+      if (!draggedRowId || statusFilter === "deleted") return;
+      const rowEl = event.target.closest("[data-id]");
+      if (!rowEl) return;
+
+      const targetId = Number(rowEl.getAttribute("data-id"));
+      if (!targetId || targetId === draggedRowId) {
+        setDragOverRowId(null);
+        setDragDirection(null);
+        return;
+      }
+
+      event.preventDefault();
+      const sourceIndex = filteredRows.findIndex((row) => row.id === draggedRowId);
+      const targetIndex = filteredRows.findIndex((row) => row.id === targetId);
+      if (sourceIndex !== -1 && targetIndex !== -1) {
+        setDragDirection(targetIndex < sourceIndex ? "up" : "down");
+      } else {
+        setDragDirection(null);
+      }
+      setDragOverRowId(targetId);
+    };
+
+    const handleRowDrop = (event) => {
+      if (!draggedRowId || statusFilter === "deleted") return;
+      const rowEl = event.target.closest("[data-id]");
+      if (!rowEl) return;
+
+      const targetId = Number(rowEl.getAttribute("data-id"));
+      if (!targetId || targetId === draggedRowId) return;
+
+      event.preventDefault();
+      handleDrop(event, targetId);
+    };
+
+    const handleRowDragLeave = (event) => {
+      if (!draggedRowId) return;
+      const nextRow = event.relatedTarget?.closest?.("[data-id]");
+      if (!nextRow) {
+        setDragOverRowId(null);
+      }
+    };
+
+    scroller.addEventListener("dragover", handleRowDragOver);
+    scroller.addEventListener("drop", handleRowDrop);
+    scroller.addEventListener("dragleave", handleRowDragLeave);
+
+    return () => {
+      scroller.removeEventListener("dragover", handleRowDragOver);
+      scroller.removeEventListener("drop", handleRowDrop);
+      scroller.removeEventListener("dragleave", handleRowDragLeave);
+    };
+  }, [draggedRowId, statusFilter]);
 
   // Add this new function for multi-restore
   const handleMultiRestore = async () => {
@@ -840,12 +926,33 @@ const handleDelete = async (ids, isPermanent = false) => {
       width: 250,
       flex: 1,
       renderCell: (params) => {
+        const isDraggingThis = draggedRowId === params.row.id;
         return params.row.image_url ? (
-          <img
-            src={params.row.image_url}
-            alt="Page"
-            className="page-list-image"
-          />
+          <div
+            style={{
+              padding: 4,
+              borderRadius: 10,
+              backgroundColor: "#fff",
+              display: "inline-flex",
+              transition: "all 120ms ease",
+              boxShadow: isDraggingThis
+                ? "0 0 0 3px rgba(100,181,246,0.25)"
+                : "0 0 0 0 rgba(0,0,0,0)",
+            }}
+          >
+            <img
+              src={params.row.image_url}
+              alt="Page"
+              className="page-list-image"
+              style={{
+                display: "block",
+                borderRadius: 8,
+                height: 60,
+                width: "auto",
+                objectFit: "cover",
+              }}
+            />
+          </div>
         ) : (
           <span>-</span>
         );
@@ -1058,7 +1165,7 @@ const handleDelete = async (ids, isPermanent = false) => {
           <div className="card-body table-card-body page-list-table-body">
             <Container className="table-container page-list-table-container">
               <div className="page-list-table-wrapper">
-                <div className="page-list-table-inner">
+                <div className="page-list-table-inner" ref={gridRef}>
                   <DataGrid
                     rows={filteredRows}
                     columns={columns}
@@ -1076,6 +1183,48 @@ const handleDelete = async (ids, isPermanent = false) => {
                     className="page-list-datagrid"
                     selectionModel={selectedRows}
                     onSelectionModelChange={handleSelectionChange}
+                    getRowClassName={(params) => {
+                      if (params.id === draggedRowId) return "row-dragging";
+                      if (params.id === dragOverRowId) return "row-drag-over";
+                      return "";
+                    }}
+                    sx={{
+                      "& .row-dragging": {
+                        opacity: 0.7,
+                        backgroundColor: "#f6faff",
+                        transform: "scale(1.002)",
+                        boxShadow: "0 3px 12px rgba(25, 118, 210, 0.14)",
+                        transition:
+                          "transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease",
+                        position: "relative",
+                      },
+                      "& .row-dragging::before": {
+                        content: '""',
+                        position: "absolute",
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: 3,
+                        backgroundColor: "#1976d2",
+                        opacity: 0.9,
+                      },
+                      "& .row-drag-over": {
+                        position: "relative",
+                        backgroundColor: "#f9fcff",
+                        boxShadow: "0 0 0 1px #b3e5fc",
+                        transform:
+                          dragDirection === "up"
+                            ? "translateY(-6px)"
+                            : dragDirection === "down"
+                            ? "translateY(6px)"
+                            : "translateY(0)",
+                        transition:
+                          "transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease",
+                      },
+                      "& .drag-handle.dragging": {
+                        color: "#1976d2",
+                      },
+                    }}
                     onCellClick={(params, event) => {
                       if (event.target.closest(".MuiCheckbox-root")) {
                         return;

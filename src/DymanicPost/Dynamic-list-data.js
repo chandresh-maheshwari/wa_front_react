@@ -8,7 +8,7 @@ import {
   InputLabel,
 } from "@mui/material";
 import Authapi from "../Authapi";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
@@ -32,6 +32,8 @@ const DynamicList = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [actionFilter, setActionFilter] = useState("all");
   const [draggedRowId, setDraggedRowId] = useState(null);
+  const [dragOverRowId, setDragOverRowId] = useState(null);
+  const gridRef = useRef(null);
   useEffect(() => {
     fetchData();
   }, []);
@@ -210,6 +212,7 @@ const DynamicList = () => {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", String(rowId));
     setDraggedRowId(rowId);
+    setDragOverRowId(null);
   };
 
   const handleDragOver = (event, targetId) => {
@@ -217,12 +220,14 @@ const DynamicList = () => {
       return;
     }
     event.preventDefault();
-    event.dataTransfer.dropEffect =
-      draggedRowId === targetId ? "none" : "move";
+    const isSame = draggedRowId === targetId;
+    event.dataTransfer.dropEffect = isSame ? "none" : "move";
+    setDragOverRowId(isSame ? null : targetId);
   };
 
   const handleDragEnd = () => {
     setDraggedRowId(null);
+    setDragOverRowId(null);
   };
 
   const handleDrop = async (event, targetId) => {
@@ -252,8 +257,65 @@ const DynamicList = () => {
       await handleRowReorder(reorderedRows);
     } finally {
       setDraggedRowId(null);
+      setDragOverRowId(null);
     }
   };
+
+  // Allow dropping on any row area (not just handle)
+  useEffect(() => {
+    const gridElement = gridRef.current;
+    if (!gridElement) return;
+
+    const scroller = gridElement.querySelector(".MuiDataGrid-virtualScroller");
+    if (!scroller) return;
+
+    const handleRowDragOver = (event) => {
+      if (!draggedRowId || statusFilter === "deleted") return;
+      const rowEl = event.target.closest("[data-id]");
+      if (!rowEl) return;
+
+      const targetId = Number(rowEl.getAttribute("data-id"));
+      if (!targetId || targetId === draggedRowId) {
+        setDragOverRowId(null);
+        return;
+      }
+
+      event.preventDefault();
+      setDragOverRowId(targetId);
+    };
+
+    const handleRowDrop = (event) => {
+      if (!draggedRowId || statusFilter === "deleted") return;
+      const rowEl = event.target.closest("[data-id]");
+      if (!rowEl) return;
+
+      const targetId = Number(rowEl.getAttribute("data-id"));
+      if (!targetId || targetId === draggedRowId) return;
+
+      event.preventDefault();
+      handleDrop(event, targetId);
+    };
+
+    const handleRowDragLeave = (event) => {
+      if (!draggedRowId) return;
+      const nextRow = event.relatedTarget?.closest?.("[data-id]");
+      if (!nextRow) {
+        setDragOverRowId(null);
+      }
+    };
+
+    scroller.addEventListener("dragover", handleRowDragOver);
+    scroller.addEventListener("drop", handleRowDrop);
+    scroller.addEventListener("dragleave", handleRowDragLeave);
+
+    return () => {
+      scroller.removeEventListener("dragover", handleRowDragOver);
+      scroller.removeEventListener("drop", handleRowDrop);
+      scroller.removeEventListener("dragleave", handleRowDragLeave);
+    };
+  }, [draggedRowId, statusFilter]);
+
+  // Preview reorder is disabled (use filteredRows directly to avoid flicker)
 
 
   // multi deleted Data
@@ -886,7 +948,7 @@ const DynamicList = () => {
           </div>
           <div className="card-body table-card-body dynamic-list-card-body">
             <Container className="table-container dynamic-list-container">
-              <div className="dynamic-list-inner">
+              <div className="dynamic-list-inner" ref={gridRef}>
                 <DataGrid
                   rows={filteredRows}
                   columns={columns}
@@ -901,14 +963,43 @@ const DynamicList = () => {
                   autoHeight={false}
                   onPageChange={(newPage) => setPage(newPage)}
                   onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-                  sx={{
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: "#113b4f",
-                      color: "white",
-                    },
-                  }}
+              sx={{
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#113b4f",
+                  color: "white",
+                },
+                "& .row-dragging": {
+                  backgroundColor: "#f5faff",
+                  boxShadow: "0 3px 12px rgba(25,118,210,0.14)",
+                  transition:
+                    "background-color 120ms ease, box-shadow 120ms ease, transform 120ms ease",
+                  transform: "scale(1.003)",
+                  position: "relative",
+                },
+                "& .row-dragging::before": {
+                  content: '""',
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 3,
+                  backgroundColor: "#1976d2",
+                  opacity: 0.9,
+                },
+                "& .row-drag-over": {
+                  position: "relative",
+                  backgroundColor: "#f9fcff",
+                  boxShadow: "0 0 0 1px #b3e5fc",
+                },
+                "& .drag-handle.dragging": { color: "#1976d2" },
+              }}
                   selectionModel={selectedRows}
                   onSelectionModelChange={handleSelectionChange}
+              getRowClassName={(params) => {
+                if (params.id === draggedRowId) return "row-dragging";
+                if (params.id === dragOverRowId) return "row-drag-over";
+                return "";
+              }}
                   onCellClick={(params, event) => {
                     if (event.target.closest(".MuiCheckbox-root")) {
                       return;
