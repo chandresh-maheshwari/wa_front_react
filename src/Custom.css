@@ -230,7 +230,7 @@
 
 .Edit-list a,
 .view-data svg {
-  color: #113B4F;
+  color: #1b6e95;
 }
 
 /* Table Height In Bottom */
@@ -412,12 +412,16 @@
 }
 
 .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb {
-  background-color: #113b4f;
+  background-color: #1b6e95;
   border-radius: 10px;
 }
 
 .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover {
   background-color: #555;
+}
+.css-18a49xe-MuiDataGrid-root .MuiDataGrid-columnHeaders {
+    background-color: #1b6e95 !important; 
+    color: white;
 }
 
 
@@ -441,7 +445,7 @@
 .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb,
 .sidebar-wrapper::-webkit-scrollbar-thumb {
   background-color: #325566;
-  /* background-color: #113b4f; */
+  /* background-color: #1b6e95; */
   /* background-color: #8bb4dd; */
   /* Thumb color */
   border-radius: 10px;
@@ -474,13 +478,13 @@
 
 /* Added on 22-01-25 START */
 /* .css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root {
-  color: #113B4F !important;
+  color: #1b6e95 !important;
 } */
 
 .dynamic-field-delete-btn,
 .dynamic-field-add-btn,
 .action-button {
-  color: #113B4F !important;
+  color: #1b6e95 !important;
 }
 
 .dynamicCreateForm .MuiFormControl-root,
@@ -495,21 +499,21 @@
 
 /* .css-e1ihxc-MuiDataGrid-root .MuiDataGrid-columnHeaders, .css-tfcyzz-MuiDataGrid-root .MuiDataGrid-columnHeaders, .css-tfcyzz-MuiDataGrid-root .MuiDataGrid-columnHeaders 
 {
-  background-color: #113b4f !important;
+  background-color: #1b6e95 !important;
   color: white;
 } */
 .Form-main-title {
   border-radius: 10px !important;
-  background-color: #113b4f !important;
+  background-color: #1b6e95 !important;
   color: white;
 }
 
 .div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm) {
-  background-color: #113b4f !important;
+  background-color: #1b6e95 !important;
 }
 
 .title-section-contact-view {
-  background-color: #113b4f;
+  background-color: #1b6e95;
   padding: 8px 20px;
   color: white;
   padding: 10px 20px;
@@ -757,7 +761,7 @@ td {
 
 /* .css-jsexje-MuiSwitch-thumb { */
 .switch-class span .MuiSwitch-thumb {
-  background-color: #113B4F !important
+  background-color: #1b6e95 !important
 }
 
 .action-filter-div {
@@ -770,7 +774,7 @@ td {
 .page-add-btn svg,
 .dynamic-post-add-btn svg,
 .post-add-btn svg {
-  background-color: rgb(15, 50, 67);
+  background-color: #1b6e95;
   color: #fff;
   border-radius: 50%;
   font-size: 22px;
@@ -796,7 +800,7 @@ td {
   max-width: 500%;
 } */
 .MuiSwitch-thumb {
-  background-color: #113B4F !important;;
+  background-color: #1b6e95 !important;;
 }
 
 .MuiDataGrid-columnHeaderTitleContainer{
@@ -1001,17 +1005,17 @@ td {
 
 /* DataGrid specific styles */
 .dynamic-list-container .MuiDataGrid-columnHeaders {
-  background-color: #113b4f;
+  background-color: #1b6e95;
   color: white;
 }
 
 /* Action buttons styling */
 .dynamic-list-container .action-button {
-  color: #113B4F !important;
+  color: #1b6e95 !important;
 }
 
 .dynamic-list-container .switch-class span .MuiSwitch-thumb {
-  background-color: #113B4F !important;
+  background-color: #1b6e95 !important;
 }
 
 /* Form control styling */
@@ -1026,7 +1030,7 @@ td {
 }
 
 .dynamic-post-add-btn svg {
-  background-color: rgb(15, 50, 67);
+  background-color: #1b6e95;
   color: #fff;
   border-radius: 50%;
   font-size: 22px;
@@ -1437,7 +1441,7 @@ td {
 
 
 .action-button {
-  color: #113B4F !important;
+  color: #1b6e95 !important;
 }
 
 .action-button.add-new-field,
@@ -1602,7 +1606,7 @@ td {
 }
 
 .post-list-datagrid .MuiDataGrid-columnHeaders {
-    background-color: #113b4f;
+    background-color: #1b6e95;
     color: white;
 }
 
@@ -2051,7 +2055,7 @@ td {
 
 /* DataGrid Custom Styles */
 .page-list-datagrid .MuiDataGrid-columnHeaders {
-  background-color: #113b4f;
+  background-color: #1b6e95;
   color: white;
 }
 
@@ -2089,7 +2093,7 @@ td {
 }
 
 .page-settings-toggle-btn {
-    color: #113B4F;
+    color: #1b6e95;
 }
 
 .page-settings-content {
@@ -2178,7 +2182,7 @@ td {
 } */
 
 .toggle-button {
-    color: #113B4F;
+    color: #1b6e95;
 }
 
 /* Preserve existing custom classes */
@@ -2243,7 +2247,7 @@ td {
 }
 
 .contact-listing-dialog-title {
-  background-color: #113b4f;
+  background-color: #1b6e95;
   color: white;
   text-align: center;
   padding: 10px;
@@ -2310,7 +2314,7 @@ td {
    ============================= */
 
 .sidebar {
-  background: linear-gradient(180deg, #113b4f 0%, #0b2733 60%, #061921 100%);
+  background: linear-gradient(180deg, #1b6e95 0%, #0b2733 60%, #061921 100%);
   color: #ffffff;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.25);
 }
@@ -2503,7 +2507,7 @@ td {
   text-overflow: ellipsis;
 }
 .sidebar-brand-name{
-  color: #113b4f !important;
+  color: #1b6e95 !important;
 }
 
 .sidebar .nav li > a.nav-link:hover {
@@ -2517,11 +2521,11 @@ margin-bottom: 15px !important;
 }
 
 .sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper, .sidebar {
-    background: #1B6E95 !important;
+    background: #1b6e95!important;
 }
 
 .page-list-datagrid .MuiDataGrid-columnHeaders {
-    background-color: #1B6E95 !important;
+    background-color: #1b6e95!important;
     color: white;
 }
 
@@ -2532,4 +2536,234 @@ margin-bottom: 15px !important;
     background-color: #fff;
     padding: 6px;
     margin-right: 10px;
+}
+
+.post-list-datagrid .MuiDataGrid-columnHeaders {
+    background-color: #1b6e95!important;
+    color: #fff;
+}
+
+/* =========================================
+   ENHANCED SUB-MENU STYLING (Add New, List)
+   ========================================= */
+
+/* Base styling for all dropdown sub-menus */
+.nav-dropdown-items-Dynamic_POST,
+.nav-dropdown-items-Dynamic_POSTS,
+.nav-dropdown-items-Page,
+[id^="nav-dropdown-items-dynamic_page-"] {
+  list-style: none;
+  padding: 4px 0 8px 0;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-left: 3px solid rgba(72, 173, 59, 0.4);
+  margin-left: 12px;
+  border-radius: 0 0 0 6px;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Sub-menu items (Add New, List) */
+.nav-dropdown-items-Dynamic_POST .nav-item,
+.nav-dropdown-items-Dynamic_POSTS .nav-item,
+.nav-dropdown-items-Page .nav-item,
+[id^="nav-dropdown-items-dynamic_page-"] .nav-item {
+  margin: 2px 0;
+  padding: 0;
+}
+
+/* Sub-menu links styling */
+.nav-dropdown-items-Dynamic_POST .nav-link,
+.nav-dropdown-items-Dynamic_POSTS .nav-link,
+.nav-dropdown-items-Page .nav-link,
+[id^="nav-dropdown-items-dynamic_page-"] .nav-link {
+  display: flex;
+  align-items: center;
+  padding: 8px 18px 8px 32px !important;
+  font-size: 0.85rem !important;
+  color: #c8d8e0 !important;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  position: relative;
+  border-radius: 4px;
+  margin: 0 8px;
+}
+
+/* Sub-menu link hover effect */
+.nav-dropdown-items-Dynamic_POST .nav-link:hover,
+.nav-dropdown-items-Dynamic_POSTS .nav-link:hover,
+.nav-dropdown-items-Page .nav-link:hover,
+[id^="nav-dropdown-items-dynamic_page-"] .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  transform: translateX(4px);
+  padding-left: 36px !important;
+}
+
+/* Active sub-menu link */
+.nav-dropdown-items-Dynamic_POST .nav-link.active,
+.nav-dropdown-items-Dynamic_POSTS .nav-link.active,
+.nav-dropdown-items-Page .nav-link.active,
+[id^="nav-dropdown-items-dynamic_page-"] .nav-link.active {
+  background-color: rgba(72, 173, 59, 0.2) !important;
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+/* Sub-menu link icon/indicator (if needed) */
+.nav-dropdown-items-Dynamic_POST .nav-link::before,
+.nav-dropdown-items-Dynamic_POSTS .nav-link::before,
+.nav-dropdown-items-Page .nav-link::before,
+[id^="nav-dropdown-items-dynamic_page-"] .nav-link::before {
+  content: "→";
+  position: absolute;
+  left: 16px;
+  font-size: 0.75rem;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.nav-dropdown-items-Dynamic_POST .nav-link:hover::before,
+.nav-dropdown-items-Dynamic_POSTS .nav-link:hover::before,
+.nav-dropdown-items-Page .nav-link:hover::before,
+[id^="nav-dropdown-items-dynamic_page-"] .nav-link:hover::before {
+  opacity: 1;
+}
+
+/* Nested sub-menu (for All Posts > Post Title > Add New/List) */
+[id^="nav-dropdown-items-dynamic_page-"] {
+  margin-left: 24px;
+  border-left-color: rgba(72, 173, 59, 0.3);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+[id^="nav-dropdown-items-dynamic_page-"] .nav-link {
+  padding-left: 40px !important;
+  font-size: 0.82rem !important;
+}
+
+[id^="nav-dropdown-items-dynamic_page-"] .nav-link::before {
+  left: 24px;
+}
+
+[id^="nav-dropdown-items-dynamic_page-"] .nav-link:hover {
+  padding-left: 44px !important;
+}
+
+/* =========================================
+   CHECKBOX STYLING FOR ALL LISTINGS
+   ========================================= */
+
+/* DataGrid checkbox styling */
+/* .MuiDataGrid-root input[type="checkbox"],
+.page-list-datagrid input[type="checkbox"],
+.dynamic-list-container input[type="checkbox"],
+.post-list-datagrid input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  cursor: pointer;
+  accent-color: #1B6E95;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 2px solid #94a3b8;
+  border-radius: 4px;
+  background-color: #ffffff;
+  position: relative;
+  transition: all 0.2s ease;
+} */
+
+/* Checkbox hover state */
+.MuiDataGrid-root input[type="checkbox"]:hover,
+.page-list-datagrid input[type="checkbox"]:hover,
+.dynamic-list-container input[type="checkbox"]:hover,
+.post-list-datagrid input[type="checkbox"]:hover {
+  border-color: #1B6E95;
+  box-shadow: 0 0 0 3px rgba(27, 110, 149, 0.1);
+}
+
+/* Checkbox checked state */
+.MuiDataGrid-root input[type="checkbox"]:checked,
+.page-list-datagrid input[type="checkbox"]:checked,
+.dynamic-list-container input[type="checkbox"]:checked,
+.post-list-datagrid input[type="checkbox"]:checked {
+  background-color: #1B6E95;
+  border-color: #1B6E95;
+}
+
+/* Checkbox checked indicator */
+.MuiDataGrid-root input[type="checkbox"]:checked::after,
+.page-list-datagrid input[type="checkbox"]:checked::after,
+.dynamic-list-container input[type="checkbox"]:checked::after,
+.post-list-datagrid input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* Checkbox disabled state */
+.MuiDataGrid-root input[type="checkbox"]:disabled,
+.page-list-datagrid input[type="checkbox"]:disabled,
+.dynamic-list-container input[type="checkbox"]:disabled,
+.post-list-datagrid input[type="checkbox"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+/* Checkbox in header (select all) */
+.MuiDataGrid-columnHeader input[type="checkbox"],
+.MuiDataGrid-columnHeader .MuiCheckbox-root input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* Checkbox cell alignment */
+.MuiDataGrid-cell[data-field="checkboxSelection"],
+.MuiDataGrid-cell[data-field="checkboxSelection"] input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Custom checkbox wrapper for better spacing */
+.MuiDataGrid-cell input[type="checkbox"] {
+  margin: auto;
+}
+
+/* Focus state for accessibility */
+.MuiDataGrid-root input[type="checkbox"]:focus,
+.page-list-datagrid input[type="checkbox"]:focus,
+.dynamic-list-container input[type="checkbox"]:focus,
+.post-list-datagrid input[type="checkbox"]:focus {
+  outline: 2px solid #1B6E95;
+  outline-offset: 2px;
+}
+
+.nav-item.active-sidebar-item {
+    background-color: #1b6e95 !important;
+}
+
+.Form-main-title {
+    border-radius: 10px !important;
+    background-color: #1b6e95!important;
+    color: white;
 }

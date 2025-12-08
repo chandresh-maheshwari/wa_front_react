@@ -1367,7 +1367,10 @@ export default new (class AuthApi {
       return response.data;
     } catch (error) {
       console.error("API Error:", error);
-      throw new Error(`Failed to store home data: ${error.message}`);
+      // throw new Error(`Failed to store home data: ${error.message}`);
+       throw error.response
+      ? error.response.data   // backend message (Laravel)
+      : { message: error.message }; // fallback
     }
   }
 
