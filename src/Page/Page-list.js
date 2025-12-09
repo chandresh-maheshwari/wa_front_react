@@ -894,6 +894,7 @@ const handleDelete = async (ids, isPermanent = false) => {
       renderHeader: () => (
         <input
           type="checkbox"
+          className="action-checkbox"
           checked={rows.length > 0 && selectedRows.length === rows.length}
           onChange={() => handleSelectAllRows()}
         />
@@ -901,6 +902,7 @@ const handleDelete = async (ids, isPermanent = false) => {
       renderCell: (params) => (
         <input
           type="checkbox"
+          className="action-checkbox"
           checked={selectedRows.includes(params.row.id)}
           onChange={() => handleCheckboxChange(params.row.id)}
         />

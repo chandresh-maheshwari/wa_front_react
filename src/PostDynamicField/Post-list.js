@@ -295,6 +295,7 @@ const PostDynamicList = () => {
             renderHeader: () => (
                 <input
                     type="checkbox"
+                    className="action-checkbox"
                     checked={rows.length > 0 && selectedRows.length === rows.length}
                     onChange={handleSelectAllRows}
                 />
@@ -302,6 +303,7 @@ const PostDynamicList = () => {
             renderCell: (params) => (
                 <input
                     type="checkbox"
+                    className="action-checkbox"
                     checked={selectedRows.includes(params.row.id)}
                     onChange={() => handleCheckboxChange(params.row.id)}
                 />

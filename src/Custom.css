@@ -2689,8 +2689,10 @@ margin-bottom: 15px !important;
 
 /* CHECKBOX CSS START */
 /* Apply to BOTH header & row checkboxes */
-.MuiDataGrid-columnHeader input[type="checkbox"],
-.MuiDataGrid-cell input[type="checkbox"] {
+/* .MuiDataGrid-columnHeader input[type="checkbox"],
+.MuiDataGrid-cell input[type="checkbox"] { */
+.MuiDataGrid-columnHeader .action-checkbox,
+.MuiDataGrid-cell .action-checkbox {
   appearance: none;
   -webkit-appearance: none;
   width: 22px;
@@ -2698,21 +2700,20 @@ margin-bottom: 15px !important;
   border: 2px solid #6b7280;
   border-radius: 6px;
   cursor: pointer;
-  /* position: relative; */
   transition: all 0.25s ease-in-out;
 }
 
 /* Hover effect */
-.MuiDataGrid-columnHeader input[type="checkbox"]:hover,
-.MuiDataGrid-cell input[type="checkbox"]:hover {
+.MuiDataGrid-columnHeader .action-checkbox:hover,
+.MuiDataGrid-cell .action-checkbox:hover {
   border-color: green;
   /* box-shadow: 0 3px 6px rgba(37, 99, 235, 0.3); */
 }
 
 /* Checked state */
 
-.MuiDataGrid-cell input[type="checkbox"]:checked,
-.MuiDataGrid-columnHeader input[type="checkbox"]:checked {
+.MuiDataGrid-cell .action-checkbox:checked,
+.MuiDataGrid-columnHeader .action-checkbox:checked {
  border-color: #0000 #24c78e #24c78e #0000;
     border-radius: 0;
     border-width: 3px;
@@ -2721,7 +2722,7 @@ margin-bottom: 15px !important;
     width: 10px;
 }
 
-/* .MuiDataGrid-columnHeader input[type="checkbox"]:checked{
+/* .MuiDataGrid-columnHeader .action-checkbox:checked{
   border-color: #0000 #24c78e #24c78e #0000;
     border-radius: 0;
     border-width: 3px;
@@ -2731,8 +2732,8 @@ margin-bottom: 15px !important;
 } */
 
 /* Tick mark */
-.MuiDataGrid-columnHeader input[type="checkbox"]:checked::after,
-.MuiDataGrid-cell input[type="checkbox"]:checked::after {
+.MuiDataGrid-columnHeader .action-checkbox:checked::after,
+.MuiDataGrid-cell .action-checkbox:checked::after {
   content: "";
   position: absolute;
   left: 6px;
