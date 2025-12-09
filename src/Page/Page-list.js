@@ -861,11 +861,11 @@ const handleDelete = async (ids, isPermanent = false) => {
   const dragHandleColumn = {
     field: "drag",
     headerName: "",
-    width: 70,
+    width: 100,
     sortable: false,
     filterable: false,
     disableColumnMenu: true,
-    renderHeader: () => <span>Drag</span>,
+    renderHeader: () => <span>Ordering</span>,
     renderCell: (params) => (
       <span
         className={`drag-handle ${draggedRowId === params.row.id ? "dragging" : ""}`}
@@ -958,20 +958,20 @@ const handleDelete = async (ids, isPermanent = false) => {
         );
       },
     },
-    {
-      field: "ordering",
-      headerName: "Ordering",
-      width: 150,
-      flex: 1,
-      renderCell: (params) => (
-        <div
-          className="ordering-cell"
-          style={{ display: "flex", alignItems: "center", gap: 8 }}
-        >
-          <span>{params.row.ordering || "-"}</span>
-        </div>
-      ),
-    },
+    // {
+    //   field: "ordering",
+    //   headerName: "Ordering",
+    //   width: 150,
+    //   flex: 1,
+    //   renderCell: (params) => (
+    //     <div
+    //       className="ordering-cell"
+    //       style={{ display: "flex", alignItems: "center", gap: 8 }}
+    //     >
+    //       <span>{params.row.ordering || "-"}</span>
+    //     </div>
+    //   ),
+    // },
     {
       field: "actions",
       headerName: "Actions",

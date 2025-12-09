@@ -1375,16 +1375,17 @@ export default new (class AuthApi {
   }
 
 
-  async CheckPostTitle(title) {
+  async CheckPostTitle(title, id) {
     // const url = `${Config.apiurl}/check-post-title`;
     console.log(`${Config.apiurl}${Config.apis.getposttitle}`);
     const url = `${Config.apiurl}${Config.apis.getposttitle}`; // no extra '/'
 
     const token = ls("Token");
-  
+  console.log(id, title);
     return axios.post(
       url,
-      { title },
+      { id, title },
+      // { title },
       { headers: { Authorization: `Bearer ${token}` } }
     );
   }

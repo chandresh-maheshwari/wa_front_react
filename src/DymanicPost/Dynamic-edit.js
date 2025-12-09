@@ -22,6 +22,7 @@ const DynamicEditForm = ({ existingData }) => {
         post_type: '',
         ordering: '',
     });
+    const [errors, setErrors] = useState({});
 
     const [sections, setSections] = useState([]);
 
@@ -275,10 +276,23 @@ const DynamicEditForm = ({ existingData }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const validationErrors = {};
+        if (!formData.post_title?.trim()) {
+            validationErrors.post_title = "Post title is required.";
+        }
+        if (!formData.post_type?.trim()) {
+            validationErrors.post_type = "Post type is required.";
+        }
+
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
         // // Disable button on first click
         // setIsSubmitting(true);
         // check that post title not be same 
-        const check = await Authapi.CheckPostTitle(formData.post_title);
+        const check = await Authapi.CheckPostTitle(formData.post_title, formData.id);
         console.log(check);
         if (check?.data?.exists) {
             Swal.fire("Warning", "This post title already exists!", "warning");
@@ -380,6 +394,7 @@ const DynamicEditForm = ({ existingData }) => {
             ...prevData,
             [name]: value
         }));
+        setErrors(prev => ({ ...prev, [name]: '' }));
     };
 
     const handleAddStandaloneField = () => {
@@ -495,9 +510,11 @@ const DynamicEditForm = ({ existingData }) => {
                                             fullWidth
                                             value={formData.post_title}
                                             onChange={handleFormDataChange}
+                                            error={!!errors.post_title}
+                                            helperText={errors.post_title}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    {/* <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Ordering"
                                             name="ordering"
@@ -511,9 +528,9 @@ const DynamicEditForm = ({ existingData }) => {
                                                 }
                                             }}
                                         />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <FormControl fullWidth className="dynamic-edit-form-control">
+                                    </Grid> */}
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth className="dynamic-edit-form-control" error={!!errors.post_type}>
                                             <InputLabel>Post Type</InputLabel>
                                             <Select
                                                 label="Post Type"
@@ -526,6 +543,11 @@ const DynamicEditForm = ({ existingData }) => {
                                                 <MenuItem value="custom_post">Custom Post</MenuItem>
                                                 <MenuItem value="normal_post">Normal Post</MenuItem>
                                             </Select>
+                                            {errors.post_type && (
+                                                <Typography variant="caption" color="error">
+                                                    {errors.post_type}
+                                                </Typography>
+                                            )}
                                         </FormControl>
                                     </Grid>
                                 </Grid>

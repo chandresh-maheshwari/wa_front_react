@@ -262,11 +262,11 @@ const PostDynamicList = () => {
     const dragHandleColumn = {
         field: "drag",
         headerName: "",
-        width: 70,
+        width: 100,
         sortable: false,
         filterable: false,
         disableColumnMenu: true,
-        renderHeader: () => <span>Drag</span>,
+        renderHeader: () => <span>Ordering</span>,
         renderCell: (params) => (
             <span
                 className={`drag-handle ${draggedRowId === params.row.id ? "dragging" : ""}`}
@@ -355,40 +355,40 @@ const PostDynamicList = () => {
                 }
             };
         }).filter(Boolean),
-        {
-            field: 'ordering',
-            headerName: 'Ordering',
-            width: 150,
-            renderCell: (params) => {
-                const index = filteredRows.findIndex((row) => row.id === params.row.id);
-                const isFirst = index === 0;
-                const isLast = index === filteredRows.length - 1;
+        // {
+        //     field: 'ordering',
+        //     headerName: 'Ordering',
+        //     width: 150,
+        //     renderCell: (params) => {
+        //         const index = filteredRows.findIndex((row) => row.id === params.row.id);
+        //         const isFirst = index === 0;
+        //         const isLast = index === filteredRows.length - 1;
 
-                return (
-                    <div className="ordering-cell" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <span>{params.row.ordering || "-"}</span>
-                        <div>
-                            <IconButton
-                                size="small"
-                                disabled={isFirst}
-                                onClick={() => moveRow(params.row.id, "up")}
-                                title="Move up"
-                            >
-                                <MdArrowUpward />
-                            </IconButton>
-                            <IconButton
-                                size="small"
-                                disabled={isLast}
-                                onClick={() => moveRow(params.row.id, "down")}
-                                title="Move down"
-                            >
-                                <MdArrowDownward />
-                            </IconButton>
-                        </div>
-                    </div>
-                );
-            },
-        },
+        //         return (
+        //             <div className="ordering-cell" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        //                 <span>{params.row.ordering || "-"}</span>
+        //                 <div>
+        //                     <IconButton
+        //                         size="small"
+        //                         disabled={isFirst}
+        //                         onClick={() => moveRow(params.row.id, "up")}
+        //                         title="Move up"
+        //                     >
+        //                         <MdArrowUpward />
+        //                     </IconButton>
+        //                     <IconButton
+        //                         size="small"
+        //                         disabled={isLast}
+        //                         onClick={() => moveRow(params.row.id, "down")}
+        //                         title="Move down"
+        //                     >
+        //                         <MdArrowDownward />
+        //                     </IconButton>
+        //                 </div>
+        //             </div>
+        //         );
+        //     },
+        // },
         {
             field: 'actions',
             headerName: 'Actions',

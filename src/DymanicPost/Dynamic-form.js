@@ -32,11 +32,12 @@ const DynamicForm = () => {
 
   const [standaloneFields, setStandaloneFields] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     post_title: "",
     post_type: "",
-    // ordering: "",
+    ordering: 1, // default to 1 to avoid missing key on API
   });
 
   const navigate = useNavigate();
@@ -270,6 +271,8 @@ const DynamicForm = () => {
   const handleTitleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    // Clear error for the field as user types
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleToggleSection = (sectionId) => {
@@ -363,6 +366,20 @@ const DynamicForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Basic required field validation
+    const validationErrors = {};
+    if (!formData.post_title?.trim()) {
+      validationErrors.post_title = "Post title is required.";
+    }
+    if (!formData.post_type?.trim()) {
+      validationErrors.post_type = "Post type is required.";
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     //  1. CHECK IF POST TITLE ALREADY EXISTS
     const check = await Authapi.CheckPostTitle(formData.post_title);
     console.log(check);
@@ -408,7 +425,7 @@ const DynamicForm = () => {
     const SubmitformData = {
       post_title: formData.post_title,
       post_type: formData.post_type,
-      // ordering: formData.ordering,
+      ordering: formData.ordering || 1, // backend expects ordering key
       post_description: postDescription,
     };
 
@@ -416,21 +433,23 @@ const DynamicForm = () => {
       // Disable button on first click
       setIsSubmitting(true);
       const response = await Authapi.Dynamicstoredata(SubmitformData);
-      if (response) {
+      if (response?.status) {
         Swal.fire("Success", "Data submitted successfully!", "success");
-        // navigate("/dynamic-list-data");
+        navigate("/dynamic-list-data");
+      } else {
+        Swal.fire("Error", response?.message || "Something went wrong!", "error");
       }
     } catch (error) {
       console.log("Error submitting data:", error);
-      // Swal.fire("Error", "There was an issue with your submission.", "error");
-       Swal.fire(
-    "Error",
-    error.error || error.message || "Something went wrong!",
-    "error"
-  );
+      Swal.fire(
+        "Error",
+        error?.error || error?.message || "Something went wrong!",
+        "error"
+      );
+    } finally {
+      // Re-enable button after response
+      setIsSubmitting(false);
     }
-    // Re-enable button after response
-    setIsSubmitting(false);
   };
 
   const handleAddStandaloneField = () => {
@@ -555,6 +574,8 @@ const DynamicForm = () => {
                       fullWidth
                       value={formData.post_title}
                       onChange={(e) => handleTitleChange(e, null)}
+                      error={!!errors.post_title}
+                      helperText={errors.post_title}
                     />
                   </Grid>
                   {/* <Grid item xs={12} sm={6}>
@@ -582,10 +603,16 @@ const DynamicForm = () => {
                         value={formData.post_type}
                         onChange={(e) => handleTitleChange(e, null)}
                         fullWidth
+                        error={!!errors.post_type}
                       >
                         <MenuItem value="custom_post">Custom Post</MenuItem>
                         <MenuItem value="normal_post">Normal Post</MenuItem>
                       </Select>
+                      {errors.post_type && (
+                        <Typography variant="caption" color="error">
+                          {errors.post_type}
+                        </Typography>
+                      )}
                     </FormControl>
                   </Grid>
                 </Grid>

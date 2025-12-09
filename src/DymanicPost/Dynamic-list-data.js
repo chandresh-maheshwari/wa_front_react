@@ -733,11 +733,11 @@ const DynamicList = () => {
   const dragHandleColumn = {
     field: "drag",
     headerName: "",
-    width: 70,
+    width: 100,
     sortable: false,
     filterable: false,
     disableColumnMenu: true,
-    renderHeader: () => <span>Drag</span>,
+    renderHeader: () => <span>Ordering</span>,
     renderCell: (params) => (
       <span
         className={`drag-handle ${draggedRowId === params.row.id ? "dragging" : ""}`}
@@ -781,17 +781,17 @@ const DynamicList = () => {
     { field: "sr_no", headerName: "Sr.No", width: 90, flex: 1 },
     { field: "post_title", headerName: "Title", width: 150, flex: 1 },
     { field: "post_type", headerName: "Post Type", width: 150, flex: 1 },
-    {
-      field: "ordering",
-      headerName: "Ordering",
-      width: 150,
-      flex: 1,
-      renderCell: (params) => (
-        <div className="ordering-cell" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span>{params.row.ordering || "-"}</span>
-        </div>
-      ),
-    },
+    // {
+    //   field: "ordering",
+    //   headerName: "Ordering",
+    //   width: 150,
+    //   flex: 1,
+    //   renderCell: (params) => (
+    //     <div className="ordering-cell" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    //       <span>{params.row.ordering || "-"}</span>
+    //     </div>
+    //   ),
+    // },
     {
       field: "actions",
       headerName: "Actions",

@@ -18,7 +18,7 @@ const PageEdit = () => {
     })
     const { id } = useParams();
     const navigate = useNavigate();
-    const [errors, setErrors] = useState({})
+    const [errors, setErrors] = useState({});
     const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -77,6 +77,20 @@ const PageEdit = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        setErrors({});
+
+        const newFormData = { ...formData };
+
+        const newErrors = {};
+        if (!newFormData.page_name) newErrors.page_name = "Page Name is required.";
+        if (!newFormData.image) newErrors.image = "Image is required.";
+        if (!newFormData.post_type) newErrors.post_type = "Post Type is required.";
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
         const form = new FormData();
         form.append('page_name', formData.page_name);
         form.append('page_description', formData.page_description);
@@ -90,7 +104,7 @@ const PageEdit = () => {
             setIsSubmitting(true);
             const response = await Authapi.pageupdatedata(id, form);
             if (response) {
-                Swal.fire('Success', ' added successfully!', 'success');
+                Swal.fire('Success', 'Page Data Updated successfully!', 'success');
                 navigate('/page-list')
             } else {
                 Swal.fire('Error', 'Failed to add .', 'error');
@@ -176,9 +190,17 @@ const PageEdit = () => {
                 }));
             }
         } else {
+            const newValue = files ? files[0] : value;
+
+            // Clear the specific field error only when a value is provided
+            setErrors((prev) => ({
+                ...prev,
+                [name]: newValue ? '' : prev[name],
+            }));
+
             setFormData((prev) => ({
                 ...prev,
-                [name]: files ? files[0] : value,
+                [name]: newValue,
             }));
         }
     };
@@ -213,18 +235,21 @@ const PageEdit = () => {
                                 <Grid container spacing={3}>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
-                                            label="Page Title"
+                                            label="Page Name"
                                             type="text"
                                             fullWidth
                                             margin="normal"
                                             InputLabelProps={{ shrink: true }}
                                             value={formData.page_name}
-                                            onChange={(e) => setFormData({ ...formData, page_name: e.target.value })}
+                                            name="page_name"
+                                            onChange={handleChange}
+                                             error={!!errors.page_name}
+                                             helperText={errors.page_name}
                                         />
                                     </Grid>
 
 
-                                    <Grid item xs={12} sm={6}>
+                                    {/* <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Ordering"
                                             type="Ordering"
@@ -237,7 +262,35 @@ const PageEdit = () => {
                                             onChange={handleChange}
                                             value={formData.ordering}
                                         />
+                                    </Grid> */}
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth>
+                                            <InputLabel>Post Type</InputLabel>
+                                            <Select
+                                                label="Post Type"
+                                                name="post_type"
+                                                value={formData.post_type || ''}
+                                                fullWidth
+                                                className="post-type-select"
+                                                error={!!errors.post_type}
+                                                onChange={handleChange}
+                                            >
+                                                {postTitles.length > 0 ? (
+                                                    postTitles
+                                                        .filter((title) => title.post_type === 'custom_post' && title.status === 1  && title.deleted_at === 0)
+                                                        .map((title) => (
+                                                            <MenuItem key={title.id} value={title.id}>
+                                                                {title.post_title}
+                                                            </MenuItem>
+                                                        ))
+                                                ) : (
+                                                    <MenuItem disabled>No post types available</MenuItem>
+                                                )}
+                                            </Select>
+                                            {errors.post_type && <Typography color="error">{errors.post_type}</Typography>}                                            
+                                        </FormControl>
                                     </Grid>
+
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Page Image"
@@ -285,7 +338,7 @@ const PageEdit = () => {
                                         ) : null}
                                     </Grid>
 
-                                    <Grid item xs={12} sm={6}>
+                                    {/* <Grid item xs={12} sm={6}>
                                         <FormControl fullWidth>
                                             <InputLabel>Post Type</InputLabel>
                                             <Select
@@ -309,7 +362,7 @@ const PageEdit = () => {
                                                 )}
                                             </Select>
                                         </FormControl>
-                                    </Grid>
+                                    </Grid> */}
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             label="Page Description"
