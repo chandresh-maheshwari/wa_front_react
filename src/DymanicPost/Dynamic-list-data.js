@@ -28,7 +28,7 @@ const DynamicList = () => {
   const [activeStates, setActiveStates] = useState({});
   const [selectedRows, setSelectedRows] = useState([]);
   const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [statusFilter, setStatusFilter] = useState("all");
   const [actionFilter, setActionFilter] = useState("all");
   const [draggedRowId, setDraggedRowId] = useState(null);
@@ -825,7 +825,16 @@ const DynamicList = () => {
       width: 100,
       flex: 1,
       renderCell: (params) => (
-        <strong onClick={(e) => e.stopPropagation()}>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            width: "100%",
+            gap: 4,
+          }}
+        >
           {statusFilter !== "deleted" ? (
             <>
               <Tooltip title="Update">
@@ -890,18 +899,18 @@ const DynamicList = () => {
               </Tooltip>
             </>
           ) : (
-            <Tooltip title="Restore">
-              <IconButton
-                aria-label="restore"
-                color="primary"
-                className="action-button"
-                onClick={() => handleSingleRestore(params.row.id)}
-              >
-                <MdRestore />
-              </IconButton>
-            </Tooltip>
+              <Tooltip title="Restore">
+                <IconButton
+                  aria-label="restore"
+                  color="primary"
+                  className="action-button"
+                  onClick={() => handleSingleRestore(params.row.id)}
+                >
+                  <MdRestore />
+                </IconButton>
+              </Tooltip>
           )}
-        </strong>
+        </div>
       ),
     },
   ];
