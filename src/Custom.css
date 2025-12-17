@@ -234,13 +234,13 @@
 }
 
 /* Table Height In Bottom */
-.css-1kwdphh-MuiDataGrid-virtualScrollerContent {
+/* .css-1kwdphh-MuiDataGrid-virtualScrollerContent {
   height: 238px !important;
-}
+} */
 
-.MuiDataGrid-virtualScrollerContent {
+/* .MuiDataGrid-virtualScrollerContent {
   height: 238px !important;
-}
+} */
 
 
 /* change on 7 jan a */
@@ -2470,39 +2470,46 @@ td {
 .sidebar-user-chip {
   display: flex;
   align-items: center;
-  padding: 6px 16px 4px;
-  margin: 8px 12px 6px;
-  border-radius: 999px;
-  background-color: rgba(15, 118, 110, 0.2);
+  padding: 10px 10px;
+  margin: 10px 14px 8px;
+  border-radius: 12px;
+  background: rgba(15, 118, 110, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
 .sidebar-user-avatar {
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   background-color: #0f766e;
   color: #ecfeff;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 8px;
+  margin-right: 10px;
+  flex-shrink: 0;
 }
 
 .sidebar-user-info {
   display: flex;
   flex-direction: column;
+  gap: 2px;
   min-width: 0;
 }
 
 .sidebar-user-label {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: #9ca3af;
 }
 
 .sidebar-user-email {
-  font-size: 0.78rem;
-  color: #e5e7eb;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #f9fafb;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2770,6 +2777,6 @@ margin-bottom: 15px !important;
 }
 /* CHECKBOX CSS END */
 
-.MuiFormControl-root{
+/* .MuiFormControl-root{
       margin-top: 15px !important;
-}
+} */

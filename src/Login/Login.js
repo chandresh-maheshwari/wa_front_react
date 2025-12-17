@@ -123,7 +123,7 @@ function Login() {
                                             </div>
                                         </div>
 
-                                        <form className="signin-form" onSubmit={submitform}>
+                                        <form className="signin-form" onSubmit={submitform} autoComplete="on">
                                             <Container>
                                                 <div className="form-group mb-3">
                                                     <TextField
@@ -133,6 +133,8 @@ function Login() {
                                                         name="email"
                                                         value={email}
                                                         onChange={e => setEmail(e.target.value)}
+                                                        autoComplete="email"
+                                                        InputLabelProps={{ shrink: true }}
                                                         fullWidth
                                                     />
                                                     {errors.email && (
@@ -148,6 +150,8 @@ function Login() {
                                                         name="password"
                                                         value={password}
                                                         onChange={e => setPassword(e.target.value)}
+                                                        autoComplete="current-password"
+                                                        InputLabelProps={{ shrink: true }}
                                                         fullWidth
                                                     />
                                                     {errors.password && (

@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import $ from "jquery";
 import { Link } from "react-router-dom";
 import '../App.css';
 import '../Custom.css';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import Authapi from '../Authapi';
-import { useNavigate } from 'react-router-dom';
+import Config from '../Config';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { CiLogout } from "react-icons/ci";
 // import img from './images/WasteAccountant_LOGO.png'
 // const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
 // const img = `https://laravel.wasteaccountant.com/admin/images/profile_bkp.png`;
-const img = `http://walara.localhost.com/admin/images/profile_bkp.png`;
+const img = `${Config.apiurl}images/profile_bkp.png`;
 
 // const img = `https://front.wasteaccountant.com/images/page/WasteAccountant_LOGO.png`;
 
@@ -20,11 +21,13 @@ const Sidebar = () => {
   const [postTitles, setPostTitles] = useState([]);
   const [openItems, setOpenItems] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
   const [userTypeEmail, setuserTypeEmail] = useState(null);
 
   const [, forceUpdate] = useState();
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Fetch current user from localStorage
   useEffect(() => {
@@ -41,77 +44,107 @@ const Sidebar = () => {
     }
   }, []);
 
+  const fetchPostTitles = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await Authapi.dynamicListData();
+
+      if (response && response.results) {
+        const activePosts = response.results.filter(post => post.status === 1 && post.deleted_at === 0);
+
+        activePosts.sort((a, b) => {
+          if (a.ordering === b.ordering) {
+            return b.id - a.id;
+          }
+          return a.ordering - b.ordering;
+        });
+
+        setPostTitles(activePosts);
+        forceUpdate({});
+      }
+    } catch (error) {
+      console.error('Error fetching post titles:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Fetch only when the "All Posts" dropdown is opened for the first time.
   useEffect(() => {
-    const fetchPostTitles = async () => {
-      try {
-        setIsLoading(true);
-        const response = await Authapi.dynamicListData();
+    if (openItems['Dynamic_POSTS'] && !hasFetchedPosts) {
+      fetchPostTitles().then(() => setHasFetchedPosts(true));
+    }
+  }, [openItems, hasFetchedPosts, fetchPostTitles]);
 
-        if (response && response.results) {
-          const activePosts = response.results.filter(post => post.status === 1 && post.deleted_at === 0);
-
-          activePosts.sort((a, b) => {
-            if (a.ordering === b.ordering) {
-              return b.id - a.id;
-            }
-            return a.ordering - b.ordering;
-          });
-
-          setPostTitles(activePosts);
-          forceUpdate({});
-        }
-      } catch (error) {
-        console.error('Error fetching post titles:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPostTitles();
-
-    const handlePostStatusChange = async (event) => {
-      const { id, status } = event.detail;
-
-      try {
-        const response = await Authapi.dynamicListData();
-        if (response && response.results) {
-          const activePosts = response.results.filter(post => post.status === 1);
-
-          activePosts.sort((a, b) => {
-            if (a.ordering === b.ordering) {
-              return b.id - a.id;
-            }
-            return a.ordering - b.ordering;
-          });
-
-          setPostTitles(activePosts);
-        }
-      } catch (error) {
-        console.error('Error refetching post titles:', error);
-      }
+  // Refresh when post status change events fire (e.g., after edits).
+  useEffect(() => {
+    const handlePostStatusChange = async () => {
+      await fetchPostTitles();
+      setHasFetchedPosts(true);
     };
 
     window.addEventListener('dynamicPostStatusChanged', handlePostStatusChange);
 
-    // Cleanup
     return () => {
       window.removeEventListener('dynamicPostStatusChanged', handlePostStatusChange);
     };
-  }, []);
+  }, [fetchPostTitles]);
 
-  const toggle = (id) => {
-    setOpenItems(prevState => {
-      const newState = { ...prevState };
-      if (id === 'Dynamic_POSTS') {
-        newState[id] = !prevState[id]; // Toggle the main dropdown
-      } else {
-        Object.keys(newState).forEach(key => {
-          if (key !== 'Dynamic_POSTS') {
-            newState[key] = false; // Close all post items
+  // Close All Posts dropdown when navigating away from post routes
+  useEffect(() => {
+    const isAllPostsRoute = location.pathname.startsWith('/post');
+    if (!isAllPostsRoute) {
+      setOpenItems((prev) => {
+        if (!prev['Dynamic_POSTS'] && Object.keys(prev).every(key => typeof key === 'string')) {
+          return prev;
+        }
+        const next = { ...prev, Dynamic_POSTS: false };
+        postTitles.forEach((post) => {
+          if (next[post.id]) {
+            next[post.id] = false;
           }
         });
-        newState[id] = !prevState[id]; // Toggle the current post item
+        return next;
+      });
+    }
+  }, [location.pathname, postTitles]);
+
+  const toggle = (id) => {
+    setOpenItems((prevState) => {
+      const newState = { ...prevState };
+      const topLevel = ['Dynamic_POST', 'Dynamic_POSTS', 'page'];
+      const isTopLevel = topLevel.includes(id);
+      const isPostChild = !isNaN(id);
+
+      if (isTopLevel) {
+        // Close other top-level dropdowns
+        topLevel.forEach((item) => {
+          if (item !== id) newState[item] = false;
+        });
+
+        // When leaving All Posts, close child posts; when entering other menus, keep All Posts children closed
+        if (id !== 'Dynamic_POSTS') {
+          postTitles.forEach((post) => {
+            newState[post.id] = false;
+          });
+        }
+
+        newState[id] = !prevState[id];
+        return newState;
       }
+
+      if (isPostChild) {
+        // Keep All Posts open, toggle only one child at a time
+        newState['Dynamic_POSTS'] = true;
+        postTitles.forEach((post) => {
+          if (post.id !== id) newState[post.id] = false;
+        });
+        newState[id] = !prevState[id];
+        return newState;
+      }
+
+      // Fallback toggle
+      newState[id] = !prevState[id];
       return newState;
     });
   };
@@ -121,6 +154,81 @@ const Sidebar = () => {
     // console.log('Checking active state for:', id, 'Active:', active);
     return active || window.location.pathname === id;
   };
+
+  const isPathActive = (path) => location.pathname.startsWith(path);
+
+  const isDynamicPostLinkActive = (path) => isPathActive(path);
+
+  const isPageAddActive = () => location.pathname === '/page';
+  const isPageListActive = () => location.pathname === '/page-list';
+
+  const isContactLinkActive = (path) => isPathActive(path);
+
+  const isPostChildActive = (post, targetPath) => {
+    const onTargetPath = isPathActive(targetPath);
+    const stateTitle = location.state && location.state.post_title;
+    if (!onTargetPath) return false;
+    // If state is provided, match it; otherwise just rely on path
+    if (stateTitle) {
+      return stateTitle === post.post_title;
+    }
+    return true;
+  };
+
+  const linkStyle = (active) => (active ? activeStyle : {});
+
+  // Auto-open the relevant dropdowns based on current route
+  useEffect(() => {
+    const path = location.pathname;
+    const stateTitle = location.state && location.state.post_title;
+
+    setOpenItems((prev) => {
+      const next = { ...prev };
+      const openTopLevel = (key) => {
+        ['Dynamic_POST', 'Dynamic_POSTS', 'page'].forEach((item) => {
+          next[item] = item === key;
+        });
+      };
+
+      // Dynamic Post Type (Add/List)
+      if (path.startsWith('/dynamic-form') || path.startsWith('/dynamic-list-data')) {
+        openTopLevel('Dynamic_POST');
+        return next;
+      }
+
+      // Page (Add/List)
+      if (path.startsWith('/page')) {
+        openTopLevel('page');
+        return next;
+      }
+      if (path.startsWith('/page-list')) {
+        openTopLevel('page');
+        return next;
+      }
+
+      // Posts under All Posts
+      if (path.startsWith('/post-form') || path.startsWith('/post-list')) {
+        openTopLevel('Dynamic_POSTS');
+
+        if (stateTitle && postTitles.length > 0) {
+          const match = postTitles.find((p) => p.post_title === stateTitle);
+          if (match) {
+            postTitles.forEach((p) => {
+              next[p.id] = p.id === match.id;
+            });
+          }
+        }
+
+        return next;
+      }
+
+      return next;
+    });
+  }, [location.pathname, location.state, postTitles]);
+
+  const closeAllDropdowns = useCallback(() => {
+    setOpenItems({});
+  }, []);
 
   const activeStyle = {
     backgroundColor: 'rgba(72, 173, 59, 0.16)',
@@ -212,12 +320,21 @@ const Sidebar = () => {
               {openItems['Dynamic_POST'] && (
                 <ul className="nav-dropdown-items-Dynamic_POST">
                   <li className="nav-item">
-                    <Link className="nav-link" to="/dynamic-form">
+                    <Link
+                      className={`nav-link ${isDynamicPostLinkActive('/dynamic-form') ? 'active-sidebar-item' : ''}`}
+                      to="/dynamic-form"
+                      style={linkStyle(isDynamicPostLinkActive('/dynamic-form'))}
+                    >
                       <span>Add New </span>
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link " id="listing" to="/dynamic-list-data">
+                    <Link
+                      className={`nav-link ${isDynamicPostLinkActive('/dynamic-list-data') ? 'active-sidebar-item' : ''}`}
+                      id="listing"
+                      to="/dynamic-list-data"
+                      style={linkStyle(isDynamicPostLinkActive('/dynamic-list-data'))}
+                    >
                       <span>List</span>
                     </Link>
                   </li>
@@ -272,12 +389,23 @@ const Sidebar = () => {
                   {openItems[post.id] && (
                     <ul className={`nav-dropdown-items-dynamic_page-${post.id}`} id="nav-dropdown-items-dynamic_page">
                       <li className="nav-item">
-                        <Link className="nav-link" to="/post-form" state={{ post_title: post.post_title }}>
+                        <Link
+                          className={`nav-link ${isPostChildActive(post, '/post-form') ? 'active-sidebar-item' : ''}`}
+                          to="/post-form"
+                          state={{ post_title: post.post_title }}
+                          style={linkStyle(isPostChildActive(post, '/post-form'))}
+                        >
                           <span>Add New</span>
                         </Link>
                       </li>
                       <li className="nav-item">
-                        <Link className="nav-link " id="listing" to="/post-list" state={{ post_title: post.post_title }}>
+                        <Link
+                          className={`nav-link ${isPostChildActive(post, '/post-list') ? 'active-sidebar-item' : ''}`}
+                          id="listing"
+                          to="/post-list"
+                          state={{ post_title: post.post_title }}
+                          style={linkStyle(isPostChildActive(post, '/post-list'))}
+                        >
                           <span>Post List</span>
                         </Link>
                       </li>
@@ -310,12 +438,21 @@ const Sidebar = () => {
           {openItems['page'] && (
             <ul className="nav-dropdown-items-Page">
               <li className="nav-item">
-                <Link className="nav-link" to="/page">
+                <Link
+                  className={`nav-link ${isPageAddActive() ? 'active-sidebar-item' : ''}`}
+                  to="/page"
+                  style={linkStyle(isPageAddActive())}
+                >
                   <span>Add New</span>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link  " id="listing" to="/page-list">
+                <Link
+                  className={`nav-link ${isPageListActive() ? 'active-sidebar-item' : ''}`}
+                  id="listing"
+                  to="/page-list"
+                  style={linkStyle(isPageListActive())}
+                >
                   <span>Page List</span>
                 </Link>
               </li>
@@ -328,7 +465,10 @@ const Sidebar = () => {
             <Link
               className="nav-link contact-us"
               id="listing"
-              to="/Contact-listing">
+              to="/Contact-listing"
+              onClick={closeAllDropdowns}
+              style={linkStyle(isContactLinkActive('/Contact-listing'))}
+              >
               <p>Contact List</p>
             </Link>
           </li>

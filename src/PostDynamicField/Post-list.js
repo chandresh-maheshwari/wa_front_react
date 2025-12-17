@@ -14,8 +14,10 @@ import ls from 'local-storage';
 import "../Custom.css";
 import $ from 'jquery';
 import { useNavigate } from 'react-router-dom';
+import Config from "../Config";
 
 const PostDynamicList = () => {
+    const fallbackImage = `${Config.apiurl}uploads/Default.jpg`;
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
@@ -329,12 +331,12 @@ const PostDynamicList = () => {
                     const isExpanded = expandedEmails[params.row.id];
                     const displayValue = typeof value === 'string' ? value : (value !== undefined && value !== null ? String(value) : "-");
                     const safeValue = displayValue.replace(/[^a-zA-Z0-9-_]/g, '_');
-                    const isImage = typeof value === 'string' && (value.endsWith('.jpg') || value.endsWith('.jpeg') || value.endsWith('.png') || value.endsWith('.gif'));
+                    const isImage = typeof value === 'string' && /\.(jpg|jpeg|png|gif)$/i.test(value);
                     return (
                         <div className="post-list-cell-content">
                             {isImage ? (
                                 <img
-                                    src={value}
+                                    src={value || fallbackImage}
                                     alt={displayValue}
                                     className="post-list-image"
                                     style={{
@@ -345,6 +347,10 @@ const PostDynamicList = () => {
                                         width: "auto",
                                         objectFit: "cover",
                                         display: "block",
+                                    }}
+                                    onError={(e) => {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = fallbackImage;
                                     }}
                                 />
                             ) : (
@@ -413,14 +419,19 @@ const PostDynamicList = () => {
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete">
-                            <IconButton aria-label="delete" color="primary" className="action-button">
-                                <MdDelete onClick={() => handleDelete1(params.row.id)} />
+                            <IconButton
+                                aria-label="delete"
+                                color="primary"
+                                className="action-button"
+                                onClick={() => handleDelete1(params.row.id)}
+                            >
+                                <MdDelete />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title={params.row.status ? 'Inactive' : 'Active'}>
                             <Switch
                                 key={params.row.id}
-                                checked={params.row.status}
+                                checked={Boolean(params.row.status)}
                                 size="xs"
                                 className='switch-class'
                                 onChange={async () => {

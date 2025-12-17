@@ -18,14 +18,16 @@ import Authapi from "../Authapi";
 import Switch from "@mui/material/Switch";
 import Expired from "../Login/ExpiredToken";
 import { useNavigate } from "react-router-dom";
+import Config from "../Config";
 
 const PageList = () => {
+  const fallbackImage = `${Config.apiurl}uploads/Default.jpg`;
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
-  const [activeStates, setActiveStates] = useState(
+  const [activeStates, setActiveStates] = useState(   
     Array.isArray(rows)
       ? rows.reduce((acc, row) => ({ ...acc, [row.id]: false }), {})
       : {}
@@ -932,31 +934,44 @@ const handleDelete = async (ids, isPermanent = false) => {
         return params.row.image_url ? (
           <div
             style={{
-              padding: 4,
-              borderRadius: 10,
-              backgroundColor: "#fff",
               display: "inline-flex",
-              transition: "all 120ms ease",
-              boxShadow: isDraggingThis
-                ? "0 0 0 3px rgba(100,181,246,0.25)"
-                : "0 0 0 0 rgba(0,0,0,0)",
             }}
           >
             <img
-              src={params.row.image_url}
+              src={params.row.image_url || fallbackImage}
               alt="Page"
               className="page-list-image"
               style={{
                 display: "block",
-                borderRadius: 8,
+                // borderRadius: 8,
+                height: 60,
+                width: "auto",
+                objectFit: "cover",
+              }}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = fallbackImage;
+              }}
+            />
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "inline-flex",
+            }}
+          >
+            <img
+              src={fallbackImage}
+              alt="No Page"
+              className="page-list-image"
+              style={{
+                display: "block",
                 height: 60,
                 width: "auto",
                 objectFit: "cover",
               }}
             />
           </div>
-        ) : (
-          <span>-</span>
         );
       },
     },

@@ -34,6 +34,23 @@ const DynamicList = () => {
   const [draggedRowId, setDraggedRowId] = useState(null);
   const [dragOverRowId, setDragOverRowId] = useState(null);
   const gridRef = useRef(null);
+  const MAX_PAGE_SIZE = 100; // MUI DataGrid (MIT) hard limit
+  const allPageSize = useMemo(() => {
+    const total = filteredRows.length || rows.length || 0;
+    const safeTotal = Math.max(total, 1); // DataGrid requires at least 1
+    return Math.min(safeTotal, MAX_PAGE_SIZE);
+  }, [filteredRows.length, rows.length]);
+
+  const pageSizeOptions = useMemo(
+    () => [5, 10, 20, 50, { value: allPageSize, label: "All" }],
+    [allPageSize]
+  );
+
+  const paginationModel = useMemo(
+    () => ({ page, pageSize }),
+    [page, pageSize]
+  );
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -46,7 +63,7 @@ const DynamicList = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      console.log('dynamic-list-data');
+      // console.log('dynamic-list-data');
       const response = await Authapi.dynamicListData();
       console.log("API Response:", response); // Log the API response
 
@@ -228,6 +245,16 @@ const DynamicList = () => {
   const handleDragEnd = () => {
     setDraggedRowId(null);
     setDragOverRowId(null);
+  };
+
+  const handlePaginationModelChange = (model) => {
+    setPage(model.page);
+    setPageSize(model.pageSize);
+  };
+
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    setPage(0); // reset to first page when page size changes
   };
 
   const handleDrop = async (event, targetId) => {
@@ -728,8 +755,6 @@ const DynamicList = () => {
     }
   };
 
-  const paginationModel = { page: 0, pageSize: 10 };
-
   const dragHandleColumn = {
     field: "drag",
     headerName: "",
@@ -819,15 +844,20 @@ const DynamicList = () => {
                   aria-label="delete"
                   color="primary"
                   className="action-button"
+                  onClick={() => handleDelete1(params.row.id)}
                 >
-                  <MdDelete onClick={() => handleDelete1(params.row.id)} />
+                  <MdDelete />
                 </IconButton>
               </Tooltip>
               <Tooltip title={params.row.status ? 'Inactive' : 'Active'}>
                 <Switch
                   className="action-button switch-class"
                   key={params.row.id}
-                  checked={params.row.status}
+                  checked={
+                    activeStates[params.row.id] !== undefined
+                      ? Boolean(activeStates[params.row.id])
+                      : Boolean(params.row.status)
+                  }
                   size="xs"
                   onChange={async () => {
                     const confirmToggle = await Swal.fire({
@@ -841,9 +871,13 @@ const DynamicList = () => {
                     });
 
                     if (confirmToggle.isConfirmed) {
+                      const currentStatus =
+                        activeStates[params.row.id] !== undefined
+                          ? activeStates[params.row.id] ? 1 : 0
+                          : params.row.status;
                       await getSingleActive(
                         params.row.id,
-                        activeStates[params.row.id] ? 1 : 0
+                        currentStatus
                       );
                       Swal.fire(
                         "Success!",
@@ -954,17 +988,11 @@ const DynamicList = () => {
                 <DataGrid
                   rows={filteredRows}
                   columns={columns}
-                  initialState={{ pagination: { paginationModel } }}
-                  pageSizeOptions={[
-                    5,
-                    10,
-                    20,
-                    { value: rows.length, label: "All" },
-                  ]}
+                  paginationModel={paginationModel}
+                  pageSizeOptions={pageSizeOptions}
                   loading={loading}
-                  autoHeight={false}
-                  onPageChange={(newPage) => setPage(newPage)}
-                  onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+                  style={{ height: "100%", width: "100%" }}
+                  onPaginationModelChange={handlePaginationModelChange}
               sx={{
                 "& .MuiDataGrid-columnHeaders": {
                   backgroundColor: "#113b4f",

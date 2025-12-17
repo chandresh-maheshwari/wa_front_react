@@ -15,7 +15,8 @@
 }
 
 .dynamic-list-inner {
-  height: 100%;
+  height: auto;
+  min-height: 400px;
 }
 
 .dynamic-list-action-filter {

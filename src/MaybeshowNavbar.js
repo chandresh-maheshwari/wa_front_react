@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useLocation } from "react-router-dom";
 
+// Only render wrapped content on non-auth routes to avoid mounting sidebar/fetches.
 const MaybeshowNavbar = ({ children }) => {
   const location = useLocation();
-  const [shownavbar, setshownavbar] = useState(true);
+  const hiddenRoutes = ["/", "/ForgetPassword"];
+  const shouldShow = !hiddenRoutes.includes(location.pathname);
 
-  useEffect(() => {
-    const hiddenRoutes = ["/", "/ForgetPassword"];
-    const shouldShow = !hiddenRoutes.includes(location.pathname);
-
-    setshownavbar(shouldShow); // ✅ Always update, let React handle re-renders
-  }, [location.pathname]); // ✅ only depend on route
-
-  return <>{shownavbar && children}</>;
+  if (!shouldShow) return null;
+  return <>{children}</>;
 };
 
 export default MaybeshowNavbar;
