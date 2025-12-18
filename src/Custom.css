@@ -2441,11 +2441,11 @@ td {
 }
 
 .sidebar-brand .sidebar-logo {
-  width: 44px;
+  width: 50px;
   height: 44px;
   border-radius: 10px;
-  background-color: #0b2733;
-  padding: 6px;
+  background-color: #fff;
+  padding: 0px;
   margin-right: 10px;
 }
 
@@ -2537,14 +2537,14 @@ margin-bottom: 15px !important;
     color: white;
 }
 
-.sidebar-brand .sidebar-logo {
+/* .sidebar-brand .sidebar-logo {
     width: 44px;
     height: 44px;
     border-radius: 10px;
     background-color: #fff;
     padding: 6px;
     margin-right: 10px;
-}
+} */
 
 .post-list-datagrid .MuiDataGrid-columnHeaders {
     background-color: #1b6e95!important;
