@@ -47,7 +47,7 @@ const Sidebar = () => {
     try {
       setIsLoading(true);
       const response = await Authapi.dynamicListData();
-
+      
       if (response && response.results) {
         const activePosts = response.results.filter(post => post.status === 1 && post.deleted_at === 0);
 
@@ -238,19 +238,23 @@ const Sidebar = () => {
     }
 
     try {
-      // Always clear client-side auth first so user is logged out on this device
-      localStorage.removeItem('Token');
-      localStorage.removeItem('user');
-
-      // Try to tell backend to invalidate session/token (best effort)
+      // First, try to log out on the server with the current token
       try {
         await Authapi.logoutData();
       } catch (apiError) {
+        // If the token is already invalid/expired, we still want to log out locally
         console.error("Logout API Error (ignored for client logout):", apiError);
       }
 
-      // Always redirect to CMS login page after logout
-      navigate('/');
+      // Clear ALL local/session auth data so the app can't think we're still logged in
+      localStorage.removeItem('Token');
+      sessionStorage.removeItem('Token');
+      localStorage.removeItem('authToken');
+      sessionStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+
+      // Hard redirect to login/CMS so React state is reset and no old requests keep running
+      window.location.href = '/cms';
     } catch (error) {
       console.error("Logout Error:", error);
     }
