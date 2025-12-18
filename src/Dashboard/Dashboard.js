@@ -64,6 +64,25 @@ function Dashboard() {
     }
   }, [location.search, navigate]);
 
+  // ✅ Step 2: Guard route – if no token, send user to login (/cms)
+  useEffect(() => {
+    const token = localStorage.getItem('Token');
+
+    if (!token) {
+      // Not logged in → go to CMS login
+      navigate('/', { replace: true });
+      return;
+    }
+
+    // Token exists – allow dashboard to render
+    setLoading(false);
+  }, [navigate]);
+
+  if (loading) {
+    // Simple placeholder while we check auth – prevents flash of Dashboard
+    return null;
+  }
+
   // ✅ Step 2: Only call API if token exists
   // useEffect(() => {
   //   const fetchUserData = async () => {
