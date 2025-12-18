@@ -11,7 +11,7 @@ import { CiLogout } from "react-icons/ci";
 // import img from './images/WasteAccountant_LOGO.png'
 // const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
 // const img = `https://laravel.wasteaccountant.com/admin/images/profile_bkp.png`;
-const img = `${Config.apiurl}images/WasteAccountant_cms_logo.png`;
+const img = `${Config.apiurl}images/WasteAccountant_LOGO.png`;
 
 // const img = `https://front.wasteaccountant.com/images/page/WasteAccountant_LOGO.png`;
 
