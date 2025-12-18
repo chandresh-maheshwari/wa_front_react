@@ -235,26 +235,30 @@ const Sidebar = () => {
     color: '#ffffff',
   };
 
- const logoutData = async () => {
-        try {
+  const logoutData = async (e) => {
+    // Prevent the <Link> default navigation and let us control redirect
+    if (e && e.preventDefault) {
+      e.preventDefault();
+    }
 
-            // // const response = await Authapi.logoutData();
-            // // console.log(response)
-            // localStorage.removeItem('Token');
-            // localStorage.removeItem('user');
+    try {
+      // Always clear client-side auth first so user is logged out on this device
+      localStorage.removeItem('Token');
+      localStorage.removeItem('user');
 
-            const response = await Authapi.logoutData();
-            // console.log(response)
-            if (response.status === true) {
+      // Try to tell backend to invalidate session/token (best effort)
+      try {
+        await Authapi.logoutData();
+      } catch (apiError) {
+        console.error("Logout API Error (ignored for client logout):", apiError);
+      }
 
-                localStorage.removeItem('Token');
-                localStorage.removeItem('user');
-                navigate('/');
-            }
-        } catch (error) {
-            console.error("Logout Error:", error);
-        }
-    };
+      // Always redirect to CMS login page after logout
+      navigate('/');
+    } catch (error) {
+      console.error("Logout Error:", error);
+    }
+  };
 
 
 
@@ -291,7 +295,6 @@ const Sidebar = () => {
               <p className="dashboard_nav_item">Dashboard</p>
             </Link>
           </li>
-          {console.log("User Type:", userTypeEmail)}
 
           {userTypeEmail === "admindevloper@cms.com" && (
             <>
@@ -476,9 +479,9 @@ const Sidebar = () => {
           <li className="logout nav-item nav-dropdown mt-2">
             <Link
               className="nav-link logout"
-              onClick={logoutData} 
-              to="/">                        
-              
+              to="#"
+              onClick={logoutData}
+            >
               <p><CiLogout /> Logout</p>
             </Link>
           </li>
