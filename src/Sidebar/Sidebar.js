@@ -11,7 +11,7 @@ import { CiLogout } from "react-icons/ci";
 // import img from './images/WasteAccountant_LOGO.png'
 // const img = `https://laravel.wasteaccountant.com/images/WasteAccountant_LOGO.png`;
 // const img = `https://laravel.wasteaccountant.com/admin/images/profile_bkp.png`;
-const img = `${Config.apiurl}images/profile_bkp.png`;
+const img = `${Config.apiurl}images/logo.png`;
 
 // const img = `https://front.wasteaccountant.com/images/page/WasteAccountant_LOGO.png`;
 
@@ -21,7 +21,6 @@ const Sidebar = () => {
   const [postTitles, setPostTitles] = useState([]);
   const [openItems, setOpenItems] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
   const [userTypeEmail, setuserTypeEmail] = useState(null);
 
   const [, forceUpdate] = useState();
@@ -69,18 +68,15 @@ const Sidebar = () => {
     }
   }, []);
 
-  // Fetch only when the "All Posts" dropdown is opened for the first time.
+  // Fetch post titles once when sidebar mounts so "All Posts" works on first click
   useEffect(() => {
-    if (openItems['Dynamic_POSTS'] && !hasFetchedPosts) {
-      fetchPostTitles().then(() => setHasFetchedPosts(true));
-    }
-  }, [openItems, hasFetchedPosts, fetchPostTitles]);
+    fetchPostTitles();
+  }, [fetchPostTitles]);
 
   // Refresh when post status change events fire (e.g., after edits).
   useEffect(() => {
     const handlePostStatusChange = async () => {
       await fetchPostTitles();
-      setHasFetchedPosts(true);
     };
 
     window.addEventListener('dynamicPostStatusChanged', handlePostStatusChange);
