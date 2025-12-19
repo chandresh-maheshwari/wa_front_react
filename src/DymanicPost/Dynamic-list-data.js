@@ -1087,22 +1087,37 @@ const DynamicList = () => {
                     >
                       {statusFilter === "deleted" ? "Parm Delete" : "Deleted"}
                     </MenuItem> */}
+                      {statusFilter === "deleted" ? (
+                      <>
+                        <MenuItem
+                          value="delete"
+                          onClick={(e) => {
+                            e.stopPropagation(); // prevent double call if inside MUI Select
+                            const isPermanent = statusFilter === "deleted"; // dynamic based on current filter
+                            handleDelete(selectedRows, isPermanent);
+                          }}
+                        >
+                          Parm Delete
+                        </MenuItem>
+                        <MenuItem
+                          value="restore"
+                          onClick={() => handleMultiRestore()}
+                        >
+                          Restore
+                        </MenuItem>
+                      </>
+                    ) : (
                       <MenuItem
-                      value="delete"
-                      onClick={(e) => {
-                        e.stopPropagation(); // prevent double call if inside MUI Select
-                        const isPermanent = statusFilter === "deleted"; // dynamic based on current filter
-                        handleDelete(selectedRows, isPermanent);
-                      }}
-                    >
-                      {statusFilter === "deleted" ? "Parm Delete" : "Deleted"}
-                    </MenuItem>
-                    <MenuItem
-                      value="restore"
-                      onClick={() => handleMultiRestore()}
-                    >
-                      Restore
-                    </MenuItem>
+                        value="delete"
+                        onClick={(e) => {
+                          e.stopPropagation(); // prevent double call if inside MUI Select
+                          const isPermanent = statusFilter === "deleted"; // dynamic based on current filter
+                          handleDelete(selectedRows, isPermanent);
+                        }}
+                      >
+                        Deleted
+                      </MenuItem>
+                    )}
                   </Select>
                 </FormControl>
               </div>

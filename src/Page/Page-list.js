@@ -1261,56 +1261,65 @@ const handleDelete = async (ids, isPermanent = false) => {
                         onChange={handleActionFilterChange}
                         label="Action Filter"
                       >
-
                         <MenuItem value="all" disabled>
                           All
                         </MenuItem>
-                        <MenuItem
-                          value="page active"
-                          onClick={() => getActive(selectedRows)}
-                        >
-                          Page Active
-                        </MenuItem>
-                        <MenuItem
-                          value="page inactive"
-                          onClick={() => getInactive(selectedRows)}
-                        >
-                          Page Inactive
-                        </MenuItem>
-                        {/* <MenuItem
-                        value="deleted"
-                        onClick={() => handleDelete(selectedRows)}
-                      >
-                        Deleted
-                      </MenuItem> */}
-                        <MenuItem
-                          value="delete"
-                          onClick={(e) => {
-                            e.stopPropagation(); // prevent double call if inside MUI Select
-                            const isPermanent = statusFilter === "deleted"; // dynamic based on current filter
-                            handleDelete(selectedRows, isPermanent);
-                          }}
-                        >
-                          {statusFilter === "deleted" ? "Parm Delete" : "Deleted"}
-                        </MenuItem>
-                        <MenuItem
-                          value="restore"
-                          onClick={() => handleMultiRestore()}
-                        >
-                          Restore
-                        </MenuItem>
-                        <MenuItem
-                          value="inner page active"
-                          onClick={() => getMultiActive(selectedRows)}
-                        >
-                          Inner Page Active
-                        </MenuItem>
-                        <MenuItem
-                          value="inner page inactive"
-                          onClick={() => getmultiInactive(selectedRows)}
-                        >
-                          Inner Page Inactive
-                        </MenuItem>
+
+                        {statusFilter === "deleted" ? (
+                          <>
+                            <MenuItem
+                              value="delete"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(selectedRows, true); // permanent delete in deleted filter
+                              }}
+                            >
+                              Parm Delete
+                            </MenuItem>
+                            <MenuItem
+                              value="restore"
+                              onClick={() => handleMultiRestore()}
+                            >
+                              Restore
+                            </MenuItem>
+                          </>
+                        ) : (
+                          <>
+                            <MenuItem
+                              value="page active"
+                              onClick={() => getActive(selectedRows)}
+                            >
+                              Page Active
+                            </MenuItem>
+                            <MenuItem
+                              value="page inactive"
+                              onClick={() => getInactive(selectedRows)}
+                            >
+                              Page Inactive
+                            </MenuItem>
+                            <MenuItem
+                              value="delete"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(selectedRows, false); // soft delete in non-deleted filter
+                              }}
+                            >
+                              Deleted
+                            </MenuItem>
+                            <MenuItem
+                              value="inner page active"
+                              onClick={() => getMultiActive(selectedRows)}
+                            >
+                              Inner Page Active
+                            </MenuItem>
+                            <MenuItem
+                              value="inner page inactive"
+                              onClick={() => getmultiInactive(selectedRows)}
+                            >
+                              Inner Page Inactive
+                            </MenuItem>
+                          </>
+                        )}
                       </Select>
                     </FormControl>
                   </div>

@@ -1125,20 +1125,36 @@ const PostDynamicList = () => {
                                                 label="Action Filter"
                                             >
                                                 <MenuItem value="all" disabled>All</MenuItem>
-                                                <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
-                                                <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
-                                                {/* <MenuItem value="deleted" onClick={() => handleDelete(selectedRows)}>Deleted</MenuItem> */}
-                                                <MenuItem
-                                                    value="delete"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation(); // prevent double call if inside MUI Select
-                                                        const isPermanent = statusFilter === "deleted"; // dynamic based on current filter
-                                                        handleDelete(selectedRows, isPermanent);
-                                                    }}
-                                                >
-                                                    {statusFilter === "deleted" ? "Parm Delete" : "Deleted"}
-                                                </MenuItem>
-                                                <MenuItem value="restore" onClick={() => handleMultiRestore(selectedRows)}>Restore</MenuItem>
+                                                {statusFilter === "deleted" ? (
+                                                    <>
+                                                        <MenuItem
+                                                            value="delete"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation(); // prevent double call if inside MUI Select
+                                                                const isPermanent = statusFilter === "deleted"; // dynamic based on current filter
+                                                                handleDelete(selectedRows, isPermanent);
+                                                            }}
+                                                        >
+                                                            Parm Delete
+                                                        </MenuItem>
+                                                        <MenuItem value="restore" onClick={() => handleMultiRestore(selectedRows)}>Restore</MenuItem>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <MenuItem value="active" onClick={() => getActive(selectedRows)}>Active</MenuItem>
+                                                        <MenuItem value="inactive" onClick={() => getInactive(selectedRows)}>Inactive</MenuItem>
+                                                        <MenuItem
+                                                            value="delete"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation(); // prevent double call if inside MUI Select
+                                                                const isPermanent = statusFilter === "deleted"; // dynamic based on current filter
+                                                                handleDelete(selectedRows, isPermanent);
+                                                            }}
+                                                        >
+                                                            Deleted
+                                                        </MenuItem>
+                                                    </>
+                                                )}
                                             </Select>
                                         </FormControl>
                                     </div>
