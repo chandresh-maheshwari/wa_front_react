@@ -419,10 +419,11 @@
 .MuiDataGrid-virtualScroller::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }
-.css-18a49xe-MuiDataGrid-root .MuiDataGrid-columnHeaders {
+
+/* .css-18a49xe-MuiDataGrid-root .MuiDataGrid-columnHeaders {
     background-color: #1b6e95 !important; 
     color: white;
-}
+} */
 
 
 
@@ -795,15 +796,17 @@ td {
   padding: 1rem 0rem 1rem 0rem !important;
   max-width: 100%;
 }
+
 /* 
 .table-card-body div{
   max-width: 500%;
 } */
 .MuiSwitch-thumb {
-  background-color: #1b6e95 !important;;
+  background-color: #1b6e95 !important;
+  ;
 }
 
-.MuiDataGrid-columnHeaderTitleContainer{
+.MuiDataGrid-columnHeaderTitleContainer {
   justify-content: center;
 }
 
@@ -814,20 +817,23 @@ td {
 .fade-enter {
   opacity: 0;
 }
+
 .fade-enter-active {
   opacity: 1;
   transition: opacity 300ms;
 }
+
 .fade-exit {
   opacity: 1;
 }
+
 .fade-exit-active {
   opacity: 0;
   transition: opacity 300ms;
 }
 
 .action-button[disabled] {
-    opacity: 0.5 !important;
+  opacity: 0.5 !important;
 }
 
 
@@ -835,8 +841,8 @@ td {
 /* CSS FOR ADD CHECKBOX IN DYNAMIC FIELD FOR REQUIRED FIELD */
 
 .checkbox-wrapper *,
-  .checkbox-wrapper *::before,
-  .checkbox-wrapper *::after {
+.checkbox-wrapper *::before,
+.checkbox-wrapper *::after {
   box-sizing: border-box;
 }
 
@@ -852,7 +858,7 @@ td {
   display: none;
 }
 
-.checkbox-wrapper input:checked ~ .checkbox {
+.checkbox-wrapper input:checked~.checkbox {
   transform: rotate(45deg);
   width: 14px;
   margin-left: 12px;
@@ -866,8 +872,8 @@ td {
   display: block;
   /* width: inherit;
   height: inherit; */
-      width: 65%;
-    height: 65%;
+  width: 65%;
+  height: 65%;
   border: 3px solid #434343;
   border-radius: 6px;
   transition: all 0.375s;
@@ -877,7 +883,8 @@ td {
   margin-top: 7%;
 } */
 /* .action-button{ */
-.add-new-field, .delete-field{
+.add-new-field,
+.delete-field {
   margin-top: -15% !important;
 }
 
@@ -887,44 +894,44 @@ td {
   /* margin-top: 3px; */
   /* margin-left: 14px; */
   margin-right: 14px;
-  font-family: "Roboto","Helvetica","Arial",sans-serif;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   color: #d32f2f;
   /* margin-top: 4px; */
 }
 
 /* CKEditor Styles */
 .ckeditor-container .ck-editor__editable {
-    min-height: 200px !important;
-    max-height: 800px !important;
-    overflow-y: auto !important;
+  min-height: 200px !important;
+  max-height: 800px !important;
+  overflow-y: auto !important;
 }
 
 .ckeditor-container .ck-editor__editable_inline {
-    min-height: 200px;
-    height: auto;
-    padding: 0 20px !important;
+  min-height: 200px;
+  height: auto;
+  padding: 0 20px !important;
 }
 
 .ckeditor-container .ck.ck-editor {
-    width: 100% !important;
+  width: 100% !important;
 }
 
-.ckeditor-container .ck.ck-editor__main > .ck-editor__editable {
-    background-color: #ffffff !important;
-    border: 1px solid #ccc !important;
-    border-radius: 4px !important;
+.ckeditor-container .ck.ck-editor__main>.ck-editor__editable {
+  background-color: #ffffff !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
 }
 
 .ckeditor-container .ck.ck-toolbar {
-    border: 1px solid #ccc !important;
-    border-radius: 4px 4px 0 0 !important;
-    background-color: #f8f9fa !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px 4px 0 0 !important;
+  background-color: #f8f9fa !important;
 }
 
 .ckeditor-container .ck.ck-editor__main {
-    border: 1px solid #ccc !important;
-    border-top: none !important;
-    border-radius: 0 0 4px 4px !important;
+  border: 1px solid #ccc !important;
+  border-top: none !important;
+  border-radius: 0 0 4px 4px !important;
 }
 
 
@@ -933,43 +940,43 @@ td {
   display: flex;
   align-items: center;
 }
- 
-.action-buttons-row .MuiIconButton-root {
-  margin-right: 0 !important; 
-}
- 
-.action-button-download {
-  margin-right: 10px !important;
-}
- 
-.action-button-download {
-  margin-right: 10px !important;
-}
- 
+
 .action-buttons-row .MuiIconButton-root {
   margin-right: 0 !important;
 }
- 
+
+.action-button-download {
+  margin-right: 10px !important;
+}
+
+.action-button-download {
+  margin-right: 10px !important;
+}
+
+.action-buttons-row .MuiIconButton-root {
+  margin-right: 0 !important;
+}
+
 .action-image-preview {
   margin-right: 10px;
 }
- 
+
 .action-file-column {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
- 
+
 .action-file-row {
   display: flex;
   align-items: center;
 }
- 
-.css-1nkhxq8-MuiTypography-root{
+
+.css-1nkhxq8-MuiTypography-root {
   font-size: 0.75rem !important;
 }
 
-.css-1wc848c-MuiFormHelperText-root{
+.css-1wc848c-MuiFormHelperText-root {
   margin-left: 0px !important;
 }
 
@@ -1004,10 +1011,10 @@ td {
 }
 
 /* DataGrid specific styles */
-.dynamic-list-container .MuiDataGrid-columnHeaders {
+/* .dynamic-list-container .MuiDataGrid-columnHeaders {
   background-color: #1b6e95;
   color: white;
-}
+} */
 
 /* Action buttons styling */
 .dynamic-list-container .action-button {
@@ -1452,63 +1459,63 @@ td {
 
 /* Post List Component Styles */
 .post-list-main-container {
-    margin-left: 20%;
-    width: 80%;
-    margin-bottom: 20px;
-    margin-top: 1%;
+  margin-left: 20%;
+  width: 80%;
+  margin-bottom: 20px;
+  margin-top: 1%;
 }
 
 .post-list-table-wrapper {
-    height: calc(115vh - 200px);
-    width: 80%;
+  height: calc(115vh - 200px);
+  width: 80%;
 }
 
 .post-list-table-inner {
-    width: 100%;
-    margin-bottom: 45px;
+  width: 100%;
+  margin-bottom: 45px;
 }
 
 .post-list-datagrid-container {
-    width: 100%;
-    height: 500px;
-    overflow-y: hidden;
+  width: 100%;
+  height: 500px;
+  overflow-y: hidden;
 }
 
 .post-list-action-filter-container {
-    width: 100%;
-    margin-top: 20px;
-    margin-bottom: 20px;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .post-list-action-filter-container .MuiFormControl-root {
-    width: 100%;
+  width: 100%;
 }
 
 .post-list-action-filter-container .MuiInputBase-root {
-    width: 100%;
+  width: 100%;
 }
 
 .post-list-action-filter-container .MuiSelect-select {
-    width: 100%;
+  width: 100%;
 }
 
 .post-list-cell-content {
-    white-space: normal;
+  white-space: normal;
 }
 
 .post-list-image {
-    width: 50%;
-    height: auto;
+  width: 50%;
+  height: auto;
 }
 
 .post-list-action-buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .post-list-action-button {
-    margin: 1px;
+  margin: 1px;
 }
 
 /* Styles added by AI to position the action filter in Post-list.js footer */
@@ -1517,15 +1524,18 @@ td {
 .post-list-table-inner {
   display: flex;
   flex-direction: column;
-  height: 100%; /* Ensure the container has a defined height */
+  height: 100%;
+  /* Ensure the container has a defined height */
   /* You might need to adjust width or other properties here based on your overall layout */
 }
 
 /* Style the DataGrid to take up available vertical space */
 .post-list-table-inner .MuiDataGrid-root {
-  flex-grow: 1; /* Allow DataGrid to grow and push footer down */
+  flex-grow: 1;
+  /* Allow DataGrid to grow and push footer down */
   /* Ensure DataGrid doesn't have fixed height that prevents flex-grow */
-  height: auto; /* Or remove any conflicting fixed height */
+  height: auto;
+  /* Or remove any conflicting fixed height */
 }
 
 /* Style the action filter container to align it in the footer area */
@@ -1536,136 +1546,147 @@ td {
 
   /* Use flex properties to position it to the right */
   display: flex;
-  justify-content: flex-end; /* Align content to the right */
-  align-items: center; /* Vertically center content */
-  width: auto; /* Allow width to be determined by content or min-width */
+  justify-content: flex-end;
+  /* Align content to the right */
+  align-items: center;
+  /* Vertically center content */
+  width: auto;
+  /* Allow width to be determined by content or min-width */
 
   /* Add margin-left: auto to push it to the far right, next to pagination */
   margin-left: auto;
-  margin-right: 16px; /* Add some space from the right edge, adjust as needed */
+  margin-right: 16px;
+  /* Add some space from the right edge, adjust as needed */
 
   /* You might need to adjust vertical alignment further with padding or align-self */
-  padding-top: 8px; /* Add some padding at the top to align with pagination */
-  padding-bottom: 8px; /* Add some padding at the bottom */
+  padding-top: 8px;
+  /* Add some padding at the top to align with pagination */
+  padding-bottom: 8px;
+  /* Add some padding at the bottom */
 }
 
 /* Ensure the FormControl inside the action filter container doesn't take full width */
 .post-list-action-filter-container.action-filter-div .MuiFormControl-root {
-    width: auto; /* Or set a specific width like min-width */
-    min-width: 200px; /* Example min-width, adjust as needed */
+  width: auto;
+  /* Or set a specific width like min-width */
+  min-width: 200px;
+  /* Example min-width, adjust as needed */
 }
 
 /* Adjust padding for the table container if needed */
 .table-container {
-    padding-bottom: 0 !important; /* Remove bottom padding to bring footer content closer */
+  padding-bottom: 0 !important;
+  /* Remove bottom padding to bring footer content closer */
 }
 
 /* Add padding back to the card body if removed from table-container */
 .table-card-body {
-    padding-bottom: 1rem !important; /* Ensure there's padding below the table */
+  padding-bottom: 1rem !important;
+  /* Ensure there's padding below the table */
 }
 
 /* Post List Layout Styles */
 .post-list-layout {
-    margin-left: 20%;
-    width: 80%;
-    margin-bottom: 20px;
-    margin-top: 1%;
+  margin-left: 20%;
+  width: 80%;
+  margin-bottom: 20px;
+  margin-top: 1%;
 }
 
 .post-list-table-body {
-    height: calc(115vh - 200px);
-    width: 80%;
+  height: calc(115vh - 200px);
+  width: 80%;
 }
 
 .post-list-table-container {
-    height: 100%;
+  height: 100%;
 }
 
 .post-list-table-wrapper {
-    width: 100%;
-    margin-bottom: 45px;
+  width: 100%;
+  margin-bottom: 45px;
 }
 
 .post-list-table-inner {
-    width: 100%;
-    height: 500px;
-    overflow-y: hidden;
+  width: 100%;
+  height: 500px;
+  overflow-y: hidden;
 }
 
 .post-list-action-filter {
-    max-width: 100%;
-    margin-top: -60px;
-    margin-bottom: 46px;
+  max-width: 100%;
+  margin-top: -60px;
+  margin-bottom: 46px;
 }
 
 /* DataGrid Custom Styles */
 .post-list-datagrid {
-    height: 100%;
-    overflow: hidden;
+  height: 100%;
+  overflow: hidden;
 }
 
 .post-list-datagrid .MuiDataGrid-columnHeaders {
-    background-color: #1b6e95;
-    color: white;
+  background-color: #1b6e95;
+  color: white;
 }
 
 .post-list-datagrid .MuiDataGrid-cell {
-    padding: 10px;
-    border-bottom: 1px solid #e0e0e0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .post-list-datagrid .MuiDataGrid-row:hover {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 /* Action Button Styles */
 .action-button {
-    margin: 1px !important;
+  margin: 1px !important;
 }
 
 .action-button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Post List Image Styles */
 .post-list-image {
-    width: 50%;
-    height: auto;
+  width: 50%;
+  height: auto;
 }
-.action-filter-div{
+
+.action-filter-div {
   margin: -60px 0px 46px;
   background-color: transparent;
 }
 
 /* Post Form Dynamic Styles */
 .post-form-container {
-    margin-left: 20%;
-    width: 80%;
-    margin-bottom: 20px;
-    margin-top: 1%;
+  margin-left: 20%;
+  width: 80%;
+  margin-bottom: 20px;
+  margin-top: 1%;
 }
 
 .post-form-title {
-    background-color: #f4f6f8;
-    padding: 10px;
-    border-radius: 8px;
+  background-color: #f4f6f8;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .post-form-section {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
 }
 
 .post-form-color-input {
-    width: 100%;
-    margin-right: 10px;
+  width: 100%;
+  margin-right: 10px;
 }
 
 /* .post-form-color-picker {
@@ -1677,41 +1698,41 @@ td {
     margin-top: -17px;
 } */
 
-.post-form-error-text{
-    color: #d32f2f;
-    margin-top: 4px;
+.post-form-error-text {
+  color: #d32f2f;
+  margin-top: 4px;
 }
 
 .post-form-submit-btn {
-    background-color: #2c9dd4;
+  background-color: #2c9dd4;
 }
 
 .post-form-cancel-btn {
-    background-color: rgb(212 44 42);
-    color: white;
-    margin-left: -10px;
+  background-color: rgb(212 44 42);
+  color: white;
+  margin-left: -10px;
 }
 
 .post-form-ckeditor-label {
-    margin-bottom: 8px;
+  margin-bottom: 8px;
 }
 
 /* Additional Post Form Dynamic Styles */
 .post-form-flex-container {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .post-form-full-width {
-    width: 100%;
+  width: 100%;
 }
 
 .post-form-grid-margin {
-    margin-top: 10px !important;
+  margin-top: 10px !important;
 }
 
 .post-form-red-asterisk {
-    color: red;
+  color: red;
 }
 
 /* Post Edit Form Styles */
@@ -1813,196 +1834,197 @@ td {
 
 /* Post Form Dynamic Styles */
 .post-form-main-container {
-    margin-left: 20%;
-    width: 80%;
-    margin-bottom: 20px;
-    margin-top: 1%;
+  margin-left: 20%;
+  width: 80%;
+  margin-bottom: 20px;
+  margin-top: 1%;
 }
 
 .post-form-color-wrapper {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .post-form-color-text-field {
-    width: 100%;
-    margin-right: 10px;
+  width: 100%;
+  margin-right: 10px;
 }
 
 .post-form-color-picker {
-    width: 50px;
-    height: 50px;
-    padding: 0 !important;
-    border: none !important;
-    padding: -91%;
-    margin-bottom: 10px !important;
-    margin-left: -9% !important;
+  width: 50px;
+  height: 50px;
+  padding: 0 !important;
+  border: none !important;
+  padding: -91%;
+  margin-bottom: 10px !important;
+  margin-left: -9% !important;
 }
 
 .post-form-section-container {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
 }
 
 .post-form-section-header {
-    background-color: #f4f6f8;
-    padding: 10px;
-    border-radius: 8px;
+  background-color: #f4f6f8;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .post-form-error-text {
-    color: #d32f2f;
-    margin-top: 4px;
+  color: #d32f2f;
+  margin-top: 4px;
 }
 
 .post-form-ckeditor-label {
-    margin-bottom: 8px;
+  margin-bottom: 8px;
 }
 
 .post-form-ckeditor-container {
-    width: 100%;
+  width: 100%;
 }
 
-.post-form-action-buttons, .page-form-action-buttons {
-    margin-top: 24px !important;
+.post-form-action-buttons,
+.page-form-action-buttons {
+  margin-top: 24px !important;
 }
 
-.required-span{
+.required-span {
   /* color: 'red' !important; */
   color: red;
 }
 
 /* Post Edit Inline Styles */
 .post-edit-wrapper {
-    margin-left: 20%;
-    width: 80%;
-    margin-bottom: 20px;
-    margin-top: 1%;
+  margin-left: 20%;
+  width: 80%;
+  margin-bottom: 20px;
+  margin-top: 1%;
 }
 
 .post-edit-color-field {
-    width: 100%;
-    margin-right: 10px;
+  width: 100%;
+  margin-right: 10px;
 }
 
 .post-edit-color-picker {
-    width: 50px;
-    height: 50px;
-    padding: 0;
-    border: none;
-    margin-left: -60px;
-    margin-top: -17px;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border: none;
+  margin-left: -60px;
+  margin-top: -17px;
 }
 
 .post-edit-file-preview {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .post-edit-file-name {
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 4px;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
 }
 
 .post-edit-file-row {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .post-edit-file-image {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .post-edit-delete-btn {
-    background: none;
-    box-shadow: none;
-    padding: 0;
-    border-radius: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
 }
 
 /* Post Edit Additional Styles */
 .post-edit-section-wrapper {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
 }
 
 .post-edit-section-title {
-    background-color: #f4f6f8;
-    padding: 10px;
-    border-radius: 8px;
+  background-color: #f4f6f8;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .post-edit-form-buttons {
-    margin-top: 24px;
+  margin-top: 24px;
 }
 
 
 /* Post Edit Additional Styles */
 .post-edit-ckeditor-label {
-    margin-bottom: 8px;
+  margin-bottom: 8px;
 }
 
 .post-edit-flex-center {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .post-edit-flex-between {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .post-edit-flex-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .post-edit-file-type-label {
-    display: flex;
-    align-items: center;
-    margin-right: 15px;
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
 }
 
 .post-edit-file-type-checkbox {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 
 .post-edit-section-padding {
-    padding: 10px;
+  padding: 10px;
 }
 
 .post-edit-margin-left {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 
 .post-edit-margin-right {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .post-edit-margin-bottom {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .post-edit-margin-top {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
 .post-edit-bg-light {
-    background-color: #f4f6f8;
+  background-color: #f4f6f8;
 }
 
 .post-edit-border-radius {
-    border-radius: 5px;
+  border-radius: 5px;
 }
 
 .post-edit-padding {
-    padding: 15px;
+  padding: 15px;
 }
 
 /* Page List Component Styles */
@@ -2061,61 +2083,61 @@ td {
 
 /* Page Component Styles */
 .page-main-container {
-    margin-left: 20%;
-    width: 80%;
-    margin-bottom: 20px;
-    margin-top: 1%;
+  margin-left: 20%;
+  width: 80%;
+  margin-bottom: 20px;
+  margin-top: 1%;
 }
 
 .page-form-control {
-    margin-top: 15px !important;
+  margin-top: 15px !important;
 }
 
 .page-select-field {
-    background-color: #f4f6f8;
-    border-radius: 5px;
+  background-color: #f4f6f8;
+  border-radius: 5px;
 }
 
 .page-settings-section {
-    margin-top: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 15px;
+  margin-top: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
 }
 
 .page-settings-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgb(244, 246, 248);
-    padding: 15px;
-    border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(244, 246, 248);
+  padding: 15px;
+  border-radius: 8px;
 }
 
 .page-settings-toggle-btn {
-    color: #1b6e95;
+  color: #1b6e95;
 }
 
 .page-settings-content {
-    padding: 15px;
-    margin-top: 20px;
+  padding: 15px;
+  margin-top: 20px;
 }
 
 .page-settings-input {
-    background-color: white;
-    border: 1px solid #ddd;
+  background-color: white;
+  border: 1px solid #ddd;
 }
 
 .page-settings-input .MuiOutlinedInput-root fieldset {
-    border-color: #ddd;
+  border-color: #ddd;
 }
 
 .page-settings-input .MuiOutlinedInput-root:hover fieldset {
-    border-color: #bbb;
+  border-color: #bbb;
 }
 
 .page-form-actions {
-    margin-top: 24px;
+  margin-top: 24px;
 }
 
 /* Preserve existing submit and cancel button styles */
@@ -2131,44 +2153,44 @@ td {
 
 /* Page Edit Component Styles */
 .page-edit-container {
-    margin-left: 22%;
-    width: 75%;
-    margin-bottom: 20px;
+  margin-left: 22%;
+  width: 75%;
+  margin-bottom: 20px;
 }
 
 .page-edit-form {
-    margin-top: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 15px;
+  margin-top: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
 }
 
 .page-settings-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgb(244, 246, 248);
-    padding: 15px;
-    border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(244, 246, 248);
+  padding: 15px;
+  border-radius: 8px;
 }
 
 .page-settings-content {
-    padding: 15px;
-    margin-top: 20px;
+  padding: 15px;
+  margin-top: 20px;
 }
 
 .post-type-select {
-    background-color: #f4f6f8;
-    border-radius: 5px;
+  background-color: #f4f6f8;
+  border-radius: 5px;
 }
 
 .button-field {
-    background-color: white;
-    border: 1px solid #ddd;
+  background-color: white;
+  border: 1px solid #ddd;
 }
 
 .button-field:hover {
-    border-color: #bbb;
+  border-color: #bbb;
 }
 
 /* .submit-button {
@@ -2182,28 +2204,28 @@ td {
 } */
 
 .toggle-button {
-    color: #1b6e95;
+  color: #1b6e95;
 }
 
 /* Preserve existing custom classes */
 .Form-main-title {
-    /* Keep existing styles */
+  /* Keep existing styles */
 }
 
 .title {
-    /* Keep existing styles */
+  /* Keep existing styles */
 }
 
 .action-button {
-    /* Keep existing styles */
+  /* Keep existing styles */
 }
 
 .submit-btn {
-    /* Keep existing styles */
+  /* Keep existing styles */
 }
 
 .cancel-btn {
-    /* Keep existing styles */
+  /* Keep existing styles */
 }
 
 /* Contact Listing Page Styles */
@@ -2303,9 +2325,11 @@ td {
   margin-top: -15px !important;
   opacity: 1 !important;
 }
-.dashboard_nav_item{
+
+.dashboard_nav_item {
   margin-bottom: 0;
 }
+
 /* New Chages css 02-12-25 END */
 
 
@@ -2372,7 +2396,7 @@ td {
   color: #7fa0b0;
 }
 
-.sidebar .nav li > a.nav-link {
+.sidebar .nav li>a.nav-link {
   display: flex;
   align-items: center;
   padding: 8px 18px;
@@ -2384,18 +2408,18 @@ td {
   transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
-.sidebar .nav li > a.nav-link p {
+.sidebar .nav li>a.nav-link p {
   margin: 0;
 }
 
-.sidebar .nav li > a.nav-link:hover {
+.sidebar .nav li>a.nav-link:hover {
   background-color: rgba(255, 255, 255, 0.06);
   color: #ffffff;
   transform: translateX(1px);
 }
 
-.nav-item.active-sidebar-item > a.nav-link,
-.nav-item.active-sidebar-item > a.nav-link:hover {
+.nav-item.active-sidebar-item>a.nav-link,
+.nav-item.active-sidebar-item>a.nav-link:hover {
   background-color: #1c627f;
   color: #ffffff;
 }
@@ -2514,27 +2538,31 @@ td {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.sidebar-brand-name{
+
+.sidebar-brand-name {
   color: #1b6e95 !important;
 }
 
-.sidebar .nav li > a.nav-link:hover {
-    /* background-color: rgba(255, 255, 255, 0.06); */
-    background-color: #304d5b !important;
-    color: #ffffff;
-    transform: translateX(1px);
-}
-.dashboard-link{
-margin-bottom: 15px !important; 
+.sidebar .nav li>a.nav-link:hover {
+  /* background-color: rgba(255, 255, 255, 0.06); */
+  background-color: #304d5b !important;
+  color: #ffffff;
+  transform: translateX(1px);
 }
 
-.sidebar .sidebar-wrapper, .off-canvas-sidebar .sidebar-wrapper, .sidebar {
-    background: #1b6e95!important;
+.dashboard-link {
+  margin-bottom: 15px !important;
+}
+
+.sidebar .sidebar-wrapper,
+.off-canvas-sidebar .sidebar-wrapper,
+.sidebar {
+  background: #1b6e95 !important;
 }
 
 .page-list-datagrid .MuiDataGrid-columnHeaders {
-    background-color: #1b6e95!important;
-    color: white;
+  background-color: #1b6e95 !important;
+  color: white;
 }
 
 /* .sidebar-brand .sidebar-logo {
@@ -2547,8 +2575,8 @@ margin-bottom: 15px !important;
 } */
 
 .post-list-datagrid .MuiDataGrid-columnHeaders {
-    background-color: #1b6e95!important;
-    color: #fff;
+  background-color: #1b6e95 !important;
+  color: #fff;
 }
 
 /* =========================================
@@ -2575,6 +2603,7 @@ margin-bottom: 15px !important;
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -2723,12 +2752,12 @@ margin-bottom: 15px !important;
 
 .MuiDataGrid-cell .action-checkbox:checked,
 .MuiDataGrid-columnHeader .action-checkbox:checked {
- border-color: #0000 #24c78e #24c78e #0000;
-    border-radius: 0;
-    border-width: 3px;
-    margin-left: 8px;
-    transform: rotate(45deg);
-    width: 10px;
+  border-color: #0000 #24c78e #24c78e #0000;
+  border-radius: 0;
+  border-width: 3px;
+  margin-left: 8px;
+  transform: rotate(45deg);
+  width: 10px;
 }
 
 /* .MuiDataGrid-columnHeader .action-checkbox:checked{
@@ -2761,6 +2790,7 @@ margin-bottom: 15px !important;
     opacity: 0;
     transform: scale(0.5) rotate(45deg);
   }
+
   to {
     opacity: 1;
     transform: scale(1) rotate(45deg);
@@ -2768,15 +2798,26 @@ margin-bottom: 15px !important;
 }
 
 .nav-item.active-sidebar-item {
-    background-color: rgb(209 235 205 / 16%) !important
+  background-color: rgb(209 235 205 / 16%) !important
 }
 
-.css-rhv0j2-MuiDataGrid-root .MuiDataGrid-columnHeaders {
-    background-color: #1b6e95 !important;
-    color: white;
-}
+
 /* CHECKBOX CSS END */
 
 /* .MuiFormControl-root{
       margin-top: 15px !important;
 } */
+
+/* .css-18a49xe-MuiDataGrid-root .MuiDataGrid-columnHeaders {
+    background-color: #1b6e95 !important;
+    color: white;
+} */
+.contact-listing-table-body .MuiDataGrid-columnHeaders {
+  background-color: #1b6e95 !important;
+  color: white;
+}
+
+.dynamic-list-card-body .MuiDataGrid-columnHeaders {
+  background-color: #1b6e95 !important;
+  color: white;
+}
